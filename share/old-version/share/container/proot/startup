@@ -194,37 +194,52 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	#------------------
 	# mounts
 
+	# global mount configuration. If the value of "MOUNT_SD" is empty, the file is loaded.
+	SD_CONF_FILE="${CONFIG_FOLDER}/rootless/mount_sd.conf"
+
 	# true or false
-	# 挂载sd，默认为true
-	MOUNT_SD=true
+	# 挂载sd, 可选 true 或 false。 若该值为空，则从全局配置文件"\$SD_CONF_FILE"中读取。
+	MOUNT_SD=""
 
 	# The lower the number, the higher the priority. The highest priority directory will be mounted to the mount point.
-	# SD_DIR为宿主机sd目录，SD_MOUNT_POINT为容器内的挂载点。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd" 
+	# SD_DIR为宿主机sd目录，SD_MOUNT_POINT为容器内的挂载点。优先级别高，且存在相应目录时，才会被挂载（SD_DIR_0的优先级最高）。默认挂载点为容器内部的"/media/sd" 
 
 	# source 
-	SD_DIR_0="/storage/self/primary"
-	SD_DIR_1="/sdcard"
-	SD_DIR_2="/storage/emulated/0"
-	SD_DIR_3="\${HOME}/sd"
+	SD_DIR_0="/storage/self/primary/Download"
+	SD_DIR_1="/sdcard/Download"
+	SD_DIR_2="/storage/emulated/0/Download"
+	SD_DIR_3="\${HOME}/sd/Download"
 	SD_DIR_4="\${HOME}/Downloads"
 	SD_DIR_5="\${HOME}/Download"
 
 	# target
 	SD_MOUNT_POINT="/media/sd"
 
-	MOUNT_TERMUX=true
+
+	# global mount configuration. If the value of "MOUNT_TERMUX" is empty, the file is loaded.
+	TERMUX_CONF_FILE="${CONFIG_FOLDER}/rootless/mount_termux.conf"
+
+	MOUNT_TERMUX=""
 	TERMUX_DIR="/data/data/com.termux/files"
 	TERMUX_MOUNT_POINT="/media/termux"
 
-	MOUNT_TF=true
+	# global mount configuration. If the value of "MOUNT_TF" is empty, the file is loaded.
+	TF_CONF_FILE="${CONFIG_FOLDER}/rootless/mount_tf.conf"
+
+	# true or false
+	MOUNT_TF=""
 
 	# The value of TF_CARD_LINK is a symbolic link file.
 	# TF_CARD_LINK的值为一个软链接文件
 	TF_CARD_LINK="\${HOME}/storage/external-1"
 	TF_MOUNT_POINT="/media/tf"
 
-	# If the value of "MOUNT_STORAGE" is "false", the relevant directory will not be mounted. Default is true.
-	MOUNT_STORAGE=true
+	# global mount configuration. If the value of "MOUNT_STORAGE" is empty, the file is loaded.
+	STORAGE_CONF_FILE="${CONFIG_FOLDER}/rootless/mount_storage.conf"
+
+	# If the value of "MOUNT_STORAGE" is "false", the relevant directory will not be mounted.
+	# true or false
+	MOUNT_STORAGE=""
 	STORAGE_DIR="/storage"
 	STORAGE_MOUNT_POINT="/storage"
 
@@ -377,10 +392,25 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	    esac
 	}
 	#------------------
-	start_tmoe_gnu_linux_container() {
+	load_global_conf(){
 	    if [[ \${LOAD_PROOT_CONF} = true && -r \${PROOT_CONF_FILE} ]]; then
 	        source \${PROOT_CONF_FILE}
 	    fi
+		if [[ -z \${MOUNT_SD} && -r \${SD_CONF_FILE} ]];then
+	        source \${SD_CONF_FILE}
+		fi
+		if [[ -z \${MOUNT_TERMUX} && -r \${TERMUX_CONF_FILE} ]];then
+	        source \${TERMUX_CONF_FILE}
+		fi
+		if [[ -z \${MOUNT_TF} && -r \${TF_CONF_FILE} ]];then
+	        source \${TF_CONF_FILE}
+		fi
+		if [[ -z \${MOUNT_STORAGE} && -r \${STORAGE_CONF_FILE} ]];then
+	        source \${STORAGE_CONF_FILE}
+		fi
+	}
+	start_tmoe_gnu_linux_container() {
+	    load_global_conf
 	    unset LD_PRELOAD PROOT_UID PROOT_GID PROOT_HOME CONTAINER_BIN_PATH
 	    check_exa_var
 	    #------------------
@@ -425,12 +455,12 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	    [[ \${EXA_ENABLED} = true ]] || set -- "\${@}" "--rootfs=\${ROOTFS_DIR}"
 	    if [[ "\${HOST_DISTRO}" = 'Android' ]]; then
 	        if [[ \${MOUNT_SYSTEM} = true ]]; then
-	            if [[ -e "\${SYSTEM_DIR}" ]]; then
+	            if [[ -x "\${SYSTEM_DIR}" ]]; then
 	                set -- "\${@}" "--mount=\${SYSTEM_DIR}"
 	            fi
 	        fi
 	        if [[ \${MOUNT_APEX} = true ]]; then
-	            if [[ -e "\${APEX_DIR}" ]]; then
+	            if [[ -x "\${APEX_DIR}" ]]; then
 	                set -- "\${@}" "--mount=\${APEX_DIR}"
 	            fi
 	        fi
@@ -446,12 +476,12 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	            fi
 	        fi
 	        if [[ \${MOUNT_STORAGE} = true ]]; then
-	            if [[ -e "\${STORAGE_DIR}" ]]; then
+	            if [[ -x "\${STORAGE_DIR}" ]]; then
 	                set -- "\${@}" "--mount=\${STORAGE_DIR}:\${EXA_PREFIX}\${STORAGE_MOUNT_POINT}"
 	            fi
 	        fi
 	        if [[ \${MOUNT_TERMUX} = true ]]; then
-	            if [[ -e "\${TERMUX_DIR}/home" ]]; then
+	            if [[ -x "\${TERMUX_DIR}/home" ]]; then
 	                set -- "\${@}" "--mount=\${TERMUX_DIR}:\${EXA_PREFIX}\${TERMUX_MOUNT_POINT}"
 	            fi
 	        fi
@@ -482,19 +512,19 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	    fi
 
 	    if [[ \${MOUNT_SYS} = true ]]; then
-	        if [[ -e "\${SYS_DIR}" ]]; then
+	        if [[ -x "\${SYS_DIR}" ]]; then
 	            set -- "\${@}" "--mount=\${SYS_DIR}"
 	        fi
 	    fi
 
 	    if [[ \${MOUNT_TMP} = true ]]; then
-	        if [[ -e "\${TMP_SOURCE_DIR}" ]]; then
+	        if [[ -x "\${TMP_SOURCE_DIR}" ]]; then
 	            set -- "\${@}" "--mount=\${TMP_SOURCE_DIR}:\${EXA_PREFIX}\${TMP_MOUNT_POINT}"
 	        fi
 	    fi
 
 	    if [[ \${MOUNT_GITSTATUS} = true ]]; then
-	        if [[ -e "\${GITSTATUS_DIR}" ]]; then
+	        if [[ -x "\${GITSTATUS_DIR}" ]]; then
 	            set -- "\${@}" "--mount=\${GITSTATUS_DIR}:\${EXA_PREFIX}\${GITSTATUS_MOUNT_POINT}"
 	        fi
 	    fi
@@ -505,7 +535,7 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	    #------------------
 	    if [[ \${MOUNT_SD} = true ]]; then
 	        for i in "\${SD_DIR_0}" "\${SD_DIR_1}" "\${SD_DIR_2}" "\${SD_DIR_3}" "\${SD_DIR_4}" "\${SD_DIR_5}"; do
-	            if [[ -e \${i} ]]; then
+	            if [[ -x \${i} ]]; then
 	                set -- "\${@}" "--mount=\${i}:\${EXA_PREFIX}\${SD_MOUNT_POINT}"
 	                break
 	            fi

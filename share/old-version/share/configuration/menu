@@ -13,10 +13,11 @@ configure_tmoe_container() {
     TMOE_OPTION=$(whiptail --title "CONF AND MANUAL" --menu "You can view the manual or modify the config here." 0 50 0 \
         "1" "DNS 域名解析系统" \
         "2" "Timezone 时区" \
-        "3" "fortune & hitokoto 一言" \
-        "4" "man mount" \
-        "5" "man umount" \
-        "6" "man x11vnc" \
+        "3" "Shared dir 共享目录" \
+        "4" "fortune & hitokoto 一言" \
+        "5" "man mount" \
+        "6" "man umount" \
+        "7" "man x11vnc" \
         "0" "🌚 Back 返回" \
         3>&1 1>&2 2>&3)
     ##############################
@@ -24,16 +25,289 @@ configure_tmoe_container() {
     0 | "") proot_container_menu ;;
     1) tmoe_container_dns ;;
     2) tmoe_container_timezone ;;
-    3) do_you_want_to_enable_hitokoto ;;
-    4) man_mount ;;
-    5) man_umount ;;
-    6) man_x11vnc ;;
+    3) tmoe_container_shared_dir ;;
+    4) do_you_want_to_enable_hitokoto ;;
+    5) man_mount ;;
+    6) man_umount ;;
+    7) man_x11vnc ;;
     esac
     ####################
     press_enter_to_return
     configure_tmoe_container
 }
 ##########
+rootful_container_mount_conf() {
+    mkdir_rootless_dir rootful
+    container_mount_dir_menu
+}
+rootless_container_mount_conf() {
+    mkdir_rootless_dir rootless
+    container_mount_dir_menu
+}
+rootless_or_rootful() {
+    if (whiptail --title "rootless or rootful" --yes-button "rootless" --no-button "rootful" --yesno "rootless: proot, podman\n rootful: chroot, unshare, nspawn" 8 50); then
+        rootless_container_mount_conf
+    else
+        rootful_container_mount_conf
+    fi
+}
+tmoe_container_shared_dir() {
+    case "$Container_variants" in
+    rootless) rootless_container_mount_conf ;;
+    rootful) rootful_container_mount_conf ;;
+    *) rootless_or_rootful ;;
+    esac
+}
+mkdir_rootless_dir() {
+    local Dir_name=$1
+    [[ -e ${CONFIG_FOLDER}/$Dir_name ]] || mkdir -pv "${CONFIG_FOLDER}/$Dir_name"
+}
+do_you_want_to_share_tf() {
+    TF_CONF="${CONFIG_FOLDER}/${Container_variants}/mount_tf.conf"
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) local _Title="在容器中共享宿主的TF卡/外置存储" ;;
+    *) local _Title="external storage" ;;
+    esac
+    if (whiptail --title "$_Title" --yes-button "Yes" --no-button "No" --yesno "Do you want to share the ~/storage/external-1?" 8 50); then
+        echo "MOUNT_TF=true" >"${TF_CONF}"
+    else
+        echo "MOUNT_TF=false" >"${TF_CONF}"
+    fi
+    chmod a+rw -v "${TF_CONF}"
+    cat "${TF_CONF}"
+}
+do_you_want_to_share_storage() {
+    case ${Container_variants} in
+    rootful) ;;
+    rootless)
+        case ${TMOE_MENU_LANG} in
+        zh_*UTF-8) local _Title="共享 /storage 目录" ;;
+        *) local _Title="Shared dir: /storage" ;;
+        esac
+        if (whiptail --title "$_Title" --yes-button "Yes" --no-button "No" --yesno "Do you want to share the /storage directory?" 8 50); then
+            echo "MOUNT_STORAGE=true" >"${STORAGE_CONF}"
+        else
+            echo "MOUNT_STORAGE=false" >"${STORAGE_CONF}"
+        fi
+        chmod a+rw -v "${STORAGE_CONF}"
+        cat "${STORAGE_CONF}"
+        ;;
+    esac
+}
+container_mount_termux_conf() {
+    RETURN_TO_WHERE='container_mount_termux_conf'
+    S_DIR=''
+    TERMUX_CONF="${CONFIG_FOLDER}/${Container_variants}/mount_termux.conf"
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8)
+        local _Title="共享 HOME 目录"
+        local _Description="将宿主的主目录挂载至容器内部(默认为/media/termux)"
+        local OPT_2="None（禁用共享）"
+        local OPT_8="自定义路径"
+        local OPT_5="手动编辑"
+        ;;
+    *)
+        local _Title="Shared directory: HOME"
+        local _Description="Mount the host\'s HOME directory to the container(default is /media/termux)."
+        local OPT_2="None (Disable sharing)"
+        local OPT_8="customize"
+        local OPT_5="edit manually"
+        ;;
+    esac
+    local SD_DIR_1="/data/data/com.termux/files"
+    if [[ -e "$SD_DIR_1" ]]; then
+        local SD_DIR_2="$SD_DIR_1"
+    else
+        local SD_DIR_2="/opt"
+    fi
+
+    TMOE_OPTION=$(whiptail --title "$_Title" --menu "$_Description" 0 50 0 \
+        "1" "${HOME}" \
+        "2" "$OPT_2" \
+        "3" "${SD_DIR_2}" \
+        "4" "$OPT_8" \
+        "5" "$OPT_5" \
+        "0" "🌚 Back" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${TMOE_OPTION}" in
+    0 | "")
+        case ${RETURN_TO_MENU} in
+        "") configure_tmoe_container ;;
+        *) ${RETURN_TO_MENU} ;;
+        esac
+        ;;
+    1) S_DIR="${HOME}" ;;
+    2) S_DIR="None" ;;
+    3) S_DIR="$SD_DIR_2" ;;
+    4) customize_your_sd_dir ;;
+    5)
+        for i in editor micro nano vi; do
+            if [[ -n $(command -v $i) ]]; then
+                ${i} "${TERMUX_CONF}"
+            fi
+        done
+        ;;
+    esac
+
+    case ${S_DIR} in
+    None) echo "MOUNT_TERMUX=false" >"${TERMUX_CONF}" ;;
+    "") ;;
+    *)
+        printf "%s\n" \
+            "MOUNT_TERMUX=true" \
+            "TERMUX_DIR=\"${S_DIR}\"" \
+            >"${TERMUX_CONF}"
+        chmod a+rw -v "${TERMUX_CONF}"
+        ;;
+    esac
+    [[ -s "${TERMUX_CONF}" ]] && cat "${TERMUX_CONF}"
+    ####################
+    press_enter_to_return
+    case ${RETURN_TO_MENU} in
+    "") container_mount_termux_conf ;;
+    *) ${RETURN_TO_MENU} ;;
+    esac
+}
+container_mount_sd_conf() {
+    RETURN_TO_WHERE='container_mount_sd_conf'
+    S_DIR=''
+    SD_CONF="${CONFIG_FOLDER}/${Container_variants}/mount_sd.conf"
+    STORAGE_CONF="${CONFIG_FOLDER}/${Container_variants}/mount_storage.conf"
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8)
+        local _Title="共享 sd 目录"
+        local _Description="将宿主的内置存储挂载至容器内部(默认为/media/sd)\n当选择第3 或 4个时，将共享（挂载）整个内置存储。\n当为第2个（None）时，MOUNT_SD 将被设为 false，即不挂载sd。\n请注意：这是全局配置，如需单独配置，请在各自的容器菜单里进行选择。"
+        local OPT_2="None（禁用共享）"
+        local OPT_8="自定义路径"
+        local OPT_9="手动编辑"
+        ;;
+    *)
+        local _Title="Shared directory: sd"
+        local _Description="Mount the host\'s sd dir to the container(default is /media/sd).\nNote:it is a global configuration, for independent conf, please select it in the respective container menu."
+        local OPT_2="None (Disable sharing)"
+        local OPT_8="customize"
+        local OPT_9="edit manually"
+        ;;
+    esac
+
+    # local SD_DIR_1="/storage/self/primary"
+    case ${Container_variants} in
+    rootless)
+        mkdir_rootless_dir rootless
+        local SD_DIR_1="/storage/self/primary"
+        ;;
+    rootful)
+        mkdir_rootless_dir rootful
+        local SD_DIR_1="/data/media/0"
+        ;;
+    esac
+
+    TMOE_OPTION=$(whiptail --title "$_Title" --menu "$_Description" 0 50 0 \
+        "1" "${SD_DIR_1}/Download" \
+        "2" "$OPT_2" \
+        "3" "${SD_DIR_1}" \
+        "4" "/sdcard" \
+        "5" "/sdcard/Download" \
+        "6" "\${HOME}/sd/Download" \
+        "7" "\${HOME}/Downloads" \
+        "8" "$OPT_8" \
+        "9" "$OPT_9" \
+        "0" "🌚 Back" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${TMOE_OPTION}" in
+    0 | "")
+        case ${RETURN_TO_MENU} in
+        "") configure_tmoe_container ;;
+        *) ${RETURN_TO_MENU} ;;
+        esac
+        ;;
+    1) S_DIR="${SD_DIR_1}/Download" ;;
+    2) S_DIR="None" ;;
+    3)
+        do_you_want_to_share_storage
+        S_DIR="${SD_DIR_1}"
+        ;;
+    4)
+        do_you_want_to_share_storage
+        S_DIR='/sdcard'
+        ;;
+    5) S_DIR='/sdcard/Download' ;;
+    6) S_DIR="\${HOME}/sd/Download" ;;
+    7) S_DIR="\${HOME}/Downloads" ;;
+    8) customize_your_sd_dir ;;
+    9)
+        for i in editor micro nano vi; do
+            if [[ -n $(command -v $i) ]]; then
+                ${i} "${SD_CONF}"
+            fi
+        done
+        ;;
+    esac
+
+    case ${S_DIR} in
+    None) echo "MOUNT_SD=false" >"${SD_CONF}" ;;
+    "") ;;
+    *)
+        printf "%s\n" \
+            "MOUNT_SD=true" \
+            "SD_DIR_0=\"${S_DIR}\"" \
+            >"${SD_CONF}"
+        chmod a+rw -v "${SD_CONF}"
+        ;;
+    esac
+    [[ -s "${SD_CONF}" ]] && cat "${SD_CONF}"
+    ####################
+    press_enter_to_return
+    case ${RETURN_TO_MENU} in
+    "") container_mount_sd_conf ;;
+    *) ${RETURN_TO_MENU} ;;
+    esac
+}
+customize_your_sd_dir() {
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) local _Description2="请在下方输入一个绝对路径，支持使用\${HOME}变量" ;;
+    *) local _Description2="Please enter an absolute path" ;;
+    esac
+    S_DIR=$(whiptail --inputbox "$_Description2" 0 50 --title "ABS PATH" 3>&1 1>&2 2>&3)
+    if [[ "$?" != "0" ]]; then
+        printf "%s\n" "${RED}ERROR${RESET}"
+        press_enter_to_return
+        ${RETURN_TO_WHERE}
+    elif [[ -z ${S_DIR} ]]; then
+        printf "%s\n" "Please enter a valid value"
+        press_enter_to_return
+        ${RETURN_TO_WHERE}
+    fi
+}
+container_mount_dir_menu() {
+    RETURN_TO_WHERE='container_mount_dir_menu'
+    RETURN_TO_MENU='tmoe_container_shared_dir'
+    TMOE_OPTION=$(whiptail --title "SHARED DIR" --menu "You can either disable the shared directory or change it" 0 50 0 \
+        "1" "sd" \
+        "2" "storage" \
+        "3" "HOME" \
+        "4" "external-1" \
+        "0" "🌚 Back" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${TMOE_OPTION}" in
+    0 | "") configure_tmoe_container ;;
+    1) container_mount_sd_conf ;;
+    2)
+        case "$Container_variants" in
+        rootless) do_you_want_to_share_storage ;;
+        rootful) printf "%s\n" "${RED}Unfortunately${RESET}, this feature is disabled by default for the ${BLUE}rootful container.${RESET}" ;;
+        esac
+        ;;
+    3) container_mount_termux_conf ;;
+    4) do_you_want_to_share_tf ;;
+    esac
+    ####################
+    press_enter_to_return
+    container_mount_dir_menu
+}
 check_man_db() {
     [[ $(command -v man) ]] || ${TMOE_INSTALLATION_COMMAND} man
     [[ $(command -v man) ]] || ${TMOE_INSTALLATION_COMMAND} man-db

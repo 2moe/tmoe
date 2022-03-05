@@ -75,25 +75,38 @@ cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 	################
 	# mounts
 
+	# global mount configuration. If the value of "MOUNT_SD" is empty, the file is loaded.
+	SD_CONF_FILE="${CONFIG_FOLDER}/rootful/mount_sd.conf"
+
 	# let sd_mount_point = String::from("/media/sd");
 	# The lower the number, the higher the priority. The highest priority directory will be mounted to the "/media/sd".
-	# 挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
+	# 挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载（SD_DIR_0的优先级最高）。默认挂载点为容器内部的"/media/sd"
 
-	MOUNT_SD=true
-	SD_DIR_0="/data/media/0"
-	SD_DIR_1="/storage/self/primary"
-	SD_DIR_2="/sdcard"
-	SD_DIR_3="${HOME}/sd"
+	# true or false
+	# 挂载sd, 可选 true 或 false。 若该值为空，则从全局配置文件"\$SD_CONF_FILE"中读取。
+	MOUNT_SD=""
+
+	SD_DIR_0="/data/media/0/Download"
+	SD_DIR_1="/storage/self/primary/Download"
+	SD_DIR_2="/sdcard/Download"
+	SD_DIR_3="${HOME}/sd/Download"
 	SD_DIR_4="${HOME}/Downloads"
 	SD_DIR_5="${HOME}/Download"
 
+	# global mount configuration. If the value of "MOUNT_TERMUX" is empty, the file is loaded.
+	TERMUX_CONF_FILE="${CONFIG_FOLDER}/rootful/mount_termux.conf"
+
 	# If the value is "false", the relevant directory will not be mounted. Default is true.
-	MOUNT_TERMUX=true
+	MOUNT_TERMUX=""
 
 	# let termux_mount_point = String::from("/media/termux");
 	TERMUX_DIR="/data/data/com.termux/files/home"
 
-	MOUNT_TF=true
+	# global mount configuration. If the value of "MOUNT_TF" is empty, the file is loaded.
+	TF_CONF_FILE="${CONFIG_FOLDER}/rootful/mount_tf.conf"
+
+	# true or false
+	MOUNT_TF=""
 
 	# let tf_mount_point = String::from("/media/tf");
 	# The value of TF_CARD_LINK is a symbolic link file.
@@ -229,11 +242,24 @@ cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 	    esac
 	}
 	##############
-	start_tmoe_gnu_linux_chroot_container() {
-	    check_host_and_root
+	load_global_conf(){
 	    if [[ \${LOAD_CHROOT_CONF} = true && -r \${CHROOT_CONF_FILE} ]]; then
 	        source \${CHROOT_CONF_FILE}
 	    fi
+		if [[ -z \${MOUNT_SD} && -r \${SD_CONF_FILE} ]];then
+	        source \${SD_CONF_FILE}
+		fi
+		if [[ -z \${MOUNT_TERMUX} && -r \${TERMUX_CONF_FILE} ]];then
+	        source \${TERMUX_CONF_FILE}
+		fi
+		if [[ -z \${MOUNT_TF} && -r \${TF_CONF_FILE} ]];then
+	        source \${TF_CONF_FILE}
+		fi
+	}
+	#----------- 
+	start_tmoe_gnu_linux_chroot_container() {
+	    check_host_and_root
+	    load_global_conf
 	    check_mount_bin
 	    unset LD_PRELOAD CONTAINER_BIN_PATH
 	    #########
@@ -341,7 +367,7 @@ cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 	                        su -c "\${TMOE_MOUNT} -o bind \${SD_DIR_0} \${ROOTFS_DIR}\${SD_MOUNT_POINT} &>/dev/null"
 	                    else
 	                        for i in "\${SD_DIR_1}" "\${SD_DIR_2}" "\${SD_DIR_3}" "\${SD_DIR_4}" "\${SD_DIR_5}"; do
-	                            if [[ -e \${i} ]]; then
+	                            if [[ -x \${i} ]]; then
 	                                su -c "\${TMOE_MOUNT} -o bind \${i} \${ROOTFS_DIR}\${SD_MOUNT_POINT} &>/dev/null"
 	                                break
 	                            fi

@@ -54,20 +54,25 @@ MOUNT_X11_UNIX=false
 X11_UNIX_RO=true
 X11_UNIX_DIR="/tmp/.x11-unix"
 
-# 挂载sd，默认为true，SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
-MOUNT_SD=true
+# global mount configuration. If the value of "MOUNT_SD" is empty, the file is loaded.
+SD_CONF_FILE="${CONFIG_FOLDER}/rootful/mount_sd.conf"
+
+# true or false
+# 挂载sd, 可选 true 或 false。 若该值为空，则从全局配置文件"\$SD_CONF_FILE"中读取。
+MOUNT_SD=""
 
 # The lower the number, the higher the priority. The highest priority directory will be mounted to the "/media/sd".
-SD_DIR_0="/media/sd"
-SD_DIR_1="${HOME}/sd"
+# SD_DIR为宿主机sd目录。优先级别高，且存在相应目录时，才会被挂载。默认挂载点为容器内部的"/media/sd"
+SD_DIR_0="/media/sd/Download"
+SD_DIR_1="${HOME}/sd/Download"
 SD_DIR_2="${HOME}/Downloads"
 SD_DIR_3="${HOME}/Download"
-SD_DIR_4="/sd"
-SD_DIR_5="/sdcard"
+SD_DIR_4="/sd/Download"
+SD_DIR_5="/sdcard/Download"
 SD_MOUNT_POINT="/media/sd"
 
-# If the value of "MOUNT_DOCKER_DIR" is "false", the relevant directory will not be mounted. Default is true.
-MOUNT_DOCKER_DIR=true
+# If the value of "MOUNT_DOCKER_DIR" is "false", the relevant directory will not be mounted. Default is false.
+MOUNT_DOCKER_DIR=false
 TMOE_DOCKER_DIR="/media/docker"
 
 #---
@@ -137,6 +142,9 @@ TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 ###################
 if [[ \${LOAD_NSPAWN_CONF} = true && -r \${NSPAWN_CONF_FILE} ]]; then
     source \${NSPAWN_CONF_FILE}
+fi
+if [[ -z \${MOUNT_SD} && -r \${SD_CONF_FILE} ]];then
+	source \${SD_CONF_FILE}
 fi
 unset CONTAINER_BIN_PATH
 if [[ \${SYSTEMD_BOOT} = true ]]; then

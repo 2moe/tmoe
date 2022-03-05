@@ -344,7 +344,7 @@ check_gnu_linux_distro() {
 	0) ;;
 	*)
 		export PATH=${PATH}:/usr/sbin:/sbin
-		[[ -e ${CONFIG_FOLDER} ]] || mkdir -pv ${CONFIG_FOLDER}
+		[[ -e ${CONFIG_FOLDER} ]] || mkdir -pv ${CONFIG_FOLDER}/rootless ${CONFIG_FOLDER}/rootful
 		if [ -e "${TMOE_GIT_DIR}/share/old-version/share/app/manager" ]; then
 			if [ $(command -v fortune) ]; then
 				fortune 2>/dev/null
@@ -1351,7 +1351,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*更新" \
 				"8" "🍩 よくある質問" \
 				"9" "🐞 問題を報告します" \
-				"10" "android 12のクラッシュを修正(signal9)" \
+				"10" "android 12のクラッシュを修正(signal 9)" \
 				"0" "🌚 exit" \
 				3>&1 1>&2 2>&3
 		)
@@ -1370,7 +1370,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*update" \
 				"8" "🍩 FAQ" \
 				"9" "🐞 Report a problem" \
-				"10" "Fix android 12 crashes(signal9)" \
+				"10" "Fix android 12 crashes(signal 9)" \
 				"0" "🌚 exit" \
 				3>&1 1>&2 2>&3
 		)
@@ -1389,7 +1389,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*update更新" \
 				"8" "🍩 FAQ常见问题" \
 				"9" "🐞 Report a problem(反馈问题/bug)" \
-				"10" "修复 android 12(signal9 闪退)" \
+				"10" "修复 android 12(signal 9 闪退)" \
 				"0" "🌚 exit 退出" \
 				3>&1 1>&2 2>&3
 		)
@@ -1408,7 +1408,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*update更新" \
 				"8" "🍩 FAQ常見問題" \
 				"9" "🐞 Report a problem(反饋問題/bug)" \
-				"10" "修復 android 12(signal9 閃退)" \
+				"10" "修復 android 12(signal 9 閃退)" \
 				"0" "🌚 exit 退出" \
 				3>&1 1>&2 2>&3
 		)
@@ -1427,7 +1427,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*aktualisieren" \
 				"8" "🍩 FAQ" \
 				"9" "🐞 ein Problem melden" \
-				"10" "Android 12-Abstürze beheben (signal9)" \
+				"10" "Android 12-Abstürze beheben (signal 9)" \
 				"0" "🌚 Ausfahrt" \
 				3>&1 1>&2 2>&3
 		)
@@ -1446,7 +1446,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*Обновить" \
 				"8" "🍩 FAQ" \
 				"9" "🐞 Сообщить о проблеме" \
-				"10" "Исправление сбоев android 12 (signal9)" \
+				"10" "Исправление сбоев android 12 (signal 9)" \
 				"0" "🌚 exit" \
 				3>&1 1>&2 2>&3
 		)
@@ -1466,8 +1466,14 @@ tmoe_manager_main_menu() {
 	##########################
 	case "${TMOE_MANAGER_MAIN_OPTION}" in
 	0 | "") exit 0 ;;
-	1) install_proot_container ;;
-	2) install_chroot_container ;;
+	1)
+		source ${TMOE_SHARE_DIR}/configuration/menu
+		install_proot_container
+		;;
+	2)
+		source ${TMOE_SHARE_DIR}/configuration/menu
+		install_chroot_container
+		;;
 	3) tmoe_linux_remove_function ;;
 	4) tmoe_locale_settings ;;
 	5) android_termux_tmoe_area ;;
@@ -1485,7 +1491,6 @@ check_termux_color_scheme_file() {
 	case ${LINUX_DISTRO} in
 	Android) [[ -s ${CONFIG_FOLDER}/v1.1beta ]] || choose_termux_color_scheme ;;
 	esac
-	source ${TMOE_SHARE_DIR}/configuration/menu
 	[[ -e ${CONFIG_FOLDER}/default-dns.conf ]] || tmoe_container_dns
 	[[ -e ${CONFIG_FOLDER}/hitokoto.conf ]] || do_you_want_to_enable_hitokoto
 	[[ -e ${CONFIG_FOLDER}/gitstatus/timezone.txt ]] || what_is_your_timezone
@@ -1494,16 +1499,34 @@ fix_android_12_signal_9() {
 	source ${TMOE_SHARE_DIR}/termux/fix_signal9
 }
 ###################
+first_check_container_mount_conf() {
+	[[ -e ${CONFIG_FOLDER}/${Container_variants}/mount_sd.conf ]] || container_mount_sd_conf
+	# [[ -e ${CONFIG_FOLDER}/${Container_variants}/mount_storage.conf ]] || container_storage_conf ${Container_variants}
+	if [[ -L ${HOME}/storage/external-1 ]]; then
+		[[ -e ${CONFIG_FOLDER}/${Container_variants}/mount_tf.conf ]] || do_you_want_to_share_tf
+	fi
+	[[ -e ${CONFIG_FOLDER}/${Container_variants}/mount_termux.conf ]] || container_mount_termux_conf
+}
+first_set_rootless_shared_dir() {
+	Container_variants="rootless"
+	first_check_container_mount_conf
+}
 install_proot_container() {
 	RETURN_TO_MENU="install_proot_container"
 	check_termux_color_scheme_file
+	first_set_rootless_shared_dir
 	TMOE_CHROOT=false
 	check_tmoe_container_chroot
 	source ${TMOE_SHARE_DIR}/container/common
 }
+first_set_rootful_shared_dir() {
+	Container_variants="rootful"
+	first_check_container_mount_conf
+}
 install_chroot_container() {
 	RETURN_TO_MENU="install_chroot_container"
 	check_termux_color_scheme_file
+	first_set_rootful_shared_dir
 	source ${TMOE_SHARE_DIR}/container/chroot/notes
 	check_root_permissions
 	[[ -e "${CONFIG_FOLDER}/chroot-prompt" ]] || notes_of_chroot

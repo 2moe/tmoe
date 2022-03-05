@@ -2933,12 +2933,13 @@ install_cinnamon_desktop() {
     # cinnamon_warning
     case ${TMOE_PROOT} in
     true)
-        REMOTE_DESKTOP_SESSION_01='cinnamon-session'
-        REMOTE_DESKTOP_SESSION_02='cinnamon-panel'
+        REMOTE_DESKTOP_SESSION_01='cinnamon'
+        REMOTE_DESKTOP_SESSION_02='cinnamon-session'
         ;;
     false | *)
+        # cinnamon-launcher
         REMOTE_DESKTOP_SESSION_01='cinnamon-session'
-        REMOTE_DESKTOP_SESSION_02='cinnamon-launcher'
+        REMOTE_DESKTOP_SESSION_02='cinnamon'
         ;;
     esac
     DEPENDENCY_01="cinnamon"
