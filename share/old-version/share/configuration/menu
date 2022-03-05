@@ -145,6 +145,7 @@ container_mount_termux_conf() {
         for i in editor micro nano vi; do
             if [[ -n $(command -v $i) ]]; then
                 ${i} "${TERMUX_CONF}"
+                break
             fi
         done
         ;;
@@ -241,6 +242,7 @@ container_mount_sd_conf() {
         for i in editor micro nano vi; do
             if [[ -n $(command -v $i) ]]; then
                 ${i} "${SD_CONF}"
+                break
             fi
         done
         ;;
