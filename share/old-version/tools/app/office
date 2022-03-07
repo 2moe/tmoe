@@ -7,13 +7,12 @@ tmoe_documents_menu() {
     TMOE_APP=$(
         whiptail --title "documents" --menu \
             "Which software do you want to install?" 0 50 0 \
-            "1" "LibreOffice(开源、自由的办公文档软件)" \
-            "2" "WPS office(打造新一代办公环境)" \
-            "3" "Chinese manual(中文手册)" \
-            "4" "永中Office(x64,秉承集成创新理念)" \
-            "5" "Free Office(x86,x64,全面支持微软Office文件)" \
-            "6" "Meld(可视化的文本差异比较工具)" \
-            "7" "Kdiff3(KDE下的文件差异对比工具)" \
+            "1" "Libre office(开源、自由的办公文档软件)" \
+            "2" "Yozo 永中office(arm64,x64,秉承集成创新理念)" \
+            "3" "WPS office(打造新一代办公环境)" \
+            "4" "Meld(可视化的文本差异比较工具)" \
+            "5" "Kdiff3(KDE下的文件差异对比工具)" \
+            "6" "Chinese manual(中文手册)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
@@ -21,13 +20,14 @@ tmoe_documents_menu() {
     case "${TMOE_APP}" in
     0 | "") software_center ;;
     1) install_libre_office ;;
-    2) install_wps_office ;;
-    3) install_chinese_manpages ;;
-    4) yozo_office_env ;;
-    5) free_office_env ;;
-    6) install_meld ;;
-    7) install_kdiff3 ;;
+    2) yozo_office_env ;;
+    3) install_wps_office ;;
+    4) install_meld ;;
+    5) install_kdiff3 ;;
+    6) install_chinese_manpages ;;
     esac
+    # 4) free_office_env ;;
+    # "4" "Free office(x86,x64,全面支持微软Office文件)" \
     ##########################
     press_enter_to_return
     tmoe_documents_menu
@@ -105,19 +105,42 @@ install_yozo_office() {
     #https://dl.yozosoft.com/portal-download/fileManager/PRODUCT/yozo-office-8.0.1331.101ZH.S1-1.x86_64.rpm
     REPO_URL='https://aur.archlinux.org/packages/yozo-office/'
     THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep deb | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
+
+    printf "%s\n" "若安装失败，则请前往官网${YELLOW}http://www.yozosoft.com/product-officelinux.html${RESET} 手动下载安装。"
+
+    printf "%s\n" \
+        "对于 amd64 架构，您可以使用 红帽系(例如 fedora) 和 debian 系(ubuntu, mint & kali等)" \
+        "对于 arm64 架构, 本工具仅能下载并安装 deb 包。请使用 debian 系的发行版，例如 ubuntu" \
+        "若您使用的是 arch 系发行版，则建议使用 ${GREEN}paru${RESET} 等 ${BLUE}AUR helper${RESET} 来安装，而不是通过本工具来安装。"
     case ${LINUX_DISTRO} in
-    debian) ;;
+    debian)
+        case ${ARCH_TYPE} in
+        arm64) THE_LATEST_DEB_URL="https://l.tmoe.me/yozo-office-arm64" ;;
+        *) ;;
+        esac
+        ;;
     redhat) THE_LATEST_DEB_URL=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | sed "s@${GREP_NAME}_@${GREP_NAME}-@" | sed "s@_amd64.deb@-1.x86_64.rpm@") ;;
     esac
-    THE_LATEST_DEB_FILE=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | awk -F '/' '{print $NF}')
-    THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_DEB_FILE}" | sed 's@.deb@@' | sed "s@${GREP_NAME}-@@" | sed "s@${GREP_NAME}_@@")
+
+    case ${ARCH_TYPE} in
+    amd64)
+        THE_LATEST_DEB_FILE=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | awk -F '/' '{print $NF}')
+        THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_DEB_FILE}" | sed 's@.deb@@' | sed "s@${GREP_NAME}-@@" | sed "s@${GREP_NAME}_@@")
+        ;;
+    arm64)
+        THE_LATEST_DEB_FILE="yozo-office_8.0.1322.191zh.s1_arm64.deb"
+        THE_LATEST_DEB_VERSION="8.0.1322.191zh.s1_arm64"
+        ;;
+    *) ;;
+    esac
+
     ICON_FILE='/usr/share/icons/hicolor/48x48/apps/yozoicon.png'
     if [ -e "${ICON_FILE}" ]; then
         catimg "${ICON_FILE}" 2>/dev/null
     fi
     check_deb_version
     case ${ARCH_TYPE} in
-    amd64) ;;
+    amd64 | arm64) ;;
     *) arch_does_not_support ;;
     esac
     #printf "%s\n" "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"

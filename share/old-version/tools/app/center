@@ -41,7 +41,7 @@ software_center() {
             "4" "🎶 Multimedia:图像与影音(gimp,mpv)" \
             "5" "🐧 SNS:社交类(qq,wechat,skype)" \
             "6" "🎮 Games:游戏(steam,kdegames小游戏合集)" \
-            "7" "📚 Documents:文档(libreoffice,wps)" \
+            "7" "📚 Documents:文档(libre,永中office,wps)" \
             "8" "🏤 debian-opt仓库(hmcl,markdown editor)" \
             "9" "🎁 Download:下载类(aria2,baidu,迅雷)" \
             "10" "🔯 Packages&system:软件包与系统管理" \

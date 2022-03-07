@@ -1586,7 +1586,7 @@ download_and_install_deb() {
     do_you_want_to_continue
     cd /tmp
     case ${LINUX_DISTRO} in
-    debian | redhat) aria2c --console-log-level=info --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_FILE}" "${THE_LATEST_DEB_URL}" ;;
+    debian | redhat) aria2c --console-log-level=info --no-conf --allow-overwrite=true --check-certificate=false -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_FILE}" "${THE_LATEST_DEB_URL}" ;;
     esac
     case ${LINUX_DISTRO} in
     debian)
