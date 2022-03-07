@@ -843,6 +843,7 @@ window_manager_installation() {
         REMOTE_DESKTOP_SESSION_01='i3'
         case "${LINUX_DISTRO}" in
         "debian") DEPENDENCY_01='i3 i3-wm i3blocks' ;;
+        "alpine") DEPENDENCY_01='i3wm' ;;
         esac
         ;;
     8)
@@ -2947,8 +2948,10 @@ install_cinnamon_desktop() {
     case "${LINUX_DISTRO}" in
     "debian")
         if (whiptail --title "Lite or standard" --yes-button "lite" --no-button "standard" --yesno 'The former is more streamlined' 0 0); then
+            UBUNTU_DESKTOP=false
             DEPENDENCY_01="--no-install-recommends cinnamon-l10n cinnamon-desktop-environment cinnamon"
         else
+            UBUNTU_DESKTOP=true
             DEPENDENCY_01="cinnamon-l10n cinnamon-desktop-environment cinnamon"
         fi
         if grep -q 'Linux Mint' '/etc/issue'; then

@@ -101,14 +101,14 @@ container_mount_termux_conf() {
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8)
         local _Title="共享 HOME 目录"
-        local _Description="将宿主的主目录挂载至容器内部(默认为/media/termux)"
+        local _Description="将宿主的主目录挂载至容器内部的/media/termux"
         local OPT_2="None（禁用共享）"
         local OPT_8="自定义路径"
         local OPT_5="手动编辑"
         ;;
     *)
         local _Title="Shared directory: HOME"
-        local _Description="Mount the host\'s HOME directory to the container(default is /media/termux)."
+        local _Description="Mount the host\'s HOME directory to /media/termux in the container."
         local OPT_2="None (Disable sharing)"
         local OPT_8="customize"
         local OPT_5="edit manually"
@@ -178,14 +178,14 @@ container_mount_sd_conf() {
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8)
         local _Title="共享 sd 目录"
-        local _Description="将宿主的内置存储挂载至容器内部(默认为/media/sd)\n当选择第3 或 4个时，将共享（挂载）整个内置存储。\n当为第2个（None）时，MOUNT_SD 将被设为 false，即不挂载sd。\n请注意：这是全局配置，如需单独配置，请在各自的容器菜单里进行选择。"
+        local _Description="将宿主的内置存储挂载至容器内部的/media/sd\n当选择第3 或 4个时，将共享（挂载）整个内置存储。\n当为第2个（None）时，MOUNT_SD 将被设为 false，即不挂载sd。\n请注意：这是全局配置，如需单独配置，请在各自的容器菜单里进行选择。"
         local OPT_2="None（禁用共享）"
         local OPT_8="自定义路径"
         local OPT_9="手动编辑"
         ;;
     *)
         local _Title="Shared directory: sd"
-        local _Description="Mount the host\'s sd dir to the container(default is /media/sd).\nNote:it is a global configuration, for independent conf, please select it in the respective container menu."
+        local _Description="Mount the host\'s sd dir to /media/sd in the container.\nNote:it is a global configuration, for independent conf, please select it in the respective container menu."
         local OPT_2="None (Disable sharing)"
         local OPT_8="customize"
         local OPT_9="edit manually"

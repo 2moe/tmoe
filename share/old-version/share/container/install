@@ -1415,19 +1415,21 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    aarch64 | arm*)
 	        cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
 						## Archlinux arm
-						Server = https://mirrors.163.com/archlinuxarm/$arch/$repo     
+						Server = https://mirrors.ustc.edu.cn/archlinuxarm/$arch/$repo     
+						Server = https://mirror.archlinuxarm.org/$arch/$repo
 						Server = https://mirrors.bfsu.edu.cn/archlinuxarm/$arch/$repo
 						Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxarm/$arch/$repo
-						Server = https://mirror.archlinuxarm.org/$arch/$repo
+						Server = https://mirrors.163.com/archlinuxarm/$arch/$repo
 					EndOfArchMirrors
 	        ;;
 	    *)
 	        cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
 						## Archlinux mirror list
-						Server = https://mirrors.163.com/archlinux/$repo/os/$arch
+						Server = https://mirrors.ustc.edu.cn/archlinux/$repo/os/$arch
+						Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch
 						Server = https://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch
 						Server = https://mirrors.huaweicloud.com/archlinux/$repo/os/$arch
-						Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch
+						Server = https://mirrors.163.com/archlinux/$repo/os/$arch
 					EndOfArchMirrors
 	        ;;
 	    esac
