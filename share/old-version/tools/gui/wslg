@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#######################################
+set_env() {
+	DISPLAY_PORT=2
+	AUTO_STOP_VNC=true
+	ENV_FILE="/etc/environment"
+	XSESSION_FILE='/etc/X11/xinit/Xsession'
+	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
+	TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
+}
+remove_xsession_lock() {
+	local port=$1
+	for i in /tmp/.X${port}-lock /tmp/.X11-unix/X${port}; do
+		rm -vf "$i" 2>/dev/null
+		if [[ -e "${i}" ]]; then
+			sudo rm -fv "$i"
+		fi
+	done
+}
+check_tmoe_locale() {
+	if [ -e "${TMOE_LOCALE_FILE}" ]; then
+		TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
+	else
+		TMOE_LANG="zh_CN.UTF-8"
+	fi
+	export LANG="${TMOE_LANG}"
+}
+main() {
+	set_env
+	[[ ${AUTO_STOP_VNC} != true ]] || stopvnc -no-stop-dbus 2>/dev/null
+	remove_xsession_lock ${DISPLAY_PORT}
+	printf "%s\n" \
+		"sudo service dbus restart"
+	source ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
+	Xwayland :${DISPLAY_PORT} &
+	[[ -r ${ENV_FILE} ]] && source "$ENV_FILE"
+	WAYLAND_DISPLAY= DISPLAY=:${DISPLAY_PORT} "${XSESSION_FILE}"
+}
+main "$@"

@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 printf '%s\n' '检测到您使用的是WSL,正在为您打开音频服务'
+printf "%s\n" "若您使用的是 win11 的 WSL2， 则建议您使用 wslg 命令，而不是 startvnc 或 startxsdl"
 export PULSE_SERVER=127.0.0.1
 cd "/mnt/c/Users/Public/Downloads/pulseaudio"
-/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat"
+/mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat" &
 printf "%s\n" "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
 #if grep -q '172..*1' "/etc/resolv.conf"; then
 if [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
@@ -12,6 +13,7 @@ if [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
     WSL2IP=$(ip route list table 0 | head -n 1 | awk -F 'default via ' '{print $2}' | awk '{print $1}')
     export PULSE_SERVER=${WSL2IP}
     printf "%s\n" "已将您的音频服务ip修改为${WSL2IP}"
+    printf "%s\n" "If you are using win11, it is recommended that you use the wslg command instead of startvnc or startxsdl."
 fi
 for i in /mnt/d /mnt/c/Users/ /mnt/e /mnt/c; do
     if [ -d "${i}" ]; then

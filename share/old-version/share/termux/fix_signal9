@@ -57,7 +57,7 @@ do_you_want_to_disable_monitor_phantom_procs() {
     printf "%s\n" \
         "Do you want to ${RED}disable ${YELLOW}monitor_phantom_procs${RESET}?" \
         "${GREEN}settings ${YELLOW}put global settings_enable_monitor_phantom_procs ${BLUE}false${RESET}"
-    RETURN_TO_WHERE="if_you_are_unable_to_resolve_android_12_signal9"
+    RETURN_TO_WHERE="do_you_want_to_set_sync_disabled"
     do_you_want_to_continue
 }
 disable_monitor_phantom_procs_0() {
@@ -65,6 +65,20 @@ disable_monitor_phantom_procs_0() {
 }
 disable_monitor_phantom_procs_1() {
     adb -s "$ADB_ADDRESS" shell "/system/bin/settings put global settings_enable_monitor_phantom_procs false"
+}
+do_you_want_to_set_sync_disabled() {
+    # device_config set_sync_disabled_for_tests persistent
+    printf "%s\n" \
+        "Do you want to ${RED}set sync ${YELLOW}disabled${RESET}?" \
+        "${GREEN}device_config ${YELLOW}set_sync_disabled_for_tests ${BLUE}persistent${RESET}"
+    RETURN_TO_WHERE="if_you_are_unable_to_resolve_android_12_signal9"
+    do_you_want_to_continue
+}
+set_sync_disabled_0() {
+    adb shell "/system/bin/device_config set_sync_disabled_for_tests persistent"
+}
+set_sync_disabled_1() {
+    adb -s "$ADB_ADDRESS" shell "/system/bin/device_config set_sync_disabled_for_tests persistent"
 }
 connect_to_adb_device() {
     adb devices -l
@@ -84,6 +98,9 @@ connect_to_adb_device() {
         get_max_phantom_processes_0
         do_you_want_to_disable_monitor_phantom_procs
         disable_monitor_phantom_procs_0
+        # device_config set_sync_disabled_for_tests persistent
+        do_you_want_to_set_sync_disabled
+        set_sync_disabled_0
         ;;
     *)
         get_max_phantom_processes_1
@@ -92,6 +109,8 @@ connect_to_adb_device() {
         get_max_phantom_processes_1
         do_you_want_to_disable_monitor_phantom_procs
         disable_monitor_phantom_procs_1
+        do_you_want_to_set_sync_disabled
+        set_sync_disabled_1
         ;;
     esac
     if_you_are_unable_to_resolve_android_12_signal9

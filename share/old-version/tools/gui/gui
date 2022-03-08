@@ -5306,6 +5306,7 @@ xrdp_reset() {
 configure_startxsdl() {
     cd /usr/local/bin
     cp -f ${TMOE_TOOL_DIR}/gui/startxsdl ./
+    [[ ${WINDOWS_DISTRO} = WSL ]] && cp -af ${TMOE_TOOL_DIR}/gui/wslg ./
     #--exit-with-session
     #启动命令结尾无&
     ###############################
@@ -5507,6 +5508,7 @@ first_configure_startvnc() {
     configure_startvnc
     configure_startxsdl
     chmod a+rx -v startvnc stopvnc startxsdl
+
     if [[ ${LINUX_DISTRO} = debian ]]; then
         VNC_SERVER=tigervnc
         tiger_vnc_variable
@@ -5687,6 +5689,9 @@ first_configure_startvnc() {
             export DISPLAY=${WSL2IP}:0
             printf "%s\n" "已将您的X和音频服务ip修改为${YELLOW}${WSL2IP}${RESET}"
             printf "%s\n" "You are using WSL2,and your host ip is ${YELLOW}${WSL2IP}${RESET}"
+            printf "%s\n" \
+                "If you are using ${BLUE}win11${RESET}, it is recommended that you use the ${GREEN}wslg${RESET} command instead of ${YELLOW}startvnc${CYAN} or ${YELLOW}startxsdl${RESET}." \
+                "对于 ${BLUE}win11${RESET}, 您可以使用 ${GREEN} wslg ${RESET} 命令。"
         else
             printf "%s\n" "${YELLOW}检测到您使用的是WSL1(初代win10的Linux子系统)${RESET}"
             printf "%s\n" "${YELLOW}若无法启动x服务，则请在退出脚本后，以非root身份手动输startxsdl来启动windows的x服务${RESET}"
