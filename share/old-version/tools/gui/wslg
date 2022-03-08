@@ -43,6 +43,7 @@ main() {
 	source ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
 	Xwayland :${DISPLAY_PORT} &
 	[[ -r ${ENV_FILE} ]] && source "$ENV_FILE"
+	check_tmoe_locale
 	WAYLAND_DISPLAY= DISPLAY=:${DISPLAY_PORT} "${XSESSION_FILE}"
 }
 main "$@"
