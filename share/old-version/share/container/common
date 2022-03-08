@@ -68,21 +68,21 @@ check_and_view_the_eula() {
 	true) touch ${CONFIG_FOLDER}/chroot_container ;;
 	esac
 
-	[[ -e "${CONFIG_FOLDER}/eula" ]] || tmoe_linux_container_eula
+	[[ -e "${CONFIG_FOLDER}/eula-v1.2.txt" ]] || tmoe_linux_container_eula
 	source ${TMOE_SHARE_DIR}/container/menu
 }
 ########################
 tmoe_linux_container_eula() {
 	if [ ! -d "${DEBIAN_CHROOT}" ]; then
 		#less -meQ
-		sed -n p ${TMOE_GIT_DIR}/License || $(whereis cat 2>/dev/null | awk '{print $2}') ${TMOE_GIT_DIR}/License
+		sed -n p ${TMOE_GIT_DIR}/License
 		cat <<-EOF
 			You must agree to the EULA to continue.
 			Press ${GREEN}Enter${RESET} to agree ${BLUE}the EULA${RESET}, otherwise press ${YELLOW}Ctrl + C${RESET} or ${RED}close${RESET} the terminal directly.
 			按${GREEN}回车键${RESET}同意${BLUE}《最终用户许可协议》${RESET} ，否则请按${YELLOW}Ctrl+C${RESET} 或直接${RED}关闭${RESET}终端。 
 		EOF
-		read
-		touch ${CONFIG_FOLDER}/eula
+		read -r
+		echo "You have agreed to this Agreement and its additional agreements." >${CONFIG_FOLDER}/eula-v1.2.txt
 	fi
 }
 #############

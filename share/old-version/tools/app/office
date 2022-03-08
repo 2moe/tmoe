@@ -113,12 +113,7 @@ install_yozo_office() {
         "对于 arm64 架构, 本工具仅能下载并安装 deb 包。请使用 debian 系的发行版，例如 ubuntu" \
         "若您使用的是 arch 系发行版，则建议使用 ${GREEN}paru${RESET} 等 ${BLUE}AUR helper${RESET} 来安装，而不是通过本工具来安装。"
     case ${LINUX_DISTRO} in
-    debian)
-        case ${ARCH_TYPE} in
-        arm64) THE_LATEST_DEB_URL="https://l.tmoe.me/yozo-office-arm64" ;;
-        *) ;;
-        esac
-        ;;
+    debian) ;;
     redhat) THE_LATEST_DEB_URL=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | sed "s@${GREP_NAME}_@${GREP_NAME}-@" | sed "s@_amd64.deb@-1.x86_64.rpm@") ;;
     esac
 
@@ -139,8 +134,27 @@ install_yozo_office() {
         catimg "${ICON_FILE}" 2>/dev/null
     fi
     check_deb_version
+
+    printf "%s\n" \
+        "根据 2022年3月份修订的 TMOE LICENSE v1.2, 您需要再次了解并同意以下内容。" \
+        '7. 关于商业软件的说明
+中华人民共和国境内的企业生产的部分商业软件使用了私有协议，并且受《中华人民共和国著作权法》保护。
+您在使用本软件及其相关项目时，在安装相关商业软件前，必须了解并同意以下协议。
+(a)根据《中华人民共和国计算机软件保护条例》第十七条规定：“为了学习和研究软件内含的设计思想和原理，通过安装、显示、传输或者存储软件等方式使用软件的，可以不经软件著作权人许可，不向其支付报酬”。
+(b)本软件及其相关项目附带的商业软件来自互联网（包括但不限于优麒麟、银河麒麟和统信的软件仓库），这些商业软件仅用来测试（包括但不限于测试其在arm64等特定架构、特定容器环境的兼容性，测试研究软件机制和原理），本软件开发者未授权任何机构和个人用于商业用途。请严格遵守法律规定，在测试后24小时内完全卸载相关软件，并彻底销毁。开发者将不对传播这些软件所产生的任何后果负责，也不对您使用相关软件所进行的任何行为负责。
+(c)非特殊情况下，请不要给开发者打赏。如需打赏，则表示您已经同意了这种行为与相关商业软件毫无关系。
+(d)若本软件及其相关项目侵害了您的权益，请及时与开发者联系，开发者将删除相关内容。
+
+8. 使用说明
+(a)您有权选择接受或拒绝使用本软件或本软件相关的项目。
+(b)若您不同意本协议及其附加协议，则建议您卸载掉本软件及其相关项目，并彻底销毁。
+(c)本软件及其相关项目服务于全球各地，您在使用期间必须要遵守当地的法规。
+(d)若本协议及其附加协议与您所在地的法律或法规冲突，则请您卸载掉本软件及其相关项目，并彻底销毁，同时开发者将不承担任何责任。
+You shall remove the software and its related projects if this agreement and any extra agreements violate with the laws or regulations of your location, and the developer will not be accountable.'
+
     case ${ARCH_TYPE} in
-    amd64 | arm64) ;;
+    amd64) ;;
+    arm64) THE_LATEST_DEB_URL="https://l.tmoe.me/yozo-office-arm64" ;;
     *) arch_does_not_support ;;
     esac
     #printf "%s\n" "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
