@@ -8,7 +8,7 @@ Copyright (C) 2022 2moe
 当本协议与附加协议存在冲突之处时，请以本协议为主。
 本软件会不时更新本协议及其附加协议，您在同意本协议之时，即视为您已经同意本协议及其附加协议的全部内容。本协议属于本软件服务使用协议不可分割的一部分。
 The developer will update this agreement from time to time.
-You are deemed to have agreed to this agreement and its additional agreements in their entirety, when you agree to this agreement.
+When you agree to this agreement, you are deemed to have consented to this agreement and its related agreements in its entirety.
 
 1. 禁止条例
 (a)禁止将本软件及其相关项目用于违法行为，例如：网络渗透和社会工程等。
@@ -39,7 +39,7 @@ This software will not collect or provide, sell, rent, share or trade your perso
 
 7. 关于商业软件的说明
 中华人民共和国境内的企业生产的部分商业软件使用了私有协议，并且受《中华人民共和国著作权法》保护。
-您在使用本软件及其相关项目时，在安装相关商业软件前，必须了解并同意以下协议。
+您在使用本软件及其相关项目时，在安装相关商业软件前，必须了解并同意以下内容。
 (a)根据《中华人民共和国计算机软件保护条例》第十七条规定：“为了学习和研究软件内含的设计思想和原理，通过安装、显示、传输或者存储软件等方式使用软件的，可以不经软件著作权人许可，不向其支付报酬”。
 (b)本软件及其相关项目附带的商业软件来自互联网（包括但不限于优麒麟、银河麒麟和统信的软件仓库），这些商业软件仅用来测试（包括但不限于测试其在arm64等特定架构、特定容器环境的兼容性，测试研究软件机制和原理），本软件开发者未授权任何机构和个人用于商业用途。请严格遵守法律规定，在测试后24小时内完全卸载相关软件，并彻底销毁。开发者将不对传播这些软件所产生的任何后果负责，也不对您使用相关软件所进行的任何行为负责。
 (c)非特殊情况下，请不要给开发者打赏。如需打赏，则表示您已经同意了这种行为与相关商业软件毫无关系。
@@ -63,5 +63,5 @@ You shall remove the software and its related projects if this agreement and any
 
 11. 本许可协议的更改
 (a)如果决定更改本许可协议，我们会在本协议中、本软件网站中以及我们认为适当的位置发布这些更改，以便您了解如何保障我们双方的权益。
-(b)本软件开发者保留随时修改本协议以其附加协议的权利，因此建议您不定期查看。
-2moe reserves the right to modify this agreement and the additional license agreement at any time.
+(b)本软件开发者保留随时修改本协议以及附加协议的权利，因此建议您不定期查看。
+The developer reserves the right to modify this agreement and the additional license agreement at any time.
