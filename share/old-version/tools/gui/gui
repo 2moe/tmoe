@@ -5690,7 +5690,7 @@ first_configure_startvnc() {
             printf "%s\n" "已将您的X和音频服务ip修改为${YELLOW}${WSL2IP}${RESET}"
             printf "%s\n" "You are using WSL2,and your host ip is ${YELLOW}${WSL2IP}${RESET}"
             printf "%s\n" \
-                "If you are using ${BLUE}win11${RESET}, it is recommended that you use the ${GREEN}wslg${RESET} command instead of ${YELLOW}startvnc${CYAN} or ${YELLOW}startxsdl${RESET}." \
+                "If you are using ${BLUE}win11(wsl2,ubuntu)${RESET}, it is recommended that you use the ${GREEN}wslg${RESET} command instead of ${YELLOW}startvnc${CYAN} or ${YELLOW}startxsdl${RESET}." \
                 "对于 ${BLUE}win11${RESET}, 您可以使用 ${GREEN} wslg ${RESET} 命令。"
         else
             printf "%s\n" "${YELLOW}检测到您使用的是WSL1(初代win10的Linux子系统)${RESET}"
@@ -5729,8 +5729,10 @@ first_configure_startvnc() {
     printf '%s\n' '------------------------'
     printf "%s\n" \
         "若您的宿主机为${YELLOW}Win10${RESET},则在${PURPLE}WSL2${RESET}(非容器环境)下输入${GREEN}startvnc${RESET}将同时启动${BLUE}Tigervnc viewer(win_x64)${RESET}客户端和tigervnc服务端，并自动连接。此外，还将启动windows版powershell,并调用pulseaudio(win_x86)音频服务+进程守护脚本。" \
-        "对于 ${BLUE}win11${RESET} 的 ${PURPLE}WSL2${RESET}, 请使用 ${GREEN}wslg${RESET} 命令，而${RED}不要使用 ${GREEN}startvnc${RESET} 或 ${GREEN}startxsdl${RESET}。" \
-        "For ${BLUE}win11(WSL2)${RESET}, please use the ${GREEN}wslg${RESET} command."
+        "对于 ${BLUE}win11${RESET} 的 ${PURPLE}WSL2（wsl2,ubuntu)${RESET}, 请使用 ${GREEN}wslg${RESET} 命令，而${RED}不要使用 ${GREEN}startvnc${RESET} 或 ${GREEN}startxsdl${RESET}。" \
+        "对于 win11 的 wsl2 (${PURPLE}debian${RESET})， 您可以使用 ${GREEN}startxsdl${RESET}" \
+        "For ${BLUE}win11(${PURPLE}WSL2，ubuntu)${RESET}, please use the ${GREEN}wslg${RESET} command." \
+        "For ${BLUE}win11(${PURPLE}WSL2, debian)${RESET}, you can use the ${GREEN}startxsdl${RESET} command."
     printf '%s\n' '------------------------'
     if [[ $(command -v apt-get) ]]; then
         printf "%s\n" "You can type ${GREEN}tightvnc${RESET} to ${YELLOW}start ${BLUE}tightvncserver${RESET},type ${GREEN}tigervnc${RESET} to ${BLUE}tigervncserver${RESET} it."

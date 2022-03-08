@@ -33,6 +33,16 @@ check_tmoe_locale() {
 	fi
 	export LANG="${TMOE_LANG}"
 }
+check_xwayland_command() {
+	if [[ -z $(command -v Xwayland) ]]; then
+		if [[ -n $(command -v apt-get) ]]; then
+			sudo apt update
+			sudo apt install -y xwayland
+		elif [[ -n $(command -v pacman) ]]; then
+			sudo pacman -Sy xorg-xwayland
+		fi
+	fi
+}
 main() {
 	welcome_to_wslg
 	set_env
@@ -41,6 +51,7 @@ main() {
 	printf "%s\n" \
 		"sudo service dbus restart"
 	source ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
+	check_xwayland_command
 	Xwayland :${DISPLAY_PORT} &
 	[[ -r ${ENV_FILE} ]] && source "$ENV_FILE"
 	check_tmoe_locale
