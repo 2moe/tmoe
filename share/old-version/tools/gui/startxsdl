@@ -53,7 +53,7 @@ start_windows_xserver() {
 	cd "/mnt/c/Users/Public/Downloads/VcXsrv/" || exit
 	#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\config.xlaunch"
 	/mnt/c/WINDOWS/system32/taskkill.exe /f /im vcxsrv.exe 2>/dev/null
-	/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :${VCXSRV_DISPLAY_PORT} -multiwindow -clipboard -wgl -ac"
+	/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :${VCXSRV_DISPLAY_PORT} -multiwindow -clipboard -wgl -ac" &
 	printf "%s\n" "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
 	#if grep -q '172..*1' "/etc/resolv.conf"; then
 	if [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
