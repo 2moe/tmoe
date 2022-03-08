@@ -5235,7 +5235,7 @@ xrdp_restart() {
             printf "%s\n" "已将您的音频服务ip修改为${PULSE_SERVER}"
         fi
         cd "/mnt/c/Users/Public/Downloads/pulseaudio/bin"
-        /mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat" 2>/dev/null
+        /mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat" &
         printf "%s\n" "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"
     fi
 }
