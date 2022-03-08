@@ -2,6 +2,7 @@
 #################
 export PULSE_SERVER=127.0.0.1
 
+unset WAYLAND_DISPLAY
 export DISPLAY=:233
 
 TCP_PORT_FOR_RFB_PROTOCOL=5902

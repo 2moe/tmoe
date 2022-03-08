@@ -13,6 +13,7 @@ VNC_RESOLUTION=1440x720
 # If the display number=2,then vnc port=5902.
 # 若显示编号为2,则vnc端口为$((5900+2))=5902。
 # Wenn die Anzeigenummer 2 ist, ist der vnc-Port 5902
+unset WAYLAND_DISPLAY
 VNC_DISPLAY=2
 RFB_PORT=$((5900 + VNC_DISPLAY))
 

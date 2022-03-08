@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 #######################################
+welcome_to_wslg() {
+	printf "%s\n" \
+		"Welcome to wslg" \
+		"You can press Ctrl+C to abort the process" \
+		"If you cannot kill the process, then run pkill wayland."
+}
 set_env() {
 	DISPLAY_PORT=2
 	AUTO_STOP_VNC=true
@@ -28,6 +34,7 @@ check_tmoe_locale() {
 	export LANG="${TMOE_LANG}"
 }
 main() {
+	welcome_to_wslg
 	set_env
 	[[ ${AUTO_STOP_VNC} != true ]] || stopvnc -no-stop-dbus 2>/dev/null
 	remove_xsession_lock ${DISPLAY_PORT}

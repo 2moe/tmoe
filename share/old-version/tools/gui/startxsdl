@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 ###################
+unset WAYLAND_DISPLAY
 export DISPLAY=127.0.0.1:0
 export PULSE_SERVER=tcp:127.0.0.1:4713
 AUTO_START_DBUS=true
