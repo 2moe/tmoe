@@ -45,7 +45,7 @@ install_kdiff3() {
 #################
 free_office_env() {
     DEPENDENCY_01="freeoffice"
-    GREP_NAME="${DEPENDENCY_01}"
+    GREP_NAME=${DEPENDENCY_01}
     OFFICIAL_URL='https://www.freeoffice.com/download/applications'
     tmoe_app_menu_01
 }
@@ -90,7 +90,7 @@ yozo_office_env() {
     case ${LINUX_DISTRO} in
     arch) DEPENDENCY_02="yozo-office-fonts" ;;
     esac
-    GREP_NAME="${DEPENDENCY_01}"
+    GREP_NAME=${DEPENDENCY_01}
     OFFICIAL_URL='https://www.yozosoft.com/product-officelinux.html'
     tmoe_app_menu_01
 }

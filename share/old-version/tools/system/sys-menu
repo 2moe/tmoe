@@ -172,7 +172,7 @@ tmoe_system_app_menu() {
 	10) source ${TMOE_GIT_DIR}/share/old-version/share/app/manager ;;
 	esac
 	##########################
-	if [ ! -z "${DEPENDENCY_01}" ]; then
+	if [ ! -z ${DEPENDENCY_01} ]; then
 		beta_features_quick_install
 	fi
 	press_enter_to_return

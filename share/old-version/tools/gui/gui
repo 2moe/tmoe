@@ -672,10 +672,10 @@ install_tmoe_display_manager() {
 ##################
 tmoe_display_manager_systemctl() {
     RETURN_TO_WHERE='tmoe_display_manager_systemctl'
-    if [ "${DEPENDENCY_02}" = 'gdm3' ]; then
+    if [ ${DEPENDENCY_02} = 'gdm3' ]; then
         TMOE_DEPENDENCY_SYSTEMCTL='gdm'
     else
-        TMOE_DEPENDENCY_SYSTEMCTL="${DEPENDENCY_02}"
+        TMOE_DEPENDENCY_SYSTEMCTL=${DEPENDENCY_02}
     fi
     INSTALLDESKTOP=$(whiptail --title "你想要对这个小可爱做什么？" --menu \
         "显示管理器软件包基础配置" 0 50 0 \
@@ -4358,7 +4358,7 @@ x11vnc_warning() {
         fi
     fi
 
-    if [ ! -z "${DEPENDENCY_01}" ] || [ ! -z "${DEPENDENCY_02}" ]; then
+    if [ ! -z ${DEPENDENCY_01} ] || [ ! -z ${DEPENDENCY_02} ]; then
         if [[ ${AUTO_INSTALL_GUI} != true ]]; then
             beta_features_quick_install
         else

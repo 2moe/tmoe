@@ -274,8 +274,8 @@ download_network_card_driver() {
 		aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
 	fi
 
-	mkdir -pv "${DEPENDENCY_02}"
-	cd "${DEPENDENCY_02}"
+	mkdir -pv ${DEPENDENCY_02}
+	cd ${DEPENDENCY_02}
 	ar xv ../${THE_LATEST_DEB_VERSION}
 	tar -Jxvf ./data.tar.*
 	rm *.tar.* debian-binary

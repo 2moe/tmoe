@@ -408,7 +408,7 @@ install_nodejs() {
     if [ ! $(command -v node) ]; then
         DEPENDENCY_02="nodejs"
     fi
-    if [[ ! -z "${DEPENDENCY_01}" || ! -z "${DEPENDENCY_02}" ]]; then
+    if [[ ! -z ${DEPENDENCY_01} || ! -z ${DEPENDENCY_02} ]]; then
         beta_features_quick_install
     fi
 
@@ -1042,7 +1042,7 @@ install_netease_163_cloud_music() {
     printf "%s\n" "若安装失败，则请前往官网手动下载安装。"
     printf "%s\n" "url: ${YELLOW}https://music.163.com/st/download${RESET}"
     LATEST_DEB_REPO='http://archive.ubuntukylin.com/software/pool/partner/'
-    THE_LATEST_DEB_VERSION=$(curl -L ${LATEST_DEB_REPO} | grep "${DEPENDENCY_01}" | cut -d '=' -f 5 | cut -d '"' -f 2 | head -n 1)
+    THE_LATEST_DEB_VERSION=$(curl -L ${LATEST_DEB_REPO} | grep ${DEPENDENCY_01} | cut -d '=' -f 5 | cut -d '"' -f 2 | head -n 1)
     TMOE_TIPS_01="检测到最新版本为${THE_LATEST_DEB_VERSION}"
     lolcat_tmoe_tips_01
     if [ ! -e "${APPS_LNK_DIR}/netease-cloud-music.desktop" ]; then

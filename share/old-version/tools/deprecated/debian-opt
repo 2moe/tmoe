@@ -742,7 +742,7 @@ install_opt_deb_file() {
 ##########
 git_clone_opt_deb_01() {
     cd ${DOWNLOAD_PATH}
-    
+
     git clone \
         --depth=1 \
         -b "${OPT_BRANCH_NAME}" \
