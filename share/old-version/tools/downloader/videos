@@ -322,9 +322,10 @@ upgrade_video_download_tool() {
     if [ -z "$(command -v pip3)" ]; then
         case "$LINUX_DISTRO" in
         alpine) DEPENDENCY_02="${DEPENDENCY_02} py3-pip" ;;
-        debian) DEPENDENCY_02="${DEPENDENCY_02} python3-pip" ;;
-        *) DEPENDENCY_02="${DEPENDENCY_02} python-pip" ;;
+        debian | redhat) DEPENDENCY_02="${DEPENDENCY_02} python3-pip" ;;
+        * | arch) DEPENDENCY_02="${DEPENDENCY_02} python-pip" ;;
         esac
+
         beta_features_quick_install
         if [ -z "$(command -v pip3)" ]; then
             printf "%s\n" "${RED}Sorry,${RESET}please install pip3 manually." \

@@ -303,8 +303,8 @@ install_bauh_store() {
     unset ${DEPENDENCY_02}
     case "$LINUX_DISTRO" in
     alpine) DEPENDENCY_01="py3-pip" ;;
-    debian) DEPENDENCY_01=" python3-pip" ;;
-    *) DEPENDENCY_01="python-pip" ;;
+    debian | redhat) DEPENDENCY_01=" python3-pip" ;;
+    * | arch) DEPENDENCY_01="python-pip" ;;
     esac
     beta_features_quick_install
     sudo -H pip3 install bauh || su -c "pip3 install bauh"
