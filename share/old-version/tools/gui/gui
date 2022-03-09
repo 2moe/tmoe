@@ -5307,6 +5307,11 @@ configure_startxsdl() {
     cd /usr/local/bin
     cp -f ${TMOE_TOOL_DIR}/gui/startxsdl ./
     [[ ${WINDOWS_DISTRO} = WSL ]] && cp -af ${TMOE_TOOL_DIR}/gui/wslg ./
+
+    case ${REDHAT_DISTRO} in
+    fedora) ;;
+    centos) sed -i -E "s@(AUTO_START_DBUS=).*@\1false@" startvnc startxsdl ;;
+    esac
     #--exit-with-session
     #启动命令结尾无&
     ###############################
