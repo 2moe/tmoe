@@ -4358,7 +4358,7 @@ x11vnc_warning() {
         fi
     fi
 
-    if [ ! -z ${DEPENDENCY_01} ] || [ ! -z ${DEPENDENCY_02} ]; then
+    if [ ! -z ${DEPENDENCY_01} ] || [[ ! -z ${DEPENDENCY_02} ]]; then
         if [[ ${AUTO_INSTALL_GUI} != true ]]; then
             beta_features_quick_install
         else

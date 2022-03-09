@@ -549,7 +549,7 @@ beta_features_quick_install() {
     #   non_debian_function
     #fi
     #############
-    if [ ! -z ${DEPENDENCY_01} ]; then
+    if [[ ! -z ${DEPENDENCY_01} ]]; then
         DEPENDENCY_01_COMMAND=$(printf '%s\n' ${DEPENDENCY_01} | awk -F ' ' '$0=$NF')
         if [ $(command -v ${DEPENDENCY_01_COMMAND}) ]; then
             printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${RESET}"
@@ -558,7 +558,7 @@ beta_features_quick_install() {
         fi
     fi
     #############
-    if [ ! -z ${DEPENDENCY_02} ]; then
+    if [[ ! -z ${DEPENDENCY_02} ]]; then
         DEPENDENCY_02_COMMAND=$(printf '%s\n' "${DEPENDENCY_02}" | awk -F ' ' '$0=$NF')
         if [ $(command -v ${DEPENDENCY_02_COMMAND}) ]; then
             printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_02} ${RESET}"
@@ -645,10 +645,10 @@ different_distro_software_install() {
     case "${LINUX_DISTRO}" in
     "debian")
         apt update
-        if [ ! -z ${DEPENDENCY_01} ]; then
+        if [[ ! -z ${DEPENDENCY_01} ]]; then
             eatmydata apt install -y ${DEPENDENCY_01} || eatmydata apt-get install -f -y ${DEPENDENCY_01} || aptitude install -y
         fi
-        if [ ! -z ${DEPENDENCY_02} ]; then
+        if [[ ! -z ${DEPENDENCY_02} ]]; then
             eatmydata apt install -y ${DEPENDENCY_02} || eatmydata apt-get install -f -y ${DEPENDENCY_02} || aptitude install -y
         fi
         ;;
@@ -660,14 +660,14 @@ different_distro_software_install() {
         ;;
         ################
     "arch")
-        if [ ! -z ${DEPENDENCY_01} ]; then
+        if [[ ! -z ${DEPENDENCY_01} ]]; then
             case ${AUTO_INSTALL_GUI} in
             true) #自动构建时pacman可能执行失败
                 pacman -Syu --noconfirm --needed ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || pacman -Syu --noconfirm ${DEPENDENCY_01} || paru -S --noconfirm ${DEPENDENCY_01} ;;
             *) pacman -Syu --noconfirm --needed ${DEPENDENCY_01} || su ${CURRENT_USER_NAME} -c "paru -S ${DEPENDENCY_01}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}paru -S${RESET} ${BLUE}${DEPENDENCY_01}${RESET}" ;;
             esac
         fi
-        if [ ! -z ${DEPENDENCY_02} ]; then
+        if [[ ! -z ${DEPENDENCY_02} ]]; then
             case ${AUTO_INSTALL_GUI} in
             true) pacman -Syu --noconfirm --needed ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || pacman -Syu --noconfirm ${DEPENDENCY_02} || paru -S --noconfirm ${DEPENDENCY_02} ;;
             *) pacman -S --noconfirm --needed ${DEPENDENCY_02} || su ${CURRENT_USER_NAME} -c "paru -S ${DEPENDENCY_02}" || printf "%s\n" "无法以${RED}${CURRENT_USER_NAME}${RESET}身份运行${GREEN}paru -S${RESET} ${BLUE}${DEPENDENCY_02}${RESET},请手动执行" ;;
@@ -676,10 +676,10 @@ different_distro_software_install() {
         ;;
         ################
     "redhat")
-        if [ ! -z ${DEPENDENCY_01} ]; then
+        if [[ ! -z ${DEPENDENCY_01} ]]; then
             dnf install -y --skip-broken ${DEPENDENCY_01} || yum install -y --skip-broken ${DEPENDENCY_01}
         fi
-        if [ ! -z ${DEPENDENCY_02} ]; then
+        if [[ ! -z ${DEPENDENCY_02} ]]; then
             dnf install -y --skip-broken ${DEPENDENCY_02} || yum install -y --skip-broken ${DEPENDENCY_02}
         fi
         ;;
