@@ -5669,23 +5669,23 @@ first_configure_startvnc() {
     printf '%s\n' '------------------------'
     printf "%s\n" "您之后可以在原系统里输${BOLD}${GREEN}startvnc${RESET}${YELLOW}同时启动${BLUE}vnc服务端和客户端${RESET}。"
     printf "%s\n" "在容器里输${BOLD}${GREEN}startvnc${RESET}${PURPLE}(仅支持)${YELLOW}启动${BLUE}vnc服务端${RESET}，输${GREEN}stopvnc${RED}停止${RESET}"
-    printf "%s\n" "在原系统里输${BOLD}${GREEN}startxsdl${RESET}同时启动X客户端与服务端"
-    printf '%s\n' '------------------------'
-    printf '%s\n' '------------------------'
+    printf "%s\n" \
+        "在原系统里输${BOLD}${GREEN}startxsdl${RESET}同时启动X客户端与服务端" \
+        '------------------------' \
+        '------------------------'
     if [ "${HOME}" != "/root" ]; then
         cp -rpf ~/.vnc /root/
         chown -R 0:0 /root/.vnc
     fi
     if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
         #printf "%s\n" "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
-        printf "%s\n" \
-            "Win10 ${YELLOW}xserver bin file${RESET}: ${BLUE}C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe${RESET}"
+        printf "%s\n" "Win10 ${YELLOW}xserver bin file${RESET}: ${BLUE}C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe${RESET}"
         cd "/mnt/c/Users/Public/Downloads"
         #if grep -q '172..*1' "/etc/resolv.conf"; then
         if [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
             printf "%s\n" \
                 "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control" \
-                "%s\n" "You can type ${GREEN}startxsdl${RESET} to ${BLUE}start${RESET} X client and win10 xserver(VcXsrv)."
+                "You can type ${GREEN}startxsdl${RESET} to ${BLUE}start${RESET} X client and win10 xserver(VcXsrv)."
             WSL2IP=$(ip route list table 0 | head -n 1 | awk -F 'default via ' '{print $2}' | awk '{print $1}')
             export PULSE_SERVER=${WSL2IP}
             export DISPLAY=${WSL2IP}:0
@@ -5737,10 +5737,11 @@ first_configure_startvnc() {
         "若您的宿主机为${YELLOW}Win10${RESET},则在${PURPLE}WSL2${RESET}(非容器环境)下输入${GREEN}startvnc${RESET}将同时启动${BLUE}Tigervnc viewer(win_x64)${RESET}客户端和tigervnc服务端，并自动连接。此外，还将启动windows版powershell,并调用pulseaudio(win_x86)音频服务+进程守护脚本。" \
         "对于 ${BLUE}win11${RESET} 的 ${PURPLE}WSL2${RESET}, 推荐使用${GREEN}wslg${RESET}，而${RED}不是 ${GREEN}startvnc${RESET} 或 ${GREEN}startxsdl${RESET}。" \
         "For ${BLUE}win11(${PURPLE}WSL2)${RESET}, please use the ${GREEN}wslg${RESET} command." \
-        printf '%s\n' '------------------------'
+        '------------------------'
     if [[ $(command -v apt-get) ]]; then
-        printf "%s\n" "You can type ${GREEN}tightvnc${RESET} to ${YELLOW}start ${BLUE}tightvncserver${RESET},type ${GREEN}tigervnc${RESET} to ${BLUE}tigervncserver${RESET} it."
-        printf "%s\n" "输入${GREEN}tightvnc${RESET}${YELLOW}启动${BLUE}tightvnc服务端${RESET}，输入${GREEN}tigervnc${RESET}${YELLOW}启动${BLUE}tigervnc服务端${RESET}。"
+        printf "%s\n" \
+            "You can type ${GREEN}tightvnc${RESET} to ${YELLOW}start ${BLUE}tightvncserver${RESET},type ${GREEN}tigervnc${RESET} to ${BLUE}tigervncserver${RESET} it." \
+            "输入${GREEN}tightvnc${RESET}${YELLOW}启动${BLUE}tightvnc服务端${RESET}，输入${GREEN}tigervnc${RESET}${YELLOW}启动${BLUE}tigervnc服务端${RESET}。"
     fi
     printf "%s\n" "${GREEN}tightvnc+tigervnc & x window${RESET}配置${BLUE}完成${RESET},将为您配置${GREEN}x11vnc${RESET}"
     printf "%s\n" "按${YELLOW}回车键${RESET}查看x11vnc的${BLUE}启动说明${RESET}"

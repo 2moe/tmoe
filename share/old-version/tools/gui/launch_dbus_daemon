@@ -1,48 +1,63 @@
 #!/usr/bin/env bash
 ################
-dbus_daemon_fork() {
-    if [ $(command -v sudo) ]; then
-        sudo dbus-daemon --system --fork 2>/dev/null
-    else
-        su -c "dbus-daemon --system --fork 2>/dev/null"
-    fi
-}
-###########
-check_user_id_and_rm_dbus_pid() {
+check_sudo() {
     case $(id -u) in
-    0)
-        rm -vf /var/run/dbus/pid 2>/dev/null
-        dbus_daemon_fork
-        ;;
-    *)
-        if [ -e "/var/run/dbus/pid" ]; then
-            if [ $(command -v sudo) ]; then
-                sudo rm -vf /var/run/dbus/pid 2>/dev/null
-            else
-                su -c "rm -vf /var/run/dbus/pid 2>/dev/null"
-            fi
-        fi
-        dbus_daemon_fork
-        ;;
+    0) unset SUDO ;;
+    *) SUDO="sudo" ;;
     esac
 }
+#---------------
+dbus_daemon_fork() {
+    ${SUDO} dbus-daemon --system --fork 2>/dev/null
+}
 ###########
+rm_dbus_pid_file() {
+    ${SUDO} rm -vf /var/run/dbus/pid 2>/dev/null
+    dbus_daemon_fork
+}
+###########
+dbus_is_not_running() {
+    printf "%s\n" "${RED}Error, ${BLUE}dbus ${YELLOW}is not running${RESET}"
+    printf "%s\n" \
+        "${RED}ERROR${RESET}" \
+        "${BLUE}Dbus ${YELLOW}is not running${RESET}" \
+        "You can set ${BLUE}TMOE_CHROOT=${PURPLE}true${RESET} to force start it."
+}
 check_dbus_daemon() {
     case ${TMOE_PROOT} in
-    true) [[ -e "/etc/init.d/dbus" ]] || check_user_id_and_rm_dbus_pid ;;
+    true) [[ -e "/etc/init.d/dbus" ]] || rm_dbus_pid_file ;;
     esac
 
     case ${TMOE_CHROOT} in
-    true) check_user_id_and_rm_dbus_pid ;;
-    false) ;;
+    true) rm_dbus_pid_file ;;
+    false) [[ -e /var/run/dbus/pid ]] || dbus_is_not_running ;;
     *)
         if [[ -e /etc/motd ]]; then
-            if grep -q 'Linux Deploy' /etc/motd 2>/dev/null; then
-                check_user_id_and_rm_dbus_pid
+            if grep -q 'Deploy' /etc/motd 2>/dev/null; then
+                rm_dbus_pid_file
+            else
+                dbus_is_not_running
             fi
         fi
         ;;
     esac
+}
+service_dbus_start() {
+    if [[ -e /etc/init.d/dbus ]]; then
+        printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
+        ${SUDO} service dbus start
+        ${SUDO} service dbus status | head -n 3
+        [[ -e /var/run/dbus/pid ]] || check_dbus_daemon
+    else
+        printf "%s\n" "${PURPLE}sudo ${GREEN}systemctl ${BLUE}start ${YELLOW}dbus${RESET}"
+        case ${TMOE_CHROOT} in
+        true | false) check_dbus_daemon ;;
+        *)
+            ${SUDO} systemctl start dbus
+            [[ -e /var/run/dbus/pid ]] || check_dbus_daemon
+            ;;
+        esac
+    fi
 }
 ################
 show_dbus_status() {
@@ -59,6 +74,10 @@ TriggeredBy: ${GREEN}● ${BLUE}dbus.socket${RESET}
 EOF
     fi
 }
+dbus_main() {
+    check_sudo
+    service_dbus_start
+    show_dbus_status
+}
 ################
-check_dbus_daemon
-show_dbus_status
+dbus_main "$@"

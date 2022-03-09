@@ -45,7 +45,6 @@ PIXEL_DEPTH=24
 # Always treat incoming connections as shared, regardless of the client-specified setting. Default is true.
 ALWAYS_SHARED=true
 
-DBUS_ENABLED=true
 # If the value is true, "sudo service dbus start" will be executed automatically every time.
 AUTO_START_DBUS=true
 
@@ -331,26 +330,6 @@ start_tmoe_xvnc() {
 ###################
 check_dbus_servcie() {
     if [[ ${AUTO_START_DBUS} = true ]]; then
-        case $(id -u) in
-        0) unset SUDO ;;
-        *) SUDO="sudo" ;;
-        esac
-
-        if [[ -e /etc/init.d/dbus ]]; then
-            printf "%s\n" "${PURPLE}sudo ${GREEN}service ${BLUE}dbus ${YELLOW}start${RESET}"
-            ${SUDO} service dbus start
-            ${SUDO} service dbus status | head -n 3
-        else
-            printf "%s\n" "${PURPLE}sudo ${GREEN}systemctl ${BLUE}start ${YELLOW}dbus${RESET}"
-            case ${TMOE_CHROOT} in
-            true | false) ;;
-            *) ${SUDO} systemctl start dbus ;;
-            esac
-        fi
-    fi
-}
-source_tmoe_dbus_daemon() {
-    if [[ ${DBUS_ENABLED} = true ]]; then
         source ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
     fi
 }
@@ -379,7 +358,7 @@ check_xvnc() {
 ###################
 tmoe_vnc_preconfigure
 check_dbus_servcie
-source_tmoe_dbus_daemon
+# source_tmoe_dbus_daemon
 display_vnc_ip_addr
 #check_vncsession
 check_xvnc

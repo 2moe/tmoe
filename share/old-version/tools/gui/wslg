@@ -15,6 +15,7 @@ set_env() {
 	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
 	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
 	TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
+	TMOE_CHROOT=true
 }
 remove_xsession_lock() {
 	local port=$1
