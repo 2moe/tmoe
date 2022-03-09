@@ -5678,30 +5678,34 @@ first_configure_startvnc() {
     fi
     if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
         #printf "%s\n" "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
-        printf "%s\n" "Win10 ${YELLOW}xserver bin file${RESET}: ${BLUE}C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe${RESET}"
+        printf "%s\n" \
+            "Win10 ${YELLOW}xserver bin file${RESET}: ${BLUE}C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe${RESET}"
         cd "/mnt/c/Users/Public/Downloads"
         #if grep -q '172..*1' "/etc/resolv.conf"; then
         if [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-            printf "%s\n" "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
-            printf "%s\n" "You can type ${GREEN}startxsdl${RESET} to ${BLUE}start${RESET} X client and win10 xserver(VcXsrv)."
+            printf "%s\n" \
+                "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control" \
+                "%s\n" "You can type ${GREEN}startxsdl${RESET} to ${BLUE}start${RESET} X client and win10 xserver(VcXsrv)."
             WSL2IP=$(ip route list table 0 | head -n 1 | awk -F 'default via ' '{print $2}' | awk '{print $1}')
             export PULSE_SERVER=${WSL2IP}
             export DISPLAY=${WSL2IP}:0
-            printf "%s\n" "已将您的X和音频服务ip修改为${YELLOW}${WSL2IP}${RESET}"
-            printf "%s\n" "You are using WSL2,and your host ip is ${YELLOW}${WSL2IP}${RESET}"
             printf "%s\n" \
-                "If you are using ${BLUE}win11(wsl2,ubuntu)${RESET}, it is recommended that you use the ${GREEN}wslg${RESET} command instead of ${YELLOW}startvnc${CYAN} or ${YELLOW}startxsdl${RESET}." \
+                "已将您的X和音频服务ip修改为${YELLOW}${WSL2IP}${RESET}" \
+                "You are using WSL2,and your host ip is ${YELLOW}${WSL2IP}${RESET}" \
+                "If you are using ${BLUE}win11(wsl2)${RESET}, it is recommended that you use the ${GREEN}wslg${RESET} command instead of ${YELLOW}startvnc${CYAN} or ${YELLOW}startxsdl${RESET}." \
                 "对于 ${BLUE}win11${RESET}, 您可以使用 ${GREEN} wslg ${RESET} 命令。"
         else
-            printf "%s\n" "${YELLOW}检测到您使用的是WSL1(初代win10的Linux子系统)${RESET}"
-            printf "%s\n" "${YELLOW}若无法启动x服务，则请在退出脚本后，以非root身份手动输startxsdl来启动windows的x服务${RESET}"
-            printf "%s\n" "您也可以手动输startvnc来启动vnc服务"
-            printf "%s\n" "You are using${YELLOW}WSL1${RESET}."
-            printf "%s\n" "You can type ${GREEN}startxsdl${RESET} to start windows xserver and linux xclient."
+            printf "%s\n" \
+                "${YELLOW}检测到您使用的是WSL1(初代win10的Linux子系统)${RESET}" \
+                "${YELLOW}若无法启动x服务，则请在退出脚本后，以非root身份手动输startxsdl来启动windows的x服务${RESET}" \
+                "您也可以手动输startvnc来启动vnc服务" \
+                "You are using${YELLOW}WSL1${RESET}." \
+                "You can type ${GREEN}startxsdl${RESET} to start windows xserver and linux xclient."
         fi
         cd ./VcXsrv
-        printf "%s\n" "请在启动音频服务前，确保您已经允许pulseaudio.exe通过Windows Defender防火墙"
-        printf "%s\n" "You need to allow pulseaudio to pass through the defender firewall, otherwise you will not be able to use the local audio service."
+        printf "%s\n" \
+            "请在启动音频服务前，确保您已经允许pulseaudio.exe通过Windows Defender防火墙" \
+            "You need to allow pulseaudio to pass through the defender firewall, otherwise you will not be able to use the local audio service."
         if [ ! -e "Firewall-pulseaudio.png" ]; then
             aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "Firewall-pulseaudio.png" 'https://gitee.com/mo2/pic_api/raw/test/2020/03/31/rXLbHDxfj1Vy9HnH.png'
         fi
@@ -5712,13 +5716,15 @@ first_configure_startvnc() {
             aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o 'XserverhighDPI.png' https://gitee.com/mo2/pic_api/raw/test/2020/03/27/jvNs2JUIbsSQQInO.png
         fi
         /mnt/c/WINDOWS/system32/cmd.exe /c "start .\XserverhighDPI.png" 2>/dev/null
-        printf "%s\n" "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。"
-        printf "%s\n" "vcxsrv文件位置为C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
-        printf "%s\n" "You can right-click vcxsrv.exe and modify the high-dpi setting."
+        printf "%s\n" \
+            "若X服务的画面过于模糊，则您需要右击vcxsrv.exe，并手动修改兼容性设定中的高Dpi选项。" \
+            "vcxsrv文件位置为C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe" \
+            "You can right-click vcxsrv.exe and modify the high-dpi setting."
         #printf "%s\n" "${YELLOW}按回车键启动X${RESET}"
         #printf "%s\n" "${YELLOW}Press enter to startx${RESET}"
-        printf '%s\n' '运行过程中，您可以输stopvnc停止X和vnc，输pkill -u $(whoami)终止当前用户所有进程'
-        printf '%s\n' 'You can type pkill -u $(whoami) to kill all processes.'
+        printf '%s\n' \
+            '运行过程中，您可以输stopvnc停止X和vnc，输pkill -u $(whoami)终止当前用户所有进程' \
+            'You can type pkill -u $(whoami) to kill all processes.'
         #上面那行必须要单引号
         #read
         cd "/mnt/c/Users/Public/Downloads"
@@ -5729,11 +5735,9 @@ first_configure_startvnc() {
     printf '%s\n' '------------------------'
     printf "%s\n" \
         "若您的宿主机为${YELLOW}Win10${RESET},则在${PURPLE}WSL2${RESET}(非容器环境)下输入${GREEN}startvnc${RESET}将同时启动${BLUE}Tigervnc viewer(win_x64)${RESET}客户端和tigervnc服务端，并自动连接。此外，还将启动windows版powershell,并调用pulseaudio(win_x86)音频服务+进程守护脚本。" \
-        "对于 ${BLUE}win11${RESET} 的 ${PURPLE}WSL2（wsl2,ubuntu)${RESET}, 请使用 ${GREEN}wslg${RESET} 命令，而${RED}不要使用 ${GREEN}startvnc${RESET} 或 ${GREEN}startxsdl${RESET}。" \
-        "对于 win11 的 wsl2 (${PURPLE}debian${RESET})， 您可以使用 ${GREEN}startxsdl${RESET}" \
-        "For ${BLUE}win11(${PURPLE}WSL2，ubuntu)${RESET}, please use the ${GREEN}wslg${RESET} command." \
-        "For ${BLUE}win11(${PURPLE}WSL2, debian)${RESET}, you can use the ${GREEN}startxsdl${RESET} command."
-    printf '%s\n' '------------------------'
+        "对于 ${BLUE}win11${RESET} 的 ${PURPLE}WSL2${RESET}, 推荐使用${GREEN}wslg${RESET}，而${RED}不是 ${GREEN}startvnc${RESET} 或 ${GREEN}startxsdl${RESET}。" \
+        "For ${BLUE}win11(${PURPLE}WSL2)${RESET}, please use the ${GREEN}wslg${RESET} command." \
+        printf '%s\n' '------------------------'
     if [[ $(command -v apt-get) ]]; then
         printf "%s\n" "You can type ${GREEN}tightvnc${RESET} to ${YELLOW}start ${BLUE}tightvncserver${RESET},type ${GREEN}tigervnc${RESET} to ${BLUE}tigervncserver${RESET} it."
         printf "%s\n" "输入${GREEN}tightvnc${RESET}${YELLOW}启动${BLUE}tightvnc服务端${RESET}，输入${GREEN}tigervnc${RESET}${YELLOW}启动${BLUE}tigervnc服务端${RESET}。"

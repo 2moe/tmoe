@@ -40,6 +40,10 @@ check_xwayland_command() {
 			sudo apt install -y xwayland
 		elif [[ -n $(command -v pacman) ]]; then
 			sudo pacman -Sy xorg-xwayland
+		else
+			printf "%s\n" \
+				"ERROR." \
+				"You need to install xwayland(xorg-xwayland)."
 		fi
 	fi
 }
