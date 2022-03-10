@@ -110,7 +110,10 @@ EOF
         ;;
     esac
     case "${DEBIAN_DISTRO}" in
-    "kali") AUTO_INSTALL_KALI_TOOLS=true ;;
+    "kali")
+        KALI_TOOLS="arm"
+        AUTO_INSTALL_KALI_TOOLS=true
+        ;;
     esac
     AUTO_INSTALL_CHROMIUM=true
     mkdir -p ~/.vnc
@@ -1211,31 +1214,19 @@ install_tmoe_electron_app_pack() {
 ##########################
 install_kali_linux_tools() {
     if [[ "${AUTO_INSTALL_KALI_TOOLS}" = true ]]; then
-        # if [[ ! $(command -v zenmap) ]]; then
-        #     printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}zenmap${RESET}"
-        #     eatmydata apt install -y zenmap || apt install -y zenmap
-        # fi
-        if [[ ! $(command -v xhydra) ]]; then
+        if [[ -z $(command -v nmap) ]]; then
+            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}nmap${RESET}"
+            eatmydata apt install -y nmap || apt install -y nmap
+        fi
+        if [[ -z $(command -v xhydra) ]]; then
             printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}hydra-gtk${RESET}"
             eatmydata apt install -y hydra-gtk || apt install -y hydra-gtk || apt install -y xhydra
         fi
-        printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-menu${RESET}"
+        printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-menu nmap${RESET}"
         eatmydata apt install -y kali-menu || apt-get install -y kali-menu
-        case ${ARCH_TYPE} in
-        arm64 | armhf | armel)
-            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-linux-arm${RESET}"
-            eatmydata apt install -y kali-linux-arm || apt-get install -y kali-linux-arm
-            ;;
-        *)
-            if [[ ${AUTO_INSTALL_GUI} != true ]]; then
-                printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-linux-headless${RESET}"
-                eatmydata apt install -y kali-linux-headless || apt-get install -y kali-linux-headless
-            else
-                printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-linux-arm${RESET}"
-                eatmydata apt install -y kali-linux-arm || apt-get install -y kali-linux-arm
-            fi
-            ;;
-        esac
+
+        printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}${KALI_TOOLS}${RESET}"
+        eatmydata apt install -y ${KALI_TOOLS} || apt-get install -y ${KALI_TOOLS}
     fi
 }
 ###########################
@@ -1566,14 +1557,41 @@ do_you_want_to_install_chromium() {
     fi
 }
 ########
+select_kali_tools() {
+    KALI_MENU=$(
+        whiptail --title "KALI LINUX TOOLS" --menu "Which kali-suite do you want to install?" 0 0 0 \
+            "1" "arm(ARM devices default packages)" \
+            "2" "None (skip installation)" \
+            "3" "core (core packages)" \
+            "4" "default (headless and GUI)" \
+            "5" "everything (every tool)" \
+            "6" "headless" \
+            "7" "large(extended default tool selection)" \
+            "8" "nethunter" \
+            3>&1 1>&2 2>&3
+    )
+    ###########
+    AUTO_INSTALL_KALI_TOOLS=true
+    case "${KALI_MENU}" in
+    0 | "" | 2) AUTO_INSTALL_KALI_TOOLS=false ;;
+    1) KALI_TOOLS="kali-linux-arm" ;;
+    3) KALI_TOOLS="kali-linux-core" ;;
+    4) KALI_TOOLS="kali-linux-default" ;;
+    5) KALI_TOOLS="kali-linux-everything" ;;
+    6) KALI_TOOLS="kali-linux-headless" ;;
+    7) KALI_TOOLS="kali-linux-large" ;;
+    8) KALI_TOOLS="kali-linux-nethunter" ;;
+    esac
+}
 do_you_want_to_install_kali_tools() {
     case "${LINUX_DISTRO}" in
     "debian")
         case "${DEBIAN_DISTRO}" in
         "kali")
-            if (whiptail --title "KALI LINUX TOOLS" --yes-button "YES" --no-button "NO" --yesno 'Do you want to install kali-linux tools?' 0 0); then
-                AUTO_INSTALL_KALI_TOOLS=true
-            fi
+            select_kali_tools
+            # if (whiptail --title "KALI LINUX TOOLS" --yes-button "YES" --no-button "NO" --yesno 'Do you want to install kali-linux tools?' 0 0); then
+            #     AUTO_INSTALL_KALI_TOOLS=true
+            # fi
             ;;
         esac
         ;;
