@@ -4,7 +4,7 @@ unmount_chroot_proc_dev() {
 	#case ${TMOE_CHROOT} in
 	#true)
 	if [ $(command -v su) ]; then
-		for i in proc sys dev/pts dev/shm etc/gitstatus dev/fd dev/stdin dev/stout dev/sterr dev/tty0 dev media/tf media/termux media/sd; do
+		for i in proc sys dev/pts dev/shm etc/gitstatus dev/fd dev/stdin dev/stout dev/sterr dev/tty0 dev media/tf media/termux media/sd tmp; do
 			#su -c "umount -lvf ${DEBIAN_CHROOT}/${i}  2>/dev/null"
 			if [[ $(su -c "ls ${DEBIAN_CHROOT}/${i} 2>/dev/null") ]]; then
 				printf "${PURPLE}%s ${BLUE}%s${RESET} %s\n" "Unmounting" "${i}" "..."

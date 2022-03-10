@@ -358,7 +358,7 @@ mount_dir_to_container() {
 	if (whiptail --title "${MOUNT_VAR}" --yes-button "true" --no-button "false" --yesno "The current status is ${CURRENT_STATUS},\nsource dir is ${CURRENT_MOUNT_SOURCE},\nmount point is ${CURRENT_MOUNT_POINT}" 10 50); then
 		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_VAR}=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 		case ${MOUNT_VAR} in
-		MOUNT_SD | MOUNT_TERMUX) do_you_want_to_change_the_mount_source_dir ;;
+		MOUNT_SD | MOUNT_TERMUX | MOUNT_TMP) do_you_want_to_change_the_mount_source_dir ;;
 		esac
 		case ${TMOE_CHROOT} in
 		true) ;;
