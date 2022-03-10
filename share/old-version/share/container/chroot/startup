@@ -113,6 +113,9 @@ cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 	# TF_CARD_LINK的值为一个软链接文件
 	TF_CARD_LINK="${HOME}/storage/external-1"
 
+	MOUNT_TMP=false
+	TMP_SOURCE_DIR="${TMPDIR}"
+	TMP_MOUNT_POINT="/tmp"
 
 	MOUNT_ITSELF=true
 	MOUNT_DEV=true
@@ -283,6 +286,12 @@ cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 	        if ! detect_mount "\${ROOTFS_DIR}/"; then
 	            su -c "\${TMOE_MOUNT} --rbind \${ROOTFS_DIR} \${ROOTFS_DIR}/ &>/dev/null"
 	            su -c "\${TMOE_MOUNT} -o remount,exec,suid,relatime,dev \${ROOTFS_DIR}"
+	        fi
+	    fi
+		### tmp
+	    if [[ \${MOUNT_TMP} = true ]]; then
+	        if ! detect_mount "\${ROOTFS_DIR}\${TMP_MOUNT_POINT}"; then
+	            su -c "\${TMOE_MOUNT} -o bind \${TMP_SOURCE_DIR} \${ROOTFS_DIR}\${TMP_MOUNT_POINT}"
 	        fi
 	    fi
 	    #########

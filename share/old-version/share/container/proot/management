@@ -149,9 +149,10 @@ environment_variables_and_automatic_startup_script_management() {
 			"9" "switch chroot/unshare" \
 			"10" "proot/chroot/nspawn bin file" \
 			"11" "mount sd" \
-			"12" "mount termux" \
+			"12" "mount HOME" \
 			"13" "mount storage" \
 			"14" "mount tf" \
+			"15" "mount tmp(shared wayland socket)" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -169,9 +170,10 @@ environment_variables_and_automatic_startup_script_management() {
 				"9" "切换chroot/unshare" \
 				"10" "proot/chroot/nspawn二进制文件" \
 				"11" "挂载sd" \
-				"12" "挂载termux" \
+				"12" "挂载HOME" \
 				"13" "挂载storage" \
 				"14" "挂载tf" \
+				"15" "挂载tmp(共享wayland socket)" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -228,6 +230,12 @@ environment_variables_and_automatic_startup_script_management() {
 		MOUNT_VAR="MOUNT_TF"
 		MOUNT_SOURCE_VAR="TF_CARD_LINK"
 		MOUNT_POINT_VAR="TF_MOUNT_POINT"
+		mount_dir_to_container
+		;;
+	15)
+		MOUNT_VAR="MOUNT_TMP"
+		MOUNT_SOURCE_VAR="TMP_SOURCE_DIR"
+		MOUNT_POINT_VAR="TMP_MOUNT_POINT"
 		mount_dir_to_container
 		;;
 	esac
