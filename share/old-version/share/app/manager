@@ -1359,7 +1359,10 @@ source_locale_setting() {
 }
 ##########
 check_tmoe_menu_locale_file() {
-	[[ ! -s "${TMOE_LOCALE_FILE_202203}" ]] && choose_tmoe_locale_env
+	for i in "${TMOE_LOCALE_FILE}" "${TMOE_LOCALE_FILE_202203}"; do
+		[[ -s ${i} ]] || choose_tmoe_locale_env
+	done
+	# [[ ! -s "${TMOE_LOCALE_FILE_202203}" ]] && choose_tmoe_locale_env
 	TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
 	TMOE_MENU_LANG=${TMOE_LANG}
 	TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
