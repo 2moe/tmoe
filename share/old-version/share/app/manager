@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.12,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.13,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -148,11 +148,12 @@ auto_check() {
 ################
 install_android_whiptail() {
 	RETURN_TO_WHERE='exit'
-	printf "${YELLOW}%s${RESET} ${PURPLE}%s${RESET}\n" "Do you want to install" "whiptail(dialog)?"
-	printf "${GREEN}%s${RESET} ${BLUE}%s${RESET}\n" "apt install -y" "dialog"
+	printf "${YELLOW}%s${RESET} ${PURPLE}%s${RESET}\n" "Do you want to install" "whiptail?"
+	printf "${GREEN}%s${RESET} ${BLUE}%s${RESET}\n" "apt install -y" "whiptail"
 	do_you_want_to_continue
 	apt update
-	apt install -y dialog
+	# for android6(termux), whiptail -> dialog
+	[[ -e ${PREFIX}/bin/dialog ]] || apt install -y dialog
 	[[ -e ${PREFIX}/bin/whiptail ]] || apt install -y whiptail
 }
 check_android_termux_whiptail() {
@@ -224,7 +225,7 @@ check_gnu_linux_git_and_whiptail() {
 			printf "%s\n" "${RED}Sorry${RESET},tmoe-linux manager does not support your distro. If you want to report a bug, please go to ${BLUE}github.${YELLOW}https://github.com/2moe/tmoe-linux${RESET}"
 			printf "%s\n" "${RED}不支持${RESET}您当前的发行版，您可以前往${YELLOW}https://github.com/2moe/tmoe-linux${RESET}提交issue,并附上${BLUE}cat /etc/os-release${RESET}的截图。"
 			uname -a
-			sleep 2
+			sleep 3
 			exit 1
 			# press_enter_to_continue
 			# apt update 2>/dev/null
@@ -268,6 +269,7 @@ check_linux_distro_etc_release() {
 		;;
 	*Arch* | *Manjaro*) arch_linux_env ;;
 	*Fedora* | *CentOS* | "*Red Hat*" | *redhat* | *fedora*)
+		# | *Euler*
 		LINUX_DISTRO='redhat'
 		if [ $(command -v dnf) ]; then
 			TMOE_UPDATE_COMMAND='dnf update'
@@ -280,6 +282,7 @@ check_linux_distro_etc_release() {
 		fi
 		case ${OS_RELEASE} in
 		*Fedora*) REDHAT_DISTRO='fedora' ;;
+		# *Euler*) REDHAT_DISTRO='euler' ;;
 		*ID=*centos* | *rhel*) REDHAT_DISTRO='centos' ;; #"$(grep 'ID=' /etc/os-release | head -n 1 | cut -d '"' -f 2)" = "centos"
 		esac
 		;;
