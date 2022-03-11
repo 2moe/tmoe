@@ -571,6 +571,10 @@ set_locale_title_and_desc() {
 		local _Language="日本語_日本"
 		DESCRIPTION="あなたのロケールは「日本語_日本」ですか？"
 		;;
+	ko_KR*)
+		local _Language="한국어_대한민국"
+		DESCRIPTION="당신의 언어는 \"${_Language}\" 입니까?"
+		;;
 	cs_CZ*)
 		local _Language="čeština_Česká republika"
 		DESCRIPTION="Je vaše locale \"${_Language}\"?"
