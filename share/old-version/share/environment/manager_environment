@@ -31,7 +31,8 @@ check_arch() {
 ###############
 check_tmoe_menu_locale_file() {
 	#此处重复出现2次
-	[[ -s ${TMOE_LOCALE_FILE} ]] || choose_tmoe_locale_env
+	# [[ -s ${TMOE_LOCALE_FILE} ]] || choose_tmoe_locale_env
+	[[ -s ${TMOE_LOCALE_FILE_202203} ]] || choose_tmoe_locale_env
 	TMOE_LANG=$(head -n 1 "${TMOE_LOCALE_FILE}")
 	TMOE_MENU_LANG=${TMOE_LANG}
 	TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
