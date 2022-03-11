@@ -547,6 +547,10 @@ case_language_and_set_desc() {
 		local _Language="Soomaali"
 		DESCRIPTION="deegaankaagu ma yahay \"${_Language}_${_Region}\"?"
 		;;
+	en)
+		local _Language="English"
+		DESCRIPTION="Is your locale \"${_Language}_${_Region}\"?"
+		;;
 	*)
 		local _Language="${LANG_HALF}"
 		DESCRIPTION="Is your locale \"${_Language}_${_Region}\"?"
