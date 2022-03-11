@@ -435,12 +435,18 @@ what_is_your_timezone() {
     is_your_timezone_utc
 
     mkdir -pv ${CONFIG_FOLDER}/gitstatus
-    [[ -z ${TIMEZONE} ]] || printf "%s\n" "Etc/${TIMEZONE}" >${CONFIG_FOLDER}/gitstatus/timezone.txt
+    write_to_timezone_txt
+}
+check_time_zone_file() {
+    local _File="${CONFIG_FOLDER}/gitstatus/timezone.txt"
+    if [[ -r ${_File} ]]; then
+        TIMEZONE=$(sed -e "s@Etc/@@" -e 's@GMT@UTC@' ${_File} | tr '[+\-]' '[\-+]')
+    fi
 }
 tmoe_container_timezone() {
     RETURN_TO_WHERE='tmoe_container_timezone'
     unset TIMEZONE IMPORTANT_TIPS_03
-    TIMEZONE=$(cat ${CONFIG_FOLDER}/gitstatus/timezone.txt | tr '[+\-]' '[\-+]' | sed -e "s@Etc/@@" -e 's@GMT@UTC@')
+    check_time_zone_file
     [[ -z ${TIMEZONE} ]] || IMPORTANT_TIPS_03="Current timzone of container is ${TIMEZONE}"
     TMOE_OPTION=$(whiptail --title "TIMEZONE" --menu "UTC is the time standard commonly used across the world.\n${IMPORTANT_TIPS_03}" 0 50 0 \
         "0" "🌚 Back" \
@@ -509,14 +515,22 @@ tmoe_container_timezone() {
     26) TIMEZONE='GMT+11' ;;
     27) TIMEZONE='GMT+12' ;;
     esac
-    mkdir -pv ${CONFIG_FOLDER}/gitstatus
-    [[ -z ${TIMEZONE} ]] || printf "%s\n" "Etc/${TIMEZONE}" >${CONFIG_FOLDER}/gitstatus/timezone.txt
-    sed -n p ${CONFIG_FOLDER}/gitstatus/timezone.txt | tr '[+\-]' '[\-+]' | sed -e "s@Etc/@@" -e 's@GMT@UTC@'
+    write_to_timezone_txt
+    check_time_zone_file
+    printf "${BLUE}%s${RESET}\n" "$TIMEZONE"
     ####################
     press_enter_to_return
     case ${RETURN_TO_MENU} in
     "") tmoe_container_timezone ;;
     *) ${RETURN_TO_MENU} ;;
+    esac
+}
+write_to_timezone_txt() {
+    local _File="${CONFIG_FOLDER}/gitstatus/timezone.txt"
+    case ${TIMEZONE} in
+    "") ;;
+    UTC* | GMT*) printf "%s\n" "Etc/${TIMEZONE}" >"${_File}" ;;
+    *) printf "%s\n" "${TIMEZONE}" >"${_File}" ;;
     esac
 }
 install_fortunes() {
