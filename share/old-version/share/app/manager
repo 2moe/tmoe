@@ -49,7 +49,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.13,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.14,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -489,20 +489,192 @@ check_release_version() {
 	esac
 }
 ##################
+convert_android_locale_to_unix() {
+	case ${ANDROID_LANG} in
+	z*_CN) LANG="$(base64 -d <<<emhfQ04uVVRGLTgK)" ;;
+	zh_HK | zh_MO) LANG="zh_HK.UTF-8" ;; # zh_Hant/Hans
+	zh_TW) LANG="zh_TW.UTF-8" ;;
+	zh_SG) LANG="zh_SG.UTF-8" ;;
+	"aa_ER@saaho" | "aa_ER" | "aa_ET" | "agr_PE" | "ak_GH" | "am_ET" | "anp_IN" | "ar_IN" | "ar_SS" | "as_IN" | "ayc_PE" | "az_AZ" | "az_IR" | "be_BY@latin" | "bem_ZM" | "ber_DZ" | "ber_MA" | "bho_IN" | "bho_NP" | "bi_VU" | "bn_BD" | "bn_IN" | "bo_CN" | "bo_IN" | "brx_IN" | "byn_ER" | "ca_ES@valencia" | "ce_RU" | "chr_US" | "cmn_TW" | "crh_UA" | "csb_PL" | "cv_RU" | "doi_IN" | "dsb_DE" | "dv_MV" | "dz_BT" | "en_AG" | "en_IL" | "en_IN" | "en_NG" | "en_ZM" | "eo" | "es_CU" | "fa_IR" | "ff_SN" | "fil_PH" | "fur_IT" | "fy_DE" | "fy_NL" | "gez_ER@abegede" | "gez_ER" | "gez_ET@abegede" | "gez_ET" | "gu_IN" | "hak_TW" | "ha_NG" | "hif_FJ" | "hi_IN" | "hne_IN" | "ht_HT" | "hy_AM" | "ia_FR" | "ig_NG" | "ik_CA" | "iu_CA" | "kab_DZ" | "km_KH" | "kn_IN" | "kok_IN" | "ks_IN@devanagari" | "ks_IN" | "ky_KG" | "lb_LU" | "li_BE" | "lij_IT" | "li_NL" | "ln_CD" | "lo_LA" | "lzh_TW" | "mag_IN" | "mai_IN" | "mai_NP" | "mfe_MU" | "mhr_RU" | "miq_NI" | "mjw_IN" | "ml_IN" | "mni_IN" | "mn_MN" | "mnw_MM" | "mr_IN" | "my_MM" | "nan_TW@latin" | "nan_TW" | "nds_DE" | "nds_NL" | "ne_NP" | "nhn_MX" | "niu_NU" | "niu_NZ" | "nl_AW" | "nr_ZA" | "nso_ZA" | "om_ET" | "or_IN" | "os_RU" | "pa_IN" | "pap_AW" | "pap_CW" | "pa_PK" | "ps_AF" | "quz_PE" | "raj_IN" | "rw_RW" | "sah_RU" | "sa_IN" | "sat_IN" | "sc_IT" | "sd_IN@devanagari" | "sd_IN" | "se_NO" | "sgs_LT" | "shn_MM" | "shs_CA" | "sid_ET" | "si_LK" | "sm_WS" | "so_ET" | "sq_MK" | "sr_ME" | "sr_RS@latin" | "sr_RS" | "ss_ZA" | "sw_KE" | "sw_TZ" | "szl_PL" | "ta_IN" | "ta_LK" | "te_IN" | "the_NP" | "ti_ER" | "ti_ET" | "tig_ER" | "tk_TM" | "tn_ZA" | "to_TO" | "tpi_PG" | "ts_ZA" | "tt_RU@iqtelif" | "tt_RU" | "ug_CN" | "unm_US" | "ur_IN" | "ur_PK" | "uz_UZ@cyrillic" | "ve_ZA" | "vi_VN" | "wae_CH" | "wal_ET" | "wo_SN" | "yo_NG" | "yue_HK") LANG="${ANDROID_LANG}" ;;
+	*) LANG="${ANDROID_LANG}.UTF-8" ;;
+	esac
+}
+case_language_and_set_desc() {
+	LANG_QUATER=$(echo "$LANG_HALF" | awk -F'_' '{print $1}')
+	local _Region=$(echo "$LANG_HALF" | awk -F'_' '{print $NF}')
+	# Is your locale "xx_YY"?
+	case ${LANG_QUATER} in
+	de)
+		local _Language="Deutsch"
+		DESCRIPTION="Ist Ihr Gebietsschema \"${_Language}_${_Region}\"?"
+		;;
+	es)
+		local _Language="español"
+		DESCRIPTION="¿Su configuración regional es \"${_Language}_${_Region}\"?"
+		;;
+	fr)
+		local _Language="français"
+		DESCRIPTION="Votre langue est-elle \"${_Language}_${_Region}\"?"
+		;;
+	ru)
+		local _Language="ру́сский язы́к"
+		DESCRIPTION="Является ли ваш язык \"${_Language}_${_Region}\"?"
+		;;
+	pt)
+		local _Language="português"
+		DESCRIPTION="O seu local é \"${_Language}_${_Region}\"?"
+		;;
+	nl)
+		local _Language="Nederlands"
+		DESCRIPTION="Is uw locale \"${_Language}_${_Region}\"?"
+		;;
+	sv)
+		local _Language="svenska"
+		DESCRIPTION="Är din lokalbokstav \"${_Language}_${_Region}\"?"
+		;;
+	el)
+		local _Language="Ελληνικά"
+		DESCRIPTION="Είναι η τοπική σας γλώσσα \"${_Language}_${_Region}\";"
+		;;
+	it)
+		local _Language="italiano"
+		DESCRIPTION="Il tuo locale è \"${_Language}_${_Region}\"?"
+		;;
+	so)
+		local _Language="Soomaali"
+		DESCRIPTION="deegaankaagu ma yahay \"${_Language}_${_Region}\"?"
+		;;
+	*)
+		local _Language="${LANG_HALF}"
+		DESCRIPTION="Is your locale \"${_Language}_${_Region}\"?"
+		;;
+	esac
+	MENU="${LANG_HALF}: ${_Language}_${_Region}"
+}
+set_locale_title_and_desc() {
+	TITLE="language_region"
+	LANG_HALF=$(echo "$LANG" | awk -F'.' '{print $1}')
+	unset MENU
+	case ${LANG} in
+	zh_HK*) local _Language="繁體中文_香港" ;;
+	zh_TW*) local _Language="正體中文_台灣" ;;
+	zh_SG) local _Language="简体中文_新加坡" ;;
+	zh*) local _Language="简体中文_中国内地" ;;
+	ja_JP*)
+		local _Language="日本語_日本"
+		DESCRIPTION="あなたのロケールは「日本語_日本」ですか？"
+		;;
+	cs_CZ*)
+		local _Language="čeština_Česká republika"
+		DESCRIPTION="Je vaše locale \"${_Language}\"?"
+		;;
+	et_EE*)
+		local _Language="eesti_Eesti"
+		DESCRIPTION="Kas teie keeluala on \"${_Language}\"?"
+		;;
+	bg_BG*)
+		local _Language="български_България"
+		DESCRIPTION="Вашият локал е \"${_Language}\"?"
+		;;
+	pl_PL*)
+		local _Language="polski_Polska"
+		DESCRIPTION="Czy Twoje locale to \"${_Language}\"?"
+		;;
+	da_DK*)
+		local _Language="dansk_Danmark"
+		DESCRIPTION="Er dit sprogområde \"${_Language}\"?"
+		;;
+	fi_FI*)
+		local _Language="suomi_Suomi"
+		DESCRIPTION="Onko alueesi \"${_Language}\"?"
+		;;
+	lv_LV*)
+		local _Language="latviešu_Latvija"
+		DESCRIPTION="Vai jūsu locale ir \"${_Language}\"?"
+		;;
+	lt_LT*)
+		local _Language="lietuvių_Lietuva"
+		DESCRIPTION="Ar jūsų vietovardis yra \"${_Language}\"?"
+		;;
+	ro_RO*)
+		local _Language="română_România"
+		DESCRIPTION="Este localitatea dvs. \"${_Language}\"?"
+		;;
+	sk_SK*)
+		local _Language="slovenčina_Slovensko"
+		DESCRIPTION="Je vaše lokálne prostredie \"${_Language}\"?"
+		;;
+	hu_HU*)
+		local _Language="magyar_Magyarország"
+		DESCRIPTION="Az Ön területi beállítása \"${_Language}\"?"
+		;;
+	vi_VN*)
+		local _Language="Tiếng Việt_Việt Nam"
+		DESCRIPTION="Ngôn ngữ của bạn có phải là \"${_Language}\" không?"
+		;;
+	id_ID*)
+		local _Language="Indonesia_Indonesia"
+		DESCRIPTION="Apakah lokal Anda \"${_Language}\"?"
+		;;
+	uk_UA*)
+		local _Language="українська_Україна"
+		DESCRIPTION="Ваша мова \"${_Language}\"?"
+		;;
+	en_GB*)
+		local _Language="English_Great Britain"
+		DESCRIPTION="Is your locale \"${_Language}\"?"
+		;;
+	C.UTF-8)
+		local _Language="C.UTF-8"
+		DESCRIPTION="Unfortunately, it is not possible to detect your locale. Is your locale \"${_Language}\"?"
+		;;
+	*) case_language_and_set_desc ;;
+	esac
+
+	if [[ -z ${MENU} ]]; then
+		MENU="${LANG_HALF}: ${_Language}"
+	fi
+
+	case ${LANG} in
+	zh_HK* | zh_TW*)
+		TITLE="語言_區域"
+		DESCRIPTION="檢測到您的語言環境為 \"${_Language}\""
+		;;
+	zh_*)
+		TITLE="语言_区域"
+		DESCRIPTION="检测到您的语言环境为 \"${_Language}\""
+		;;
+	esac
+}
+get_android_locale() {
+	if [[ -n $(command -v getprop) ]]; then
+		ANDROID_LOCALE=$(getprop persist.sys.locale)
+		if [[ -n ${ANDROID_LOCALE} ]]; then
+			ANDROID_LANG=$(echo "${ANDROID_LOCALE}" | awk -F'-' '{print $1"_"$NF}')
+			convert_android_locale_to_unix
+		fi
+	fi
+}
 choose_tmoe_locale_env() {
 	SET_TMOE_LOCALE=true
+	case ${LINUX_DISTRO} in
+	Android) get_android_locale ;;
+	esac
+
 	if [[ -z ${LANG} ]]; then
 		LANG="C.UTF-8"
 	fi
+	set_locale_title_and_desc
+
 	CONTAINER_LOCALE=$(
-		whiptail --title "LOCALE SETTING" \
-			--menu "Please choose your \$LANG\n言語を選択してください" 0 0 0 \
-			"1" "${LANG}" \
-			"2" "繁體中文" \
-			"3" "简体中文_中国内地" \
-			"4" "English_United-States" \
+		whiptail --title "${TITLE}" \
+			--menu "${DESCRIPTION}\nPlease select your \$LANG" 0 0 0 \
+			"1" "${MENU}" \
+			"2" "English_United States" \
+			"3" "简体中文" \
+			"4" "Deutsch_Deutschland" \
 			"5" "español_España" \
-			"6" "Deutsch_Deutschland" \
+			"6" "italiano_Italia" \
 			"7" "français_France" \
 			"8" "ру́сский язы́к_Россия" \
 			"9" "čeština_Česká republika" \
@@ -826,13 +998,14 @@ choose_tmoe_locale_env() {
 			3>&1 1>&2 2>&3
 	)
 	##########################
+	# "hi_IN" |"aa_ER"|"aa_ET"|"agr_PE"|"ak_GH" |"am_ET"|"anp_IN"|"ar_IN"|"ar_SS"
 	case "${CONTAINER_LOCALE}" in
 	1) TMOE_LANG="${LANG}" ;;
-	2) TMOE_LANG="zh_TW.UTF-8" ;;
+	2) TMOE_LANG="en_US.UTF-8" ;;
 	3) TMOE_LANG="$(base64 -d <<<emhfQ04uVVRGLTgK)" ;;
-	4) TMOE_LANG="en_US.UTF-8" ;;
+	4) TMOE_LANG="de_DE.UTF-8" ;;
 	5) TMOE_LANG="es_ES.UTF-8" ;;
-	6) TMOE_LANG="de_DE.UTF-8" ;;
+	6) TMOE_LANG="it_IT.UTF-8" ;;
 	7) TMOE_LANG="fr_FR.UTF-8" ;;
 	8) TMOE_LANG="ru_RU.UTF-8" ;;
 	9) TMOE_LANG="cs_CZ.UTF-8" ;;
