@@ -56,6 +56,7 @@ tmoe_global_env() {
 	check_arch
 	CONFIG_FOLDER="${HOME}/.config/tmoe-linux"
 	TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
+	TMOE_LOCALE_FILE_202203="${TMOE_LOCALE_FILE}_202203_fixed.txt"
 	check_tmoe_menu_locale_file
 	if [ ! -e "${CONFIG_FOLDER}" ]; then
 		mkdir -pv "${CONFIG_FOLDER}"
