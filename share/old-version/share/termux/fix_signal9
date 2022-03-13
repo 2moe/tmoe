@@ -90,13 +90,12 @@ adb_pair_or_connect() {
 do_you_want_to_restart_adb_server() {
     if (whiptail --title "adb kill-server" --yes-button "Yes" --no-button "No" --yesno "Do you want to restart the adb server?" 0 50); then
         adb kill-server
-        adb start-server
     fi
 }
 connect_to_adb_device() {
     adb --version
     do_you_want_to_restart_adb_server
-    adb devices -l
+    # adb devices -l
     adb_pair_or_connect
     ADB_LIST="$(adb devices | wc -l)"
     case ${ADB_LIST} in
