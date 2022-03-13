@@ -93,7 +93,7 @@ do_you_want_to_restart_adb_server() {
     fi
 }
 do_you_want_to_change_the_adb_server_tcp_port() {
-    if (whiptail --title "adb server tcp port" --yes-button "Yes" --no-button "No" --yesno "Do you want to set the adb server port to \"50377\"?\nNote: The adb server port is not the adb device port.\nThe deafult adb server port is 5037.\nBut in tmoe, it is 50377." 0 50); then
+    if (whiptail --title "adb server tcp port" --yes-button "Yes" --no-button "No" --yesno "Do you want to set the adb server port to \"50377\"?\nNote: The adb server port is not the adb device port.\nThe default adb server port is 5037.\nBut in tmoe, it is 50377." 0 50); then
         ANDROID_ADB_SERVER_PORT=50377
     else
         ANDROID_ADB_SERVER_PORT=$(whiptail --inputbox "Please type a tcp port(1024~65535)" 0 50 --title "ADB SERVER PORT" 3>&1 1>&2 2>&3)
