@@ -83,9 +83,8 @@ set_sync_disabled_1() {
 adb_pair_or_connect() {
     if (whiptail --title "Pair or connect" --yes-button "Pair" --no-button "Connect" --yesno "If you are connecting for the first time and it provides a pairing code, then use \"pair\"" 0 50); then
         adb pair "$ADB_ADDRESS"
-    else
-        adb connect "$ADB_ADDRESS"
     fi
+    adb connect "$ADB_ADDRESS"
 }
 do_you_want_to_restart_adb_server() {
     if (whiptail --title "adb kill-server" --yes-button "Yes" --no-button "No" --yesno "Do you want to restart the adb server?" 0 50); then
@@ -95,7 +94,6 @@ do_you_want_to_restart_adb_server() {
 connect_to_adb_device() {
     adb --version
     do_you_want_to_restart_adb_server
-    # adb devices -l
     adb_pair_or_connect
     ADB_LIST="$(adb devices | wc -l)"
     case ${ADB_LIST} in
