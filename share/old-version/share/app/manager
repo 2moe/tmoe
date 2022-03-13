@@ -50,7 +50,7 @@ check_tmoe_command() {
 	else
 		TMOE_TIPS_01="tmoe"
 	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.16,type ${TMOE_TIPS_01} to start it."
+	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.17,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -566,7 +566,7 @@ set_locale_title_and_desc() {
 	zh_HK*) local _Language="繁體中文_香港" ;;
 	zh_TW*) local _Language="正體中文_台灣" ;;
 	zh_SG*) local _Language="简体中文_新加坡" ;;
-	zh*) local _Language="简体中文_中国内地" ;;
+	zh_*) local _Language="简体中文_中国内地" ;;
 	ja_JP*)
 		local _Language="日本語_日本"
 		DESCRIPTION="あなたのロケールは「日本語_日本」ですか？"
@@ -1580,7 +1580,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*update更新" \
 				"8" "🍩 FAQ常见问题" \
 				"9" "🐞 Report a problem(反馈问题/bug)" \
-				"10" "修复 android 12(signal 9 闪退)" \
+				"10" "修复 android 12(signal 9)" \
 				"0" "🌚 exit 退出" \
 				3>&1 1>&2 2>&3
 		)
@@ -1599,7 +1599,7 @@ tmoe_manager_main_menu() {
 				"7" "🍧 *°▽°*update更新" \
 				"8" "🍩 FAQ常見問題" \
 				"9" "🐞 Report a problem(反饋問題/bug)" \
-				"10" "修復 android 12(signal 9 閃退)" \
+				"10" "修復 android 12(signal 9)" \
 				"0" "🌚 exit 退出" \
 				3>&1 1>&2 2>&3
 		)

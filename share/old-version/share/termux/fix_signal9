@@ -80,9 +80,24 @@ set_sync_disabled_0() {
 set_sync_disabled_1() {
     adb -s "$ADB_ADDRESS" shell "/system/bin/device_config set_sync_disabled_for_tests persistent"
 }
+adb_pair_or_connect() {
+    if (whiptail --title "Pair or connect" --yes-button "Pair" --no-button "Connect" --yesno "If you are connecting for the first time and it provides a pairing code, then use \"pair\"" 0 50); then
+        adb pair "$ADB_ADDRESS"
+    else
+        adb connect "$ADB_ADDRESS"
+    fi
+}
+do_you_want_to_restart_adb_server() {
+    if (whiptail --title "adb kill-server" --yes-button "Yes" --no-button "No" --yesno "Do you want to restart the adb server?" 0 50); then
+        adb kill-server
+        adb start-server
+    fi
+}
 connect_to_adb_device() {
+    adb --version
+    do_you_want_to_restart_adb_server
     adb devices -l
-    adb connect "$ADB_ADDRESS"
+    adb_pair_or_connect
     ADB_LIST="$(adb devices | wc -l)"
     case ${ADB_LIST} in
     0 | 1 | 2)

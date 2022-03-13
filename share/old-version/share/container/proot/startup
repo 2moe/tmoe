@@ -98,7 +98,7 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	FAKE_KERNEL=false
 
 	# Make current kernel appear as kernel release *string*.
-	KERNEL_RELEASE="5.14.0-4-cloud-${ARCH_TYPE}"
+	KERNEL_RELEASE="5.10.105-3-cloud-${ARCH_TYPE}"
 
 	# Replace hard links with symlinks, pretending they are really hardlinks. Emulates hard links with symbolic links when SELinux policies do not allow hard links. Default is true.
 	LINK_TO_SYMLINK=true
@@ -280,8 +280,8 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	CAP_LAST_CAP_SOURCE="/dev/null"
 	CAP_LAST_CAP_MOUNT_POINT="/proc/sys/kernel/cap_last_cap"
 	#------------------
-	NUM_OF_MOUNTS=12
-	# 默认为12, 若您将该值修改为15, 则请手动添加MOUNT_SOURCE_13,MOUNT_SOURCE_14,MOUNT_SOURCE_15,MOUNT_POINT_13,MOUNT_POINT_14 & MOUNT_POINT_15 变量。
+	NUM_OF_MOUNTS=2
+	# 默认为2, 若您将该值修改为5, 则请手动添加MOUNT_SOURCE_3,MOUNT_SOURCE_4,MOUNT_SOURCE_5,MOUNT_POINT_3,MOUNT_POINT_4 & MOUNT_POINT_5 变量。
 	# If you want to mount hundreds of directories, then you need to add variables manually.
 	#------------------
 	# MOUNT_SOURCE_1为第一个挂载源，MOUNT_POINT_1 为第一个挂载点，MOUNT_SOURCE_2为第二个挂载源 ...
@@ -294,35 +294,35 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	MOUNT_SOURCE_2=""
 	MOUNT_POINT_2=""
 	#---
-	MOUNT_SOURCE_3=""
-	MOUNT_POINT_3=""
-	#---
-	MOUNT_SOURCE_4=""
-	MOUNT_POINT_4=""
-	#---
-	MOUNT_SOURCE_5=""
-	MOUNT_POINT_5=""
-	#---
-	MOUNT_SOURCE_6=""
-	MOUNT_POINT_6=""
-	#---
-	MOUNT_SOURCE_7=""
-	MOUNT_POINT_7=""
-	#---
-	MOUNT_SOURCE_8=""
-	MOUNT_POINT_8=""
-	#---
-	MOUNT_SOURCE_9=""
-	MOUNT_POINT_9=""
-	#---
-	MOUNT_SOURCE_10=""
-	MOUNT_POINT_10=""
-	#---
-	MOUNT_SOURCE_11=""
-	MOUNT_POINT_11=""
-	#---
-	MOUNT_SOURCE_12=""
-	MOUNT_POINT_12=""
+	# MOUNT_SOURCE_3=""
+	# MOUNT_POINT_3=""
+	# #---
+	# MOUNT_SOURCE_4=""
+	# MOUNT_POINT_4=""
+	# #---
+	# MOUNT_SOURCE_5=""
+	# MOUNT_POINT_5=""
+	# #---
+	# MOUNT_SOURCE_6=""
+	# MOUNT_POINT_6=""
+	# #---
+	# MOUNT_SOURCE_7=""
+	# MOUNT_POINT_7=""
+	# #---
+	# MOUNT_SOURCE_8=""
+	# MOUNT_POINT_8=""
+	# #---
+	# MOUNT_SOURCE_9=""
+	# MOUNT_POINT_9=""
+	# #---
+	# MOUNT_SOURCE_10=""
+	# MOUNT_POINT_10=""
+	# #---
+	# MOUNT_SOURCE_11=""
+	# MOUNT_POINT_11=""
+	# #---
+	# MOUNT_SOURCE_12=""
+	# MOUNT_POINT_12=""
 	#------------------
 	TMOE_LOCALE_FILE="${CONFIG_FOLDER}/locale.txt"
 	DEFAULT_SHELL_CONF="${CONFIG_FOLDER}/default_shell.conf"
