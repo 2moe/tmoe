@@ -111,7 +111,7 @@ EOF
     esac
     case "${DEBIAN_DISTRO}" in
     "kali")
-        KALI_TOOLS="arm"
+        KALI_TOOLS="kali-linux-arm"
         AUTO_INSTALL_KALI_TOOLS=true
         ;;
     esac
@@ -1225,6 +1225,7 @@ install_kali_linux_tools() {
         printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}kali-menu nmap${RESET}"
         eatmydata apt install -y kali-menu || apt-get install -y kali-menu
 
+        [[ -n ${KALI_TOOLS} ]] || KALI_TOOLS="kali-linux-headless"
         printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}${KALI_TOOLS}${RESET}"
         eatmydata apt install -y ${KALI_TOOLS} || apt-get install -y ${KALI_TOOLS}
     fi
