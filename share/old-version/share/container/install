@@ -1593,7 +1593,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		;;
 	    aarch64 | armv8* | armv9*)
 		cd /tmp
-		curl -Lo paru.tar.zst l.tmoe.me/paru-arm64
+		curl -Lo paru.tar.zst l.tmoe.me/paru-arm64 || curl -Lvo paru.tar.zst l.tmoe.me/paru-arm64-github
 		tar -xvf paru.tar.zst
 		mkdir -p /opt/bin
 		install -Dm755 paru /opt/bin
@@ -1642,7 +1642,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        arch_linux_paru
 	        cat /etc/pacman.conf
 	    else
-	        if [[ ! $(command -v paru) ]]; then
+	        if [[ ! -x /usr/bin/paru && ! -x /opt/bin/paru ]]; then
 	            get_arch_paru
 	        fi
 	        if [[ ${TMOE_CHROOT} = true ]]; then
