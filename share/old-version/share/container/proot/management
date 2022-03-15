@@ -1345,7 +1345,6 @@ download_proot_arm64_deb() {
 	cd -
 }
 get_android_proot_version() {
-	curl -Lo "${TMOE_LINUX_DIR}/lib/proot-build-time.txt" l.tmoe.me/proot-aarch64-time
 	local Local_build_time=$(head -n 1 "${TMOE_LINUX_DIR}"/lib/proot-build-time.txt)
 	local Remote_build_time=$(curl -L --connect-timeout 3 --max-time 3 l.tmoe.me/proot-aarch64-time)
 	case "$Remote_build_time" in
