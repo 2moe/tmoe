@@ -678,6 +678,12 @@ create_chroot_startup_script() {
 	if [[ ${SYSTEMD_NSPAWN} = true ]]; then
 		cat_tmoe_nspawn_script
 	fi
+	
+	case "$DISTRO_NAME" in
+	dotnet*)
+		ln_local_dotnet_to_share
+		;;
+	esac
 }
 ###################
 create_tmoe_proot_stat_file() {
@@ -767,6 +773,10 @@ enable_dotnet_comp_mode() {
 		;;
 	esac
 }
+ln_local_dotnet_to_share() {
+	mkdir -p "${DEBIAN_CHROOT}"/usr/share
+	ln -svf /usr/local/dotnet "${DEBIAN_CHROOT}"/usr/share
+}
 create_proot_startup_script() {
 	printf "%s\n" "Creating proot startup script"
 	printf "%s\n" "正在创建proot容器启动脚本 ${TMOE_STARTUP_SCRIPT}"
@@ -784,6 +794,7 @@ create_proot_startup_script() {
 	case "$DISTRO_NAME" in
 	dotnet*)
 		create_dotnet_symlink
+		ln_local_dotnet_to_share
 		enable_dotnet_comp_mode
 		;;
 	esac
