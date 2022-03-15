@@ -490,11 +490,56 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	    fi
 	    ;;
 	    esac
-	} 
+	}
+	set_proot_bin_and_loader_env() {
+	    unset TMOE_LD_LIB_PATH
+	    case "\${PROOT_BIN}" in
+	    "" | system | default) PROOT_PROGRAM=proot ;;
+	    termux | prefix) PROOT_PROGRAM="\${PREFIX}/bin/proot" ;;
+	    compatibility)
+	        PROOT_PROGRAM="\${PROOT_COMPATIBLE_MODE_BIN}"
+	        SHARE_PROOT_LOADER=true
+	        PROOT_LOADER="\${COMPATIBLE_MODE_LOADER}"
+	        LD_LIB_PATH="\${COMPATIBLE_MODE_LD_LIB_PATH}"
+			# [[ -e \$COMPATIBLE_MODE_LD_LIB_PATH ]] || unset COMPATIBLE_MODE_LD_LIB_PATH
+	        get_proot_comp_mode_deb
+	        ;;
+	    32)
+	        case \${HOST_DISTRO} in
+	        Android)
+	            PROOT_PROGRAM="\${PROOT_32_TERMUX_BIN}"
+	            PROOT_LOADER="\${PROOT_32_TERMUX_LOADER}"
+	            LD_LIB_PATH="\${PROOT_32_TERMUX_LD_LIB_PATH}"
+	            ;;
+	        *) PROOT_PROGRAM=proot ;;
+	        esac
+	        ;;
+	    *) PROOT_PROGRAM="\${PROOT_BIN}" ;;
+	    esac
+	    case \${PROOT_LOADER} in
+	    "")
+	        case "\${PROOT_LIBEXEC_LOADER}" in
+	        default | system | "") ;;
+	        *) PROOT_LOADER="\${PROOT_LIBEXEC_LOADER}" ;;
+	        esac
+	        ;;
+	    esac
+	    case "\${LD_LIB_PATH}" in
+	    default | system | "") ;;
+	    *)
+	         case "\${LD_LIBRARY_PATH}" in
+	         "") TMOE_LD_LIB_PATH="\${LD_LIB_PATH}" ;;
+	         *) TMOE_LD_LIB_PATH="\${LD_LIB_PATH}:\${LD_LIBRARY_PATH}" ;;
+	         esac
+	         ;;
+	    esac
+	}
+	#----------------
 	start_tmoe_gnu_linux_container() {
 	    load_global_conf
 	    unset LD_PRELOAD PROOT_UID PROOT_GID PROOT_HOME CONTAINER_BIN_PATH
 	    check_exa_var
+		set_proot_bin_and_loader_env
 	    #------------------
 	    case \${PROOT_USER} in
 	    "" | root) ;;
@@ -798,48 +843,7 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 		*)  set -- "\${@}" "\${TMOE_SHELL}" "\${LOGIN_SHELL_ARG}" ;;
 		esac
 	    #------------------
-	    unset TMOE_LD_LIB_PATH
-	    case "\${PROOT_BIN}" in
-	    "" | system | default) PROOT_PROGRAM=proot ;;
-	    termux | prefix) PROOT_PROGRAM="\${PREFIX}/bin/proot" ;;
-	    compatibility)
-	        PROOT_PROGRAM="\${PROOT_COMPATIBLE_MODE_BIN}"
-	        SHARE_PROOT_LOADER=true
-	        PROOT_LOADER="\${COMPATIBLE_MODE_LOADER}"
-	        LD_LIB_PATH="\${COMPATIBLE_MODE_LD_LIB_PATH}"
-			# [[ -e \$COMPATIBLE_MODE_LD_LIB_PATH ]] || unset COMPATIBLE_MODE_LD_LIB_PATH
-	        get_proot_comp_mode_deb
-	        ;;
-	    32)
-	        case \${HOST_DISTRO} in
-	        Android)
-	            PROOT_PROGRAM="\${PROOT_32_TERMUX_BIN}"
-	            PROOT_LOADER="\${PROOT_32_TERMUX_LOADER}"
-	            LD_LIB_PATH="\${PROOT_32_TERMUX_LD_LIB_PATH}"
-	            ;;
-	        *) PROOT_PROGRAM=proot ;;
-	        esac
-	        ;;
-	    *) PROOT_PROGRAM="\${PROOT_BIN}" ;;
-	    esac
 	    set -- "\${PROOT_PROGRAM}" "\${@}"
-	    case \${PROOT_LOADER} in
-	    "")
-	        case "\${PROOT_LIBEXEC_LOADER}" in
-	        default | system | "") ;;
-	        *) PROOT_LOADER="\${PROOT_LIBEXEC_LOADER}" ;;
-	        esac
-	        ;;
-	    esac
-	    case "\${LD_LIB_PATH}" in
-	    default | system | "") ;;
-	    *)
-	         case "\${LD_LIBRARY_PATH}" in
-	         "") TMOE_LD_LIB_PATH="\${LD_LIB_PATH}" ;;
-	         *) TMOE_LD_LIB_PATH="\${LD_LIB_PATH}:\${LD_LIBRARY_PATH}" ;;
-	         esac
-	         ;;
-	    esac
 	    if [[ -n \${PROOT_LOADER} && -z \${TMOE_LD_LIB_PATH} ]]; then
 	        set -- "env" "PROOT_LOADER=\${PROOT_LOADER}" "\${@}"
 	    elif [[ -z \${PROOT_LOADER} && -n \${TMOE_LD_LIB_PATH} ]]; then
