@@ -267,12 +267,12 @@ about_dot_net_6_compatible_mode() {
 	esac
 	case ${TMOE_MENU_LANG} in
 	zh*)
-		TMOE_TIPS_04="在某些环境中，您可能会遇到一些兼容问题。\n例如：在proot中(宿主:android, 容器:gnu/linux, 架构:arm64)，\n您在使用微软的 .NET6.0 时可能会遇到 \"csc.dll exited with code 139\"，\n没有找到 loader 等错误。注：.NET 7 没有此问题。\n在一般情况下，请不要开启此模式。"
+		TMOE_TIPS_04="在某些环境中，您可能会遇到一些兼容问题。\n例如：在proot中(宿主:android, 容器:gnu/linux, 架构:arm64)，\n您在使用微软的 .NET6.0 时可能会遇到 \"csc.dll exited with code 139\"，没有找到 loader 等错误。注：.NET 7 没有此问题。\n开启 .NET6 兼容模式将修复这些问题。在一般情况下，请不要开启此模式。"
 		YES_BUTTON="禁用"
 		NO_BUTTON="启用"
 		;;
 	*)
-		TMOE_TIPS_04="In some environments, you may encounter some strange compatibility issues.\nFor example: In proot(host: android, container: gnu/linux, arch: arm64), \nmicrosoft dotNET 6.0 may have \"csc.dll exited with code 139\" or \"loader not found\" when running a project.\nNote: dotNET 7 does not have this problem.\nIn general, you should not enable this mode."
+		TMOE_TIPS_04="In some environments, you may encounter some strange compatibility issues.\nFor example: In proot(host: android, container: gnu/linux, arch: arm64), \nmicrosoft dotNET 6.0 may have \"csc.dll exited with code 139\" or \"loader not found\" when running a project.\nNote: dotNET 7 does not have these issues.\nEnabling .NET6 COMP mode will fix these issues. In general, you should not enable this mode."
 		YES_BUTTON="disable"
 		NO_BUTTON="enable"
 		;;
