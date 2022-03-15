@@ -246,6 +246,7 @@ environment_variables_and_automatic_startup_script_management() {
 	environment_variables_and_automatic_startup_script_management
 }
 about_dot_net_6_compatible_mode() {
+
 	case ${TMOE_CHROOT} in
 	true)
 		printf "%s\n" \
@@ -256,6 +257,7 @@ about_dot_net_6_compatible_mode() {
 		;;
 	*) ;;
 	esac
+
 	CURRENT_STATUS=$(grep -E "^[^#]*DOT_NET_6_COMPATIBLE_MODE=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
 
 	case ${CURRENT_STATUS} in
@@ -289,7 +291,7 @@ about_dot_net_6_compatible_mode() {
 		"${GREEN}rm ${YELLOW}-rv ${BLUE}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}" \
 		"${GREEN}ln ${YELLOW}-svf ${BLUE}\${DOTNET_ROOT} ${CYAN}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}${RESET}" \
 		"If you cannot use ${BLUE}powershell${RESET} as your default shell, create a symbolic link ${PURPLE}in the container${RESET}" \
-		"${GREEN}ln ${YELLOW}-svf ${BLUE}\${DOTNET_ROOT} ${CYAN}/usr/share/dotnet${RESET}" \
+		"${GREEN}ln ${YELLOW}-svf ${BLUE}\${DOTNET_ROOT} ${CYAN}/usr/share/dotnet${RESET}"
 }
 
 switch_to_chroot_or_unshare() {
