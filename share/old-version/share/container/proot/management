@@ -276,7 +276,7 @@ about_dot_net_6_compatible_mode() {
 		;;
 	esac
 
-	if (whiptail --title "DOTNET6 COMP MODE" --yes-button "$YES_BUTTON" --no-button "$NO_BUTTON" --yesno "${TMOE_TIPS_03}" 0 50); then
+	if (whiptail --title "DOTNET6 COMP MODE" --yes-button "$YES_BUTTON" --no-button "$NO_BUTTON" --yesno "${TMOE_TIPS_03}\n${TMOE_TIPS_04}" 0 50); then
 		${TMOE_PREFIX} sed -E -i "s@^(DOT_NET_6_COMPATIBLE_MODE=).*@\1false@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	else
 		${TMOE_PREFIX} sed -E -i "s@^(DOT_NET_6_COMPATIBLE_MODE=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
@@ -287,7 +287,9 @@ about_dot_net_6_compatible_mode() {
 		"You should create a symlink ${PURPLE}in the container ${BLUE}manually${RESET}:" \
 		"${GREEN}mkdir ${YELLOW}-pv ${BLUE}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}" \
 		"${GREEN}rm ${YELLOW}-rv ${BLUE}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}" \
-		"${GREEN}ln ${YELLOW}-svf ${BLUE}\${DOTNET_ROOT} ${CYAN}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}${RESET}"
+		"${GREEN}ln ${YELLOW}-svf ${BLUE}\${DOTNET_ROOT} ${CYAN}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}${RESET}" \
+		"If you cannot use ${BLUE}powershell${RESET} as your default shell, create a symbolic link ${PURPLE}in the container${RESET}" \
+		"${GREEN}ln ${YELLOW}-svf ${BLUE}\${DOTNET_ROOT} ${CYAN}/usr/share/dotnet${RESET}" \
 }
 
 switch_to_chroot_or_unshare() {

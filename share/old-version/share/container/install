@@ -678,11 +678,9 @@ create_chroot_startup_script() {
 	if [[ ${SYSTEMD_NSPAWN} = true ]]; then
 		cat_tmoe_nspawn_script
 	fi
-	
+
 	case "$DISTRO_NAME" in
-	dotnet*)
-		ln_local_dotnet_to_share
-		;;
+	dotnet*) ln_local_dotnet_to_share ;;
 	esac
 }
 ###################
