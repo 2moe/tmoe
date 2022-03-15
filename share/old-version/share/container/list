@@ -16,7 +16,7 @@ choose_which_gnu_linux_distro() {
 		MENU="容器をお選びください"
 		OPT_0="🌚 戻る"
 		OPT_1="🍭 毎週のGUIビルド(cutefish,kde,mate,xfce & lxqt)"
-		OPT_2="🐳 Rust,go,dotNET,nodejs,jdk,mongodb & docker"
+		OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
 		OPT_3="🍥 Debian は オペレーティングシステムのフリーなディストリビューションです"
 		OPT_4="🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである"
 		OPT_5="🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている"
@@ -31,7 +31,7 @@ choose_which_gnu_linux_distro() {
 		MENU="您想要安装哪个容器?"
 		OPT_0="🌚 Return to previous menu 返回上级菜单"
 		OPT_1="🍭 每周构建cutefish,kde,xfce,mate & lxqt"
-		OPT_2="🐳 Rust,go,dotNET,nodejs,jdk,mongodb & docker"
+		OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
 		OPT_3="🍥 Debian:致力于自由"
 		OPT_4="🍛 Ubuntu:我的存在是因為大家的存在"
 		OPT_5="🌉 Arch:系统设计以KISS为总体指导原则"
@@ -46,7 +46,7 @@ choose_which_gnu_linux_distro() {
 		MENU="Which container do you want to install?"
 		OPT_0="🌚 Return to previous menu"
 		OPT_1="🍭 Weekly builds(cutefish,xfce,kde,mate & lxqt)"
-		OPT_2="🐳 Rust,go,dotNET,nodejs,jdk,mongodb & docker"
+		OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
 		OPT_3="🍥 Debian is a distro composed of free and open-source software"
 		OPT_4="🍛 Ubuntu is the modern, open source OS."
 		OPT_5="🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility"
@@ -150,13 +150,14 @@ install_tmoe_moonthly_build_edition() {
 			"2" "🐹 Go (Makes it easy to build simple&reliable app)" \
 			"3" "Visual Studio Code web server" \
 			"4" "Microsoft .NET-SDK(amd64, amr64)" \
-			"5" "OpenJDK(An open-source Java Platform)" \
-			"6" "🐳 Docker(Run docker with qemu)" \
-			"7" "Node.js(A back-end JavaScript runtime environment)" \
-			"8" "Nginx(A high-performance HTTP server)" \
-			"9" "PHP(A general-purpose scripting language)" \
-			"10" "MongoDB(Classified as a NoSQL database program)" \
-			"11" "Ruby(An interpreted,general-purpose lang)" \
+			"5" "Swift(Mainly used for Apple iOS and MacOS app development)" \
+			"6" "OpenJDK(An open-source Java Platform)" \
+			"7" "🐳 Docker(Run docker with qemu)" \
+			"8" "Node.js(A back-end JavaScript runtime environment)" \
+			"9" "Nginx(A high-performance HTTP server)" \
+			"10" "PHP(A general-purpose scripting language)" \
+			"11" "MongoDB(Classified as a NoSQL database program)" \
+			"12" "Ruby(An interpreted,general-purpose lang)" \
 			"0" "🌚 back =￣ω￣=" \
 			3>&1 1>&2 2>&3)
 	}
@@ -183,30 +184,34 @@ install_tmoe_moonthly_build_edition() {
 		DESKTOP="latest"
 		;;
 	5)
-		DISTRO_NAME="jdk"
+		DISTRO_NAME="swift"
 		DESKTOP="latest"
 		;;
 	6)
+		DISTRO_NAME="jdk"
+		DESKTOP="latest"
+		;;
+	7)
 		DISTRO_NAME="docker"
 		DESKTOP="qemu"
 		;;
-	7)
+	8)
 		DISTRO_NAME="node"
 		choose_latest_or_alpine
 		;;
-	8)
+	9)
 		DISTRO_NAME="nginx"
 		choose_latest_or_alpine
 		;;
-	9)
+	10)
 		DISTRO_NAME="php"
 		choose_latest_or_alpine
 		;;
-	10)
+	11)
 		DISTRO_NAME="mongo"
 		DESKTOP="latest"
 		;;
-	11)
+	12)
 		DISTRO_NAME="ruby"
 		choose_latest_or_alpine
 		;;
@@ -219,7 +224,7 @@ install_tmoe_moonthly_build_edition() {
 		*) distro_does_not_support ;;
 		esac
 		;;
-	dotnet)
+	dotnet | swift)
 		case ${ARCH_TYPE} in
 		arm64 | amd64) WEEKLY_BUILD_CONTAINER=true ;;
 		*) distro_does_not_support ;;
