@@ -1412,11 +1412,10 @@ install_weekly_build_container() {
 	case ${TMOE_LANG} in
 	zh_*UTF-8) printf "%s\n" "正在获取版本信息..." ;;
 	esac
-
+	printf "%s\n" "Getting ${DEBIAN_FOLDER} version info..."
 	case ${DISTRO_NAME} in
 	dotnet*) get_android_proot_arm64_deb ;;
 	esac
-	printf "%s\n" "Getting ${DEBIAN_FOLDER} version info..."
 	ROOTFS_VERSION='latest02'
 
 	case ${NODE_NAME} in

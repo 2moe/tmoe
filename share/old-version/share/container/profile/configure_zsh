@@ -101,7 +101,8 @@ do_you_want_to_set_pwsh_as_your_default_shell() {
 check_container_name() {
 	CONTAINER_NAME=$(grep CONTAINER_NAME ${CONTAINER_TXT} | awk -F '=' '{print $2}')
 	case ${CONTAINER_NAME} in
-	*dotnet)
+	*dotnet*)
+		# dotnet-nogui_arm64
 		AUTO_CONFIGURE=false
 		do_you_want_to_set_pwsh_as_your_default_shell
 		;;
