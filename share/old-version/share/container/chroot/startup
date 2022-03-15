@@ -134,13 +134,17 @@ cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 	# The default login shell is zsh.
 	# 默认登录shell是zsh
 	# Die Standard-Login-Shell ist zsh.
-	DEFAULT_LOGIN_SHELL_0="zsh"
+	DEFAULT_LOGIN_SHELL_0="/bin/zsh"
 
 	# The lower the number, the higher the priority.
-	DEFAULT_LOGIN_SHELL_1="fish"
-	DEFAULT_LOGIN_SHELL_2="bash"
-	DEFAULT_LOGIN_SHELL_3="ash"
-	DEFAULT_LOGIN_SHELL_4="su"
+	DEFAULT_LOGIN_SHELL_1="/bin/fish"
+	DEFAULT_LOGIN_SHELL_2="/bin/bash"
+	DEFAULT_LOGIN_SHELL_3="/bin/ash"
+	DEFAULT_LOGIN_SHELL_4="/bin/su"
+
+	# For zsh & bash, "-l" = "--login"
+	# For powershell & nushell, they do not have the "-l" arg.
+	LOGIN_SHELL_ARG="-l"
 	################
 	# unshare
 
@@ -436,19 +440,26 @@ cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 	    set -- "\${@}" "PULSE_SERVER=tcp:127.0.0.1:4713"
 	    # CHECK SHELL
 	    [[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
-	    if [[ -z \${TMOE_SHELL} ]]; then
+
+	    case \${TMOE_SHELL} in
+	        "") 
 	        for i in \${DEFAULT_LOGIN_SHELL_0} \${DEFAULT_LOGIN_SHELL_1} \${DEFAULT_LOGIN_SHELL_2} \${DEFAULT_LOGIN_SHELL_3} \${DEFAULT_LOGIN_SHELL_4}; do
-	            if [[ -f \${ROOTFS_DIR}/bin/\${i} || -L \${ROOTFS_DIR}/bin/\${i} ]]; then
-	                TMOE_SHELL="/bin/\${i}"
+	            case "\$i" in
+	            */*) New_i="\$i";;
+	            *) New_i="/bin/\$i" ;;
+	            esac
+	            if [[ -f \${ROOTFS_DIR}\${New_i} || -L \${ROOTFS_DIR}\${New_i} ]]; then
+	                TMOE_SHELL="\${New_i}"
 	                break
 	            fi
-	        done
-	    fi
-	    if [[ -n \${TMOE_SHELL} ]]; then
-	        set -- "\${@}" "SHELL=\${TMOE_SHELL}"
-	    else
-	        set -- "\${@}" "SHELL=/bin/zsh"
-	    fi
+	        done 
+			;;
+			*/*) ;;
+			*) TMOE_SHELL=/bin/\${TMOE_SHELL} ;;
+		esac
+
+	    set -- "\${@}" "SHELL=\${TMOE_SHELL}"
+
 	    # LANG
 	    if [[ -e "\${TMOE_LOCALE_FILE}" ]]; then
 	        set -- "\${@}" "LANG=\$(head -n 1 \${TMOE_LOCALE_FILE})"
@@ -488,19 +499,25 @@ cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 	    fi
 	    ############
 	    # LOGIN SHELL
-	    if [[ \${CHROOT_USER} = root ]]; then
-	        set -- "\${@}" "\${TMOE_SHELL}" "-l"      
-	    elif [[ -f \${ROOTFS_DIR}/usr/bin/sudo ]]; then
+	    case \${TMOE_SHELL} in
+	    */pwsh| */nushell| */nu) 
+	         case \${LOGIN_SHELL_ARG} in
+	         "-l") LOGIN_SHELL_ARG="" ;;
+	         esac
+	         ;;
+		esac
+
+	    if [[ \${CHROOT_USER} = root || ! -f \${ROOTFS_DIR}/usr/bin/sudo ]]; then
+	        case "\${LOGIN_SHELL_ARG}" in
+	        "") set -- "\${@}" "\${TMOE_SHELL}" ;;
+	        *) set -- "\${@}" "\${TMOE_SHELL}" "\${LOGIN_SHELL_ARG}" ;;
+	        esac
+		else
 	        set -- "\${@}" "/usr/bin/sudo" "-Eu" "\${CHROOT_USER}"
-	        set -- "\${@}" "\${TMOE_SHELL}" "-l"
-	    else
-	        if [[ -e \${ROOTFS_DIR}/bin/zsh ]]; then
-	            set -- "\${@}" "/bin/zsh" "-l"
-	        elif [[ -e \${ROOTFS_DIR}/bin/bash ]]; then
-	            set -- "\${@}" "/bin/bash" "-l"
-	        else
-	            set -- "\${@}" "/bin/sh" "-l"
-	        fi
+	        case "\${LOGIN_SHELL_ARG}" in
+	        "") set -- "\${@}" "\${TMOE_SHELL}" ;;
+	        *) set -- "\${@}" "\${TMOE_SHELL}" "\${LOGIN_SHELL_ARG}" ;;
+	        esac
 	    fi
 	    ############
 	    #CHROOT/UNSHARE BIN

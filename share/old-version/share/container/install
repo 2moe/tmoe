@@ -745,6 +745,28 @@ set_proot_container_env() {
 		"export MOZ_FAKE_NO_SANDBOX=1" \
 		>>"${DEBIAN_CHROOT}"/etc/environment
 }
+create_dotnet_symlink() {
+	# double DEBIAN_CHROOT
+	DOUBLE_PATH="${DEBIAN_CHROOT}/${DEBIAN_CHROOT}/usr/local"
+	mkdir -pv "${DOUBLE_PATH}/dotnet"
+	rm -rfv "${DOUBLE_PATH}/dotnet"
+	ln -svf /usr/local/dotnet "${DOUBLE_PATH}"
+}
+enable_dotnet_comp_mode() {
+	case ${TRUE_ARCH_TYPE} in
+	arm64)
+		case ${ARCH_TYPE} in
+		arm64)
+			sed -E \
+				-e "s@^(DOT_NET_6_COMPATIBLE_MODE=).*@\1true@g" \
+				-e "s@^(PROOT_BIN=).*@\1\"compatibility\"@g" \
+				-e "s@^(SHARE_PROOT_LOADER=).*@\1true@g" \
+				-i "${TMOE_STARTUP_SCRIPT}"
+			;;
+		esac
+		;;
+	esac
+}
 create_proot_startup_script() {
 	printf "%s\n" "Creating proot startup script"
 	printf "%s\n" "正在创建proot容器启动脚本 ${TMOE_STARTUP_SCRIPT}"
@@ -759,6 +781,12 @@ create_proot_startup_script() {
 	else
 		set_proot_container_env
 	fi
+	case "$DISTRO_NAME" in
+	dotnet*)
+		create_dotnet_symlink
+		enable_dotnet_comp_mode
+		;;
+	esac
 	cd ${CONFIG_FOLDER}
 	if [[ $(command -v getprop) && $(command -v am) ]]; then
 		get_android_host_name

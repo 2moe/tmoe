@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #######################################
 have_you_encountered_signal9() {
-    if (whiptail --title "Android 12(signal9)" --yes-button "Yes" --no-button "No" --yesno "Have you encountered this problem:\n [Process completed (signal 9) - press Enter]?" 0 50); then
+    if (whiptail --title "Android 12(signal9)" --yesno "Have you encountered this problem:\n [Process completed (signal 9) - press Enter]?" 0 50); then
         check_adb_command
         type_adb_address
     else
@@ -88,12 +88,12 @@ adb_pair_or_connect() {
     adb devices -l
 }
 do_you_want_to_restart_adb_server() {
-    if (whiptail --title "adb kill-server" --yes-button "Yes" --no-button "No" --yesno "Do you want to restart the adb server?" 0 50); then
+    if (whiptail --title "adb kill-server" --yesno "Do you want to restart the adb server?" 0 50); then
         adb kill-server
     fi
 }
 do_you_want_to_change_the_adb_server_tcp_port() {
-    if (whiptail --title "adb server tcp port" --yes-button "Yes" --no-button "No" --yesno "Do you want to set the adb server port to \"50377\"?\nNote: The adb server port is not the adb device port.\nThe default adb server port is 5037.\nBut in tmoe, it is 50377." 0 50); then
+    if (whiptail --title "adb server tcp port" --yesno "Do you want to set the adb server port to \"50377\"?\nNote: The adb server port is not the adb device port.\nThe default adb server port is 5037.\nBut in tmoe, it is 50377." 0 50); then
         ANDROID_ADB_SERVER_PORT=50377
     else
         ANDROID_ADB_SERVER_PORT=$(whiptail --inputbox "Please type a tcp port(1024~65535)" 0 50 --title "ADB SERVER PORT" 3>&1 1>&2 2>&3)

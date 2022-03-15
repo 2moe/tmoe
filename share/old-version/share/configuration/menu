@@ -10,10 +10,23 @@ configure_tmoe_container_main() {
 configure_tmoe_container() {
     RETURN_TO_WHERE='configure_tmoe_container'
     RETURN_TO_MENU='configure_tmoe_container'
+    case ${TMOE_MENU_LANG} in
+    zh*)
+        OPT_1="DNS 域名解析系统"
+        OPT_2="Timezone 时区"
+        OPT_3="Shared dir 共享目录"
+        ;;
+    *)
+        OPT_1="DNS (Domain Name System)"
+        OPT_2="Timezone"
+        OPT_3="Shared dir"
+        ;;
+    esac
+
     TMOE_OPTION=$(whiptail --title "CONF AND MANUAL" --menu "You can view the manual or modify the config here." 0 50 0 \
-        "1" "DNS 域名解析系统" \
-        "2" "Timezone 时区" \
-        "3" "Shared dir 共享目录" \
+        "1" "$OPT_1" \
+        "2" "$OPT_2" \
+        "3" "$OPT_3" \
         "4" "fortune & hitokoto 一言" \
         "5" "man mount" \
         "6" "man umount" \
@@ -68,7 +81,7 @@ do_you_want_to_share_tf() {
     zh_*UTF-8) local _Title="在容器中共享宿主的TF卡/外置存储" ;;
     *) local _Title="external storage" ;;
     esac
-    if (whiptail --title "$_Title" --yes-button "Yes" --no-button "No" --yesno "Do you want to share the ~/storage/external-1?" 8 50); then
+    if (whiptail --title "$_Title" --yesno "Do you want to share the ~/storage/external-1?" 8 50); then
         echo "MOUNT_TF=true" >"${TF_CONF}"
     else
         echo "MOUNT_TF=false" >"${TF_CONF}"
@@ -84,7 +97,7 @@ do_you_want_to_share_storage() {
         zh_*UTF-8) local _Title="共享 /storage 目录" ;;
         *) local _Title="Shared dir: /storage" ;;
         esac
-        if (whiptail --title "$_Title" --yes-button "Yes" --no-button "No" --yesno "Do you want to share the /storage directory?" 8 50); then
+        if (whiptail --title "$_Title" --yesno "Do you want to share the /storage directory?" 8 50); then
             echo "MOUNT_STORAGE=true" >"${STORAGE_CONF}"
         else
             echo "MOUNT_STORAGE=false" >"${STORAGE_CONF}"
@@ -343,7 +356,7 @@ how_to_customize_dns() {
 tmoe_container_dns() {
     RETURN_TO_WHERE='tmoe_container_dns'
     DNS_NAME=''
-    TMOE_OPTION=$(whiptail --title "Please choose DNS" --menu "默认为第一项\nYou can choose cloudflare dns." 0 50 0 \
+    TMOE_OPTION=$(whiptail --title "DNS(Domain Name System)" --menu "默认为第一项\nYou can choose cloudflare dns." 0 50 0 \
         "1" "[240c::6666](CFIEC)" \
         "2" "[2606:4700:4700::1111](CloudFlare)" \
         "3" "[2001:4860:4860::8888](Google)" \
@@ -379,14 +392,14 @@ tmoe_container_dns() {
 }
 ##############
 is_your_timezone_gmt9() {
-    if (whiptail --title "Is your timezone UTC+9" --yes-button "YES" --no-button "NO" --yesno "UTC+9 = 東9區\nあなたのタイムゾーンは UTC +9 ですか" 9 50); then
+    if (whiptail --title "Is your timezone UTC+9" --yesno "UTC+9 = 東9區\nあなたのタイムゾーンは UTC +9 ですか" 9 50); then
         TIMEZONE="GMT-9"
     else
         tmoe_container_timezone
     fi
 }
 is_your_timezone_utc() {
-    if (whiptail --title "Is your timezone ${TIME_ZONE}" --yes-button "Yes" --no-button "No" --yesno "${DESCRIPTION}" 0 50); then
+    if (whiptail --title "Is your timezone ${TIME_ZONE}" --yesno "${DESCRIPTION}" 0 50); then
         TIMEZONE="${TIME_ZONE}"
     else
         tmoe_container_timezone
@@ -657,7 +670,7 @@ install_fortunes_mod() {
 }
 ##############
 do_you_want_to_enable_hitokoto() {
-    if (whiptail --title "HITOKOTO AND FORTUNE" --yes-button "YES" --no-button "NO" --yesno "DO YOU WANT TO ENABLE HITOKOTO?\n是否需要启用一言？♪(^∇^*) " 9 50); then
+    if (whiptail --title "HITOKOTO AND FORTUNE" --yesno "DO YOU WANT TO ENABLE HITOKOTO?\n是否需要启用一言？♪(^∇^*) " 9 50); then
         cat >${CONFIG_FOLDER}/hitokoto.conf <<-EOF
 			TMOE_CONTAINER_FORTUNE=true
 			TMOE_CONTAINER_HITOKOTO=true

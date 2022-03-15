@@ -16,16 +16,39 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	# 启动容器后进入的目录，默认为用户的主目录。请注意: 若您的默认 login shell 为 bash/zsh, 则请在“环境变量与登录项管理”处修改entrypoint。
 	WORK_DIR="default"
 	#------------------
-	# binary file
+	# binary file & compatibility
 
-	: <<-'EOF'
+	: <<-'EOF_compatibility_notes'
+	In some environments, you may encounter some strange compatibility issues.
+	For example: In proot(host: android, container: gnu/linux, arch: arm64), 
+	microsoft dotNET 6.0 may have "csc.dll exited with code 139" or "loader not found" when running a project.
+	Note: dotNET 7 does not have this problem.
+
+	In general, you should not enable this mode!!!
+
+	Enabling this mode forces the values of other variables to be overwritten.
+
+	if dot_net_6_compatible_mode = true {
+	    proot_bin = "compatibility",
+	    share_proot_loader = true,
+	};
+	By the way, if it cannot find the dotnet bin. You should create a symlink in the container manually:
+	mkdir -pv "${DEBIAN_CHROOT}"/\${DOTNET_ROOT} 
+	rm -rv "${DEBIAN_CHROOT}"/\${DOTNET_ROOT} 
+	ln -svf \${DOTNET_ROOT} "${DEBIAN_CHROOT}"/\${DOTNET_ROOT}
+	EOF_compatibility_notes
+	# true or false
+	DOT_NET_6_COMPATIBLE_MODE=false
+
+	: <<-'EOF_proot_bin_notes'
 	您可以自行编译proot, 并指定其二进制文件所在路径。当此变量值为"default"时，将使用系统默认proot二进制文件所在路径；当其为"termux"时，将使用 "\${PREFIX}/bin/proot"。
-	您也可以输入完整路径, 例如"/usr/local/bin/proot"
+	您也可以使用绝对路径, 例如"/usr/local/bin/proot"
 	You can specify the path where the binary file of proot is located. If the value is "default", it will use the default path of the system.
 	If the value is "32", it will use proot 32bit-version. If your host is arm64, and you want to run an i386/armhf container, then you can modify it to "32".
 
-	Note：若您使用了termux, 宿主机为64位(arm64)，容器(非虚拟机)为32位(i386/armhf)，则请使用32位版proot。如果arm64 termux使用了armhf版的proot，那么qemu-user-i386(arm64)也要切换为32位armhf版本。
-	若内核支持 binfmt_misc，且 host os 已经配置过 binfmt_misc 的 register，则您无需在此处进行额外的配置，且 container 没有那么多奇奇怪怪的问题。
+	Note：若内核支持 binfmt_misc，且 host os 已经配置过 binfmt_misc 的 register，则您无需在此处进行额外的配置，且 container 没有那么多奇奇怪怪的问题。
+
+	If your host os is already configured with binfmt_misc register, you don't have to worry about that much and the container doesn't have that many strange problems.
 
 	    // host_os == "android" && host_arch == "arm64":
 	    let (proot_bin_arch, qemu_bin_arch) = match (host_arch, host_os, container_arch) {
@@ -37,6 +60,7 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	        },
 	        ("arm64", "android", "armhf") => ("proot_armhf", "noqemu"),
 	        ("arm64", "android", "arm64") => ("proot_arm64", "noqemu"),
+	        ("arm64(without aarch32 support)", "android", "armhf") => ("proot_arm64", "qemu-user-arm-latest_arm64"),
 	    };
 
 	You can also enter an absolute path, for example, "\${PREFIX}/bin/proot"
@@ -44,20 +68,54 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	        "system" | "default" => "proot",
 	        "termux" => "${PREFIX}/bin/proot",
 	        "32" => PROOT_32_TERMUX_BIN, // "32" is &str, not i32/isize 
+	        "compatibility" => PROOT_COMPATIBLE_MODE_BIN,
 	        path @ _ => path,
 	    };
-	EOF
-	# Optional values: "default", "system", "termux", "32", or an absolute path.
+	EOF_proot_bin_notes
+	# Optional values: "default", "compatibility", "system", "termux", "32", or an absolute path.
 	PROOT_BIN="default"
 
+	# only for android (host_arch = arm64, container_arch = arm64)
+	# If you want to use COMPATIBLE_MODE on other platforms, compile proot manually and specify the path instead of using the default path.
+	# if proot_bin = "compatibility", proot_bin = "\$proot_compatible_mode_bin"
+	# value: an absolute path.
+	PROOT_COMPATIBLE_MODE_BIN="${TMOE_LINUX_DIR}/lib/data/data/com.termux/files/usr/bin/proot"
+
+	# if proot_bin = "32" && host_os = "android" {proot_bin = "\$proot_32_termux_bin"}
+	# value: an absolute path.
 	# PROOT_32_DEBIAN_BIN="${TMOE_LINUX_DIR}/lib32/usr/bin/proot"
 	PROOT_32_TERMUX_BIN="${TMOE_LINUX_DIR}/lib32/data/data/com.termux/files/usr/bin/proot"
 
+	# Some environments may have loader errors, for example: Microsoft dotNET 6.
+	# In this case, you need to share the proot loader.
+	# mount-src: proot_loader, mount-target: proot_loader
+	# true or false
+	SHARE_PROOT_LOADER=false
+
+	# proot loader
+	# if proot_bin = "default|system|path" {proot_loader = "\$proot_libexec_loader"}
+	# Optional values: "default", "system", or an absolute path.
 	PROOT_LIBEXEC_LOADER="default"
+
+	# only for android (host_arch = arm64, container_arch = "armhf|armel")
+	# if proot_bin = "32" {proot_loader = "\$proot_32_termux_loader"}
+	# value: an absolute path.
 	PROOT_32_TERMUX_LOADER="${TMOE_LINUX_DIR}/lib32/data/data/com.termux/files/usr/libexec/proot/loader"
 
+	# only for android (host_arch = arm64, container_arch = arm64)
+	# if proot_bin = "compatibility" {proot_loader = "\$compatible_mode_loader"}
+	# value: an absolute path.
+	COMPATIBLE_MODE_LOADER="${TMOE_LINUX_DIR}/lib/data/data/com.termux/files/usr/libexec/proot/loader"
+
+	# if proot_bin = "default|system|path" {ld_library_path = "\$ld_lib_path"}
 	LD_LIB_PATH="default"
+
+	# if proot_bin = "32" {ld_library_path = "\$proot_32_termux_ld_lib_path"}
+	# value: an absolute path.
 	PROOT_32_TERMUX_LD_LIB_PATH="${TMOE_LINUX_DIR}/lib32/data/data/com.termux/files/usr/lib"
+
+	# if proot_bin = "compatibility" {ld_library_path = "\$compatible_mode_ld_lib_path"}
+	COMPATIBLE_MODE_LD_LIB_PATH="${TMOE_LINUX_DIR}/lib/data/data/com.termux/files/usr/lib" 
 
 	ROOTFS_DIR="${DEBIAN_CHROOT}"
 	PROOT_PROC_DIR="\${ROOTFS_DIR}/usr/local/etc/tmoe-linux/proot_proc"
@@ -184,13 +242,18 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	# The default login shell is zsh.
 	# 默认登录shell是zsh
 	# Die Standard-Login-Shell ist zsh.
-	DEFAULT_LOGIN_SHELL_0="zsh"
+	DEFAULT_LOGIN_SHELL_0="/bin/zsh"
 
 	# The lower the number, the higher the priority.
-	DEFAULT_LOGIN_SHELL_1="fish"
-	DEFAULT_LOGIN_SHELL_2="bash"
-	DEFAULT_LOGIN_SHELL_3="ash"
-	DEFAULT_LOGIN_SHELL_4="su"
+	DEFAULT_LOGIN_SHELL_1="/bin/fish"
+	DEFAULT_LOGIN_SHELL_2="/bin/bash"
+	DEFAULT_LOGIN_SHELL_3="/bin/ash"
+	DEFAULT_LOGIN_SHELL_4="/bin/su"
+	# /usr/local/powershell/pwsh
+
+	# For zsh & bash, "-l" = "--login"
+	# For powershell & nushell, they do not have the "-l" arg.
+	LOGIN_SHELL_ARG="-l"
 	#------------------
 	# mounts
 
@@ -409,6 +472,25 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	        source \${STORAGE_CONF_FILE}
 		fi
 	}
+	get_proot_comp_mode_deb(){
+	    case \${HOST_DISTRO} in
+	    Android)
+	    if [[ \${HOST_ARCH} = arm64 && ! -e \${PROOT_LOADER} ]];then
+	        echo "ERROR, your proot_loader is missing."
+	        PROOT_LOADER="${TMOE_LINUX_DIR}/lib/data/data/com.termux/files/usr/libexec/proot/loader"
+	        mkdir -pv "${TMOE_LINUX_DIR}/lib/"
+	        cd "${TMOE_LINUX_DIR}/lib/"
+	        curl -Lo proot.deb l.tmoe.me/proot-aarch64 || echo "Sorry, unable to use compatible mode."
+	        apt-get download libtalloc
+	        for i in ./libtalloc*.deb ./proot*.deb; do
+	            dpkg-deb -X \${i} ./
+	            rm -fv \${i}
+	        done
+	        cd -
+	    fi
+	    ;;
+	    esac
+	} 
 	start_tmoe_gnu_linux_container() {
 	    load_global_conf
 	    unset LD_PRELOAD PROOT_UID PROOT_GID PROOT_HOME CONTAINER_BIN_PATH
@@ -488,6 +570,9 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	        if [[ \${OLD_ANDROID_VERSION_COMPATIBILITY_MODE} = true ]]; then
 	            PROOT_P=false && PROOT_L=false && PROOT_SYSVIPC=false && FAKE_KERNEL=true
 	        fi
+
+	        [[ \${SHARE_PROOT_LOADER} != true ]] || set -- "\${@}" "--mount=\${PROOT_LOADER}:\${EXA_PREFIX}\${PROOT_LOADER}"
+
 	        [[ \${PROOT_SYSVIPC} != true ]] || set -- "\${@}" "--sysvipc"
 	        [[ \${PROOT_L} != true ]] || set -- "\${@}" "-L"
 	        [[ \${PROOT_H} != true ]] || set -- "\${@}" "-H"
@@ -662,14 +747,24 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	    [[ \${EXA_ENABLED} != true ]] || set -- "\${@}" "LD_LIBRARY_PATH=/usr/local/lib:/usr/lib32:/usr/lib:/lib:/usr/lib/i386-linux-gnu:/var/lib:/var/lib/dpkg:/lib/i386-linux-gnu"
 	    #SHELL
 	    [[ ! -r \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
-	    if [[ -z \${TMOE_SHELL} ]]; then
+
+	    case \${TMOE_SHELL} in
+	        "") 
 	        for i in \${DEFAULT_LOGIN_SHELL_0} \${DEFAULT_LOGIN_SHELL_1} \${DEFAULT_LOGIN_SHELL_2} \${DEFAULT_LOGIN_SHELL_3} \${DEFAULT_LOGIN_SHELL_4}; do
-	            if [[ -f \${ROOTFS_DIR}/bin/\${i} || -L \${ROOTFS_DIR}/bin/\${i} ]]; then
-	                TMOE_SHELL="/bin/\${i}"
+	            case "\$i" in
+	            */*) New_i="\$i";;
+	            *) New_i="/bin/\$i" ;;
+	            esac
+	            if [[ -f \${ROOTFS_DIR}\${New_i} || -L \${ROOTFS_DIR}\${New_i} ]]; then
+	                TMOE_SHELL="\${New_i}"
 	                break
 	            fi
-	        done
-	    fi
+	        done 
+			;;
+			*/*) ;;
+			*) TMOE_SHELL=/bin/\${TMOE_SHELL} ;;
+		esac
+
 	    set -- "\${@}" "SHELL=\${TMOE_SHELL}"
 	    #LOAD GLOBAL ENV FILE
 	    if [[ -s \${CONTAINER_ENV_FILE} && \${LOAD_ENV_FILE} = true ]]; then
@@ -690,13 +785,31 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	        set -- "\${@}" "PATH=\${CONTAINER_BIN_PATH}/usr/local/bin:/bin:/usr/bin:/usr/games:/usr/local/games"
 	    fi
 	    #LOGIN SHELL
-	    #It should be -l, not --login
-	    set -- "\${@}" "\${TMOE_SHELL}" "-l"
+	    case \${TMOE_SHELL} in
+	    */pwsh| */nushell| */nu) 
+	         case \${LOGIN_SHELL_ARG} in
+	         "-l") LOGIN_SHELL_ARG="" ;;
+	         esac
+	         ;;
+		esac
+
+		case "\${LOGIN_SHELL_ARG}" in
+		"") set -- "\${@}" "\${TMOE_SHELL}" ;;
+		*)  set -- "\${@}" "\${TMOE_SHELL}" "\${LOGIN_SHELL_ARG}" ;;
+		esac
 	    #------------------
 	    unset TMOE_LD_LIB_PATH
 	    case "\${PROOT_BIN}" in
 	    "" | system | default) PROOT_PROGRAM=proot ;;
 	    termux | prefix) PROOT_PROGRAM="\${PREFIX}/bin/proot" ;;
+	    compatibility)
+	        PROOT_PROGRAM="\${PROOT_COMPATIBLE_MODE_BIN}"
+	        SHARE_PROOT_LOADER=true
+	        PROOT_LOADER="\${COMPATIBLE_MODE_LOADER}"
+	        LD_LIB_PATH="\${COMPATIBLE_MODE_LD_LIB_PATH}"
+			# [[ -e \$COMPATIBLE_MODE_LD_LIB_PATH ]] || unset COMPATIBLE_MODE_LD_LIB_PATH
+	        get_proot_comp_mode_deb
+	        ;;
 	    32)
 	        case \${HOST_DISTRO} in
 	        Android)

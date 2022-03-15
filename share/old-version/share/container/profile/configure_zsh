@@ -80,14 +80,31 @@ set_tmoe_zsh_env() {
 	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
 	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
 	CONTAINER_TXT="${TMOE_LINUX_DIR}/container.txt"
+	STARTUP_FILE="${TMOE_LINUX_DIR}/container/tmoe-linux-container"
 	ENV_DIR="${TMOE_LINUX_DIR}/environment"
 	if [[ -e /usr/lib/os-release && ! -e /etc/os-release ]]; then
 		ln -svf ../usr/lib/os-release /etc/os-release
 	fi
 }
+do_you_want_to_set_pwsh_as_your_default_shell() {
+	local PWSH="/usr/share/powershell/pwsh"
+	# --yes  -button "YES" --no   -button "NO"
+	if [[ -r $PWSH && -w ${STARTUP_FILE} ]]; then
+		if (whiptail --title "$PWSH" --yesno 'Do you set powershell as your default shell?' 0 0); then
+			sed -E \
+				-e "s@^(DEFAULT_LOGIN_SHELL_0=).*@\1\"$PWSH\"@g" \
+				-i "${STARTUP_FILE}"
+			grep -E --color=auto "^[^#]*DEFAULT_LOGIN_SHELL_0=" ${STARTUP_FILE}
+		fi
+	fi
+}
 check_container_name() {
 	CONTAINER_NAME=$(grep CONTAINER_NAME ${CONTAINER_TXT} | awk -F '=' '{print $2}')
 	case ${CONTAINER_NAME} in
+	*dotnet)
+		AUTO_CONFIGURE=false
+		do_you_want_to_set_pwsh_as_your_default_shell
+		;;
 	*nogui*zsh) AUTO_CONFIGURE=true ;;
 	*nogui* | code_web-*) AUTO_CONFIGURE=false ;;
 	*) AUTO_CONFIGURE=true ;;
@@ -157,7 +174,7 @@ check_tmoe_locale_file() {
 #######
 do_you_want_to_delete_the_zsh_script_file() {
 	if [[ -e ~/zsh.sh || -e ~/zsh-i.sh ]]; then
-		if (whiptail --title "zsh.sh & zsh-i.sh" --yes-button "YES" --no-button "NO" --yesno 'Do you want to delete ~/zsh.sh & ~/zsh-i.sh after configruation.' 0 0); then
+		if (whiptail --title "zsh.sh & zsh-i.sh" --yesno 'Do you want to delete ~/zsh.sh & ~/zsh-i.sh after configruation.' 0 0); then
 			DELETE_ZSH_SCRIPT=true
 		fi
 	fi
@@ -172,10 +189,10 @@ set_your_vnc_passwd() {
 
 	cd ${TMOE_GIT_DIR}
 
-	if (whiptail --title "Update" --yes-button "YES" --no-button "NO" --yesno "Do you want to update tmoe?" 0 0); then
+	if (whiptail --title "Update" --yesno "Do you want to update tmoe?" 0 0); then
 		case ${LANG} in
 		zh_*)
-			if (whiptail --title "$LANG" --yes-button "YES" --no-button "NO" --yesno "Do you live in China?\nIf so, then tmoe will change the github repo to gitee." 0 0); then
+			if (whiptail --title "$LANG" --yesno "Do you live in China?\nIf so, then tmoe will change the github repo to gitee." 0 0); then
 				cd ..
 				printf "%s\n" "${RED}rm ${BLUE}-rfv ${YELLOW}git/${RESET}"
 				chmod 777 -R git
@@ -218,12 +235,12 @@ do_you_want_to_configure_tmoe_zsh() {
 			#.dockerenv
 			case $(id -u) in
 			0)
-				if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno "是否需要为root用户配置zsh? 注意:当前为root用户,而非普通用户\nDo you need to configure zsh for the $(whoami)?" 0 0); then
+				if (whiptail --title "zsh" --yesno "是否需要为root用户配置zsh? 注意:当前为root用户,而非普通用户\nDo you need to configure zsh for the $(whoami)?" 0 0); then
 					CONFIGURE_ZSH=true
 				fi
 				;;
 			*)
-				if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno "是否需要为$(whoami)用户配置zsh?\nDo you need to configure zsh for the $(whoami)?" 0 0); then
+				if (whiptail --title "zsh" --yesno "是否需要为$(whoami)用户配置zsh?\nDo you need to configure zsh for the $(whoami)?" 0 0); then
 					CONFIGURE_ZSH=true
 				fi
 				;;
@@ -231,13 +248,13 @@ do_you_want_to_configure_tmoe_zsh() {
 		fi
 		do_you_want_to_delete_the_zsh_script_file
 		# if [ -n "${FACE_ICON_DIR}" ]; then
-		# 	if (whiptail --title "FACE ICON" --yes-button "YES" --no-button "NO" --yesno "是否需要读取${FACE_ICON_DIR}目录下的jpg/png文件,并自动生成头像?\n本操作仅在本机内执行。\n若选NO,则将不会读取该目录,并使用tmoe-linux的默认头像" 0 0); then
+		# 	if (whiptail --title "FACE ICON" --yesno "是否需要读取${FACE_ICON_DIR}目录下的jpg/png文件,并自动生成头像?\n本操作仅在本机内执行。\n若选NO,则将不会读取该目录,并使用tmoe-linux的默认头像" 0 0); then
 		# 		CONFIGURE_FACE_ICON=true
 		# 	else
 		# 		CONFIGURE_FACE_ICON=false
 		# 	fi
 		# fi
-		if (whiptail --title "TMOE-LINUX-TOOL" --yes-button "YES" --no-button "NO" --yesno '是否需要启动tmoe tools?\nDo you need to start tmoe tools?' 0 0); then
+		if (whiptail --title "TMOE-LINUX-TOOL" --yesno '是否需要启动tmoe tools?\nDo you need to start tmoe tools?' 0 0); then
 			CONFIGURE_TMOE_LINUX_TOOL=true
 		fi
 		;;
@@ -246,12 +263,12 @@ do_you_want_to_configure_tmoe_zsh() {
 			#.dockerenv
 			case $(id -u) in
 			0)
-				if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno "Do you want to configure zsh for root?\nNote: Currently root, if you want to configure zsh for non-root users,\nyou should switch to the corresponding user" 0 0); then
+				if (whiptail --title "zsh" --yesno "Do you want to configure zsh for root?\nNote: Currently root, if you want to configure zsh for non-root users,\nyou should switch to the corresponding user" 0 0); then
 					CONFIGURE_ZSH=true
 				fi
 				;;
 			*)
-				if (whiptail --title "zsh" --yes-button "YES" --no-button "NO" --yesno "Do you need to configure zsh for $(whoami)?" 0 0); then
+				if (whiptail --title "zsh" --yesno "Do you need to configure zsh for $(whoami)?" 0 0); then
 					CONFIGURE_ZSH=true
 				fi
 				;;
@@ -259,17 +276,17 @@ do_you_want_to_configure_tmoe_zsh() {
 		fi
 		do_you_want_to_delete_the_zsh_script_file
 		# if [ -n "${FACE_ICON_DIR}" ]; then
-		# 	if (whiptail --title "FACE ICON" --yes-button "YES" --no-button "NO" --yesno "Do you want to read the jpg/png files in the ${FACE_ICON_DIR} directory and auto generate an avatar?\nThis operation is only performed locally." 0 0); then
+		# 	if (whiptail --title "FACE ICON" --yesno "Do you want to read the jpg/png files in the ${FACE_ICON_DIR} directory and auto generate an avatar?\nThis operation is only performed locally." 0 0); then
 		# 		CONFIGURE_FACE_ICON=true
 		# 	fi
 		# fi
-		if (whiptail --title "TMOE-LINUX-TOOL" --yes-button "YES" --no-button "NO" --yesno 'Do you want to start tmoe tools?' 0 0); then
+		if (whiptail --title "TMOE-LINUX-TOOL" --yesno 'Do you want to start tmoe tools?' 0 0); then
 			CONFIGURE_TMOE_LINUX_TOOL=true
 		fi
 		;;
 	esac
 	# if [[ -z ${CONFIGURE_FACE_ICON} && ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
-	# 	if (whiptail --title "\${HOME}/.face.icon" --yes-button "YES" --no-button "NO" --yesno 'Do you want to use the default face.icon?' 0 0); then
+	# 	if (whiptail --title "\${HOME}/.face.icon" --yesno 'Do you want to use the default face.icon?' 0 0); then
 	# 		DEFAULT_FACE_ICON=true
 	# 	fi
 	# fi
@@ -678,13 +695,13 @@ git_clone_tmoe_linux() {
 do_you_want_to_create_a_new_user() {
 	case ${TMOE_LANG} in
 	zh_*UTF-8)
-		if (whiptail --title "NEW USER" --yes-button "YES" --no-button "NO" --yesno 'Do you want to create a new sudo user?\n请问您是否想要新建一个sudo用户呢?' 0 0); then
+		if (whiptail --title "NEW USER" --yesno 'Do you want to create a new sudo user?\n请问您是否想要新建一个sudo用户呢?' 0 0); then
 			TIPS_01="请输入用户名(可以为英文或数字,不能为特殊字符)\n please type the user name."
 			please_type_the_user_name
 		fi
 		;;
 	*)
-		if (whiptail --title "NEW USER" --yes-button "YES" --no-button "NO" --yesno 'Do you want to create a new sudo user?' 0 0); then
+		if (whiptail --title "NEW USER" --yesno 'Do you want to create a new sudo user?' 0 0); then
 			TIPS_01="Please type the user name."
 			please_type_the_user_name
 		fi

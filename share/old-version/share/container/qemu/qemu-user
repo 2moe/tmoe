@@ -107,7 +107,7 @@ dpkg_add_32bit_architecture() {
 	printf "%s\n" "${GREEN}apt ${BLUE}download ${YELLOW}proot:${ADD_ARCH}${RESET}"
 	dpkg --add-architecture ${ADD_ARCH}
 	apt update
-	apt download proot:${ADD_ARCH}
+	apt-get download proot:${ADD_ARCH}
 	for i in ./proot*.deb; do
 		dpkg-deb -X ${i} ./
 		rm -fv ${i}
@@ -115,7 +115,7 @@ dpkg_add_32bit_architecture() {
 	# PROOT_DEPS=$(LANG=C apt-cache depends proot | grep "Depends:" | awk '{print $NF}' | sed "s@\$@:${ADD_ARCH}@g" | sed ":a;N;s/\n/ /g;ta")
 	# [[ -n ${PROOT_DEPS} ]] || PROOT_DEPS=libtalloc
 	case ${LINUX_DISTRO} in
-	Android) apt download libtalloc:${ADD_ARCH} ;;
+	Android) apt-get download libtalloc:${ADD_ARCH} ;;
 	*) apt download libtalloc2:${ADD_ARCH} ;;
 	esac
 	for i in ./libtalloc*.deb; do

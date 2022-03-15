@@ -153,6 +153,7 @@ environment_variables_and_automatic_startup_script_management() {
 			"13" "mount storage" \
 			"14" "mount tf" \
 			"15" "mount tmp(shared wayland socket)" \
+			"16" "dotNET6 compatible mode" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -174,6 +175,7 @@ environment_variables_and_automatic_startup_script_management() {
 				"13" "挂载storage" \
 				"14" "挂载tf" \
 				"15" "挂载tmp(共享wayland socket)" \
+				"16" "dotNET6 兼容模式" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -238,10 +240,56 @@ environment_variables_and_automatic_startup_script_management() {
 		MOUNT_POINT_VAR="TMP_MOUNT_POINT"
 		mount_dir_to_container
 		;;
+	16) about_dot_net_6_compatible_mode ;;
 	esac
 	press_enter_to_return
 	environment_variables_and_automatic_startup_script_management
 }
+about_dot_net_6_compatible_mode() {
+	case ${TMOE_CHROOT} in
+	true)
+		printf "%s\n" \
+			"${RED}Sorry${RESET}, this feature only supports the rootless(proot) container." \
+			"Only rootless containers have this problem."
+		press_enter_to_return
+		environment_variables_and_automatic_startup_script_management
+		;;
+	*) ;;
+	esac
+	CURRENT_STATUS=$(grep -E "^[^#]*DOT_NET_6_COMPATIBLE_MODE=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+
+	case ${CURRENT_STATUS} in
+	true) TMOE_TIPS_03="This mode is currently enabled" ;;
+	false) TMOE_TIPS_03="This mode is currently disabled" ;;
+	*) TMOE_TIPS_03="ERROR, unable to switch status.\nPlease reinstall the container." ;;
+	esac
+	case ${TMOE_MENU_LANG} in
+	zh*)
+		TMOE_TIPS_04="在某些环境中，您可能会遇到一些兼容问题。\n例如：在proot中(宿主:android, 容器:gnu/linux, 架构:arm64)，\n您在使用微软的 .NET6.0 时可能会遇到 \"csc.dll exited with code 139\"，\n没有找到 loader 等错误。注：.NET 7 没有此问题。\n在一般情况下，请不要开启此模式。"
+		YES_BUTTON="禁用"
+		NO_BUTTON="启用"
+		;;
+	*)
+		TMOE_TIPS_04="In some environments, you may encounter some strange compatibility issues.\nFor example: In proot(host: android, container: gnu/linux, arch: arm64), \nmicrosoft dotNET 6.0 may have \"csc.dll exited with code 139\" or \"loader not found\" when running a project.\nNote: dotNET 7 does not have this problem.\nIn general, you should not enable this mode."
+		YES_BUTTON="disable"
+		NO_BUTTON="enable"
+		;;
+	esac
+
+	if (whiptail --title "DOTNET6 COMP MODE" --yes-button "$YES_BUTTON" --no-button "$NO_BUTTON" --yesno "${TMOE_TIPS_03}" 0 50); then
+		${TMOE_PREFIX} sed -E -i "s@^(DOT_NET_6_COMPATIBLE_MODE=).*@\1false@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	else
+		${TMOE_PREFIX} sed -E -i "s@^(DOT_NET_6_COMPATIBLE_MODE=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	fi
+	grep -E --color=auto "^[^#]*DOT_NET_6_COMPATIBLE_MODE=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+	printf "%s\n" \
+		"By the way, if it ${RED}cannot find${RESET} the dotnet bin. " \
+		"You should create a symlink ${PURPLE}in the container ${BLUE}manually${RESET}:" \
+		"${GREEN}mkdir ${YELLOW}-pv ${BLUE}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}" \
+		"${GREEN}rm ${YELLOW}-rv ${BLUE}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}" \
+		"${GREEN}ln ${YELLOW}-svf ${BLUE}\${DOTNET_ROOT} ${CYAN}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}${RESET}"
+}
+
 switch_to_chroot_or_unshare() {
 	case ${TMOE_CHROOT} in
 	true) ;;
@@ -341,7 +389,7 @@ change_the_mount_source_dir() {
 	do_you_want_to_continue
 }
 do_you_want_to_change_the_mount_source_dir() {
-	if (whiptail --title "SOURCE DIR" --yes-button "yes" --no-button "no" --yesno "Do you change the source dir?" 8 50); then
+	if (whiptail --title "SOURCE DIR" --yesno "Do you change the source dir?" 8 50); then
 		change_the_mount_source_dir
 	else
 		grep -E --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
@@ -363,7 +411,7 @@ mount_dir_to_container() {
 		case ${TMOE_CHROOT} in
 		true) ;;
 		*)
-			if (whiptail --title "MOUNT POINT" --yes-button "yes" --no-button "no" --yesno "Do you want to change the mount point?" 8 50); then
+			if (whiptail --title "MOUNT POINT" --yesno "Do you want to change the mount point?" 8 50); then
 				change_the_mount_point
 			else
 				grep -E --color=auto "^[^#]*${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
@@ -386,16 +434,20 @@ switch_login_shell() {
 	fi
 
 	CURRENT_SHELL=$(grep "^${LOGIN_SHELL_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+	local PWSH="/usr/share/powershell/pwsh"
+	local NUSH="/usr/local/cargo/bin/nu"
 	ENV_VAR_AND_SCRIPT=$(whiptail --title "You can switch the default login shell" --menu "The current login shell is ${CURRENT_SHELL}, default is zsh." 0 50 0 \
 		"1" "zsh" \
 		"2" "fish" \
-		"3" "bash" \
-		"4" "ash" \
-		"5" "sh" \
-		"6" "ksh" \
-		"7" "csh" \
-		"8" "pdksh" \
-		"9" "tcsh" \
+		"3" "pwsh:$PWSH" \
+		"4" "nu:$NUSH" \
+		"5" "bash" \
+		"6" "ash" \
+		"7" "sh" \
+		"8" "ksh" \
+		"9" "csh" \
+		"10" "pdksh" \
+		"11" "tcsh" \
 		"0" "🌚 Return to previous menu" \
 		3>&1 1>&2 2>&3)
 	##############################
@@ -403,13 +455,15 @@ switch_login_shell() {
 	0 | "") environment_variables_and_automatic_startup_script_management ;;
 	1) DEFAULT_SHELL=zsh ;;
 	2) DEFAULT_SHELL=fish ;;
-	3) DEFAULT_SHELL=bash ;;
-	4) DEFAULT_SHELL=ash ;;
-	5) DEFAULT_SHELL=sh ;;
-	6) DEFAULT_SHELL=ksh ;;
-	7) DEFAULT_SHELL=csh ;;
-	8) DEFAULT_SHELL=pdksh ;;
-	9) DEFAULT_SHELL=tcsh ;;
+	3) DEFAULT_SHELL=$PWSH ;;
+	4) DEFAULT_SHELL=$NUSH ;;
+	5) DEFAULT_SHELL=bash ;;
+	6) DEFAULT_SHELL=ash ;;
+	7) DEFAULT_SHELL="sh" ;;
+	8) DEFAULT_SHELL=ksh ;;
+	9) DEFAULT_SHELL=csh ;;
+	10) DEFAULT_SHELL=pdksh ;;
+	11) DEFAULT_SHELL=tcsh ;;
 	esac
 	${TMOE_PREFIX} sed -i -E "s@^(${LOGIN_SHELL_VAR}=).*@\1${DEFAULT_SHELL}@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 	grep -E --color=auto "^[^#]*${LOGIN_SHELL_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
@@ -502,12 +556,12 @@ switch_container_login_user() {
 	esac
 	case ${TMOE_MENU_LANG} in
 	zh_*UTF-8)
-		if (whiptail --title "DEFAULT USER" --yes-button "YES" --no-button "NO" --yesno "Do you want to set ${TMOE_USER_NAME} as the default user?\n请问您是否想要将${TMOE_USER_NAME}设置为默认用户?" 0 0); then
+		if (whiptail --title "DEFAULT USER" --yesno "Do you want to set ${TMOE_USER_NAME} as the default user?\n请问您是否想要将${TMOE_USER_NAME}设置为默认用户?" 0 0); then
 			set_tmoe_user_as_the_default_user
 		fi
 		;;
 	*)
-		if (whiptail --title "DEFAULT USER" --yes-button "YES" --no-button "NO" --yesno "Do you want to set ${TMOE_USER_NAME} as the default user?" 0 0); then
+		if (whiptail --title "DEFAULT USER" --yesno "Do you want to set ${TMOE_USER_NAME} as the default user?" 0 0); then
 			set_tmoe_user_as_the_default_user
 		fi
 		;;
@@ -1275,6 +1329,45 @@ network_node_menu_03() {
 # 		done
 # 	fi
 # }
+download_proot_arm64_deb() {
+	mkdir -pv "${TMOE_LINUX_DIR}/lib/"
+	cd "${TMOE_LINUX_DIR}/lib/"
+	# apt update
+	# apt-get download proot
+	apt-get download libtalloc
+	curl -Lo "proot-build-time.txt" l.tmoe.me/proot-aarch64-time
+	curl -Lo proot.deb l.tmoe.me/proot-aarch64 || echo "Sorry, unable to use compatible mode."
+
+	for i in ./libtalloc*.deb ./proot*.deb; do
+		dpkg-deb -X "${i}" ./
+		rm -fv "${i}"
+	done
+	cd -
+}
+get_android_proot_version() {
+	curl -Lo "${TMOE_LINUX_DIR}/lib/proot-build-time.txt" l.tmoe.me/proot-aarch64-time
+	local Local_build_time=$(head -n 1 "${TMOE_LINUX_DIR}"/lib/proot-build-time.txt)
+	lcoal Remote_build_time=$(curl -L --connect-timeout 3 --max-time 3 l.tmoe.me/proot-aarch64-time)
+	case "$Remote_build_time" in
+	"" | "${Local_build_time}") ;;
+	*) download_proot_arm64_deb ;;
+	esac
+}
+get_android_proot_arm64_deb() {
+	case ${LINUX_DISTRO} in
+	Android)
+		if [[ ${ARCH_TYPE} = arm64 ]]; then
+			PROOT_LOADER="${TMOE_LINUX_DIR}/lib/data/data/com.termux/files/usr/libexec/proot/loader"
+			if [[ ! -e ${PROOT_LOADER} ]]; then
+				echo "Your proot_loader is missing."
+				download_proot_arm64_deb
+			else
+				get_android_proot_version
+			fi
+		fi
+		;;
+	esac
+}
 install_weekly_build_container() {
 	case ${NODE01_ENABLED} in
 	true)
@@ -1319,6 +1412,10 @@ install_weekly_build_container() {
 	BUILD_TXT="${ARCH_TYPE}/${DISTRO_NAME_02}/${DESKTOP}/build.txt"
 	case ${TMOE_LANG} in
 	zh_*UTF-8) printf "%s\n" "正在获取版本信息..." ;;
+	esac
+
+	case ${DISTRO_NAME} in
+	dotnet*) get_android_proot_arm64_deb ;;
 	esac
 	printf "%s\n" "Getting ${DEBIAN_FOLDER} version info..."
 	ROOTFS_VERSION='latest02'
@@ -1397,6 +1494,7 @@ install_weekly_build_container() {
 			-e "1a\NODE02_PW=${NODE02_PW}" \
 			-e "1a\ROOTFS_VERSION=${ROOTFS_VERSION}" \
 			-e "1a\NODE_NAME=${NODE_NAME}" \
+			-e "1a\DISTRO_NAME=${DISTRO_NAME}" \
 			-e "s@TMOE_ROOTFS_TAR_XZ=.*debian-sid_.*@TMOE_ROOTFS_TAR_XZ=${ROOTFS_FILE}@" \
 			-e "s/debian container/${DISTRO_NAME} container/g" \
 			-e "s@BFSU Open Source Mirror Station@${NODE_NAME}@" \

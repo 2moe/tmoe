@@ -1661,7 +1661,7 @@ check_mozilla_fake_no_sandbox() {
     case ${TMOE_PROOT} in
     false) ;;
     true)
-        if (whiptail --title "MOZ_FAKE_NO_SANDBOX ENV" --yes-button "YES" --no-button "NO" --yesno "Do you want to add MOZ_FAKE_NO_SANDBOX=1 to /etc/environment" 8 50); then
+        if (whiptail --title "MOZ_FAKE_NO_SANDBOX ENV" --yesno "Do you want to add MOZ_FAKE_NO_SANDBOX=1 to /etc/environment" 8 50); then
             if ! grep -Eq '^[^#]*export.*MOZ_FAKE_NO_SANDBOX.*1' /etc/environment; then
                 printf "%s\n" "export MOZ_FAKE_NO_SANDBOX=1" >>/etc/environment
             fi

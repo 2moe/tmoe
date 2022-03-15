@@ -87,7 +87,7 @@ install_libfaudio0() {
 check_debian_version_codename() {
     VERSION_CODENAME=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
     [[ -n ${VERSION_CODENAME} ]] || VERSION_CODENAME=$(grep VERSION_CODENAME /etc/os-release | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1 | cut -d '(' -f 2 | cut -d ')' -f 1)
-    if (whiptail --title "VERSION" --yes-button "yes" --no-button "no" --yesno "您当前的版本是否为${VERSION_CODENAME}?" 8 50); then
+    if (whiptail --title "VERSION" --yesno "您当前的版本是否为${VERSION_CODENAME}?" 8 50); then
         printf ""
     else
         type_your_debian_version

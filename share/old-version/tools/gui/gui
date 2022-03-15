@@ -1478,7 +1478,7 @@ do_you_want_to_install_electron_apps_zh() {
     alpine) ;;
     *)
         if [[ ! $(command -v electron) ]]; then
-            if (whiptail --title "Electron apps" --yes-button "YES" --no-button "NO" --yesno '请问您是否需要安装开发者推荐的electron软件包合集?\n该合集包含electron-netease-cloud-music,bilibili-web,listen1,\nYesPlayMusic,cocomusic,petal和zy-player\n您可以选择NO跳过,之后可以单独安装electron app.' 0 0); then
+            if (whiptail --title "Electron apps" --yesno '请问您是否需要安装开发者推荐的electron软件包合集?\n该合集包含electron-netease-cloud-music,bilibili-web,listen1,\nYesPlayMusic,cocomusic,petal和zy-player\n您可以选择NO跳过,之后可以单独安装electron app.' 0 0); then
                 AUTO_INSTALL_ELECTRON_APPS=true
             fi
         fi
@@ -1491,7 +1491,7 @@ do_you_want_to_install_electron_apps_en() {
     alpine) ;;
     *)
         if [[ ! $(command -v electron) ]]; then
-            if (whiptail --title "Electron apps" --yes-button "YES" --no-button "NO" --yesno 'Do you want to install electron apps pack?\nIt includes electron-netease-cloud-music,bilibili-web,listen1,\nYesPlayMusic,cocomusic,petal & zy-player.' 0 0); then
+            if (whiptail --title "Electron apps" --yesno 'Do you want to install electron apps pack?\nIt includes electron-netease-cloud-music,bilibili-web,listen1,\nYesPlayMusic,cocomusic,petal & zy-player.' 0 0); then
                 AUTO_INSTALL_ELECTRON_APPS=true
             fi
         fi
@@ -1506,7 +1506,7 @@ do_you_want_to_install_fcitx_pinyin() {
         "debian" | "arch")
             #fedora proot不要自动配置fcitx
             if [[ ! $(command -v fcitx) && ! $(command -v fcitx5) ]]; then
-                if (whiptail --title "input method" --yes-button "YES" --no-button "NO" --yesno '檢測到您當前的語言環境爲中文，是否需要安裝中文輸入法?\nDo you want to install fcitx4?\n安裝完成後,在桌面環境下按Ctrl+空格切換輸入法\n你亦可以選擇NO跳過,之後可以單獨安裝fcitx5' 0 0); then
+                if (whiptail --title "input method" --yesno '檢測到您當前的語言環境爲中文，是否需要安裝中文輸入法?\nDo you want to install fcitx4?\n安裝完成後,在桌面環境下按Ctrl+空格切換輸入法\n你亦可以選擇NO跳過,之後可以單獨安裝fcitx5' 0 0); then
                     AUTO_INSTALL_FCITX4=true
                 fi
             fi
@@ -1526,7 +1526,7 @@ do_you_want_to_install_fcitx4() {
     case "${LINUX_DISTRO}" in
     "debian" | "arch")
         if [[ ! $(command -v hardinfo) ]]; then
-            if (whiptail --title "HARDINFO" --yes-button "YES" --no-button "NO" --yesno 'Do you want to install hardinfo?\nIt can display system information.' 0 0); then
+            if (whiptail --title "HARDINFO" --yesno 'Do you want to install hardinfo?\nIt can display system information.' 0 0); then
                 AUTO_INSTALL_HARD_INFO=true
             fi
         fi
@@ -1536,7 +1536,7 @@ do_you_want_to_install_fcitx4() {
 }
 #########
 do_you_want_to_install_chromium_00() {
-    if (whiptail --title "CHROMIUM-BROWSER" --yes-button "YES" --no-button "NO" --yesno 'Do you want to install Google Chromium browser?' 0 0); then
+    if (whiptail --title "CHROMIUM-BROWSER" --yesno 'Do you want to install Google Chromium browser?' 0 0); then
         AUTO_INSTALL_CHROMIUM=true
     fi
 }
@@ -1590,7 +1590,7 @@ do_you_want_to_install_kali_tools() {
         case "${DEBIAN_DISTRO}" in
         "kali")
             select_kali_tools
-            # if (whiptail --title "KALI LINUX TOOLS" --yes-button "YES" --no-button "NO" --yesno 'Do you want to install kali-linux tools?' 0 0); then
+            # if (whiptail --title "KALI LINUX TOOLS" --yesno 'Do you want to install kali-linux tools?' 0 0); then
             #     AUTO_INSTALL_KALI_TOOLS=true
             # fi
             ;;
