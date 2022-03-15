@@ -434,7 +434,7 @@ switch_login_shell() {
 	fi
 
 	CURRENT_SHELL=$(grep "^${LOGIN_SHELL_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
-	local PWSH="/usr/share/powershell/pwsh"
+	local PWSH="/usr/local/powershell/pwsh"
 	local NUSH="/usr/local/cargo/bin/nu"
 	ENV_VAR_AND_SCRIPT=$(whiptail --title "You can switch the default login shell" --menu "The current login shell is ${CURRENT_SHELL}, default is zsh." 0 50 0 \
 		"1" "zsh" \

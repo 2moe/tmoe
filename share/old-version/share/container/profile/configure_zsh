@@ -87,7 +87,7 @@ set_tmoe_zsh_env() {
 	fi
 }
 do_you_want_to_set_pwsh_as_your_default_shell() {
-	local PWSH="/usr/share/powershell/pwsh"
+	local PWSH="/usr/local/powershell/pwsh"
 	# --yes  -button "YES" --no   -button "NO"
 	if [[ -r $PWSH && -w ${STARTUP_FILE} ]]; then
 		if (whiptail --title "$PWSH" --yesno 'Do you set powershell as your default shell?' 0 0); then
