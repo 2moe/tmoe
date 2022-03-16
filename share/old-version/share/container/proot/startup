@@ -33,8 +33,9 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 	    share_proot_loader = true,
 	};
 	By the way, if it cannot find the dotnet bin. You should create a symlink in the container manually:
-	mkdir -pv "${DEBIAN_CHROOT}"/\${DOTNET_ROOT} 
-	rm -rv "${DEBIAN_CHROOT}"/\${DOTNET_ROOT} 
+	DOTNET_ROOT=\${DOTNET_ROOT:-\$HOME/.dotnet} \
+	&& mkdir -pv "${DEBIAN_CHROOT}"/\${DOTNET_ROOT} \
+	&& rm -rv "${DEBIAN_CHROOT}"/\${DOTNET_ROOT} 
 	ln -svf \${DOTNET_ROOT} "${DEBIAN_CHROOT}"/\${DOTNET_ROOT}
 	EOF_compatibility_notes
 	# true or false

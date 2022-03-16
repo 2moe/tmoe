@@ -287,10 +287,11 @@ about_dot_net_6_compatible_mode() {
 	printf "%s\n" \
 		"By the way, if it ${RED}cannot find${RESET} the dotnet bin. " \
 		"You should create a symlink ${PURPLE}in the container ${BLUE}manually${RESET}:" \
-		"${GREEN}mkdir ${YELLOW}-pv ${BLUE}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}" \
-		"${GREEN}rm ${YELLOW}-rv ${BLUE}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}" \
+		"${RED}DOTNET_ROOT=${BLUE}\${DOTNET_ROOT:-\$HOME/.dotnet} ${YELLOW}\\" \
+		"&& ${GREEN}mkdir ${YELLOW}-pv ${BLUE}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT} ${YELLOW}\\" \
+		"&& ${GREEN}rm ${YELLOW}-rv ${BLUE}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}" \
 		"${GREEN}ln ${YELLOW}-svf ${BLUE}\${DOTNET_ROOT} ${CYAN}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}${RESET}" \
-		"If you cannot use ${BLUE}powershell${RESET} as your default shell, create a symbolic link ${PURPLE}in the container${RESET}" \
+		"If you cannot set ${BLUE}powershell${RESET} as your default shell, create a symbolic link ${PURPLE}in the container${RESET}" \
 		"${GREEN}ln ${YELLOW}-svf ${BLUE}\${DOTNET_ROOT} ${CYAN}/usr/share/dotnet${RESET}"
 }
 
