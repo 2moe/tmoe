@@ -135,6 +135,7 @@ environment_variables_and_automatic_startup_script_management() {
 		${RETURN_TO_WHERE}
 		# proot_management_menu
 	fi
+	OPT_17="fake cap_last_cap"
 	RETURN_TO_WHERE="environment_variables_and_automatic_startup_script_management"
 	environment_variables_and_automatic_startup_script_management_menu_en() {
 		ENV_VAR_AND_SCRIPT=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "You can manage login items and environment variables" 0 50 0 \
@@ -154,6 +155,7 @@ environment_variables_and_automatic_startup_script_management() {
 			"14" "mount tf" \
 			"15" "mount tmp(shared wayland socket)" \
 			"16" "dotNET6 compatible mode" \
+			"17" "${OPT_17}" \
 			"0" "🌚 Return to previous menu" \
 			3>&1 1>&2 2>&3)
 	}
@@ -176,6 +178,7 @@ environment_variables_and_automatic_startup_script_management() {
 				"14" "挂载tf" \
 				"15" "挂载tmp(共享wayland socket)" \
 				"16" "dotNET6 兼容模式" \
+				"17" "${OPT_17}" \
 				"0" "🌚 Return to previous menu" \
 				3>&1 1>&2 2>&3
 		)
@@ -241,9 +244,45 @@ environment_variables_and_automatic_startup_script_management() {
 		mount_dir_to_container
 		;;
 	16) about_dot_net_6_compatible_mode ;;
+	17) about_cap_last_cap ;;
 	esac
 	press_enter_to_return
 	environment_variables_and_automatic_startup_script_management
+}
+about_cap_last_cap() {
+	case ${TMOE_CHROOT} in
+	true)
+		printf "%s\n" \
+			"${RED}Sorry${RESET}, the chroot container does not need to care about this option." \
+			"Only rootless containers have ${BLUE}cap_last_cap${RESET} problem."
+		press_enter_to_return
+		environment_variables_and_automatic_startup_script_management
+		;;
+	*) ;;
+	esac
+	CURRENT_STATUS=$(grep -E "^[^#]*MOUNT_CAP_LAST_CAP=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+
+	case ${CURRENT_STATUS} in
+	true) TMOE_TIPS_03="Currently enabled." ;;
+	false) TMOE_TIPS_03="Currently disabled." ;;
+	*) TMOE_TIPS_03="ERROR, unable to switch status." ;;
+	esac
+
+	TMOE_TIPS_04="This is a reference to the man pages of capabilities. Since Linux 3.2, the file /proc/sys/kernel/cap_last_cap exposes the numerical value of the highest capability supported by the running kernel; this can be used to determine the highest bit that may be set in a capability set.\nBy faking it some problems can be solved, but other problems can be created. In general, please enable it. If you are experiencing problems with vnc starting slowly, disable it."
+	YES_BUTTON="enable"
+	NO_BUTTON="disable"
+	ARG_1="MOUNT_CAP_LAST_CAP"
+	if (whiptail --title "/dev/null:/proc/sys/kernel/cap_last_cap" --yes-button "$YES_BUTTON" --no-button "$NO_BUTTON" --yesno "${TMOE_TIPS_03}\n${TMOE_TIPS_04}" 0 50); then
+		ARG_2="true"
+		modify_the_bool_var
+	else
+		ARG_2="false"
+		modify_the_bool_var
+	fi
+	grep -E --color=auto "^[^#]*${ARG_1}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+}
+modify_the_bool_var() {
+	${TMOE_PREFIX} sed -E -i "s@^(${ARG_1}=).*@\1${ARG_2}@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 about_dot_net_6_compatible_mode() {
 
