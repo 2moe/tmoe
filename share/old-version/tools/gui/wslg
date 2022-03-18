@@ -4,7 +4,7 @@ welcome_to_wslg() {
 	printf "%s\n" \
 		"Welcome to wslg" \
 		"You can press Ctrl+C to abort the process" \
-		"If you cannot kill the process, then run pkill wayland."
+		"If you cannot kill the process, then run pkill Xwayland."
 }
 set_env() {
 	DISPLAY_PORT=2
@@ -34,6 +34,11 @@ check_tmoe_locale() {
 	fi
 	export LANG="${TMOE_LANG}"
 }
+please_install_xwayland() {
+	printf "%s\n" \
+		"ERROR." \
+		"You need to install xwayland(xorg-xwayland)."
+}
 check_xwayland_command() {
 	if [[ -z $(command -v Xwayland) ]]; then
 		if [[ -n $(command -v apt-get) ]]; then
@@ -42,9 +47,8 @@ check_xwayland_command() {
 		elif [[ -n $(command -v pacman) ]]; then
 			sudo pacman -Sy xorg-xwayland
 		else
-			printf "%s\n" \
-				"ERROR." \
-				"You need to install xwayland(xorg-xwayland)."
+			please_install_xwayland
+			exit 1
 		fi
 	fi
 }
@@ -57,7 +61,7 @@ main() {
 		"sudo service dbus restart"
 	source ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
 	check_xwayland_command
-	Xwayland :${DISPLAY_PORT} &
+	Xwayland :${DISPLAY_PORT} -noreset &
 	[[ -r ${ENV_FILE} ]] && source "$ENV_FILE"
 	check_tmoe_locale
 	WAYLAND_DISPLAY= DISPLAY=:${DISPLAY_PORT} "${XSESSION_FILE}"
