@@ -436,7 +436,7 @@ cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 	    set -- "\${@}" "TMOE_CHROOT=true"
 	    set -- "\${@}" "TMOE_PROOT=false"
 	    set -- "\${@}" "TMPDIR=/tmp"
-	    set -- "\${@}" "DISPLAY=127.0.0.1:0"
+	    set -- "\${@}" "DISPLAY=:2"
 	    set -- "\${@}" "PULSE_SERVER=tcp:127.0.0.1:4713"
 	    # CHECK SHELL
 	    [[ ! -s \${DEFAULT_SHELL_CONF} ]] || source \${DEFAULT_SHELL_CONF}
