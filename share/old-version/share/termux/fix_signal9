@@ -3,7 +3,7 @@
 have_you_encountered_signal9() {
     if (whiptail --title "Android 12(signal9)" --yesno "Have you encountered this problem:\n [Process completed (signal 9) - press Enter]?" 0 50); then
         check_adb_command
-        type_adb_address
+        connect_to_adb_device
     else
         tmoe_manager_main_menu
     fi
@@ -26,7 +26,7 @@ install_android_tools() {
 }
 type_adb_address() {
     case ${TMOE_LANG} in
-    zh_*UTF-8) local _Description="請打开android 设备的 adb 无线调试功能，\n并在下方输入 adb 地址。\n若留空则使用 127.0.0.1:5555" ;;
+    zh_*UTF-8) local _Description="请打开android 设备的 adb 无线调试功能，\n并在下方输入 adb 地址。\n若留空则使用 127.0.0.1:5555" ;;
     *) local _Description="Please enable the adb wireless debugging\n on your android device\n and type the adb address here.\nIf left blank use 127.0.0.1:5555" ;;
     esac
 
@@ -38,7 +38,6 @@ type_adb_address() {
     elif [ -z "${ADB_ADDRESS}" ]; then
         ADB_ADDRESS="127.0.0.1:5555"
     fi
-    connect_to_adb_device
 }
 do_you_want_to_set_max_phantom_processes_to_a_big_num() {
     printf "%s\n" \
@@ -81,14 +80,68 @@ set_sync_disabled_1() {
     adb -s "$ADB_ADDRESS" shell "/system/bin/device_config set_sync_disabled_for_tests persistent"
 }
 adb_pair_or_connect() {
-    if (whiptail --title "Pair or connect" --yes-button "Pair" --no-button "Connect" --yesno "If you are connecting for the first time and it provides a pairing code, then use \"pair\"" 0 50); then
-        adb pair "$ADB_ADDRESS"
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8)
+        local _Yes="配对+连接"
+        local _No="连接"
+        local _Description="在一般情况下，配对和普通连接的地址是不一样的。第一次连接时，您可以先配对(pair)，再用普通连接。"
+        ;;
+    *)
+        local _Yes="pair+connect"
+        local _No="connect"
+        local _Description="In general, the addresses for pairing and normal connection are different."
+        ;;
+    esac
+
+    if (whiptail --title "Pair/connect" --yes-button "$_Yes" --no-button "$_No" --yesno "If you are connecting for the first time and it provides a pairing code, then use \"pair\"\n${_Description}" 0 50); then
+        type_adb_address
+        adb_pair_and_connect
+    else
+        type_adb_address
+        adb_connect_address
     fi
+}
+adb_pair_and_connect() {
+    printf "%s\n" "${GREEN}adb ${YELLOW}pair ${BLUE}${ADB_ADDRESS}${RESET}"
+    adb pair "$ADB_ADDRESS"
+
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8)
+        local _Description_2="请问您的\"普通连接\"的 adb 地址跟 \"配对连接\"的是一样的吗？也是\"${ADB_ADDRESS}\"么?"
+        local _Yes="不是"
+        local _No="是哒"
+        ;;
+    *)
+        local _Description_2="Is the address of your normal connection also \"${ADB_ADDRESS}\"?"
+        local _Yes="No"
+        local _No="Yes"
+        ;;
+    esac
+
+    if (whiptail --title "pairing address = normal address?" --yes-button "$_Yes" --no-button "$_No" --yesno "${_Description_2}" 0 50); then
+        pleae_type_your_normal_adb_address
+        adb_connect_address
+    else
+        adb_connect_address
+    fi
+}
+
+pleae_type_your_normal_adb_address() {
+    local _Description="Please type the normal adb address"
+
+    NORMAL_ADB_ADDRESS=$(whiptail --inputbox "$_Description" 0 50 --title "NORMAL ADB address" 3>&1 1>&2 2>&3)
+    if [ -n "${NORMAL_ADB_ADDRESS}" ]; then
+        ADB_ADDRESS=${NORMAL_ADB_ADDRESS}
+    fi
+}
+adb_connect_address() {
+    printf "%s\n" "${GREEN}adb ${YELLOW}connect ${BLUE}${ADB_ADDRESS}${RESET}"
     adb connect "$ADB_ADDRESS"
     adb devices -l
 }
 do_you_want_to_restart_adb_server() {
     if (whiptail --title "adb kill-server" --yesno "Do you want to restart the adb server?" 0 50); then
+        printf "%s\n" "${GREEN}adb ${PURPLE}kill-server${RESET}"
         adb kill-server
         return 0
     else
