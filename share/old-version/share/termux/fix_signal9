@@ -26,8 +26,8 @@ install_android_tools() {
 }
 type_adb_address() {
     case ${TMOE_LANG} in
-    zh_*UTF-8) local _Description="請打开android 设备的 adb 网络调试功能，\n并在下方输入 adb 地址。\n若留空则使用 127.0.0.1:5555" ;;
-    *) local _Description="Please enable the adb network debugging\n on your android device\n and type the adb address here.\nIf left blank use 127.0.0.1:5555" ;;
+    zh_*UTF-8) local _Description="請打开android 设备的 adb 无线调试功能，\n并在下方输入 adb 地址。\n若留空则使用 127.0.0.1:5555" ;;
+    *) local _Description="Please enable the adb wireless debugging\n on your android device\n and type the adb address here.\nIf left blank use 127.0.0.1:5555" ;;
     esac
 
     ADB_ADDRESS=$(whiptail --inputbox "$_Description" 0 50 --title "ADB address" 3>&1 1>&2 2>&3)
@@ -45,7 +45,7 @@ do_you_want_to_set_max_phantom_processes_to_a_big_num() {
         "Do you want to set ${YELLOW}the maximum number of phantom processes to ${BLUE}2147483647${RESET}?" \
         "${GREEN}device_config ${YELLOW}put activity_manager max_phantom_processes ${BLUE}2147483647${RESET}"
     RETURN_TO_WHERE="do_you_want_to_disable_monitor_phantom_procs"
-    do_you_want_to_continue
+    do_you_want_to_skip || return 1
 }
 get_max_phantom_processes_0() {
     adb shell "/system/bin/dumpsys activity settings | grep max_phantom_processes"
@@ -58,7 +58,7 @@ do_you_want_to_disable_monitor_phantom_procs() {
         "Do you want to ${RED}disable ${YELLOW}monitor_phantom_procs${RESET}?" \
         "${GREEN}settings ${YELLOW}put global settings_enable_monitor_phantom_procs ${BLUE}false${RESET}"
     RETURN_TO_WHERE="do_you_want_to_set_sync_disabled"
-    do_you_want_to_continue
+    do_you_want_to_skip || return 1
 }
 disable_monitor_phantom_procs_0() {
     adb shell "/system/bin/settings put global settings_enable_monitor_phantom_procs false"
@@ -72,7 +72,7 @@ do_you_want_to_set_sync_disabled() {
         "Do you want to ${RED}set sync ${YELLOW}disabled${RESET}?" \
         "${GREEN}device_config ${YELLOW}set_sync_disabled_for_tests ${BLUE}persistent${RESET}"
     RETURN_TO_WHERE="if_you_are_unable_to_resolve_android_12_signal9"
-    do_you_want_to_continue
+    do_you_want_to_skip || return 1
 }
 set_sync_disabled_0() {
     adb shell "/system/bin/device_config set_sync_disabled_for_tests persistent"
@@ -90,6 +90,9 @@ adb_pair_or_connect() {
 do_you_want_to_restart_adb_server() {
     if (whiptail --title "adb kill-server" --yesno "Do you want to restart the adb server?" 0 50); then
         adb kill-server
+        return 0
+    else
+        return 1
     fi
 }
 do_you_want_to_change_the_adb_server_tcp_port() {
@@ -107,11 +110,15 @@ do_you_want_to_change_the_adb_server_tcp_port() {
     printf "%s\n" "Your ANDROID_ADB_SERVER_PORT is ${ANDROID_ADB_SERVER_PORT}"
     export ANDROID_ADB_SERVER_PORT
 }
-
+set_max_phantom_processes_0() {
+    adb shell "/system/bin/device_config put activity_manager max_phantom_processes 2147483647"
+}
+set_max_phantom_processes_1() {
+    adb -s "$ADB_ADDRESS" shell "/system/bin/device_config put activity_manager max_phantom_processes 2147483647"
+}
 connect_to_adb_device() {
     adb --version
-    do_you_want_to_restart_adb_server
-    do_you_want_to_change_the_adb_server_tcp_port
+    do_you_want_to_restart_adb_server && do_you_want_to_change_the_adb_server_tcp_port
     # ANDROID_ADB_SERVER_PORT
     adb_pair_or_connect
     ADB_LIST="$(adb devices | wc -l)"
@@ -124,24 +131,18 @@ connect_to_adb_device() {
         ;;
     3)
         get_max_phantom_processes_0
-        do_you_want_to_set_max_phantom_processes_to_a_big_num
-        adb shell "/system/bin/device_config put activity_manager max_phantom_processes 2147483647"
+        do_you_want_to_set_max_phantom_processes_to_a_big_num && set_max_phantom_processes_0
         get_max_phantom_processes_0
-        do_you_want_to_disable_monitor_phantom_procs
-        disable_monitor_phantom_procs_0
+        do_you_want_to_disable_monitor_phantom_procs && disable_monitor_phantom_procs_0
         # device_config set_sync_disabled_for_tests persistent
-        do_you_want_to_set_sync_disabled
-        set_sync_disabled_0
+        do_you_want_to_set_sync_disabled && set_sync_disabled_0
         ;;
     *)
         get_max_phantom_processes_1
-        do_you_want_to_set_max_phantom_processes_to_a_big_num
-        adb -s "$ADB_ADDRESS" shell "/system/bin/device_config put activity_manager max_phantom_processes 2147483647"
+        do_you_want_to_set_max_phantom_processes_to_a_big_num && set_max_phantom_processes_1
         get_max_phantom_processes_1
-        do_you_want_to_disable_monitor_phantom_procs
-        disable_monitor_phantom_procs_1
-        do_you_want_to_set_sync_disabled
-        set_sync_disabled_1
+        do_you_want_to_disable_monitor_phantom_procs && disable_monitor_phantom_procs_1
+        do_you_want_to_set_sync_disabled && set_sync_disabled_1
         ;;
     esac
     if_you_are_unable_to_resolve_android_12_signal9
