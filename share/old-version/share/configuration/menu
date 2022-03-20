@@ -360,7 +360,7 @@ tmoe_container_dns() {
     local _Dns_cloudflare="[2606:4700:4700::1111](CloudFlare)"
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8)
-        local _Description="DNS 主要用于域名解析(用于命名组织到域层次结构中的计算机和网络服务),\n它是建立在分布式数据库上的分层命名系统。"
+        local _Description="DNS 是建立在分布式数据库上的分层命名系统,\n主要用于域名解析(用于命名组织到域层次结构中的计算机和网络服务)。"
         local _Opt_1="$_Dns_cfiec"
         local _Opt_1_name="cfiec"
         local _Opt_2="$_Dns_cloudflare"
