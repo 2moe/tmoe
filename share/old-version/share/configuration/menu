@@ -191,7 +191,7 @@ container_mount_sd_conf() {
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8)
         local _Title="共享 sd 目录"
-        local _Description="将宿主的内置存储挂载至容器内部的/media/sd\n当选择第3 或 4个时，将共享（挂载）整个内置存储。\n当为第2个（None）时，MOUNT_SD 将被设为 false，即不挂载sd。\n请注意：这是全局配置，如需单独配置，请在各自的容器菜单里进行选择。"
+        local _Description="将宿主的内置存储挂载至容器内部的/media/sd\n当选择第三 或 第四个时，将共享（挂载）整个内置存储。\n当为第二个（None）时，MOUNT_SD 将被设为 false，即不挂载sd。\n请注意：这是全局配置，如需单独配置，请在各自的容器菜单里进行选择。"
         local OPT_2="None（禁用共享）"
         local OPT_8="自定义路径"
         local OPT_9="手动编辑"
@@ -356,9 +356,28 @@ how_to_customize_dns() {
 tmoe_container_dns() {
     RETURN_TO_WHERE='tmoe_container_dns'
     DNS_NAME=''
-    TMOE_OPTION=$(whiptail --title "DNS(Domain Name System)" --menu "默认为第一项\nYou can choose cloudflare dns." 0 50 0 \
-        "1" "[240c::6666](CFIEC)" \
-        "2" "[2606:4700:4700::1111](CloudFlare)" \
+    local _Dns_cfiec="[240c::6666](CFIEC)"
+    local _Dns_cloudflare="[2606:4700:4700::1111](CloudFlare)"
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8)
+        local _Description="DNS 主要用于域名解析。\n它作为将 域名 和 IP 地址相互映射的一个分布式数据库，能够使人更方便地访问互联网。"
+        local _Opt_1="$_Dns_cfiec"
+        local _Opt_1_name="cfiec"
+        local _Opt_2="$_Dns_cloudflare"
+        local _Opt_2_name="cloudflare"
+        ;;
+    *)
+        local _Description="You can choose cloudflare or google dns."
+        local _Opt_1="$_Dns_cloudflare"
+        local _Opt_1_name="cloudflare"
+        local _Opt_2="$_Dns_cfiec"
+        local _Opt_2_name="cfiec"
+        ;;
+    esac
+
+    TMOE_OPTION=$(whiptail --title "DNS(Domain Name System)" --menu "${_Description}" 0 50 0 \
+        "1" "$_Opt_1" \
+        "2" "$_Opt_2" \
         "3" "[2001:4860:4860::8888](Google)" \
         "4" "[2400:3200::1](Ali)" \
         "5" "[2400:da00::6666](Baidu)" \
@@ -374,8 +393,8 @@ tmoe_container_dns() {
         *) ${RETURN_TO_MENU} ;;
         esac
         ;;
-    1) DNS_NAME='cfiec' ;;
-    2) DNS_NAME='cloudflare' ;;
+    1) DNS_NAME="$_Opt_1_name" ;;
+    2) DNS_NAME="$_Opt_2_name" ;;
     3) DNS_NAME='google' ;;
     4) DNS_NAME='ali' ;;
     5) DNS_NAME='baidu' ;;
