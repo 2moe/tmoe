@@ -14,6 +14,9 @@
 | [2](./2.md)                                                | \*                                                              | 2.md               |
 | [3](./3.md)                                                | \*                                                              | 3.md               |
 
+Note: The description that follows may differ from the actual situation as the design and development of edition 2022 has changed during the process.  
+For example, "toml configuration" may become "sqlite3 database".
+
 ### 1.2. current
 
 English | [Chinese](../zh/readme.md)

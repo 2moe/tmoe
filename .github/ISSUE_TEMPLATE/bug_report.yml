@@ -5,15 +5,15 @@ labels: ["bug"]
 assignees: ["2moe"]
 
 body:
-  - type: dropdown
-    id: tmoe
-    attributes:
-      label: Are you using tmoe?
-      options:
-        - "Yes"
-        - "No"
-    validations:
-      required: false
+  # - type: dropdown
+  #   id: tmoe
+  #   attributes:
+  #     label: Are you using tmoe?
+  #     options:
+  #       - "Yes"
+  #       - "No"
+  #   validations:
+  #     required: false
 
   - type: dropdown
     id: root
@@ -38,12 +38,54 @@ body:
         - "🕊️ lxde"
         - "🌲 cinnamon"
         - "🦜 budgie"
+        - "🐟 cutefish"
         - "deepin"
         - "ukui"
         - "wm"
         - "other"
     validations:
       required: false
+
+  - type: dropdown
+    id: container-type
+    attributes:
+      label: Container type
+      options:
+        - "proot"
+        - "chroot"
+        - "unshare"
+        - "systemd-nspawn"
+        - "docker"
+        - "podman"
+        - "lxc"
+        - "other"
+    validations:
+      required: false
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration
+      description: "Please type the container and host info."
+      value: |
+        | container | value        |
+        | --------- | -------------|
+        | os        | ubuntu dev   |
+        | arch      | arm64        |
+
+        ---
+
+        | host     | value        |
+        | -------- | -------------|
+        | os       | android 12   |
+        | arch     | arm64        |
+        | terminal | ?            |
+        | tmoe     | latest       |
+
+        ---
+
+    validations:
+      required: true
 
   - type: textarea
     id: description
@@ -63,7 +105,7 @@ body:
       label: How to reproduce
       description: Steps to reproduce the behavior
       placeholder: |
-        1.
+        1.  
 
         2.
     validations:
@@ -100,46 +142,6 @@ body:
     validations:
       required: false
 
-  - type: dropdown
-    id: container-type
-    attributes:
-      label: Container type
-      options:
-        - "chroot"
-        - "unshare"
-        - "proot"
-        - "systemd-nspawn"
-        - "docker"
-        - "podman"
-        - "lxc"
-        - "other"
-    validations:
-      required: false
-
-  - type: textarea
-    id: config
-    attributes:
-      label: Configuration
-      description: "Please type the container and host info."
-      value: |
-        | container | value          |
-        | --------- | -------------- |
-        | os        | ubuntu devel   |
-        | arch      | arm64          |
-
-        ---
-
-        | host     | value          |
-        | -------- | -------------- |
-        | os       | android 12     |
-        | arch     | arm64          |
-        | terminal | ?              |
-        | tmoe     | latest         |
-
-        ---
-
-    validations:
-      required: true
   - type: textarea
     id: context
     attributes:

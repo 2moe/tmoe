@@ -160,8 +160,10 @@ install_paru() {
         armv7* | armv8l) ;;
         aarch64 | armv8* | armv9*)
             cd /tmp || exit 1
-            curl -Lo paru.tar.zst l.tmoe.me/paru-arm64-github || curl -Lo paru.tar.zst l.tmoe.me/paru-arm64
-            tar -xvf paru.tar.zst
+            PARU_FILE="paru.tar.zst"
+            curl -Lo "$PARU_FILE" https://l.tmoe.me/paru-arm64-github || curl -Lo "$PARU_FILE" https://l.tmoe.me/paru-arm64
+            ls -lh "$PARU_FILE"
+            tar -xvf "$PARU_FILE"
             mkdir -p /opt/bin
             install -Dm755 paru /opt/bin
             create_paru_script
