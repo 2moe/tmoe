@@ -93,11 +93,21 @@ body:
       label: Describe the bug
       description: A clear and concise description of what the bug is.
       placeholder: |
-        I used tmoe-tools to install gnome41, but it doesn't work.
+        I used tmoe-tools to install gnome, but it doesn't work.
         Please help me!
 
     validations:
       required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Please add any relevant screenshots here, if any
+      placeholder: |
+        ![Screenshot_1](https://user-images.githubusercontent.com/25324935/128526303-9c644d80-8588-415e-b23b-fe905280352d.png)
+    validations:
+      required: false
 
   - type: textarea
     id: repro
@@ -117,16 +127,6 @@ body:
       label: Expected behavior
       description: A clear and concise description of what you expected to happen.
       placeholder: I expected it to work fine...
-    validations:
-      required: false
-
-  - type: textarea
-    id: screenshots
-    attributes:
-      label: Screenshots
-      description: Please add any relevant screenshots here, if any
-      placeholder: |
-        ![Screenshot_1](https://user-images.githubusercontent.com/25324935/128526303-9c644d80-8588-415e-b23b-fe905280352d.png)
     validations:
       required: false
 
