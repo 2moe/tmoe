@@ -92,7 +92,7 @@ are_you_using_samsung_device() {
     *)
         local _Yes="No"
         local _No="Yes"
-        local _Description="Are you using a \"samsung\" android device?\nOr, have you encountered this problem?\n\"could not install *smartsocket* listener\"Note:If so, then compatibility mode will be switched on. Once enabled, you may need to use a LAN address (e.g. 192.168.x.y:zz) to connect to adb, rather than the localhost(e.g. 127.0.0.1:xxyy)"
+        local _Description="Are you using a \"samsung\" android device?\nOr, have you encountered this problem:\n\"could not install *smartsocket* listener\"?\nNote:If so, then compatibility mode will be switched on. Once enabled, you may need to use a LAN address (e.g. 192.168.x.y:zz) to connect to adb, rather than the localhost(e.g. 127.0.0.1:xxyy)"
         ;;
     esac
 
