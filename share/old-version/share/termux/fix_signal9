@@ -113,8 +113,10 @@ set_samsung_adb_comp_mode() {
     export ADB_SERVER_SOCKET=localfilesystem:${TMPDIR}/adb.sock
     export ANDROID_NO_USE_FWMARK_CLIENT=1
     TMOE_ADB_PREFIX="fakeroot"
+    printf "%s\n" "${GREEN}pkill ${GREEN}adb${RESET}"
+    pkill adb
     printf "%s\n" "${GREEN}${TMOE_ADB_PREFIX} ${GREEN}adb ${PURPLE}kill-server${RESET}"
-    ${TMOE_ADB_PREFIX} adb kill-server
+    ${TMOE_ADB_PREFIX} adb kill-server || adb kill-server
 }
 adb_pair_or_connect() {
     case ${TMOE_MENU_LANG} in
@@ -178,6 +180,8 @@ adb_connect_address() {
 }
 do_you_want_to_restart_adb_server() {
     if (whiptail --title "adb kill-server" --yesno "Do you want to restart the adb server?" 0 50); then
+        printf "%s\n" "${GREEN}pkill ${GREEN}adb${RESET}"
+        pkill adb
         printf "%s\n" "${GREEN}adb ${PURPLE}kill-server${RESET}"
         adb kill-server
         return 0
