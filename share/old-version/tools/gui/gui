@@ -2729,7 +2729,7 @@ gnome_session_2() {
 }
 gnome_session_3() {
     REMOTE_DESKTOP_SESSION_01='gnome-flashback-metacity'
-    REMOTE_DESKTOP_SESSION_02='gnome-panel'
+    REMOTE_DESKTOP_SESSION_02='gnome-shell'
 }
 install_gnome_flashback_desktop() {
     if [ $(command -v neofetch) ]; then
@@ -3111,10 +3111,10 @@ install_cutefish_desktop() {
 }
 
 ubuntu_dde_or_dde_extras() {
-    if (whiptail --title "UbuntuDDE or UbuntuDDE-extras" --yes-button "dde" --no-button "dde-extras" --yesno 'The former is more streamlined, and the latter includes some extra software.\n前者为普通dde,后者除了dde本体外，还包含了dde商店等额外软件包' 0 0); then
+    if (whiptail --title "UbuntuDDE or UbuntuDDE-extras" --yes-button "dde" --no-button "dde-extras" --yesno 'The former is more streamlined, and the latter includes some extra software.\n前者为普通dde,后者除了dde本体外，还包含了dde额外软件包' 0 0); then
         DEPENDENCY_01="ubuntudde-dde deepin-terminal"
     else
-        DEPENDENCY_01="ubuntudde-dde-extras"
+        DEPENDENCY_01="ubuntudde-dde ubuntudde-dde-extras"
     fi
 }
 install_deepin_desktop() {
