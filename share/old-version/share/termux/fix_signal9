@@ -10,15 +10,18 @@ have_you_encountered_signal9() {
 }
 check_adb_command() {
     if [[ -z "$(command -v adb)" ]]; then
+        set_adb_pkg_name
         install_android_tools
     fi
 }
-install_android_tools() {
-    unset DEPENDENCY_02
+set_adb_pkg_name() {
     case "$LINUX_DISTRO" in
     debian) DEPENDENCY_01="adb" ;;
     termux | *) DEPENDENCY_01="android-tools" ;;
     esac
+}
+install_android_tools() {
+    unset DEPENDENCY_02
     printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}${DEPENDENCY_01}${RESET}"
     do_you_want_to_continue
     ${TMOE_UPDATE_COMMAND} 2>/dev/null
@@ -47,10 +50,10 @@ do_you_want_to_set_max_phantom_processes_to_a_big_num() {
     do_you_want_to_skip || return 1
 }
 get_max_phantom_processes_0() {
-    adb shell "/system/bin/dumpsys activity settings | grep max_phantom_processes"
+    ${TMOE_ADB_PREFIX} adb shell "/system/bin/dumpsys activity settings | grep max_phantom_processes"
 }
 get_max_phantom_processes_1() {
-    adb -s "$ADB_ADDRESS" shell "/system/bin/dumpsys activity settings | grep max_phantom_processes"
+    ${TMOE_ADB_PREFIX} adb -s "$ADB_ADDRESS" shell "/system/bin/dumpsys activity settings | grep max_phantom_processes"
 }
 do_you_want_to_disable_monitor_phantom_procs() {
     printf "%s\n" \
@@ -60,10 +63,10 @@ do_you_want_to_disable_monitor_phantom_procs() {
     do_you_want_to_skip || return 1
 }
 disable_monitor_phantom_procs_0() {
-    adb shell "/system/bin/settings put global settings_enable_monitor_phantom_procs false"
+    ${TMOE_ADB_PREFIX} adb shell "/system/bin/settings put global settings_enable_monitor_phantom_procs false"
 }
 disable_monitor_phantom_procs_1() {
-    adb -s "$ADB_ADDRESS" shell "/system/bin/settings put global settings_enable_monitor_phantom_procs false"
+    ${TMOE_ADB_PREFIX} adb -s "$ADB_ADDRESS" shell "/system/bin/settings put global settings_enable_monitor_phantom_procs false"
 }
 do_you_want_to_set_sync_disabled() {
     # device_config set_sync_disabled_for_tests persistent
@@ -74,10 +77,43 @@ do_you_want_to_set_sync_disabled() {
     do_you_want_to_skip || return 1
 }
 set_sync_disabled_0() {
-    adb shell "/system/bin/device_config set_sync_disabled_for_tests persistent"
+    ${TMOE_ADB_PREFIX} adb shell "/system/bin/device_config set_sync_disabled_for_tests persistent"
 }
 set_sync_disabled_1() {
-    adb -s "$ADB_ADDRESS" shell "/system/bin/device_config set_sync_disabled_for_tests persistent"
+    ${TMOE_ADB_PREFIX} adb -s "$ADB_ADDRESS" shell "/system/bin/device_config set_sync_disabled_for_tests persistent"
+}
+are_you_using_samsung_device() {
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8)
+        local _Yes="否"
+        local _No="是"
+        local _Description="请问您是否在使用三星的android设备?\n注:三星的系统,在开启adb调试时,可能会出现\"could not install *smartsocket* listener\"的问题。\n当您选择\"是\"时，将会使用兼容模式来启动 adb-server。"
+        ;;
+    *)
+        local _Yes="No"
+        local _No="Yes"
+        local _Description="Are you using a \"samsung\" android device?\nOr, have you encountered this problem?\n\"could not install *smartsocket* listener\""
+        ;;
+    esac
+
+    if (whiptail --title "SAMSUNG" --yes-button "$_Yes" --no-button "$_No" --yesno "$_Description" 0 50); then
+        unset TMOE_ADB_PREFIX
+        do_you_want_to_restart_adb_server && do_you_want_to_change_the_adb_server_tcp_port
+    else
+        set_samsung_adb_comp_mode
+    fi
+}
+set_samsung_adb_comp_mode() {
+    local _Dep="fakeroot"
+    if [[ -z "$(command -v $_Dep)" ]]; then
+        DEPENDENCY_01="$_Dep"
+        install_android_tools
+    fi
+    [[ -e ${TMPDIR}/adb.sock ]] && rm -fv ${TMPDIR}/adb.sock
+    export ADB_SERVER_SOCKET=localfilesystem:${TMPDIR}/adb.sock
+    export ANDROID_NO_USE_FWMARK_CLIENT=1
+    TMOE_ADB_PREFIX="fakeroot"
+    ${TMOE_ADB_PREFIX} adb kill-server
 }
 adb_pair_or_connect() {
     case ${TMOE_MENU_LANG} in
@@ -103,7 +139,7 @@ adb_pair_or_connect() {
 }
 adb_pair_and_connect() {
     printf "%s\n" "${GREEN}adb ${YELLOW}pair ${BLUE}${ADB_ADDRESS}${RESET}"
-    adb pair "$ADB_ADDRESS"
+    ${TMOE_ADB_PREFIX} adb pair "$ADB_ADDRESS"
 
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8)
@@ -136,8 +172,8 @@ pleae_type_your_normal_adb_address() {
 }
 adb_connect_address() {
     printf "%s\n" "${GREEN}adb ${YELLOW}connect ${BLUE}${ADB_ADDRESS}${RESET}"
-    adb connect "$ADB_ADDRESS"
-    adb devices -l
+    ${TMOE_ADB_PREFIX} adb connect "$ADB_ADDRESS"
+    ${TMOE_ADB_PREFIX} adb devices -l
 }
 do_you_want_to_restart_adb_server() {
     if (whiptail --title "adb kill-server" --yesno "Do you want to restart the adb server?" 0 50); then
@@ -164,17 +200,17 @@ do_you_want_to_change_the_adb_server_tcp_port() {
     export ANDROID_ADB_SERVER_PORT
 }
 set_max_phantom_processes_0() {
-    adb shell "/system/bin/device_config put activity_manager max_phantom_processes 2147483647"
+    ${TMOE_ADB_PREFIX} adb shell "/system/bin/device_config put activity_manager max_phantom_processes 2147483647"
 }
 set_max_phantom_processes_1() {
-    adb -s "$ADB_ADDRESS" shell "/system/bin/device_config put activity_manager max_phantom_processes 2147483647"
+    ${TMOE_ADB_PREFIX} adb -s "$ADB_ADDRESS" shell "/system/bin/device_config put activity_manager max_phantom_processes 2147483647"
 }
 connect_to_adb_device() {
     adb --version
-    do_you_want_to_restart_adb_server && do_you_want_to_change_the_adb_server_tcp_port
+    are_you_using_samsung_device
     # ANDROID_ADB_SERVER_PORT
     adb_pair_or_connect
-    ADB_LIST="$(adb devices | wc -l)"
+    ADB_LIST="$(${TMOE_ADB_PREFIX} adb devices | wc -l)"
     case ${ADB_LIST} in
     0 | 1 | 2)
         printf "%s\n" "${YELLOW}Unknown ${RED}ERROR${RESET}, you cannot connect to the adb device"
