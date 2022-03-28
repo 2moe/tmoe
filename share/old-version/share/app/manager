@@ -2,14 +2,14 @@
 #############################################
 # set -x
 manager_main() {
-	set_terminal_color
-	case "$1" in
-	i* | -i* | -I*)
-		debian-i
-		exit 0
-		;;
-	h* | -h* | --h*)
-		cat <<-'EOF'
+    set_terminal_color
+    case "$1" in
+    i* | -i* | -I*)
+        debian-i
+        exit 0
+        ;;
+    h* | -h* | --h*)
+        cat <<-'EOF'
 			-m      --更换为tuna镜像源(仅debian,ubuntu,kali,alpine和arch)
 			-n      --启动novnc
 			-v      --启动VNC
@@ -17,1800 +17,1800 @@ manager_main() {
 			-x      --启动xsdl
 			-h      --获取帮助信息
 		EOF
-		;;
-	-m* | m* | -tuna*)
-		gnu_linux_sources_list
-		;;
-	-novnc | novnc* | -n*)
-		start_web_novnc
-		;;
-	-v | -vnc)
-		startvnc
-		;;
-	-s | -stop*)
-		stopvnc
-		;;
-	-x | -xsdl)
-		startxsdl
-		;;
-	*)
-		auto_check
-		check_tmoe_menu_locale_file
-		tmoe_manager_main_menu
-		;;
-	esac
+        ;;
+    -m* | m* | -tuna*)
+        gnu_linux_sources_list
+        ;;
+    -novnc | novnc* | -n*)
+        start_web_novnc
+        ;;
+    -v | -vnc)
+        startvnc
+        ;;
+    -s | -stop*)
+        stopvnc
+        ;;
+    -x | -xsdl)
+        startxsdl
+        ;;
+    *)
+        auto_check
+        check_tmoe_menu_locale_file
+        tmoe_manager_main_menu
+        ;;
+    esac
 }
 check_tmoe_command() {
-	if [ "$(command -v zsh)" ]; then
-		if grep -Eq '^[^#]*alias t=tmoe' ~/.zshrc 2>/dev//null; then
-			TMOE_TIPS_01="t"
-		else
-			TMOE_TIPS_01="tmoe"
-		fi
-	else
-		TMOE_TIPS_01="tmoe"
-	fi
-	TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.23,type ${TMOE_TIPS_01} to start it."
+    if [ "$(command -v zsh)" ]; then
+        if grep -Eq '^[^#]*alias t=tmoe' ~/.zshrc 2>/dev//null; then
+            TMOE_TIPS_01="t"
+        else
+            TMOE_TIPS_01="tmoe"
+        fi
+    else
+        TMOE_TIPS_01="tmoe"
+    fi
+    TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.23,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
-	check_release_version
-	check_tmoe_command
-	CONFIG_FOLDER="${HOME}/.config/tmoe-linux"
-	TMOE_LOCALE_FILE=${CONFIG_FOLDER}/locale.txt
-	TMOE_LOCALE_FILE_202203="${TMOE_LOCALE_FILE}_202203_fixed.txt"
-	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
-	TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
-	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
-	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
-	TMOE_GIT_URL="github.com/2moe/tmoe-linux"
-	AK2_GIT_URL="https://gitee.com/ak2"
-	TMOE_LINUX_ISSUE_URL="https://github.com/2moe/tmoe-linux/issues?q=is%3Aissue+is%3Aclosed"
-	if [[ -e ${TMOE_GIT_DIR}/.git ]]; then
-		source ${TMOE_SHARE_DIR}/environment/manager_environment
-		#check_dependencies_03
-	fi
-	DEBIAN_CHROOT=${TMOE_CONTAINER_DIR}/chroot/${DEBIAN_FOLDER}
+    check_release_version
+    check_tmoe_command
+    CONFIG_FOLDER="${HOME}/.config/tmoe-linux"
+    TMOE_LOCALE_FILE=${CONFIG_FOLDER}/locale.txt
+    TMOE_LOCALE_FILE_202203="${TMOE_LOCALE_FILE}_202203_fixed.txt"
+    TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+    TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
+    TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
+    TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
+    TMOE_GIT_URL="github.com/2moe/tmoe-linux"
+    AK2_GIT_URL="https://gitee.com/ak2"
+    TMOE_LINUX_ISSUE_URL="https://github.com/2moe/tmoe-linux/issues?q=is%3Aissue+is%3Aclosed"
+    if [[ -e ${TMOE_GIT_DIR}/.git ]]; then
+        source ${TMOE_SHARE_DIR}/environment/manager_environment
+        #check_dependencies_03
+    fi
+    DEBIAN_CHROOT=${TMOE_CONTAINER_DIR}/chroot/${DEBIAN_FOLDER}
 }
 #############
 tmoe_manager_android_env() {
-	if [ ! -h "${HOME}/storage/shared" ]; then
-		if [ -n "$(command -v termux-setup-storage)" ]; then
-			termux-setup-storage
-		else
-			TERMUX_STORAGE=false
-		fi
-	fi
-	[[ -z ${TMPDIR} ]] || export TMPDIR=${PREFIX}/tmp
-	TMOE_UPDATE_COMMAND='apt update'
-	TMOE_INSTALLATION_COMMAND='apt install -y'
-	TMOE_REMOVAL_COMMAND='apt purge -y'
-	SWITCH_MIRROR=true
-	TMOE_LINUX_DIR="${HOME}/.local/share/tmoe-linux"
-	ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null | cut -d '.' -f 1) || ANDROID_VERSION=6
-	tmoe_manager_env
+    if [ ! -h "${HOME}/storage/shared" ]; then
+        if [ -n "$(command -v termux-setup-storage)" ]; then
+            termux-setup-storage
+        else
+            TERMUX_STORAGE=false
+        fi
+    fi
+    [[ -z ${TMPDIR} ]] || export TMPDIR=${PREFIX}/tmp
+    TMOE_UPDATE_COMMAND='apt update'
+    TMOE_INSTALLATION_COMMAND='apt install -y'
+    TMOE_REMOVAL_COMMAND='apt purge -y'
+    SWITCH_MIRROR=true
+    TMOE_LINUX_DIR="${HOME}/.local/share/tmoe-linux"
+    ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null | cut -d '.' -f 1) || ANDROID_VERSION=6
+    tmoe_manager_env
 }
 #######
 tmoe_manager_gnu_linux_env() {
-	check_current_user_name_and_group
-	TMPDIR=/tmp
-	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
-	tmoe_manager_env
+    check_current_user_name_and_group
+    TMPDIR=/tmp
+    TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+    tmoe_manager_env
 }
 ######
 set_terminal_color() {
-	RED=$(printf '\033[31m')
-	GREEN=$(printf '\033[32m')
-	YELLOW=$(printf '\033[33m')
-	BLUE=$(printf '\033[34m')
-	PURPLE=$(printf '\033[35m')
-	CYAN=$(printf '\033[36m')
-	RESET=$(printf '\033[m')
-	BOLD=$(printf '\033[1m')
+    RED=$(printf '\033[31m')
+    GREEN=$(printf '\033[32m')
+    YELLOW=$(printf '\033[33m')
+    BLUE=$(printf '\033[34m')
+    PURPLE=$(printf '\033[35m')
+    CYAN=$(printf '\033[36m')
+    RESET=$(printf '\033[m')
+    BOLD=$(printf '\033[1m')
 }
 #######
 check_current_user_name_and_group() {
-	CURRENT_USER_NAME=$(grep "${HOME}" /etc/passwd | awk -F ':' '{print $1}' | head -n 1)
-	CURRENT_USER_GROUP=$(grep "${HOME}" /etc/passwd | awk -F ':' '{print $4}' | cut -d ',' -f 1 | head -n 1)
-	if [ -z "${CURRENT_USER_GROUP}" ]; then
-		CURRENT_USER_GROUP=${CURRENT_USER_NAME}
-	fi
+    CURRENT_USER_NAME=$(grep "${HOME}" /etc/passwd | awk -F ':' '{print $1}' | head -n 1)
+    CURRENT_USER_GROUP=$(grep "${HOME}" /etc/passwd | awk -F ':' '{print $4}' | cut -d ',' -f 1 | head -n 1)
+    if [ -z "${CURRENT_USER_GROUP}" ]; then
+        CURRENT_USER_GROUP=${CURRENT_USER_NAME}
+    fi
 }
 ##############
 press_enter_to_return() {
-	printf "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}\n"
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) printf "按${GREEN}回车键${RESET}${BLUE}返回${RESET}\n" ;;
-	esac
-	read
+    printf "Press ${GREEN}enter${RESET} to ${BLUE}return.${RESET}\n"
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) printf "按${GREEN}回车键${RESET}${BLUE}返回${RESET}\n" ;;
+    esac
+    read
 }
 #####################
 press_enter_to_continue() {
-	printf "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET}\n"
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) printf "按${GREEN}回车键${RESET}${BLUE}继续${RESET}\n" ;;
-	esac
-	read
+    printf "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET}\n"
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) printf "按${GREEN}回车键${RESET}${BLUE}继续${RESET}\n" ;;
+    esac
+    read
 }
 ###################################
 auto_check() {
-	case "$(uname -o)" in
-	Android)
-		LINUX_DISTRO='Android'
-		TERMUX_STORAGE=true
-		tmoe_manager_android_env
-		check_android_termux_whiptail
-		;;
-	*)
-		tmoe_manager_gnu_linux_env
-		check_gnu_linux_distro
-		;;
-	esac
+    case "$(uname -o)" in
+    Android)
+        LINUX_DISTRO='Android'
+        TERMUX_STORAGE=true
+        tmoe_manager_android_env
+        check_android_termux_whiptail
+        ;;
+    *)
+        tmoe_manager_gnu_linux_env
+        check_gnu_linux_distro
+        ;;
+    esac
 }
 ################
 install_android_whiptail() {
-	RETURN_TO_WHERE='exit'
-	printf "${YELLOW}%s${RESET} ${PURPLE}%s${RESET}\n" "Do you want to install" "whiptail?"
-	printf "${GREEN}%s${RESET} ${BLUE}%s${RESET}\n" "apt install -y" "whiptail"
-	do_you_want_to_continue
-	apt update
-	# for android6(termux), whiptail -> dialog
-	[[ -e ${PREFIX}/bin/dialog ]] || apt install -y dialog
-	[[ -e ${PREFIX}/bin/whiptail ]] || apt install -y whiptail
+    RETURN_TO_WHERE='exit'
+    printf "${YELLOW}%s${RESET} ${PURPLE}%s${RESET}\n" "Do you want to install" "whiptail?"
+    printf "${GREEN}%s${RESET} ${BLUE}%s${RESET}\n" "apt install -y" "whiptail"
+    do_you_want_to_continue
+    apt update
+    # for android6(termux), whiptail -> dialog
+    [[ -e ${PREFIX}/bin/dialog ]] || apt install -y dialog
+    [[ -e ${PREFIX}/bin/whiptail ]] || apt install -y whiptail
 }
 check_android_termux_whiptail() {
-	[[ -e ${PREFIX}/bin/whiptail ]] || install_android_whiptail
+    [[ -e ${PREFIX}/bin/whiptail ]] || install_android_whiptail
 }
 ############
 check_gnu_linux_git_and_whiptail() {
-	DEPENDENCIES=""
-	[[ $(command -v bash) ]] || DEPENDENCIES="${DEPENDENCIES} bash"
-	if [ ! $(command -v sudo) ]; then
-		case "${LINUX_DISTRO}" in
-		gentoo) DEPENDENCIES="${DEPENDENCIES} app-admin/sudo" ;;
-		*) DEPENDENCIES="${DEPENDENCIES} sudo" ;;
-		esac
-	fi
-	if [ ! $(command -v whiptail) ]; then
-		case "${LINUX_DISTRO}" in
-		debian) DEPENDENCIES="${DEPENDENCIES} whiptail" ;;
-		arch) DEPENDENCIES="${DEPENDENCIES} libnewt" ;;
-		gentoo) DEPENDENCIES="${DEPENDENCIES} dev-libs/newt" ;;
-		openwrt) DEPENDENCIES="${DEPENDENCIES} whiptail dialog" ;;
-		*) DEPENDENCIES="${DEPENDENCIES} newt" ;;
-		esac
-	fi
-	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-		export PATH="${PATH}:/mnt/c/WINDOWS/system32/:/mnt/c/WINDOWS/system32/WindowsPowerShell/v1.0/"
-		#此处必须设定环境变量，因为sudo的环境变量会发生改变。
-		#不能使用这条alias：alias sudo='sudo env PATH=$PATH LD_LIBRARY_PATH=$LD_LIBRARY_PATH'
-		#printf "%s\n" "检测到您使用的是WSL"
-		WSL="[WSL(Windows Subsystem for Linux)]"
-		WINDOWS_DISTRO='WSL'
-	else
-		WSL=""
-	fi
-	tmoe_install_depenencies() {
-		${TMOE_UPDATE_COMMAND}
-		${TMOE_INSTALLATION_COMMAND} "${DEPENDENCIES}"
-		return 0
-	}
-	case ${DEPENDENCIES} in
-	"") ;;
-	*)
-		notes_of_tmoe_package_installation
-		case "${LINUX_DISTRO}" in
-		debian | openwrt | slackware) tmoe_install_depenencies ;;
-		alpine)
-			if [ "$(uname -v | cut -c 1-3)" = "iSH" ]; then
-				printf "${RED}%s${RESET}" "WARNING！不支持APPLE iOS系统"
-				press_enter_to_continue
-			fi
-			if ! grep -Eq '^[^#]*http.*community' "/etc/apk/repositories"; then
-				sed -i '$ a\http://mirrors.bfsu.edu.cn/alpine/latest-stable/community' "/etc/apk/repositories"
-			fi
-			tmoe_install_depenencies
-			;;
-		void)
-			export LANG='en_US.UTF-8'
-			${TMOE_INSTALLATION_COMMAND} "${DEPENDENCIES}"
-			;;
-		arch | gentoo | suse | solus) ${TMOE_INSTALLATION_COMMAND} "${DEPENDENCIES}" ;;
-		redhat)
-			if [ $(command -v dnf) ]; then
-				${TMOE_INSTALLATION_COMMAND} "${DEPENDENCIES}"
-			else
-				yum install -y --skip-broken "${DEPENDENCIES}"
-			fi
-			;;
-		*)
-			printf "%s\n" "${RED}Sorry${RESET},tmoe-linux manager does not support your distro. If you want to report a bug, please go to ${BLUE}github.${YELLOW}https://github.com/2moe/tmoe-linux${RESET}"
-			printf "%s\n" "${RED}不支持${RESET}您当前的发行版，您可以前往${YELLOW}https://github.com/2moe/tmoe-linux${RESET}提交issue,并附上${BLUE}cat /etc/os-release${RESET}的截图。"
-			uname -a
-			sleep 3
-			exit 1
-			# press_enter_to_continue
-			# apt update 2>/dev/null
-			# ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
-			# apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES} || pacman -Syu ${DEPENDENCIES}
-			;;
-		esac
-		;;
-	esac
+    DEPENDENCIES=""
+    [[ $(command -v bash) ]] || DEPENDENCIES="${DEPENDENCIES} bash"
+    if [ ! $(command -v sudo) ]; then
+        case "${LINUX_DISTRO}" in
+        gentoo) DEPENDENCIES="${DEPENDENCIES} app-admin/sudo" ;;
+        *) DEPENDENCIES="${DEPENDENCIES} sudo" ;;
+        esac
+    fi
+    if [ ! $(command -v whiptail) ]; then
+        case "${LINUX_DISTRO}" in
+        debian) DEPENDENCIES="${DEPENDENCIES} whiptail" ;;
+        arch) DEPENDENCIES="${DEPENDENCIES} libnewt" ;;
+        gentoo) DEPENDENCIES="${DEPENDENCIES} dev-libs/newt" ;;
+        openwrt) DEPENDENCIES="${DEPENDENCIES} whiptail dialog" ;;
+        *) DEPENDENCIES="${DEPENDENCIES} newt" ;;
+        esac
+    fi
+    if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+        export PATH="${PATH}:/mnt/c/WINDOWS/system32/:/mnt/c/WINDOWS/system32/WindowsPowerShell/v1.0/"
+        #此处必须设定环境变量，因为sudo的环境变量会发生改变。
+        #不能使用这条alias：alias sudo='sudo env PATH=$PATH LD_LIBRARY_PATH=$LD_LIBRARY_PATH'
+        #printf "%s\n" "检测到您使用的是WSL"
+        WSL="[WSL(Windows Subsystem for Linux)]"
+        WINDOWS_DISTRO='WSL'
+    else
+        WSL=""
+    fi
+    tmoe_install_depenencies() {
+        ${TMOE_UPDATE_COMMAND}
+        ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
+        return 0
+    }
+    case ${DEPENDENCIES} in
+    "") ;;
+    *)
+        notes_of_tmoe_package_installation
+        case "${LINUX_DISTRO}" in
+        debian | openwrt | slackware) tmoe_install_depenencies ;;
+        alpine)
+            if [ "$(uname -v | cut -c 1-3)" = "iSH" ]; then
+                printf "${RED}%s${RESET}" "WARNING！不支持APPLE iOS系统"
+                press_enter_to_continue
+            fi
+            if ! grep -Eq '^[^#]*http.*community' "/etc/apk/repositories"; then
+                sed -i '$ a\http://mirrors.bfsu.edu.cn/alpine/latest-stable/community' "/etc/apk/repositories"
+            fi
+            tmoe_install_depenencies
+            ;;
+        void)
+            export LANG='en_US.UTF-8'
+            ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
+            ;;
+        arch | gentoo | suse | solus) ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} ;;
+        redhat)
+            if [ $(command -v dnf) ]; then
+                ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
+            else
+                yum install -y --skip-broken ${DEPENDENCIES}
+            fi
+            ;;
+        *)
+            printf "%s\n" "${RED}Sorry${RESET},tmoe-linux manager does not support your distro. If you want to report a bug, please go to ${BLUE}github.${YELLOW}https://github.com/2moe/tmoe-linux${RESET}"
+            printf "%s\n" "${RED}不支持${RESET}您当前的发行版，您可以前往${YELLOW}https://github.com/2moe/tmoe-linux${RESET}提交issue,并附上${BLUE}cat /etc/os-release${RESET}的截图。"
+            uname -a
+            sleep 3
+            exit 1
+            # press_enter_to_continue
+            # apt update 2>/dev/null
+            # ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
+            # apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES} || pacman -Syu ${DEPENDENCIES}
+            ;;
+        esac
+        ;;
+    esac
 }
 #######################
 debian_env() {
-	SWITCH_MIRROR=true
-	LINUX_DISTRO='debian'
-	TMOE_INSTALLATION_COMMAND='apt install -y'
-	TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo apt install'
-	TMOE_REMOVAL_COMMAND='apt purge -y'
-	# TMOE_UPDATE_COMMAND='sudo apt update'
-	TMOE_UPDATE_COMMAND='apt update'
+    SWITCH_MIRROR=true
+    LINUX_DISTRO='debian'
+    TMOE_INSTALLATION_COMMAND='apt install -y'
+    TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo apt install'
+    TMOE_REMOVAL_COMMAND='apt purge -y'
+    # TMOE_UPDATE_COMMAND='sudo apt update'
+    TMOE_UPDATE_COMMAND='apt update'
 }
 arch_linux_env() {
-	LINUX_DISTRO='arch'
-	TMOE_UPDATE_COMMAND='pacman -Syy'
-	TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm --needed'
-	TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo pacman -Syu --needed'
-	TMOE_REMOVAL_COMMAND='pacman -Rsc'
+    LINUX_DISTRO='arch'
+    TMOE_UPDATE_COMMAND='pacman -Syy'
+    TMOE_INSTALLATION_COMMAND='pacman -Syu --noconfirm --needed'
+    TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo pacman -Syu --needed'
+    TMOE_REMOVAL_COMMAND='pacman -Rsc'
 }
 check_linux_distro_etc_release() {
-	OS_RELEASE=$(cat /etc/os-release)
-	case ${OS_RELEASE} in
-	*debian* | *ubuntu* | *deepin* | *uos.com*)
-		debian_env
-		case ${OS_RELEASE} in
-		*ubuntu*) DEBIAN_DISTRO='ubuntu' ;;
-		*Kali*) DEBIAN_DISTRO='kali' ;; #"$(cut -c 1-4 /etc/issue)" = "Kali"
-		*deepin* | *uos.com*)
-			DEBIAN_DISTRO='deepin'
-			SWITCH_MIRROR=false
-			;;
-		esac
-		;;
-	*Arch* | *Manjaro*) arch_linux_env ;;
-	*Fedora* | *CentOS* | "*Red Hat*" | *redhat* | *fedora*)
-		# | *Euler*
-		LINUX_DISTRO='redhat'
-		if [ $(command -v dnf) ]; then
-			TMOE_UPDATE_COMMAND='dnf update'
-			TMOE_INSTALLATION_COMMAND='dnf install -y --skip-broken'
-			TMOE_REMOVAL_COMMAND='dnf remove -y'
-		else
-			TMOE_UPDATE_COMMAND='yum update'
-			TMOE_INSTALLATION_COMMAND='yum install -y --skip-broken'
-			TMOE_REMOVAL_COMMAND='yum remove -y'
-		fi
-		case ${OS_RELEASE} in
-		*Fedora*) REDHAT_DISTRO='fedora' ;;
-		# *Euler*) REDHAT_DISTRO='euler' ;;
-		*ID=*centos* | *rhel*) REDHAT_DISTRO='centos' ;; #"$(grep 'ID=' /etc/os-release | head -n 1 | cut -d '"' -f 2)" = "centos"
-		esac
-		;;
-	*Alpine*)
-		SWITCH_MIRROR=true
-		LINUX_DISTRO='alpine'
-		TMOE_UPDATE_COMMAND='apk update'
-		TMOE_INSTALLATION_COMMAND='apk add'
-		TMOE_REMOVAL_COMMAND='sudo apk del'
-		;;
-	*gentoo* | *funtoo*)
-		LINUX_DISTRO='gentoo'
-		TMOE_INSTALLATION_COMMAND='emerge -avk'
-		# TMOE_INSTALLATION_COMMAND_NO_SUDO='emerge -avk'
-		# TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo emerge -avk'
-		TMOE_REMOVAL_COMMAND='emerge -C'
-		;;
-	*Solus*)
-		LINUX_DISTRO='solus'
-		TMOE_INSTALLATION_COMMAND='eopkg install -y'
-		# TMOE_INSTALLATION_COMMAND_NO_SUDO='eopkg install -y'
-		# TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo eopkg install'
-		TMOE_REMOVAL_COMMAND='eopkg remove -y'
-		;;
-	*ID=\"void\"*)
-		LINUX_DISTRO='void'
-		export LANG='en_US.UTF-8'
-		TMOE_INSTALLATION_COMMAND='xbps-install -Sy'
-		TMOE_REMOVAL_COMMAND='xbps-remove -R'
-		;;
-	*openSUSE* | *suse*)
-		LINUX_DISTRO='suse'
-		TMOE_INSTALLATION_COMMAND='zypper in -y'
-		TMOE_REMOVAL_COMMAND='zypper rm'
-		;;
-	*Slackware*)
-		LINUX_DISTRO='slackware'
-		TMOE_UPDATE_COMMAND='slackpkg update'
-		TMOE_INSTALLATION_COMMAND='slackpkg install'
-		TMOE_REMOVAL_COMMAND='slackpkg remove'
-		;;
-	*openwrt*)
-		printf "${RED}%s${RESET}\n" "本工具已不再支持OpenWRT"
-		do_you_want_to_continue
-		LINUX_DISTRO='openwrt'
-		TMOE_UPDATE_COMMAND='opkg update'
-		TMOE_INSTALLATION_COMMAND='opkg install'
-		TMOE_REMOVAL_COMMAND='opkg remove'
-		;;
-	*) check_linux_distro_pkg_manager ;;
-	esac
+    OS_RELEASE=$(cat /etc/os-release)
+    case ${OS_RELEASE} in
+    *debian* | *ubuntu* | *deepin* | *uos.com*)
+        debian_env
+        case ${OS_RELEASE} in
+        *ubuntu*) DEBIAN_DISTRO='ubuntu' ;;
+        *Kali*) DEBIAN_DISTRO='kali' ;; #"$(cut -c 1-4 /etc/issue)" = "Kali"
+        *deepin* | *uos.com*)
+            DEBIAN_DISTRO='deepin'
+            SWITCH_MIRROR=false
+            ;;
+        esac
+        ;;
+    *Arch* | *Manjaro*) arch_linux_env ;;
+    *Fedora* | *CentOS* | "*Red Hat*" | *redhat* | *fedora*)
+        # | *Euler*
+        LINUX_DISTRO='redhat'
+        if [ $(command -v dnf) ]; then
+            TMOE_UPDATE_COMMAND='dnf update'
+            TMOE_INSTALLATION_COMMAND='dnf install -y --skip-broken'
+            TMOE_REMOVAL_COMMAND='dnf remove -y'
+        else
+            TMOE_UPDATE_COMMAND='yum update'
+            TMOE_INSTALLATION_COMMAND='yum install -y --skip-broken'
+            TMOE_REMOVAL_COMMAND='yum remove -y'
+        fi
+        case ${OS_RELEASE} in
+        *Fedora*) REDHAT_DISTRO='fedora' ;;
+        # *Euler*) REDHAT_DISTRO='euler' ;;
+        *ID=*centos* | *rhel*) REDHAT_DISTRO='centos' ;; #"$(grep 'ID=' /etc/os-release | head -n 1 | cut -d '"' -f 2)" = "centos"
+        esac
+        ;;
+    *Alpine*)
+        SWITCH_MIRROR=true
+        LINUX_DISTRO='alpine'
+        TMOE_UPDATE_COMMAND='apk update'
+        TMOE_INSTALLATION_COMMAND='apk add'
+        TMOE_REMOVAL_COMMAND='sudo apk del'
+        ;;
+    *gentoo* | *funtoo*)
+        LINUX_DISTRO='gentoo'
+        TMOE_INSTALLATION_COMMAND='emerge -avk'
+        # TMOE_INSTALLATION_COMMAND_NO_SUDO='emerge -avk'
+        # TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo emerge -avk'
+        TMOE_REMOVAL_COMMAND='emerge -C'
+        ;;
+    *Solus*)
+        LINUX_DISTRO='solus'
+        TMOE_INSTALLATION_COMMAND='eopkg install -y'
+        # TMOE_INSTALLATION_COMMAND_NO_SUDO='eopkg install -y'
+        # TMOE_INSTALLATION_COMMAND_NON_AUTO='sudo eopkg install'
+        TMOE_REMOVAL_COMMAND='eopkg remove -y'
+        ;;
+    *ID=\"void\"*)
+        LINUX_DISTRO='void'
+        export LANG='en_US.UTF-8'
+        TMOE_INSTALLATION_COMMAND='xbps-install -Sy'
+        TMOE_REMOVAL_COMMAND='xbps-remove -R'
+        ;;
+    *openSUSE* | *suse*)
+        LINUX_DISTRO='suse'
+        TMOE_INSTALLATION_COMMAND='zypper in -y'
+        TMOE_REMOVAL_COMMAND='zypper rm'
+        ;;
+    *Slackware*)
+        LINUX_DISTRO='slackware'
+        TMOE_UPDATE_COMMAND='slackpkg update'
+        TMOE_INSTALLATION_COMMAND='slackpkg install'
+        TMOE_REMOVAL_COMMAND='slackpkg remove'
+        ;;
+    *openwrt*)
+        printf "${RED}%s${RESET}\n" "本工具已不再支持OpenWRT"
+        do_you_want_to_continue
+        LINUX_DISTRO='openwrt'
+        TMOE_UPDATE_COMMAND='opkg update'
+        TMOE_INSTALLATION_COMMAND='opkg install'
+        TMOE_REMOVAL_COMMAND='opkg remove'
+        ;;
+    *) check_linux_distro_pkg_manager ;;
+    esac
 }
 check_linux_distro_pkg_manager() {
-	if [[ $(command -v dpkg) && $(command -v apt-cache) ]]; then
-		debian_env
-	elif [[ $(command -v pacman) ]]; then
-		arch_linux_env
-	fi
+    if [[ $(command -v dpkg) && $(command -v apt-cache) ]]; then
+        debian_env
+    elif [[ $(command -v pacman) ]]; then
+        arch_linux_env
+    fi
 }
 check_gnu_linux_distro() {
-	case "$(id -u)" in
-	0) ;;
-	*)
-		export PATH=${PATH}:/usr/sbin:/sbin
-		[[ -e ${CONFIG_FOLDER} ]] || mkdir -pv ${CONFIG_FOLDER}/rootless ${CONFIG_FOLDER}/rootful
-		if [ -e "${TMOE_GIT_DIR}/share/old-version/share/app/manager" ]; then
-			if [ $(command -v fortune) ]; then
-				fortune 2>/dev/null
-			elif [ -e /usr/games/fortune ]; then
-				/usr/games/fortune 2>/dev/null
-			fi
-			if [ $(command -v sudo) ]; then
-				sudo -E bash ${TMOE_GIT_DIR}/share/old-version/share/app/manager
-			else
-				su -c "bash ${TMOE_GIT_DIR}/share/old-version/share/app/manager"
-			fi
-		else
-			if [ -e "/usr/bin/curl" ]; then
-				sudo -E bash -c "$(curl -LfsS https://${TMOE_GIT_URL}/raw/master/debian.sh)" ||
-					su -c "$(curl -LfsS https://${TMOE_GIT_URL}/raw/master/debian.sh)"
-			else
-				sudo -E bash -c "$(wget -qO- https://${TMOE_GIT_URL}/raw/master/debian.sh)" ||
-					su -c "$(wget -qO- https://${TMOE_GIT_URL}/raw/master/debian.sh)"
-			fi
-			#此处一定为debian.sh，而非manager.sh
-		fi
-		exit 0
-		;;
-	esac
-	##############
-	SWITCH_MIRROR=false
-	if [[ -e /etc/os-release ]]; then
-		check_linux_distro_etc_release
-	else
-		check_linux_distro_pkg_manager
-	fi
-	##############
-	check_gnu_linux_git_and_whiptail
-	#############
-	CurrentLANG=${LANG}
-	if [ ! $(printf '%s\n' "${LANG}" | grep -E 'UTF-8|UTF8') ]; then
-		export LANG=C.UTF-8
-	fi
-	########################
-	case ${LINUX_DISTRO} in
-	openwrt)
-		if [ -d "/opt/bin" ]; then
-			PREFIX="/opt"
-		else
-			PREFIX=/usr
-		fi
-		;;
-	*)
-		PREFIX='/usr/local'
-		[[ -d ${PREFIX} ]] || PREFIX='/usr'
-		;;
-	esac
-	################
-	check_tmoe_menu_locale_file
-	############
-	curl_tmoe_linux_tool_sh() {
-		if [ -e "${TMOE_GIT_DIR}/share/old-version/tools/app/tool" ]; then
-			if [ $(command -v sudo) ]; then
-				sudo -E bash ${TMOE_GIT_DIR}/share/old-version/tools/app/tool
-			else
-				su -c "bash ${TMOE_GIT_DIR}/share/old-version/tools/app/tool"
-			fi
-		else
-			if [ ! $(command -v curl) ]; then
-				wget -O /tmp/.tmoe-linux-tool.bash "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool"
-			else
-				curl -Lv -o /tmp/.tmoe-linux-tool.bash "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool"
-			fi
-			source /tmp/.tmoe-linux-tool.bash
-		fi
-	}
-	##########
-	choose_manager_or_tool_zh() {
-		if (whiptail --title "您想要对这个小可爱做什么" --yes-button "Tools" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}\n您是想要启动software安装工具，\n还是system管理器？\nDo you want to start the software installation tools\nor the system manager? ♪(^∇^*) " 0 50); then
-			curl_tmoe_linux_tool_sh
-			exit 0
-		fi
-	}
-	choose_manager_or_tool_ja() {
-		if (whiptail --title "どちらを選びますか" --yes-button "Tools" --no-button "Manager" --yesno "${OSRELEASE}を使用しています ${WSL}\nツールまたはマネージャーを起動しますか？♪(^∇^*) " 0 50); then
-			curl_tmoe_linux_tool_sh
-			exit 0
-		fi
-	}
-	choose_manager_or_tool_en() {
-		if (whiptail --title "Which one do you want to choose?" --yes-button "Tools" --no-button "Manager" --yesno "You are using ${OSRELEASE} ${WSL}\nDo you want to start the software installation tool\nor the system manager? ♪(^∇^*) " 0 50); then
-			curl_tmoe_linux_tool_sh
-			exit 0
-		fi
-	}
-	choose_manager_or_tool_de() {
-		if (whiptail --title "Welches möchten Sie wählen?" --yes-button "Tools" --no-button "Manager" --yesno "Sie verwenden ${OSRELEASE} ${WSL}\nMöchten Sie das Softwareinstallationstools \noder den Systemmanager starten? ♪(^∇^*) " 0 50); then
-			curl_tmoe_linux_tool_sh
-			exit 0
-		fi
-	}
-	###########
-	choose_manager_or_tool() {
-		case ${TMOE_MENU_LANG} in
-		zh_*UTF-8) choose_manager_or_tool_zh ;;
-		ja_JP.UTF-8) choose_manager_or_tool_ja ;;
-		de_DE.UTF-8) choose_manager_or_tool_de ;; #Deutsche
-		*) choose_manager_or_tool_en ;;
-		esac
-	}
-	if [ ! -z "${LINUX_DISTRO}" ]; then
-		if grep -q 'PRETTY_NAME=' /etc/os-release; then
-			OSRELEASE="$(grep 'PRETTY_NAME=' /etc/os-release | head -n 1 | cut -d '=' -f 2)"
-		else
-			OSRELEASE="$(grep -v 'VERSION' /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)"
-		fi
-		choose_manager_or_tool
-	fi
+    case "$(id -u)" in
+    0) ;;
+    *)
+        export PATH=${PATH}:/usr/sbin:/sbin
+        [[ -e ${CONFIG_FOLDER} ]] || mkdir -pv ${CONFIG_FOLDER}/rootless ${CONFIG_FOLDER}/rootful
+        if [ -e "${TMOE_GIT_DIR}/share/old-version/share/app/manager" ]; then
+            if [ $(command -v fortune) ]; then
+                fortune 2>/dev/null
+            elif [ -e /usr/games/fortune ]; then
+                /usr/games/fortune 2>/dev/null
+            fi
+            if [ $(command -v sudo) ]; then
+                sudo -E bash ${TMOE_GIT_DIR}/share/old-version/share/app/manager
+            else
+                su -c "bash ${TMOE_GIT_DIR}/share/old-version/share/app/manager"
+            fi
+        else
+            if [ -e "/usr/bin/curl" ]; then
+                sudo -E bash -c "$(curl -LfsS https://${TMOE_GIT_URL}/raw/master/debian.sh)" ||
+                    su -c "$(curl -LfsS https://${TMOE_GIT_URL}/raw/master/debian.sh)"
+            else
+                sudo -E bash -c "$(wget -qO- https://${TMOE_GIT_URL}/raw/master/debian.sh)" ||
+                    su -c "$(wget -qO- https://${TMOE_GIT_URL}/raw/master/debian.sh)"
+            fi
+            #此处一定为debian.sh，而非manager.sh
+        fi
+        exit 0
+        ;;
+    esac
+    ##############
+    SWITCH_MIRROR=false
+    if [[ -e /etc/os-release ]]; then
+        check_linux_distro_etc_release
+    else
+        check_linux_distro_pkg_manager
+    fi
+    ##############
+    check_gnu_linux_git_and_whiptail
+    #############
+    CurrentLANG=${LANG}
+    if [ ! $(printf '%s\n' "${LANG}" | grep -E 'UTF-8|UTF8') ]; then
+        export LANG=C.UTF-8
+    fi
+    ########################
+    case ${LINUX_DISTRO} in
+    openwrt)
+        if [ -d "/opt/bin" ]; then
+            PREFIX="/opt"
+        else
+            PREFIX=/usr
+        fi
+        ;;
+    *)
+        PREFIX='/usr/local'
+        [[ -d ${PREFIX} ]] || PREFIX='/usr'
+        ;;
+    esac
+    ################
+    check_tmoe_menu_locale_file
+    ############
+    curl_tmoe_linux_tool_sh() {
+        if [ -e "${TMOE_GIT_DIR}/share/old-version/tools/app/tool" ]; then
+            if [ $(command -v sudo) ]; then
+                sudo -E bash ${TMOE_GIT_DIR}/share/old-version/tools/app/tool
+            else
+                su -c "bash ${TMOE_GIT_DIR}/share/old-version/tools/app/tool"
+            fi
+        else
+            if [ ! $(command -v curl) ]; then
+                wget -O /tmp/.tmoe-linux-tool.bash "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool"
+            else
+                curl -Lv -o /tmp/.tmoe-linux-tool.bash "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool"
+            fi
+            source /tmp/.tmoe-linux-tool.bash
+        fi
+    }
+    ##########
+    choose_manager_or_tool_zh() {
+        if (whiptail --title "您想要对这个小可爱做什么" --yes-button "Tools" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}\n您是想要启动software安装工具，\n还是system管理器？\nDo you want to start the software installation tools\nor the system manager? ♪(^∇^*) " 0 50); then
+            curl_tmoe_linux_tool_sh
+            exit 0
+        fi
+    }
+    choose_manager_or_tool_ja() {
+        if (whiptail --title "どちらを選びますか" --yes-button "Tools" --no-button "Manager" --yesno "${OSRELEASE}を使用しています ${WSL}\nツールまたはマネージャーを起動しますか？♪(^∇^*) " 0 50); then
+            curl_tmoe_linux_tool_sh
+            exit 0
+        fi
+    }
+    choose_manager_or_tool_en() {
+        if (whiptail --title "Which one do you want to choose?" --yes-button "Tools" --no-button "Manager" --yesno "You are using ${OSRELEASE} ${WSL}\nDo you want to start the software installation tool\nor the system manager? ♪(^∇^*) " 0 50); then
+            curl_tmoe_linux_tool_sh
+            exit 0
+        fi
+    }
+    choose_manager_or_tool_de() {
+        if (whiptail --title "Welches möchten Sie wählen?" --yes-button "Tools" --no-button "Manager" --yesno "Sie verwenden ${OSRELEASE} ${WSL}\nMöchten Sie das Softwareinstallationstools \noder den Systemmanager starten? ♪(^∇^*) " 0 50); then
+            curl_tmoe_linux_tool_sh
+            exit 0
+        fi
+    }
+    ###########
+    choose_manager_or_tool() {
+        case ${TMOE_MENU_LANG} in
+        zh_*UTF-8) choose_manager_or_tool_zh ;;
+        ja_JP.UTF-8) choose_manager_or_tool_ja ;;
+        de_DE.UTF-8) choose_manager_or_tool_de ;; #Deutsche
+        *) choose_manager_or_tool_en ;;
+        esac
+    }
+    if [ ! -z "${LINUX_DISTRO}" ]; then
+        if grep -q 'PRETTY_NAME=' /etc/os-release; then
+            OSRELEASE="$(grep 'PRETTY_NAME=' /etc/os-release | head -n 1 | cut -d '=' -f 2)"
+        else
+            OSRELEASE="$(grep -v 'VERSION' /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)"
+        fi
+        choose_manager_or_tool
+    fi
 }
 ########################################
 notes_of_tmoe_package_installation() {
-	printf "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}\n"
-	printf "${GREEN}${TMOE_INSTALLATION_COMMAND}${BLUE}${DEPENDENCIES}${RESET}\n"
-	printf "如需${BOLD}${RED}卸载${RESET}${RESET}，请${YELLOW}手动${RESET}输${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCIES}${RESET}\n"
-	printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCIES}${RESET}"
+    printf "正在${YELLOW}安装${RESET}相关${GREEN}软件包${RESET}及其${BLUE}依赖...${RESET}\n"
+    printf "${GREEN}${TMOE_INSTALLATION_COMMAND}${BLUE}${DEPENDENCIES}${RESET}\n"
+    printf "如需${BOLD}${RED}卸载${RESET}${RESET}，请${YELLOW}手动${RESET}输${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCIES}${RESET}\n"
+    printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCIES}${RESET}"
 }
 #####################
 check_release_version() {
-	CHROOT_NOTE=''
-	case "${LINUX_DISTRO}" in
-	"Android")
-		OSRELEASE="Android"
-		# CHROOT_NOTE='(已向Android开放)'
-		;;
-	*)
-		if grep -q 'NAME=' /etc/os-release; then
-			OSRELEASE=$(grep -v 'PRETTY' /etc/os-release | grep 'NAME=' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
-		elif grep -q 'ID=' /etc/os-release; then
-			OSRELEASE=$(grep -v 'VERSION' /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)
-		else
-			OSRELEASE='GNU/Linux'
-		fi
-		;;
-	esac
+    CHROOT_NOTE=''
+    case "${LINUX_DISTRO}" in
+    "Android")
+        OSRELEASE="Android"
+        # CHROOT_NOTE='(已向Android开放)'
+        ;;
+    *)
+        if grep -q 'NAME=' /etc/os-release; then
+            OSRELEASE=$(grep -v 'PRETTY' /etc/os-release | grep 'NAME=' | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2)
+        elif grep -q 'ID=' /etc/os-release; then
+            OSRELEASE=$(grep -v 'VERSION' /etc/os-release | grep 'ID=' | head -n 1 | cut -d '=' -f 2)
+        else
+            OSRELEASE='GNU/Linux'
+        fi
+        ;;
+    esac
 }
 ##################
 convert_android_locale_to_unix() {
-	# case ${ANDROID_LANG} in
-	# z*_CN) LANG="$(base64 -d <<<emhfQ04uVVRGLTgK)" ;;
-	# zh_HK | zh_MO) LANG="zh_HK.UTF-8" ;; # zh_Hant/Hans
-	# zh_TW) LANG="zh_TW.UTF-8" ;;
-	# zh_SG) LANG="zh_SG.UTF-8" ;;
-	# "aa_ER@saaho" | "aa_ER" | "aa_ET" | "agr_PE" | "ak_GH" | "am_ET" | "anp_IN" | "ar_IN" | "ar_SS" | "as_IN" | "ayc_PE" | "az_AZ" | "az_IR" | "be_BY@latin" | "bem_ZM" | "ber_DZ" | "ber_MA" | "bho_IN" | "bho_NP" | "bi_VU" | "bn_BD" | "bn_IN" | "bo_CN" | "bo_IN" | "brx_IN" | "byn_ER" | "ca_ES@valencia" | "ce_RU" | "chr_US" | "cmn_TW" | "crh_UA" | "csb_PL" | "cv_RU" | "doi_IN" | "dsb_DE" | "dv_MV" | "dz_BT" | "en_AG" | "en_IL" | "en_IN" | "en_NG" | "en_ZM" | "eo" | "es_CU" | "fa_IR" | "ff_SN" | "fil_PH" | "fur_IT" | "fy_DE" | "fy_NL" | "gez_ER@abegede" | "gez_ER" | "gez_ET@abegede" | "gez_ET" | "gu_IN" | "hak_TW" | "ha_NG" | "hif_FJ" | "hi_IN" | "hne_IN" | "ht_HT" | "hy_AM" | "ia_FR" | "ig_NG" | "ik_CA" | "iu_CA" | "kab_DZ" | "km_KH" | "kn_IN" | "kok_IN" | "ks_IN@devanagari" | "ks_IN" | "ky_KG" | "lb_LU" | "li_BE" | "lij_IT" | "li_NL" | "ln_CD" | "lo_LA" | "lzh_TW" | "mag_IN" | "mai_IN" | "mai_NP" | "mfe_MU" | "mhr_RU" | "miq_NI" | "mjw_IN" | "ml_IN" | "mni_IN" | "mn_MN" | "mnw_MM" | "mr_IN" | "my_MM" | "nan_TW@latin" | "nan_TW" | "nds_DE" | "nds_NL" | "ne_NP" | "nhn_MX" | "niu_NU" | "niu_NZ" | "nl_AW" | "nr_ZA" | "nso_ZA" | "om_ET" | "or_IN" | "os_RU" | "pa_IN" | "pap_AW" | "pap_CW" | "pa_PK" | "ps_AF" | "quz_PE" | "raj_IN" | "rw_RW" | "sah_RU" | "sa_IN" | "sat_IN" | "sc_IT" | "sd_IN@devanagari" | "sd_IN" | "se_NO" | "sgs_LT" | "shn_MM" | "shs_CA" | "sid_ET" | "si_LK" | "sm_WS" | "so_ET" | "sq_MK" | "sr_ME" | "sr_RS@latin" | "sr_RS" | "ss_ZA" | "sw_KE" | "sw_TZ" | "szl_PL" | "ta_IN" | "ta_LK" | "te_IN" | "the_NP" | "ti_ER" | "ti_ET" | "tig_ER" | "tk_TM" | "tn_ZA" | "to_TO" | "tpi_PG" | "ts_ZA" | "tt_RU@iqtelif" | "tt_RU" | "ug_CN" | "unm_US" | "ur_IN" | "ur_PK" | "uz_UZ@cyrillic" | "ve_ZA" | "vi_VN" | "wae_CH" | "wal_ET" | "wo_SN" | "yo_NG" | "yue_HK") LANG="${ANDROID_LANG} UTF-8" ;;
-	# *) LANG="${ANDROID_LANG}.UTF-8" ;;
-	# esac
-	LANG="${ANDROID_LANG}.UTF-8"
+    # case ${ANDROID_LANG} in
+    # z*_CN) LANG="$(base64 -d <<<emhfQ04uVVRGLTgK)" ;;
+    # zh_HK | zh_MO) LANG="zh_HK.UTF-8" ;; # zh_Hant/Hans
+    # zh_TW) LANG="zh_TW.UTF-8" ;;
+    # zh_SG) LANG="zh_SG.UTF-8" ;;
+    # "aa_ER@saaho" | "aa_ER" | "aa_ET" | "agr_PE" | "ak_GH" | "am_ET" | "anp_IN" | "ar_IN" | "ar_SS" | "as_IN" | "ayc_PE" | "az_AZ" | "az_IR" | "be_BY@latin" | "bem_ZM" | "ber_DZ" | "ber_MA" | "bho_IN" | "bho_NP" | "bi_VU" | "bn_BD" | "bn_IN" | "bo_CN" | "bo_IN" | "brx_IN" | "byn_ER" | "ca_ES@valencia" | "ce_RU" | "chr_US" | "cmn_TW" | "crh_UA" | "csb_PL" | "cv_RU" | "doi_IN" | "dsb_DE" | "dv_MV" | "dz_BT" | "en_AG" | "en_IL" | "en_IN" | "en_NG" | "en_ZM" | "eo" | "es_CU" | "fa_IR" | "ff_SN" | "fil_PH" | "fur_IT" | "fy_DE" | "fy_NL" | "gez_ER@abegede" | "gez_ER" | "gez_ET@abegede" | "gez_ET" | "gu_IN" | "hak_TW" | "ha_NG" | "hif_FJ" | "hi_IN" | "hne_IN" | "ht_HT" | "hy_AM" | "ia_FR" | "ig_NG" | "ik_CA" | "iu_CA" | "kab_DZ" | "km_KH" | "kn_IN" | "kok_IN" | "ks_IN@devanagari" | "ks_IN" | "ky_KG" | "lb_LU" | "li_BE" | "lij_IT" | "li_NL" | "ln_CD" | "lo_LA" | "lzh_TW" | "mag_IN" | "mai_IN" | "mai_NP" | "mfe_MU" | "mhr_RU" | "miq_NI" | "mjw_IN" | "ml_IN" | "mni_IN" | "mn_MN" | "mnw_MM" | "mr_IN" | "my_MM" | "nan_TW@latin" | "nan_TW" | "nds_DE" | "nds_NL" | "ne_NP" | "nhn_MX" | "niu_NU" | "niu_NZ" | "nl_AW" | "nr_ZA" | "nso_ZA" | "om_ET" | "or_IN" | "os_RU" | "pa_IN" | "pap_AW" | "pap_CW" | "pa_PK" | "ps_AF" | "quz_PE" | "raj_IN" | "rw_RW" | "sah_RU" | "sa_IN" | "sat_IN" | "sc_IT" | "sd_IN@devanagari" | "sd_IN" | "se_NO" | "sgs_LT" | "shn_MM" | "shs_CA" | "sid_ET" | "si_LK" | "sm_WS" | "so_ET" | "sq_MK" | "sr_ME" | "sr_RS@latin" | "sr_RS" | "ss_ZA" | "sw_KE" | "sw_TZ" | "szl_PL" | "ta_IN" | "ta_LK" | "te_IN" | "the_NP" | "ti_ER" | "ti_ET" | "tig_ER" | "tk_TM" | "tn_ZA" | "to_TO" | "tpi_PG" | "ts_ZA" | "tt_RU@iqtelif" | "tt_RU" | "ug_CN" | "unm_US" | "ur_IN" | "ur_PK" | "uz_UZ@cyrillic" | "ve_ZA" | "vi_VN" | "wae_CH" | "wal_ET" | "wo_SN" | "yo_NG" | "yue_HK") LANG="${ANDROID_LANG} UTF-8" ;;
+    # *) LANG="${ANDROID_LANG}.UTF-8" ;;
+    # esac
+    LANG="${ANDROID_LANG}.UTF-8"
 }
 case_language_and_set_desc() {
-	LANG_QUATER=$(echo "$LANG_HALF" | awk -F'_' '{print $1}')
-	local _Region=$(echo "$LANG_HALF" | awk -F'_' '{print $NF}')
-	# Is your locale "xx_YY"?
-	case ${LANG_QUATER} in
-	de)
-		local _Language="Deutsch"
-		DESCRIPTION="Ist Ihr Gebietsschema \"${_Language}_${_Region}\"?"
-		;;
-	es)
-		local _Language="español"
-		DESCRIPTION="¿Su configuración regional es \"${_Language}_${_Region}\"?"
-		;;
-	fr)
-		local _Language="français"
-		DESCRIPTION="Votre langue est-elle \"${_Language}_${_Region}\"?"
-		;;
-	ru)
-		local _Language="ру́сский язы́к"
-		DESCRIPTION="Является ли ваш язык \"${_Language}_${_Region}\"?"
-		;;
-	pt)
-		local _Language="português"
-		DESCRIPTION="O seu local é \"${_Language}_${_Region}\"?"
-		;;
-	nl)
-		local _Language="Nederlands"
-		DESCRIPTION="Is uw locale \"${_Language}_${_Region}\"?"
-		;;
-	sv)
-		local _Language="svenska"
-		DESCRIPTION="Är din lokalbokstav \"${_Language}_${_Region}\"?"
-		;;
-	el)
-		local _Language="Ελληνικά"
-		DESCRIPTION="Είναι η τοπική σας γλώσσα \"${_Language}_${_Region}\";"
-		;;
-	it)
-		local _Language="italiano"
-		DESCRIPTION="Il tuo locale è \"${_Language}_${_Region}\"?"
-		;;
-	so)
-		local _Language="Soomaali"
-		DESCRIPTION="deegaankaagu ma yahay \"${_Language}_${_Region}\"?"
-		;;
-	en)
-		local _Language="English"
-		DESCRIPTION="Is your locale \"${_Language}_${_Region}\"?"
-		;;
-	*)
-		local _Language="${LANG_HALF}"
-		DESCRIPTION="Is your locale \"${_Language}_${_Region}\"?"
-		;;
-	esac
-	MENU="${LANG_HALF}: ${_Language}_${_Region}"
+    LANG_QUATER=$(echo "$LANG_HALF" | awk -F'_' '{print $1}')
+    local _Region=$(echo "$LANG_HALF" | awk -F'_' '{print $NF}')
+    # Is your locale "xx_YY"?
+    case ${LANG_QUATER} in
+    de)
+        local _Language="Deutsch"
+        DESCRIPTION="Ist Ihr Gebietsschema \"${_Language}_${_Region}\"?"
+        ;;
+    es)
+        local _Language="español"
+        DESCRIPTION="¿Su configuración regional es \"${_Language}_${_Region}\"?"
+        ;;
+    fr)
+        local _Language="français"
+        DESCRIPTION="Votre langue est-elle \"${_Language}_${_Region}\"?"
+        ;;
+    ru)
+        local _Language="ру́сский язы́к"
+        DESCRIPTION="Является ли ваш язык \"${_Language}_${_Region}\"?"
+        ;;
+    pt)
+        local _Language="português"
+        DESCRIPTION="O seu local é \"${_Language}_${_Region}\"?"
+        ;;
+    nl)
+        local _Language="Nederlands"
+        DESCRIPTION="Is uw locale \"${_Language}_${_Region}\"?"
+        ;;
+    sv)
+        local _Language="svenska"
+        DESCRIPTION="Är din lokalbokstav \"${_Language}_${_Region}\"?"
+        ;;
+    el)
+        local _Language="Ελληνικά"
+        DESCRIPTION="Είναι η τοπική σας γλώσσα \"${_Language}_${_Region}\";"
+        ;;
+    it)
+        local _Language="italiano"
+        DESCRIPTION="Il tuo locale è \"${_Language}_${_Region}\"?"
+        ;;
+    so)
+        local _Language="Soomaali"
+        DESCRIPTION="deegaankaagu ma yahay \"${_Language}_${_Region}\"?"
+        ;;
+    en)
+        local _Language="English"
+        DESCRIPTION="Is your locale \"${_Language}_${_Region}\"?"
+        ;;
+    *)
+        local _Language="${LANG_HALF}"
+        DESCRIPTION="Is your locale \"${_Language}_${_Region}\"?"
+        ;;
+    esac
+    MENU="${LANG_HALF}: ${_Language}_${_Region}"
 }
 set_locale_title_and_desc() {
-	TITLE="language_region"
-	LANG_HALF=$(echo "$LANG" | awk -F'.' '{print $1}')
-	unset MENU
-	case ${LANG} in
-	zh_HK*) local _Language="繁體中文_香港" ;;
-	zh_TW*) local _Language="正體中文_台灣" ;;
-	zh_SG*) local _Language="简体中文_新加坡" ;;
-	zh_*) local _Language="简体中文_中国内地" ;;
-	ja_JP*)
-		local _Language="日本語_日本"
-		DESCRIPTION="あなたのロケールは「日本語_日本」ですか？"
-		;;
-	ko_KR*)
-		local _Language="한국어_대한민국"
-		DESCRIPTION="당신의 언어는 \"${_Language}\" 입니까?"
-		;;
-	cs_CZ*)
-		local _Language="čeština_Česká republika"
-		DESCRIPTION="Je vaše locale \"${_Language}\"?"
-		;;
-	et_EE*)
-		local _Language="eesti_Eesti"
-		DESCRIPTION="Kas teie keeluala on \"${_Language}\"?"
-		;;
-	bg_BG*)
-		local _Language="български_България"
-		DESCRIPTION="Вашият локал е \"${_Language}\"?"
-		;;
-	pl_PL*)
-		local _Language="polski_Polska"
-		DESCRIPTION="Czy Twoje locale to \"${_Language}\"?"
-		;;
-	da_DK*)
-		local _Language="dansk_Danmark"
-		DESCRIPTION="Er dit sprogområde \"${_Language}\"?"
-		;;
-	fi_FI*)
-		local _Language="suomi_Suomi"
-		DESCRIPTION="Onko alueesi \"${_Language}\"?"
-		;;
-	lv_LV*)
-		local _Language="latviešu_Latvija"
-		DESCRIPTION="Vai jūsu locale ir \"${_Language}\"?"
-		;;
-	lt_LT*)
-		local _Language="lietuvių_Lietuva"
-		DESCRIPTION="Ar jūsų vietovardis yra \"${_Language}\"?"
-		;;
-	ro_RO*)
-		local _Language="română_România"
-		DESCRIPTION="Este localitatea dvs. \"${_Language}\"?"
-		;;
-	sk_SK*)
-		local _Language="slovenčina_Slovensko"
-		DESCRIPTION="Je vaše lokálne prostredie \"${_Language}\"?"
-		;;
-	hu_HU*)
-		local _Language="magyar_Magyarország"
-		DESCRIPTION="Az Ön területi beállítása \"${_Language}\"?"
-		;;
-	vi_VN*)
-		local _Language="Tiếng Việt_Việt Nam"
-		DESCRIPTION="Ngôn ngữ của bạn có phải là \"${_Language}\" không?"
-		;;
-	id_ID*)
-		local _Language="Indonesia_Indonesia"
-		DESCRIPTION="Apakah lokal Anda \"${_Language}\"?"
-		;;
-	uk_UA*)
-		local _Language="українська_Україна"
-		DESCRIPTION="Ваша мова \"${_Language}\"?"
-		;;
-	en_GB*)
-		local _Language="English_Great Britain"
-		DESCRIPTION="Is your locale \"${_Language}\"?"
-		;;
-	C.UTF-8)
-		local _Language="C.UTF-8"
-		DESCRIPTION="Unfortunately, it is not possible to detect your locale. Is your locale \"${_Language}\"?"
-		;;
-	*) case_language_and_set_desc ;;
-	esac
+    TITLE="language_region"
+    LANG_HALF=$(echo "$LANG" | awk -F'.' '{print $1}')
+    unset MENU
+    case ${LANG} in
+    zh_HK*) local _Language="繁體中文_香港" ;;
+    zh_TW*) local _Language="正體中文_台灣" ;;
+    zh_SG*) local _Language="简体中文_新加坡" ;;
+    zh_*) local _Language="简体中文_中国内地" ;;
+    ja_JP*)
+        local _Language="日本語_日本"
+        DESCRIPTION="あなたのロケールは「日本語_日本」ですか？"
+        ;;
+    ko_KR*)
+        local _Language="한국어_대한민국"
+        DESCRIPTION="당신의 언어는 \"${_Language}\" 입니까?"
+        ;;
+    cs_CZ*)
+        local _Language="čeština_Česká republika"
+        DESCRIPTION="Je vaše locale \"${_Language}\"?"
+        ;;
+    et_EE*)
+        local _Language="eesti_Eesti"
+        DESCRIPTION="Kas teie keeluala on \"${_Language}\"?"
+        ;;
+    bg_BG*)
+        local _Language="български_България"
+        DESCRIPTION="Вашият локал е \"${_Language}\"?"
+        ;;
+    pl_PL*)
+        local _Language="polski_Polska"
+        DESCRIPTION="Czy Twoje locale to \"${_Language}\"?"
+        ;;
+    da_DK*)
+        local _Language="dansk_Danmark"
+        DESCRIPTION="Er dit sprogområde \"${_Language}\"?"
+        ;;
+    fi_FI*)
+        local _Language="suomi_Suomi"
+        DESCRIPTION="Onko alueesi \"${_Language}\"?"
+        ;;
+    lv_LV*)
+        local _Language="latviešu_Latvija"
+        DESCRIPTION="Vai jūsu locale ir \"${_Language}\"?"
+        ;;
+    lt_LT*)
+        local _Language="lietuvių_Lietuva"
+        DESCRIPTION="Ar jūsų vietovardis yra \"${_Language}\"?"
+        ;;
+    ro_RO*)
+        local _Language="română_România"
+        DESCRIPTION="Este localitatea dvs. \"${_Language}\"?"
+        ;;
+    sk_SK*)
+        local _Language="slovenčina_Slovensko"
+        DESCRIPTION="Je vaše lokálne prostredie \"${_Language}\"?"
+        ;;
+    hu_HU*)
+        local _Language="magyar_Magyarország"
+        DESCRIPTION="Az Ön területi beállítása \"${_Language}\"?"
+        ;;
+    vi_VN*)
+        local _Language="Tiếng Việt_Việt Nam"
+        DESCRIPTION="Ngôn ngữ của bạn có phải là \"${_Language}\" không?"
+        ;;
+    id_ID*)
+        local _Language="Indonesia_Indonesia"
+        DESCRIPTION="Apakah lokal Anda \"${_Language}\"?"
+        ;;
+    uk_UA*)
+        local _Language="українська_Україна"
+        DESCRIPTION="Ваша мова \"${_Language}\"?"
+        ;;
+    en_GB*)
+        local _Language="English_Great Britain"
+        DESCRIPTION="Is your locale \"${_Language}\"?"
+        ;;
+    C.UTF-8)
+        local _Language="C.UTF-8"
+        DESCRIPTION="Unfortunately, it is not possible to detect your locale. Is your locale \"${_Language}\"?"
+        ;;
+    *) case_language_and_set_desc ;;
+    esac
 
-	if [[ -z ${MENU} ]]; then
-		MENU="${LANG_HALF}: ${_Language}"
-	fi
+    if [[ -z ${MENU} ]]; then
+        MENU="${LANG_HALF}: ${_Language}"
+    fi
 
-	case ${LANG} in
-	zh_HK* | zh_TW*)
-		TITLE="語言_區域"
-		DESCRIPTION="檢測到您的語言環境為 \"${_Language}\""
-		;;
-	zh_*)
-		TITLE="语言_区域"
-		DESCRIPTION="检测到您的语言环境为 \"${_Language}\""
-		;;
-	esac
+    case ${LANG} in
+    zh_HK* | zh_TW*)
+        TITLE="語言_區域"
+        DESCRIPTION="檢測到您的語言環境為 \"${_Language}\""
+        ;;
+    zh_*)
+        TITLE="语言_区域"
+        DESCRIPTION="检测到您的语言环境为 \"${_Language}\""
+        ;;
+    esac
 }
 get_android_locale() {
-	if [[ -n $(command -v getprop) ]]; then
-		ANDROID_LOCALE=$(getprop persist.sys.locale)
-		if [[ -n ${ANDROID_LOCALE} ]]; then
-			ANDROID_LANG=$(echo "${ANDROID_LOCALE}" | awk -F'-' '{print $1"_"$NF}')
-			convert_android_locale_to_unix
-		fi
-	fi
+    if [[ -n $(command -v getprop) ]]; then
+        ANDROID_LOCALE=$(getprop persist.sys.locale)
+        if [[ -n ${ANDROID_LOCALE} ]]; then
+            ANDROID_LANG=$(echo "${ANDROID_LOCALE}" | awk -F'-' '{print $1"_"$NF}')
+            convert_android_locale_to_unix
+        fi
+    fi
 }
 choose_tmoe_locale_env() {
-	SET_TMOE_LOCALE=true
-	case ${LINUX_DISTRO} in
-	Android) get_android_locale ;;
-	esac
+    SET_TMOE_LOCALE=true
+    case ${LINUX_DISTRO} in
+    Android) get_android_locale ;;
+    esac
 
-	if [[ -z ${LANG} ]]; then
-		LANG="C.UTF-8"
-	fi
-	set_locale_title_and_desc
+    if [[ -z ${LANG} ]]; then
+        LANG="C.UTF-8"
+    fi
+    set_locale_title_and_desc
 
-	CONTAINER_LOCALE=$(
-		whiptail --title "${TITLE}" \
-			--menu "${DESCRIPTION}\nPlease select your \$LANG" 0 0 0 \
-			"1" "${MENU}" \
-			"2" "English_United States" \
-			"3" "简体中文" \
-			"4" "Deutsch_Deutschland" \
-			"5" "español_España" \
-			"6" "italiano_Italia" \
-			"7" "français_France" \
-			"8" "ру́сский язы́к_Россия" \
-			"9" "čeština_Česká republika" \
-			"10" "日本語_日本" \
-			"11" "हिन्दी_भारत" \
-			"12" "português_Portugal" \
-			"13" "aa_DJ: Qafar_Yabuuti" \
-			"14" "aa_ER@saaho: Afar_Eritrea(Saaho Dialect)" \
-			"15" "aa_ER: Qafar_Eretria" \
-			"16" "aa_ET: Qafar_Otobbia" \
-			"17" "af_ZA: Afrikaans_Suid-Afrika" \
-			"18" "agr_PE: Awajún_Perú" \
-			"19" "ak_GH: Akan_Gaana" \
-			"20" "am_ET: አማርኛ_ኢትዮጵያ" \
-			"21" "an_ES: aragonés_Espanya" \
-			"22" "anp_IN: अंगिका_भारत" \
-			"23" "ar_AE: العربية_الإمارات العربية المتحدة" \
-			"24" "ar_BH: العربية_البحرين" \
-			"25" "ar_DZ: العربية_الجزائر" \
-			"26" "ar_EG: العربية_مصر" \
-			"27" "ar_IN: العربية_الهند" \
-			"28" "ar_IQ: العربية_العراق" \
-			"29" "ar_JO: العربية_الأردن" \
-			"30" "ar_KW: العربية_الكويت" \
-			"31" "ar_LB: العربية_لبنان" \
-			"32" "ar_LY: العربية_ليبيا" \
-			"33" "ar_MA: العربية_المغرب" \
-			"34" "ar_OM: العربية_عُمان" \
-			"35" "ar_QA: العربية_قطر" \
-			"36" "ar_SA: العربية_المملكة العربية السعودية" \
-			"37" "ar_SD: العربية_السودان" \
-			"38" "ar_SS: العربية_جنوب السودان" \
-			"39" "ar_SY: العربية_سوريا" \
-			"40" "ar_TN: العربية_تونس" \
-			"41" "ar_YE: العربية_اليمن" \
-			"42" "as_IN: অসমীয়া_ভাৰত" \
-			"43" "ast_ES: asturianu_España" \
-			"44" "ayc_PE: Aymar aru_Piruw" \
-			"45" "az_AZ: azərbaycan_Azərbaycan" \
-			"46" "az_IR: تۆرکجه_ایران" \
-			"47" "be_BY@latin: biełaruskaja_Biełaruś" \
-			"48" "be_BY: беларуская_Беларусь" \
-			"49" "bem_ZM: Ichibemba_Zambia" \
-			"50" "ber_DZ: Tamaziɣt_Lezzayer" \
-			"51" "ber_MA: ⵜⴰⵎⴰⵣⵉⵖⵜ_ⵜⴰⴳⵍⴷⵉⵜ ⵏ ⵍⵎⵖⵔⵉⴱ" \
-			"52" "bg_BG: български_България" \
-			"53" "bhb_IN: भीली_भारत" \
-			"54" "bho_IN: भोजपुरी_भारत" \
-			"55" "bho_NP: भोजपुरी_नेपाल" \
-			"56" "bi_VU: Bislama_Vanuatu" \
-			"57" "bn_BD: বাংলা_বাংলাদেশ" \
-			"58" "bn_IN: বাংলা_ভারত" \
-			"59" "bo_CN: བོད་སྐད་_རྒྱ་ནག" \
-			"60" "bo_IN: བོད་སྐད་_རྒྱ་གར་" \
-			"61" "br_FR: brezhoneg_Frañs" \
-			"62" "brx_IN: बड़ो_भारत" \
-			"63" "bs_BA: bosanski_Bosna i Hercegovina" \
-			"64" "byn_ER: ብሊን_ኤርትራ" \
-			"65" "ca_AD: català_Andorra" \
-			"66" "ca_ES: català_Espanya" \
-			"67" "ca_ES@valencia: Valencian (southern Catalan) locale for Spain with Euro" \
-			"68" "ca_FR: català_França" \
-			"69" "ca_IT: català_Itàlia" \
-			"70" "ce_RU: нохчийн_Росси" \
-			"71" "chr_US: ᏣᎳᎩ_ᏌᏊ ᎢᏳᎾᎵᏍᏔᏅ ᏍᎦᏚᎩ" \
-			"72" "cmn_TW: 漢語官話_臺灣" \
-			"73" "crh_UA: qırımtatar tili_Ukraine" \
-			"74" "csb_PL: kaszëbsczi jãzëk_Pòlskô" \
-			"75" "cs_CZ: čeština_Česká republika" \
-			"76" "cv_RU: Чӑвашла_Russia" \
-			"77" "cy_GB: Cymraeg_Y Deyrnas Unedig" \
-			"78" "da_DK: dansk_Danmark" \
-			"79" "de_AT: Deutsch_Austria" \
-			"80" "de_BE: Deutsch_Belgien" \
-			"81" "de_CH: Deutsch_Schweiz" \
-			"82" "de_DE: Deutsch_Deutschland" \
-			"83" "de_IT: Deutsch_Italien" \
-			"84" "de_LI: Deutsch_Liechtenstein" \
-			"85" "de_LU: Deutsch_Luxemburg" \
-			"86" "doi_IN: डोगरी_भारत" \
-			"87" "dsb_DE: dolnoserbšćina_Nimska" \
-			"88" "dv_MV: ދިވެހި_ދިވެހިރާއްޖެ" \
-			"89" "dz_BT: རྫོང་ཁ_འབྲུག" \
-			"90" "el_CY: Ελληνικά_Κύπρος" \
-			"91" "el_GR: Ελληνικά_Ελλάδα" \
-			"92" "en_AG: English_Antigua and Barbuda" \
-			"93" "en_AU: English_Australia" \
-			"94" "en_BW: English_Botswana" \
-			"95" "en_CA: English_Canada" \
-			"96" "en_DK: English_Denmark" \
-			"97" "en_GB: English_Great Britain" \
-			"98" "en_HK: English_Hong Kong SAR China" \
-			"99" "en_IE: English_Ireland" \
-			"100" "en_IL: English_Israel" \
-			"101" "en_IN: English_India" \
-			"102" "en_NG: English_Nigeria" \
-			"103" "en_NZ: English_New-Zealand" \
-			"104" "en_PH: English_Philippines" \
-			"105" "en_SC: English_Seychelles" \
-			"106" "en_SG: English_Singapore" \
-			"107" "en_US: English_United States" \
-			"108" "en_ZA: English_South Africa" \
-			"109" "en_ZM: English_Zambia" \
-			"110" "en_ZW: English_Zimbabwe" \
-			"111" "eo: esperanto" \
-			"112" "es_AR: español_Argentina" \
-			"113" "es_BO: español_Bolivia" \
-			"114" "es_CL: español_Chile" \
-			"115" "es_CO: español_Colombia" \
-			"116" "es_CR: español_Costa Rica" \
-			"117" "es_CU: español_Cuba" \
-			"118" "es_DO: español_República Dominicana" \
-			"119" "es_EC: español_Ecuador" \
-			"120" "es_ES: español_España" \
-			"121" "es_GT: español_Guatemala" \
-			"122" "es_HN: español_Honduras" \
-			"123" "es_MX: español_México" \
-			"124" "es_NI: español_Nicaragua" \
-			"125" "es_PA: español_Panamá" \
-			"126" "es_PE: español_Perú" \
-			"127" "es_PR: español_Puerto Rico" \
-			"128" "es_PY: español_Paraguay" \
-			"129" "es_SV: español_El Salvador" \
-			"130" "es_US: español_Estados Unidos" \
-			"131" "es_UY: español_Uruguay" \
-			"132" "es_VE: español_Venezuela" \
-			"133" "et_EE: eesti_Eesti" \
-			"134" "eu_ES: euskara_Espainia" \
-			"135" "eu_FR: euskara_France" \
-			"136" "fa_IR: ‪ فارسی_ایران" \
-			"137" "ff_SN: Pulaar_Senegaal" \
-			"138" "fi_FI: suomi_Suomi" \
-			"139" "fil_PH: Filipino_Pilipinas" \
-			"140" "fo_FO: føroyskt_Føroyar" \
-			"141" "fr_BE: français_Belgique" \
-			"142" "fr_CA: français_Canada" \
-			"143" "fr_CH: français_Suisse" \
-			"144" "fr_FR: français_France" \
-			"145" "fr_LU: français_Luxembourg" \
-			"146" "fur_IT: furlan_Italie" \
-			"147" "fy_DE: Sater Frisian and North Frisian for Dútslân" \
-			"148" "fy_NL: Western Frisian_Nederlân" \
-			"149" "ga_IE: Gaeilge_níl" \
-			"150" "gd_GB: Gàidhlig_A\' Bhreatainn Mhòr" \
-			"151" "gez_ER@abegede: Ge\'ez language locale for Eritrea With Abegede Collation" \
-			"152" "gez_ER: ግዕዝ_ኤርትራ" \
-			"153" "gez_ET@abegede: Ge\'ez language locale for Ethiopia With Abegede Collation" \
-			"154" "gez_ET: ግዕዝ_ኢትዮጵያ" \
-			"155" "gl_ES: galego_España" \
-			"156" "gu_IN: ગુજરાતી_ભારત" \
-			"157" "gv_GB: Gaelg_Rywvaneth Unys" \
-			"158" "hak_TW: 客家話_臺灣" \
-			"159" "ha_NG: Hausa_Najeriya" \
-			"160" "he_IL: עִבְרִית_ישראל" \
-			"161" "hif_FJ: हिन्दी_Fiji" \
-			"162" "hi_IN: हिन्दी_भारत" \
-			"163" "hne_IN: छत्तीसगढ़ी_भारत" \
-			"164" "hr_HR: hrvatski_Hrvatska" \
-			"165" "hsb_DE: hornjoserbšćina_Němska" \
-			"166" "ht_HT: Kreyòl ayisyen_Ayiti" \
-			"167" "hu_HU: magyar_Magyarország" \
-			"168" "hy_AM: հայերեն_Հայաստան" \
-			"169" "ia_FR: interlingua_Francia" \
-			"170" "id_ID: Indonesia_Indonesia" \
-			"171" "ig_NG: Asụsụ Igbo_Naịjịrịa" \
-			"172" "ik_CA: Iñupiatun_Kanada" \
-			"173" "is_IS: íslenska_Ísland" \
-			"174" "it_CH: italiano_Svizzera" \
-			"175" "it_IT: italiano_Italia" \
-			"176" "iu_CA: ᐃᓄᒃᑎᑐᑦ_ᑲᓇᑕ" \
-			"177" "ja_JP: 日本語_日本" \
-			"178" "kab_DZ: Taqbaylit_Lezzayer" \
-			"179" "ka_GE: ქართული_საქართველო" \
-			"180" "kk_KZ: қазақ тілі_Қазақстан" \
-			"181" "kl_GL: kalaallisut_Kalaallit Nunaat" \
-			"182" "km_KH: ខ្មែរ_កម្ពុជា" \
-			"183" "kn_IN: ಕನ್ನಡ_ಭಾರತ" \
-			"184" "kok_IN: कोंकणी_भारत" \
-			"185" "ko_KR: 한국어_대한민국" \
-			"186" "ks_IN@devanagari: कॉशुर_भारत" \
-			"187" "ks_IN: कॉशुर_ہِندوستان" \
-			"188" "ku_TR: kurdî_Tirkiye" \
-			"189" "kw_GB: kernewek_Rywvaneth Unys" \
-			"190" "ky_KG: кыргызча_Кыргызстан" \
-			"191" "lb_LU: Lëtzebuergesch_Lëtzebuerg" \
-			"192" "lg_UG: Luganda_Yuganda" \
-			"193" "li_BE: Lèmbörgs_Bèlsj" \
-			"194" "lij_IT: Lìgure_Italia" \
-			"195" "li_NL: Lèmbörgs_Nederland" \
-			"196" "ln_CD: lingála_Republiki ya Kongó Demokratiki" \
-			"197" "lo_LA: ລາວ_ລາວ" \
-			"198" "lt_LT: lietuvių_Lietuva" \
-			"199" "lv_LV: latviešu_Latvija" \
-			"200" "lzh_TW: 漢語文言_臺灣" \
-			"201" "mag_IN: मगही_भारत" \
-			"202" "mai_IN: मैथिली_भारत" \
-			"203" "mai_NP: मैथिली_नेपाल" \
-			"204" "mfe_MU: kreol morisien_Moris" \
-			"205" "mg_MG: Malagasy_Madagasikara" \
-			"206" "mhr_RU: Mari locale for Russia" \
-			"207" "mi_NZ: Māori_Aotearoa" \
-			"208" "miq_NI: Miskito language locale for Nicaragua" \
-			"209" "mjw_IN: Karbi_Bhorot" \
-			"210" "mk_MK: македонски јазик_Македонија" \
-			"211" "ml_IN: മലയാളം_ഇന്ത്യ" \
-			"212" "mni_IN: মৈতৈলোন্_ভারত" \
-			"213" "mn_MN: монгол_Монгол" \
-			"214" "mnw_MM: မန်_ဗၟာ" \
-			"215" "mr_IN: मराठी_भारत" \
-			"216" "ms_MY: Melayu_Malaysia" \
-			"217" "mt_MT: Malti_Malta" \
-			"218" "my_MM: မြန်မာ_မြန်မာ" \
-			"219" "nan_TW@latin: Bân-lâm-gú_Tâi-oân" \
-			"220" "nan_TW: 閩南語_臺灣" \
-			"221" "nb_NO: norsk bokmål_Norge" \
-			"222" "nds_DE: Neddersass’sch_Düütschland" \
-			"223" "nds_NL: Neddersass’sch_Nedderlannen" \
-			"224" "ne_NP: नेपाली_नेपाल" \
-			"225" "nhn_MX: Tlahco nāhuatlahtōlli_Mexihco" \
-			"226" "niu_NU: Vagahau Niue_Niue" \
-			"227" "niu_NZ: Vagahau Niue_New Zealand" \
-			"228" "nl_AW: Nederlands_Aruba" \
-			"229" "nl_BE: Nederlands_België" \
-			"230" "nl_NL: Nederlands_Nederland" \
-			"231" "nn_NO: nynorsk_Noreg" \
-			"232" "nr_ZA: isiNdebele_iSewula Afrika" \
-			"233" "nso_ZA: Sesotho sa Leboa_Afrika Borwa" \
-			"234" "oc_FR: Occitan_França" \
-			"235" "om_ET: Oromoo_Itoophiyaa" \
-			"236" "om_KE: Oromoo_Keeniyaa" \
-			"237" "or_IN: ଓଡ଼ିଆ_ଭାରତ" \
-			"238" "os_RU: ирон_Уӕрӕсе" \
-			"239" "pa_IN: ਪੰਜਾਬੀ_ਭਾਰਤ" \
-			"240" "pap_AW: Papiamento_Aruba" \
-			"241" "pap_CW: Papiamento_Curaçao" \
-			"242" "pa_PK: پنجابی_پکستان" \
-			"243" "pl_PL: polski_Polska" \
-			"244" "ps_AF: پښتو_افغانستان" \
-			"245" "pt_BR: português_Brasil" \
-			"246" "pt_PT: português_Portugal" \
-			"247" "quz_PE: Qusqu runasimi_" \
-			"248" "raj_IN: राजस्थानी_भारत" \
-			"249" "ro_RO: română_România" \
-			"250" "ru_RU: ру́сский язы́к_Россия" \
-			"251" "ru_UA: русский_Украина" \
-			"252" "rw_RW: Kinyarwanda_U Rwanda" \
-			"253" "sah_RU: саха тыла_Арассыыйа" \
-			"254" "sa_IN: संस्कृतम्_भारतम्" \
-			"255" "sat_IN: ᱥᱟᱱᱛᱟᱲᱤ_ᱥᱤᱧᱚᱛ" \
-			"256" "sc_IT: sardu_Itàlia" \
-			"257" "sd_IN@devanagari: सिन्धी_भारत" \
-			"258" "sd_IN: سنڌي_انڊيا" \
-			"259" "se_NO: davvisámegiella_Norga" \
-			"260" "sgs_LT: Žemaitėškā_Lietova" \
-			"261" "shn_MM: လိၵ်ႈတႆး_မၢၼ်ႈ" \
-			"262" "shs_CA: Secwepemctsín_Canada" \
-			"263" "sid_ET: Sidaamu Afo_Itiyoophiya" \
-			"264" "si_LK: සිංහල_ශ්‍රී ලංකාව" \
-			"265" "sk_SK: slovenčina_Slovensko" \
-			"266" "sl_SI: slovenščina_Slovenija" \
-			"267" "sm_WS: Gagana faʻa Sāmoa_Sāmoa" \
-			"268" "so_DJ: Soomaali_Jabuuti" \
-			"269" "so_ET: Soomaali_Itoobiya" \
-			"270" "so_KE: Soomaali_Kiiniya" \
-			"271" "so_SO: Soomaali_Soomaaliya" \
-			"272" "sq_AL: shqip_Shqipëri" \
-			"273" "sq_MK: shqip_Maqedoni" \
-			"274" "sr_ME: српски_Црна Гора" \
-			"275" "sr_RS@latin: srpski_Srbija" \
-			"276" "sr_RS: српски_Србија" \
-			"277" "ss_ZA: siSwati_iNingizimu Afrika" \
-			"278" "st_ZA: Sesotho_Afrika Borwa" \
-			"279" "sv_FI: svenska_Finland" \
-			"280" "sv_SE: svenska_Sverige" \
-			"281" "sw_KE: Kiswahili_Kenya" \
-			"282" "sw_TZ: Swahili_Tanzania" \
-			"283" "szl_PL: ślōnskŏ gŏdka_Polska" \
-			"284" "ta_IN: தமிழ்_இந்தியா" \
-			"285" "ta_LK: தமிழ்_இலங்கை" \
-			"286" "tcy_IN: ತುಳು_ಭಾರತ" \
-			"287" "te_IN: తెలుగు_భారతదేశం" \
-			"288" "tg_TJ: тоҷикӣ_Тоҷикистон" \
-			"289" "the_NP: थारु_नेपाल" \
-			"290" "th_TH: ไทย_ไทย" \
-			"291" "ti_ER: ትግርኛ_ኤርትራ" \
-			"292" "ti_ET: ትግርኛ_ኢትዮጵያ" \
-			"293" "tig_ER: ትግረ_ኤርትራ" \
-			"294" "tk_TM: türkmen dili_Türkmenistan" \
-			"295" "tl_PH: Tagalog_Pilipinas" \
-			"296" "tn_ZA: Setswana_Aforika Borwa" \
-			"297" "to_TO: lea fakatonga_Tonga" \
-			"298" "tpi_PG: Tok Pisin_Papua Niugini" \
-			"299" "tr_CY: Türkçe_Kıbrıs" \
-			"300" "tr_TR: Türkçe_Türkiye" \
-			"301" "ts_ZA: Xitsonga_Afrika Dzonga" \
-			"302" "tt_RU@iqtelif: tatar tele_Urıs Patşahlıq" \
-			"303" "tt_RU: татар_Русия" \
-			"304" "ug_CN: ئۇيغۇرچە_جۇڭگو" \
-			"305" "uk_UA: українська_Україна" \
-			"306" "unm_US: Lenape_USA" \
-			"307" "ur_IN: اردو_بھارت" \
-			"308" "ur_PK: اردو_پاکستان" \
-			"309" "uz_UZ@cyrillic: Ўзбекча_Ўзбекистон" \
-			"310" "uz_UZ: o‘zbek_Oʻzbekiston" \
-			"311" "ve_ZA: Tshivenḓa_Afurika Tshipembe" \
-			"312" "vi_VN: Tiếng Việt_Việt Nam" \
-			"313" "wa_BE: walon_Beldjike" \
-			"314" "wae_CH: Walser_Schwiz" \
-			"315" "wal_ET: ወላይታቱ_ኢትዮጵያ" \
-			"316" "wo_SN: Wolof_Senegaal" \
-			"317" "xh_ZA: isiXhosa_uMzantsi Afrika" \
-			"318" "yi_US: ייִדיש_פֿאַראייניגטע שטאַטן" \
-			"319" "yo_NG: Èdè Yorùbá_Orilẹ̀-èdè Nàìjíríà" \
-			"320" "yue_HK: 粵語_香港特別行政區" \
-			"321" "yuw_PG: Uruwa_Papua New Guinea" \
-			"322" "en_US: 中文_中华人民共和国" \
-			"323" "zh_HK: 繁體中文_香港" \
-			"324" "zh_SG: 简体中文_新加坡" \
-			"325" "zh_TW: 正體中文_臺灣" \
-			"326" "zu_ZA: isiZulu_iNingizimu Afrika" \
-			3>&1 1>&2 2>&3
-	)
-	##########################
-	# "hi_IN" |"aa_ER"|"aa_ET"|"agr_PE"|"ak_GH" |"am_ET"|"anp_IN"|"ar_IN"|"ar_SS"
-	case "${CONTAINER_LOCALE}" in
-	1) TMOE_LANG="${LANG}" ;;
-	2) TMOE_LANG="en_US.UTF-8" ;;
-	3) TMOE_LANG="$(base64 -d <<<emhfQ04uVVRGLTgK)" ;;
-	4) TMOE_LANG="de_DE.UTF-8" ;;
-	5) TMOE_LANG="es_ES.UTF-8" ;;
-	6) TMOE_LANG="it_IT.UTF-8" ;;
-	7) TMOE_LANG="fr_FR.UTF-8" ;;
-	8) TMOE_LANG="ru_RU.UTF-8" ;;
-	9) TMOE_LANG="cs_CZ.UTF-8" ;;
-	10) TMOE_LANG="ja_JP.UTF-8" ;;
-	11) TMOE_LANG="hi_IN.UTF-8" ;;
-	12) TMOE_LANG="pt_PT.UTF-8" ;;
-	13) TMOE_LANG="aa_DJ.UTF-8" ;;
-	14) TMOE_LANG="aa_ER@saaho.UTF-8" ;;
-	15) TMOE_LANG="aa_ER.UTF-8" ;;
-	16) TMOE_LANG="aa_ET.UTF-8" ;;
-	17) TMOE_LANG="af_ZA.UTF-8" ;;
-	18) TMOE_LANG="agr_PE.UTF-8" ;;
-	19) TMOE_LANG="ak_GH.UTF-8" ;;
-	20) TMOE_LANG="am_ET.UTF-8" ;;
-	21) TMOE_LANG="an_ES.UTF-8" ;;
-	22) TMOE_LANG="anp_IN.UTF-8" ;;
-	23) TMOE_LANG="ar_AE.UTF-8" ;;
-	24) TMOE_LANG="ar_BH.UTF-8" ;;
-	25) TMOE_LANG="ar_DZ.UTF-8" ;;
-	26) TMOE_LANG="ar_EG.UTF-8" ;;
-	27) TMOE_LANG="ar_IN.UTF-8" ;;
-	28) TMOE_LANG="ar_IQ.UTF-8" ;;
-	29) TMOE_LANG="ar_JO.UTF-8" ;;
-	30) TMOE_LANG="ar_KW.UTF-8" ;;
-	31) TMOE_LANG="ar_LB.UTF-8" ;;
-	32) TMOE_LANG="ar_LY.UTF-8" ;;
-	33) TMOE_LANG="ar_MA.UTF-8" ;;
-	34) TMOE_LANG="ar_OM.UTF-8" ;;
-	35) TMOE_LANG="ar_QA.UTF-8" ;;
-	36) TMOE_LANG="ar_SA.UTF-8" ;;
-	37) TMOE_LANG="ar_SD.UTF-8" ;;
-	38) TMOE_LANG="ar_SS.UTF-8" ;;
-	39) TMOE_LANG="ar_SY.UTF-8" ;;
-	40) TMOE_LANG="ar_TN.UTF-8" ;;
-	41) TMOE_LANG="ar_YE.UTF-8" ;;
-	42) TMOE_LANG="as_IN.UTF-8" ;;
-	43) TMOE_LANG="ast_ES.UTF-8" ;;
-	44) TMOE_LANG="ayc_PE.UTF-8" ;;
-	45) TMOE_LANG="az_AZ.UTF-8" ;;
-	46) TMOE_LANG="az_IR.UTF-8" ;;
-	47) TMOE_LANG="be_BY@latin.UTF-8" ;;
-	48) TMOE_LANG="be_BY.UTF-8" ;;
-	49) TMOE_LANG="bem_ZM.UTF-8" ;;
-	50) TMOE_LANG="ber_DZ.UTF-8" ;;
-	51) TMOE_LANG="ber_MA.UTF-8" ;;
-	52) TMOE_LANG="bg_BG.UTF-8" ;;
-	53) TMOE_LANG="bhb_IN.UTF-8" ;;
-	54) TMOE_LANG="bho_IN.UTF-8" ;;
-	55) TMOE_LANG="bho_NP.UTF-8" ;;
-	56) TMOE_LANG="bi_VU.UTF-8" ;;
-	57) TMOE_LANG="bn_BD.UTF-8" ;;
-	58) TMOE_LANG="bn_IN.UTF-8" ;;
-	59) TMOE_LANG="bo_CN.UTF-8" ;;
-	60) TMOE_LANG="bo_IN.UTF-8" ;;
-	61) TMOE_LANG="br_FR.UTF-8" ;;
-	62) TMOE_LANG="brx_IN.UTF-8" ;;
-	63) TMOE_LANG="bs_BA.UTF-8" ;;
-	64) TMOE_LANG="byn_ER.UTF-8" ;;
-	65) TMOE_LANG="ca_AD.UTF-8" ;;
-	66) TMOE_LANG="ca_ES.UTF-8" ;;
-	67) TMOE_LANG="ca_ES@valencia.UTF-8" ;;
-	68) TMOE_LANG="ca_FR.UTF-8" ;;
-	69) TMOE_LANG="ca_IT.UTF-8" ;;
-	70) TMOE_LANG="ce_RU.UTF-8" ;;
-	71) TMOE_LANG="chr_US.UTF-8" ;;
-	72) TMOE_LANG="cmn_TW.UTF-8" ;;
-	73) TMOE_LANG="crh_UA.UTF-8" ;;
-	74) TMOE_LANG="csb_PL.UTF-8" ;;
-	75) TMOE_LANG="cs_CZ.UTF-8" ;;
-	76) TMOE_LANG="cv_RU.UTF-8" ;;
-	77) TMOE_LANG="cy_GB.UTF-8" ;;
-	78) TMOE_LANG="da_DK.UTF-8" ;;
-	79) TMOE_LANG="de_AT.UTF-8" ;;
-	80) TMOE_LANG="de_BE.UTF-8" ;;
-	81) TMOE_LANG="de_CH.UTF-8" ;;
-	82) TMOE_LANG="de_DE.UTF-8" ;;
-	83) TMOE_LANG="de_IT.UTF-8" ;;
-	84) TMOE_LANG="de_LI.UTF-8" ;;
-	85) TMOE_LANG="de_LU.UTF-8" ;;
-	86) TMOE_LANG="doi_IN.UTF-8" ;;
-	87) TMOE_LANG="dsb_DE.UTF-8" ;;
-	88) TMOE_LANG="dv_MV.UTF-8" ;;
-	89) TMOE_LANG="dz_BT.UTF-8" ;;
-	90) TMOE_LANG="el_CY.UTF-8" ;;
-	91) TMOE_LANG="el_GR.UTF-8" ;;
-	92) TMOE_LANG="en_AG.UTF-8" ;;
-	93) TMOE_LANG="en_AU.UTF-8" ;;
-	94) TMOE_LANG="en_BW.UTF-8" ;;
-	95) TMOE_LANG="en_CA.UTF-8" ;;
-	96) TMOE_LANG="en_DK.UTF-8" ;;
-	97) TMOE_LANG="en_GB.UTF-8" ;;
-	98) TMOE_LANG="en_HK.UTF-8" ;;
-	99) TMOE_LANG="en_IE.UTF-8" ;;
-	100) TMOE_LANG="en_IL.UTF-8" ;;
-	101) TMOE_LANG="en_IN.UTF-8" ;;
-	102) TMOE_LANG="en_NG.UTF-8" ;;
-	103) TMOE_LANG="en_NZ.UTF-8" ;;
-	104) TMOE_LANG="en_PH.UTF-8" ;;
-	105) TMOE_LANG="en_SC.UTF-8" ;;
-	106) TMOE_LANG="en_SG.UTF-8" ;;
-	107) TMOE_LANG="en_US.UTF-8" ;;
-	108) TMOE_LANG="en_ZA.UTF-8" ;;
-	109) TMOE_LANG="en_ZM.UTF-8" ;;
-	110) TMOE_LANG="en_ZW.UTF-8" ;;
-	111) TMOE_LANG="eo.UTF-8" ;;
-	112) TMOE_LANG="es_AR.UTF-8" ;;
-	113) TMOE_LANG="es_BO.UTF-8" ;;
-	114) TMOE_LANG="es_CL.UTF-8" ;;
-	115) TMOE_LANG="es_CO.UTF-8" ;;
-	116) TMOE_LANG="es_CR.UTF-8" ;;
-	117) TMOE_LANG="es_CU.UTF-8" ;;
-	118) TMOE_LANG="es_DO.UTF-8" ;;
-	119) TMOE_LANG="es_EC.UTF-8" ;;
-	120) TMOE_LANG="es_ES.UTF-8" ;;
-	121) TMOE_LANG="es_GT.UTF-8" ;;
-	122) TMOE_LANG="es_HN.UTF-8" ;;
-	123) TMOE_LANG="es_MX.UTF-8" ;;
-	124) TMOE_LANG="es_NI.UTF-8" ;;
-	125) TMOE_LANG="es_PA.UTF-8" ;;
-	126) TMOE_LANG="es_PE.UTF-8" ;;
-	127) TMOE_LANG="es_PR.UTF-8" ;;
-	128) TMOE_LANG="es_PY.UTF-8" ;;
-	129) TMOE_LANG="es_SV.UTF-8" ;;
-	130) TMOE_LANG="es_US.UTF-8" ;;
-	131) TMOE_LANG="es_UY.UTF-8" ;;
-	132) TMOE_LANG="es_VE.UTF-8" ;;
-	133) TMOE_LANG="et_EE.UTF-8" ;;
-	134) TMOE_LANG="eu_ES.UTF-8" ;;
-	135) TMOE_LANG="eu_FR.UTF-8" ;;
-	136) TMOE_LANG="fa_IR.UTF-8" ;;
-	137) TMOE_LANG="ff_SN.UTF-8" ;;
-	138) TMOE_LANG="fi_FI.UTF-8" ;;
-	139) TMOE_LANG="fil_PH.UTF-8" ;;
-	140) TMOE_LANG="fo_FO.UTF-8" ;;
-	141) TMOE_LANG="fr_BE.UTF-8" ;;
-	142) TMOE_LANG="fr_CA.UTF-8" ;;
-	143) TMOE_LANG="fr_CH.UTF-8" ;;
-	144) TMOE_LANG="fr_FR.UTF-8" ;;
-	145) TMOE_LANG="fr_LU.UTF-8" ;;
-	146) TMOE_LANG="fur_IT.UTF-8" ;;
-	147) TMOE_LANG="fy_DE.UTF-8" ;;
-	148) TMOE_LANG="fy_NL.UTF-8" ;;
-	149) TMOE_LANG="ga_IE.UTF-8" ;;
-	150) TMOE_LANG="gd_GB.UTF-8" ;;
-	151) TMOE_LANG="gez_ER@abegede.UTF-8" ;;
-	152) TMOE_LANG="gez_ER.UTF-8" ;;
-	153) TMOE_LANG="gez_ET@abeged.UTF-8" ;;
-	154) TMOE_LANG="gez_ET.UTF-8" ;;
-	155) TMOE_LANG="gl_ES.UTF-8" ;;
-	156) TMOE_LANG="gu_IN.UTF-8" ;;
-	157) TMOE_LANG="gv_GB.UTF-8" ;;
-	158) TMOE_LANG="hak_TW.UTF-8" ;;
-	159) TMOE_LANG="ha_NG.UTF-8" ;;
-	160) TMOE_LANG="he_IL.UTF-8" ;;
-	161) TMOE_LANG="hif_FJ.UTF-8" ;;
-	162) TMOE_LANG="hi_IN.UTF-8" ;;
-	163) TMOE_LANG="hne_IN.UTF-8" ;;
-	164) TMOE_LANG="hr_HR.UTF-8" ;;
-	165) TMOE_LANG="hsb_DE.UTF-8" ;;
-	166) TMOE_LANG="ht_HT.UTF-8" ;;
-	167) TMOE_LANG="hu_HU.UTF-8" ;;
-	168) TMOE_LANG="hy_AM.UTF-8" ;;
-	169) TMOE_LANG="ia_FR.UTF-8" ;;
-	170) TMOE_LANG="id_ID.UTF-8" ;;
-	171) TMOE_LANG="ig_NG.UTF-8" ;;
-	172) TMOE_LANG="ik_CA.UTF-8" ;;
-	173) TMOE_LANG="is_IS.UTF-8" ;;
-	174) TMOE_LANG="it_CH.UTF-8" ;;
-	175) TMOE_LANG="it_IT.UTF-8" ;;
-	176) TMOE_LANG="iu_CA.UTF-8" ;;
-	177) TMOE_LANG="ja_JP.UTF-8" ;;
-	178) TMOE_LANG="kab_DZ.UTF-8" ;;
-	179) TMOE_LANG="ka_GE.UTF-8" ;;
-	180) TMOE_LANG="kk_KZ.UTF-8" ;;
-	181) TMOE_LANG="kl_GL.UTF-8" ;;
-	182) TMOE_LANG="km_KH.UTF-8" ;;
-	183) TMOE_LANG="kn_IN.UTF-8" ;;
-	184) TMOE_LANG="kok_IN.UTF-8" ;;
-	185) TMOE_LANG="ko_KR.UTF-8" ;;
-	186) TMOE_LANG="ks_IN@devanagari.UTF-8" ;;
-	187) TMOE_LANG="ks_IN.UTF-8" ;;
-	188) TMOE_LANG="ku_TR.UTF-8" ;;
-	189) TMOE_LANG="kw_GB.UTF-8" ;;
-	190) TMOE_LANG="ky_KG.UTF-8" ;;
-	191) TMOE_LANG="lb_LU.UTF-8" ;;
-	192) TMOE_LANG="lg_UG.UTF-8" ;;
-	193) TMOE_LANG="li_BE.UTF-8" ;;
-	194) TMOE_LANG="lij_IT.UTF-8" ;;
-	195) TMOE_LANG="li_NL.UTF-8" ;;
-	196) TMOE_LANG="ln_CD.UTF-8" ;;
-	197) TMOE_LANG="lo_LA.UTF-8" ;;
-	198) TMOE_LANG="lt_LT.UTF-8" ;;
-	199) TMOE_LANG="lv_LV.UTF-8" ;;
-	200) TMOE_LANG="lzh_TW.UTF-8" ;;
-	201) TMOE_LANG="mag_IN.UTF-8" ;;
-	202) TMOE_LANG="mai_IN.UTF-8" ;;
-	203) TMOE_LANG="mai_NP.UTF-8" ;;
-	204) TMOE_LANG="mfe_MU.UTF-8" ;;
-	205) TMOE_LANG="mg_MG.UTF-8" ;;
-	206) TMOE_LANG="mhr_RU.UTF-8" ;;
-	207) TMOE_LANG="mi_NZ.UTF-8" ;;
-	208) TMOE_LANG="miq_NI.UTF-8" ;;
-	209) TMOE_LANG="mjw_IN.UTF-8" ;;
-	210) TMOE_LANG="mk_MK.UTF-8" ;;
-	211) TMOE_LANG="ml_IN.UTF-8" ;;
-	212) TMOE_LANG="mni_IN.UTF-8" ;;
-	213) TMOE_LANG="mn_MN.UTF-8" ;;
-	214) TMOE_LANG="mnw_MM.UTF-8" ;;
-	215) TMOE_LANG="mr_IN.UTF-8" ;;
-	216) TMOE_LANG="ms_MY.UTF-8" ;;
-	217) TMOE_LANG="mt_MT.UTF-8" ;;
-	218) TMOE_LANG="my_MM.UTF-8" ;;
-	219) TMOE_LANG="nan_TW@latin.UTF-8" ;;
-	220) TMOE_LANG="nan_TW.UTF-8" ;;
-	221) TMOE_LANG="nb_NO.UTF-8" ;;
-	222) TMOE_LANG="nds_DE.UTF-8" ;;
-	223) TMOE_LANG="nds_NL.UTF-8" ;;
-	224) TMOE_LANG="ne_NP.UTF-8" ;;
-	225) TMOE_LANG="nhn_MX.UTF-8" ;;
-	226) TMOE_LANG="niu_NU.UTF-8" ;;
-	227) TMOE_LANG="niu_NZ.UTF-8" ;;
-	228) TMOE_LANG="nl_AW.UTF-8" ;;
-	229) TMOE_LANG="nl_BE.UTF-8" ;;
-	230) TMOE_LANG="nl_NL.UTF-8" ;;
-	231) TMOE_LANG="nn_NO.UTF-8" ;;
-	232) TMOE_LANG="nr_ZA.UTF-8" ;;
-	233) TMOE_LANG="nso_ZA.UTF-8" ;;
-	234) TMOE_LANG="oc_FR.UTF-8" ;;
-	235) TMOE_LANG="om_ET.UTF-8" ;;
-	236) TMOE_LANG="om_KE.UTF-8" ;;
-	237) TMOE_LANG="or_IN.UTF-8" ;;
-	238) TMOE_LANG="os_RU.UTF-8" ;;
-	239) TMOE_LANG="pa_IN.UTF-8" ;;
-	240) TMOE_LANG="pap_AW.UTF-8" ;;
-	241) TMOE_LANG="pap_CW.UTF-8" ;;
-	242) TMOE_LANG="pa_PK.UTF-8" ;;
-	243) TMOE_LANG="pl_PL.UTF-8" ;;
-	244) TMOE_LANG="ps_AF.UTF-8" ;;
-	245) TMOE_LANG="pt_BR.UTF-8" ;;
-	246) TMOE_LANG="pt_PT.UTF-8" ;;
-	247) TMOE_LANG="quz_PE.UTF-8" ;;
-	248) TMOE_LANG="raj_IN.UTF-8" ;;
-	249) TMOE_LANG="ro_RO.UTF-8" ;;
-	250) TMOE_LANG="ru_RU.UTF-8" ;;
-	251) TMOE_LANG="ru_UA.UTF-8" ;;
-	252) TMOE_LANG="rw_RW.UTF-8" ;;
-	253) TMOE_LANG="sah_RU.UTF-8" ;;
-	254) TMOE_LANG="sa_IN.UTF-8" ;;
-	255) TMOE_LANG="sat_IN.UTF-8" ;;
-	256) TMOE_LANG="sc_IT.UTF-8" ;;
-	257) TMOE_LANG="sd_IN@devanagari.UTF-8" ;;
-	258) TMOE_LANG="sd_IN.UTF-8" ;;
-	259) TMOE_LANG="se_NO.UTF-8" ;;
-	260) TMOE_LANG="sgs_LT.UTF-8" ;;
-	261) TMOE_LANG="shn_MM.UTF-8" ;;
-	262) TMOE_LANG="shs_CA.UTF-8" ;;
-	263) TMOE_LANG="sid_ET.UTF-8" ;;
-	264) TMOE_LANG="si_LK.UTF-8" ;;
-	265) TMOE_LANG="sk_SK.UTF-8" ;;
-	266) TMOE_LANG="sl_SI.UTF-8" ;;
-	267) TMOE_LANG="sm_WS.UTF-8" ;;
-	268) TMOE_LANG="so_DJ.UTF-8" ;;
-	269) TMOE_LANG="so_ET.UTF-8" ;;
-	270) TMOE_LANG="so_KE.UTF-8" ;;
-	271) TMOE_LANG="so_SO.UTF-8" ;;
-	272) TMOE_LANG="sq_AL.UTF-8" ;;
-	273) TMOE_LANG="sq_MK.UTF-8" ;;
-	274) TMOE_LANG="sr_ME.UTF-8" ;;
-	275) TMOE_LANG="sr_RS@latin.UTF-8" ;;
-	276) TMOE_LANG="sr_RS.UTF-8" ;;
-	277) TMOE_LANG="ss_ZA.UTF-8" ;;
-	278) TMOE_LANG="st_ZA.UTF-8" ;;
-	279) TMOE_LANG="sv_FI.UTF-8" ;;
-	280) TMOE_LANG="sv_SE.UTF-8" ;;
-	281) TMOE_LANG="sw_KE.UTF-8" ;;
-	282) TMOE_LANG="sw_TZ.UTF-8" ;;
-	283) TMOE_LANG="szl_PL.UTF-8" ;;
-	284) TMOE_LANG="ta_IN.UTF-8" ;;
-	285) TMOE_LANG="ta_LK.UTF-8" ;;
-	286) TMOE_LANG="tcy_IN.UTF-8" ;;
-	287) TMOE_LANG="te_IN.UTF-8" ;;
-	288) TMOE_LANG="tg_TJ.UTF-8" ;;
-	289) TMOE_LANG="the_NP.UTF-8" ;;
-	290) TMOE_LANG="th_TH.UTF-8" ;;
-	291) TMOE_LANG="ti_ER.UTF-8" ;;
-	292) TMOE_LANG="ti_ET.UTF-8" ;;
-	293) TMOE_LANG="tig_ER.UTF-8" ;;
-	294) TMOE_LANG="tk_TM.UTF-8" ;;
-	295) TMOE_LANG="tl_PH.UTF-8" ;;
-	296) TMOE_LANG="tn_ZA.UTF-8" ;;
-	297) TMOE_LANG="to_TO.UTF-8" ;;
-	298) TMOE_LANG="tpi_PG.UTF-8" ;;
-	299) TMOE_LANG="tr_CY.UTF-8" ;;
-	300) TMOE_LANG="tr_TR.UTF-8" ;;
-	301) TMOE_LANG="ts_ZA.UTF-8" ;;
-	302) TMOE_LANG="tt_RU@iqtelif.UTF-8" ;;
-	303) TMOE_LANG="tt_RU.UTF-8" ;;
-	304) TMOE_LANG="ug_CN.UTF-8" ;;
-	305) TMOE_LANG="uk_UA.UTF-8" ;;
-	306) TMOE_LANG="unm_US.UTF-8" ;;
-	307) TMOE_LANG="ur_IN.UTF-8" ;;
-	308) TMOE_LANG="ur_PK.UTF-8" ;;
-	309) TMOE_LANG="uz_UZ@cyrillic.UTF-8" ;;
-	310) TMOE_LANG="uz_UZ.UTF-8" ;;
-	311) TMOE_LANG="ve_ZA.UTF-8" ;;
-	312) TMOE_LANG="vi_VN.UTF-8" ;;
-	313) TMOE_LANG="wa_BE.UTF-8" ;;
-	314) TMOE_LANG="wae_CH.UTF-8" ;;
-	315) TMOE_LANG="wal_ET.UTF-8" ;;
-	316) TMOE_LANG="wo_SN.UTF-8" ;;
-	317) TMOE_LANG="xh_ZA.UTF-8" ;;
-	318) TMOE_LANG="yi_US.UTF-8" ;;
-	319) TMOE_LANG="yo_NG.UTF-8" ;;
-	320) TMOE_LANG="yue_HK.UTF-8" ;;
-	321) TMOE_LANG="yuw_PG.UTF-8" ;;
-	322) TMOE_LANG="$(base64 -d <<<emhfQ04uVVRGLTgK)" ;;
-	323) TMOE_LANG="zh_HK.UTF-8" ;;
-	324) TMOE_LANG="zh_SG.UTF-8" ;;
-	325) TMOE_LANG="zh_TW.UTF-8" ;;
-	326) TMOE_LANG="zu_ZA.UTF-8" ;;
-	esac
-	##############
-	case ${TMOE_LANG} in
-	"") ;;
-	*)
-		mkdir -pv ${CONFIG_FOLDER} "${TMOE_LINUX_DIR}"
-		printf "%s\n" "${TMOE_LANG}" >${TMOE_LOCALE_FILE}
-		cp -vf "${TMOE_LOCALE_FILE}" "${TMOE_LOCALE_FILE_202203}"
-		chmod 666 "${TMOE_LINUX_DIR}/locale.txt" 2>/dev/null
-		printf "%s\n" "${TMOE_LANG}" >"${TMOE_LINUX_DIR}/locale.txt"
-		case ${LINUX_DISTRO} in
-		Android) ;;
-		*) sudo cp -fv ${TMOE_LOCALE_FILE} "${TMOE_LINUX_DIR}/locale.txt" ;;
-		esac
-		;;
-	esac
+    CONTAINER_LOCALE=$(
+        whiptail --title "${TITLE}" \
+            --menu "${DESCRIPTION}\nPlease select your \$LANG" 0 0 0 \
+            "1" "${MENU}" \
+            "2" "English_United States" \
+            "3" "简体中文" \
+            "4" "Deutsch_Deutschland" \
+            "5" "español_España" \
+            "6" "italiano_Italia" \
+            "7" "français_France" \
+            "8" "ру́сский язы́к_Россия" \
+            "9" "čeština_Česká republika" \
+            "10" "日本語_日本" \
+            "11" "हिन्दी_भारत" \
+            "12" "português_Portugal" \
+            "13" "aa_DJ: Qafar_Yabuuti" \
+            "14" "aa_ER@saaho: Afar_Eritrea(Saaho Dialect)" \
+            "15" "aa_ER: Qafar_Eretria" \
+            "16" "aa_ET: Qafar_Otobbia" \
+            "17" "af_ZA: Afrikaans_Suid-Afrika" \
+            "18" "agr_PE: Awajún_Perú" \
+            "19" "ak_GH: Akan_Gaana" \
+            "20" "am_ET: አማርኛ_ኢትዮጵያ" \
+            "21" "an_ES: aragonés_Espanya" \
+            "22" "anp_IN: अंगिका_भारत" \
+            "23" "ar_AE: العربية_الإمارات العربية المتحدة" \
+            "24" "ar_BH: العربية_البحرين" \
+            "25" "ar_DZ: العربية_الجزائر" \
+            "26" "ar_EG: العربية_مصر" \
+            "27" "ar_IN: العربية_الهند" \
+            "28" "ar_IQ: العربية_العراق" \
+            "29" "ar_JO: العربية_الأردن" \
+            "30" "ar_KW: العربية_الكويت" \
+            "31" "ar_LB: العربية_لبنان" \
+            "32" "ar_LY: العربية_ليبيا" \
+            "33" "ar_MA: العربية_المغرب" \
+            "34" "ar_OM: العربية_عُمان" \
+            "35" "ar_QA: العربية_قطر" \
+            "36" "ar_SA: العربية_المملكة العربية السعودية" \
+            "37" "ar_SD: العربية_السودان" \
+            "38" "ar_SS: العربية_جنوب السودان" \
+            "39" "ar_SY: العربية_سوريا" \
+            "40" "ar_TN: العربية_تونس" \
+            "41" "ar_YE: العربية_اليمن" \
+            "42" "as_IN: অসমীয়া_ভাৰত" \
+            "43" "ast_ES: asturianu_España" \
+            "44" "ayc_PE: Aymar aru_Piruw" \
+            "45" "az_AZ: azərbaycan_Azərbaycan" \
+            "46" "az_IR: تۆرکجه_ایران" \
+            "47" "be_BY@latin: biełaruskaja_Biełaruś" \
+            "48" "be_BY: беларуская_Беларусь" \
+            "49" "bem_ZM: Ichibemba_Zambia" \
+            "50" "ber_DZ: Tamaziɣt_Lezzayer" \
+            "51" "ber_MA: ⵜⴰⵎⴰⵣⵉⵖⵜ_ⵜⴰⴳⵍⴷⵉⵜ ⵏ ⵍⵎⵖⵔⵉⴱ" \
+            "52" "bg_BG: български_България" \
+            "53" "bhb_IN: भीली_भारत" \
+            "54" "bho_IN: भोजपुरी_भारत" \
+            "55" "bho_NP: भोजपुरी_नेपाल" \
+            "56" "bi_VU: Bislama_Vanuatu" \
+            "57" "bn_BD: বাংলা_বাংলাদেশ" \
+            "58" "bn_IN: বাংলা_ভারত" \
+            "59" "bo_CN: བོད་སྐད་_རྒྱ་ནག" \
+            "60" "bo_IN: བོད་སྐད་_རྒྱ་གར་" \
+            "61" "br_FR: brezhoneg_Frañs" \
+            "62" "brx_IN: बड़ो_भारत" \
+            "63" "bs_BA: bosanski_Bosna i Hercegovina" \
+            "64" "byn_ER: ብሊን_ኤርትራ" \
+            "65" "ca_AD: català_Andorra" \
+            "66" "ca_ES: català_Espanya" \
+            "67" "ca_ES@valencia: Valencian (southern Catalan) locale for Spain with Euro" \
+            "68" "ca_FR: català_França" \
+            "69" "ca_IT: català_Itàlia" \
+            "70" "ce_RU: нохчийн_Росси" \
+            "71" "chr_US: ᏣᎳᎩ_ᏌᏊ ᎢᏳᎾᎵᏍᏔᏅ ᏍᎦᏚᎩ" \
+            "72" "cmn_TW: 漢語官話_臺灣" \
+            "73" "crh_UA: qırımtatar tili_Ukraine" \
+            "74" "csb_PL: kaszëbsczi jãzëk_Pòlskô" \
+            "75" "cs_CZ: čeština_Česká republika" \
+            "76" "cv_RU: Чӑвашла_Russia" \
+            "77" "cy_GB: Cymraeg_Y Deyrnas Unedig" \
+            "78" "da_DK: dansk_Danmark" \
+            "79" "de_AT: Deutsch_Austria" \
+            "80" "de_BE: Deutsch_Belgien" \
+            "81" "de_CH: Deutsch_Schweiz" \
+            "82" "de_DE: Deutsch_Deutschland" \
+            "83" "de_IT: Deutsch_Italien" \
+            "84" "de_LI: Deutsch_Liechtenstein" \
+            "85" "de_LU: Deutsch_Luxemburg" \
+            "86" "doi_IN: डोगरी_भारत" \
+            "87" "dsb_DE: dolnoserbšćina_Nimska" \
+            "88" "dv_MV: ދިވެހި_ދިވެހިރާއްޖެ" \
+            "89" "dz_BT: རྫོང་ཁ_འབྲུག" \
+            "90" "el_CY: Ελληνικά_Κύπρος" \
+            "91" "el_GR: Ελληνικά_Ελλάδα" \
+            "92" "en_AG: English_Antigua and Barbuda" \
+            "93" "en_AU: English_Australia" \
+            "94" "en_BW: English_Botswana" \
+            "95" "en_CA: English_Canada" \
+            "96" "en_DK: English_Denmark" \
+            "97" "en_GB: English_Great Britain" \
+            "98" "en_HK: English_Hong Kong SAR China" \
+            "99" "en_IE: English_Ireland" \
+            "100" "en_IL: English_Israel" \
+            "101" "en_IN: English_India" \
+            "102" "en_NG: English_Nigeria" \
+            "103" "en_NZ: English_New-Zealand" \
+            "104" "en_PH: English_Philippines" \
+            "105" "en_SC: English_Seychelles" \
+            "106" "en_SG: English_Singapore" \
+            "107" "en_US: English_United States" \
+            "108" "en_ZA: English_South Africa" \
+            "109" "en_ZM: English_Zambia" \
+            "110" "en_ZW: English_Zimbabwe" \
+            "111" "eo: esperanto" \
+            "112" "es_AR: español_Argentina" \
+            "113" "es_BO: español_Bolivia" \
+            "114" "es_CL: español_Chile" \
+            "115" "es_CO: español_Colombia" \
+            "116" "es_CR: español_Costa Rica" \
+            "117" "es_CU: español_Cuba" \
+            "118" "es_DO: español_República Dominicana" \
+            "119" "es_EC: español_Ecuador" \
+            "120" "es_ES: español_España" \
+            "121" "es_GT: español_Guatemala" \
+            "122" "es_HN: español_Honduras" \
+            "123" "es_MX: español_México" \
+            "124" "es_NI: español_Nicaragua" \
+            "125" "es_PA: español_Panamá" \
+            "126" "es_PE: español_Perú" \
+            "127" "es_PR: español_Puerto Rico" \
+            "128" "es_PY: español_Paraguay" \
+            "129" "es_SV: español_El Salvador" \
+            "130" "es_US: español_Estados Unidos" \
+            "131" "es_UY: español_Uruguay" \
+            "132" "es_VE: español_Venezuela" \
+            "133" "et_EE: eesti_Eesti" \
+            "134" "eu_ES: euskara_Espainia" \
+            "135" "eu_FR: euskara_France" \
+            "136" "fa_IR: ‪ فارسی_ایران" \
+            "137" "ff_SN: Pulaar_Senegaal" \
+            "138" "fi_FI: suomi_Suomi" \
+            "139" "fil_PH: Filipino_Pilipinas" \
+            "140" "fo_FO: føroyskt_Føroyar" \
+            "141" "fr_BE: français_Belgique" \
+            "142" "fr_CA: français_Canada" \
+            "143" "fr_CH: français_Suisse" \
+            "144" "fr_FR: français_France" \
+            "145" "fr_LU: français_Luxembourg" \
+            "146" "fur_IT: furlan_Italie" \
+            "147" "fy_DE: Sater Frisian and North Frisian for Dútslân" \
+            "148" "fy_NL: Western Frisian_Nederlân" \
+            "149" "ga_IE: Gaeilge_níl" \
+            "150" "gd_GB: Gàidhlig_A\' Bhreatainn Mhòr" \
+            "151" "gez_ER@abegede: Ge\'ez language locale for Eritrea With Abegede Collation" \
+            "152" "gez_ER: ግዕዝ_ኤርትራ" \
+            "153" "gez_ET@abegede: Ge\'ez language locale for Ethiopia With Abegede Collation" \
+            "154" "gez_ET: ግዕዝ_ኢትዮጵያ" \
+            "155" "gl_ES: galego_España" \
+            "156" "gu_IN: ગુજરાતી_ભારત" \
+            "157" "gv_GB: Gaelg_Rywvaneth Unys" \
+            "158" "hak_TW: 客家話_臺灣" \
+            "159" "ha_NG: Hausa_Najeriya" \
+            "160" "he_IL: עִבְרִית_ישראל" \
+            "161" "hif_FJ: हिन्दी_Fiji" \
+            "162" "hi_IN: हिन्दी_भारत" \
+            "163" "hne_IN: छत्तीसगढ़ी_भारत" \
+            "164" "hr_HR: hrvatski_Hrvatska" \
+            "165" "hsb_DE: hornjoserbšćina_Němska" \
+            "166" "ht_HT: Kreyòl ayisyen_Ayiti" \
+            "167" "hu_HU: magyar_Magyarország" \
+            "168" "hy_AM: հայերեն_Հայաստան" \
+            "169" "ia_FR: interlingua_Francia" \
+            "170" "id_ID: Indonesia_Indonesia" \
+            "171" "ig_NG: Asụsụ Igbo_Naịjịrịa" \
+            "172" "ik_CA: Iñupiatun_Kanada" \
+            "173" "is_IS: íslenska_Ísland" \
+            "174" "it_CH: italiano_Svizzera" \
+            "175" "it_IT: italiano_Italia" \
+            "176" "iu_CA: ᐃᓄᒃᑎᑐᑦ_ᑲᓇᑕ" \
+            "177" "ja_JP: 日本語_日本" \
+            "178" "kab_DZ: Taqbaylit_Lezzayer" \
+            "179" "ka_GE: ქართული_საქართველო" \
+            "180" "kk_KZ: қазақ тілі_Қазақстан" \
+            "181" "kl_GL: kalaallisut_Kalaallit Nunaat" \
+            "182" "km_KH: ខ្មែរ_កម្ពុជា" \
+            "183" "kn_IN: ಕನ್ನಡ_ಭಾರತ" \
+            "184" "kok_IN: कोंकणी_भारत" \
+            "185" "ko_KR: 한국어_대한민국" \
+            "186" "ks_IN@devanagari: कॉशुर_भारत" \
+            "187" "ks_IN: कॉशुर_ہِندوستان" \
+            "188" "ku_TR: kurdî_Tirkiye" \
+            "189" "kw_GB: kernewek_Rywvaneth Unys" \
+            "190" "ky_KG: кыргызча_Кыргызстан" \
+            "191" "lb_LU: Lëtzebuergesch_Lëtzebuerg" \
+            "192" "lg_UG: Luganda_Yuganda" \
+            "193" "li_BE: Lèmbörgs_Bèlsj" \
+            "194" "lij_IT: Lìgure_Italia" \
+            "195" "li_NL: Lèmbörgs_Nederland" \
+            "196" "ln_CD: lingála_Republiki ya Kongó Demokratiki" \
+            "197" "lo_LA: ລາວ_ລາວ" \
+            "198" "lt_LT: lietuvių_Lietuva" \
+            "199" "lv_LV: latviešu_Latvija" \
+            "200" "lzh_TW: 漢語文言_臺灣" \
+            "201" "mag_IN: मगही_भारत" \
+            "202" "mai_IN: मैथिली_भारत" \
+            "203" "mai_NP: मैथिली_नेपाल" \
+            "204" "mfe_MU: kreol morisien_Moris" \
+            "205" "mg_MG: Malagasy_Madagasikara" \
+            "206" "mhr_RU: Mari locale for Russia" \
+            "207" "mi_NZ: Māori_Aotearoa" \
+            "208" "miq_NI: Miskito language locale for Nicaragua" \
+            "209" "mjw_IN: Karbi_Bhorot" \
+            "210" "mk_MK: македонски јазик_Македонија" \
+            "211" "ml_IN: മലയാളം_ഇന്ത്യ" \
+            "212" "mni_IN: মৈতৈলোন্_ভারত" \
+            "213" "mn_MN: монгол_Монгол" \
+            "214" "mnw_MM: မန်_ဗၟာ" \
+            "215" "mr_IN: मराठी_भारत" \
+            "216" "ms_MY: Melayu_Malaysia" \
+            "217" "mt_MT: Malti_Malta" \
+            "218" "my_MM: မြန်မာ_မြန်မာ" \
+            "219" "nan_TW@latin: Bân-lâm-gú_Tâi-oân" \
+            "220" "nan_TW: 閩南語_臺灣" \
+            "221" "nb_NO: norsk bokmål_Norge" \
+            "222" "nds_DE: Neddersass’sch_Düütschland" \
+            "223" "nds_NL: Neddersass’sch_Nedderlannen" \
+            "224" "ne_NP: नेपाली_नेपाल" \
+            "225" "nhn_MX: Tlahco nāhuatlahtōlli_Mexihco" \
+            "226" "niu_NU: Vagahau Niue_Niue" \
+            "227" "niu_NZ: Vagahau Niue_New Zealand" \
+            "228" "nl_AW: Nederlands_Aruba" \
+            "229" "nl_BE: Nederlands_België" \
+            "230" "nl_NL: Nederlands_Nederland" \
+            "231" "nn_NO: nynorsk_Noreg" \
+            "232" "nr_ZA: isiNdebele_iSewula Afrika" \
+            "233" "nso_ZA: Sesotho sa Leboa_Afrika Borwa" \
+            "234" "oc_FR: Occitan_França" \
+            "235" "om_ET: Oromoo_Itoophiyaa" \
+            "236" "om_KE: Oromoo_Keeniyaa" \
+            "237" "or_IN: ଓଡ଼ିଆ_ଭାରତ" \
+            "238" "os_RU: ирон_Уӕрӕсе" \
+            "239" "pa_IN: ਪੰਜਾਬੀ_ਭਾਰਤ" \
+            "240" "pap_AW: Papiamento_Aruba" \
+            "241" "pap_CW: Papiamento_Curaçao" \
+            "242" "pa_PK: پنجابی_پکستان" \
+            "243" "pl_PL: polski_Polska" \
+            "244" "ps_AF: پښتو_افغانستان" \
+            "245" "pt_BR: português_Brasil" \
+            "246" "pt_PT: português_Portugal" \
+            "247" "quz_PE: Qusqu runasimi_" \
+            "248" "raj_IN: राजस्थानी_भारत" \
+            "249" "ro_RO: română_România" \
+            "250" "ru_RU: ру́сский язы́к_Россия" \
+            "251" "ru_UA: русский_Украина" \
+            "252" "rw_RW: Kinyarwanda_U Rwanda" \
+            "253" "sah_RU: саха тыла_Арассыыйа" \
+            "254" "sa_IN: संस्कृतम्_भारतम्" \
+            "255" "sat_IN: ᱥᱟᱱᱛᱟᱲᱤ_ᱥᱤᱧᱚᱛ" \
+            "256" "sc_IT: sardu_Itàlia" \
+            "257" "sd_IN@devanagari: सिन्धी_भारत" \
+            "258" "sd_IN: سنڌي_انڊيا" \
+            "259" "se_NO: davvisámegiella_Norga" \
+            "260" "sgs_LT: Žemaitėškā_Lietova" \
+            "261" "shn_MM: လိၵ်ႈတႆး_မၢၼ်ႈ" \
+            "262" "shs_CA: Secwepemctsín_Canada" \
+            "263" "sid_ET: Sidaamu Afo_Itiyoophiya" \
+            "264" "si_LK: සිංහල_ශ්‍රී ලංකාව" \
+            "265" "sk_SK: slovenčina_Slovensko" \
+            "266" "sl_SI: slovenščina_Slovenija" \
+            "267" "sm_WS: Gagana faʻa Sāmoa_Sāmoa" \
+            "268" "so_DJ: Soomaali_Jabuuti" \
+            "269" "so_ET: Soomaali_Itoobiya" \
+            "270" "so_KE: Soomaali_Kiiniya" \
+            "271" "so_SO: Soomaali_Soomaaliya" \
+            "272" "sq_AL: shqip_Shqipëri" \
+            "273" "sq_MK: shqip_Maqedoni" \
+            "274" "sr_ME: српски_Црна Гора" \
+            "275" "sr_RS@latin: srpski_Srbija" \
+            "276" "sr_RS: српски_Србија" \
+            "277" "ss_ZA: siSwati_iNingizimu Afrika" \
+            "278" "st_ZA: Sesotho_Afrika Borwa" \
+            "279" "sv_FI: svenska_Finland" \
+            "280" "sv_SE: svenska_Sverige" \
+            "281" "sw_KE: Kiswahili_Kenya" \
+            "282" "sw_TZ: Swahili_Tanzania" \
+            "283" "szl_PL: ślōnskŏ gŏdka_Polska" \
+            "284" "ta_IN: தமிழ்_இந்தியா" \
+            "285" "ta_LK: தமிழ்_இலங்கை" \
+            "286" "tcy_IN: ತುಳು_ಭಾರತ" \
+            "287" "te_IN: తెలుగు_భారతదేశం" \
+            "288" "tg_TJ: тоҷикӣ_Тоҷикистон" \
+            "289" "the_NP: थारु_नेपाल" \
+            "290" "th_TH: ไทย_ไทย" \
+            "291" "ti_ER: ትግርኛ_ኤርትራ" \
+            "292" "ti_ET: ትግርኛ_ኢትዮጵያ" \
+            "293" "tig_ER: ትግረ_ኤርትራ" \
+            "294" "tk_TM: türkmen dili_Türkmenistan" \
+            "295" "tl_PH: Tagalog_Pilipinas" \
+            "296" "tn_ZA: Setswana_Aforika Borwa" \
+            "297" "to_TO: lea fakatonga_Tonga" \
+            "298" "tpi_PG: Tok Pisin_Papua Niugini" \
+            "299" "tr_CY: Türkçe_Kıbrıs" \
+            "300" "tr_TR: Türkçe_Türkiye" \
+            "301" "ts_ZA: Xitsonga_Afrika Dzonga" \
+            "302" "tt_RU@iqtelif: tatar tele_Urıs Patşahlıq" \
+            "303" "tt_RU: татар_Русия" \
+            "304" "ug_CN: ئۇيغۇرچە_جۇڭگو" \
+            "305" "uk_UA: українська_Україна" \
+            "306" "unm_US: Lenape_USA" \
+            "307" "ur_IN: اردو_بھارت" \
+            "308" "ur_PK: اردو_پاکستان" \
+            "309" "uz_UZ@cyrillic: Ўзбекча_Ўзбекистон" \
+            "310" "uz_UZ: o‘zbek_Oʻzbekiston" \
+            "311" "ve_ZA: Tshivenḓa_Afurika Tshipembe" \
+            "312" "vi_VN: Tiếng Việt_Việt Nam" \
+            "313" "wa_BE: walon_Beldjike" \
+            "314" "wae_CH: Walser_Schwiz" \
+            "315" "wal_ET: ወላይታቱ_ኢትዮጵያ" \
+            "316" "wo_SN: Wolof_Senegaal" \
+            "317" "xh_ZA: isiXhosa_uMzantsi Afrika" \
+            "318" "yi_US: ייִדיש_פֿאַראייניגטע שטאַטן" \
+            "319" "yo_NG: Èdè Yorùbá_Orilẹ̀-èdè Nàìjíríà" \
+            "320" "yue_HK: 粵語_香港特別行政區" \
+            "321" "yuw_PG: Uruwa_Papua New Guinea" \
+            "322" "en_US: 中文_中华人民共和国" \
+            "323" "zh_HK: 繁體中文_香港" \
+            "324" "zh_SG: 简体中文_新加坡" \
+            "325" "zh_TW: 正體中文_臺灣" \
+            "326" "zu_ZA: isiZulu_iNingizimu Afrika" \
+            3>&1 1>&2 2>&3
+    )
+    ##########################
+    # "hi_IN" |"aa_ER"|"aa_ET"|"agr_PE"|"ak_GH" |"am_ET"|"anp_IN"|"ar_IN"|"ar_SS"
+    case "${CONTAINER_LOCALE}" in
+    1) TMOE_LANG="${LANG}" ;;
+    2) TMOE_LANG="en_US.UTF-8" ;;
+    3) TMOE_LANG="$(base64 -d <<<emhfQ04uVVRGLTgK)" ;;
+    4) TMOE_LANG="de_DE.UTF-8" ;;
+    5) TMOE_LANG="es_ES.UTF-8" ;;
+    6) TMOE_LANG="it_IT.UTF-8" ;;
+    7) TMOE_LANG="fr_FR.UTF-8" ;;
+    8) TMOE_LANG="ru_RU.UTF-8" ;;
+    9) TMOE_LANG="cs_CZ.UTF-8" ;;
+    10) TMOE_LANG="ja_JP.UTF-8" ;;
+    11) TMOE_LANG="hi_IN.UTF-8" ;;
+    12) TMOE_LANG="pt_PT.UTF-8" ;;
+    13) TMOE_LANG="aa_DJ.UTF-8" ;;
+    14) TMOE_LANG="aa_ER@saaho.UTF-8" ;;
+    15) TMOE_LANG="aa_ER.UTF-8" ;;
+    16) TMOE_LANG="aa_ET.UTF-8" ;;
+    17) TMOE_LANG="af_ZA.UTF-8" ;;
+    18) TMOE_LANG="agr_PE.UTF-8" ;;
+    19) TMOE_LANG="ak_GH.UTF-8" ;;
+    20) TMOE_LANG="am_ET.UTF-8" ;;
+    21) TMOE_LANG="an_ES.UTF-8" ;;
+    22) TMOE_LANG="anp_IN.UTF-8" ;;
+    23) TMOE_LANG="ar_AE.UTF-8" ;;
+    24) TMOE_LANG="ar_BH.UTF-8" ;;
+    25) TMOE_LANG="ar_DZ.UTF-8" ;;
+    26) TMOE_LANG="ar_EG.UTF-8" ;;
+    27) TMOE_LANG="ar_IN.UTF-8" ;;
+    28) TMOE_LANG="ar_IQ.UTF-8" ;;
+    29) TMOE_LANG="ar_JO.UTF-8" ;;
+    30) TMOE_LANG="ar_KW.UTF-8" ;;
+    31) TMOE_LANG="ar_LB.UTF-8" ;;
+    32) TMOE_LANG="ar_LY.UTF-8" ;;
+    33) TMOE_LANG="ar_MA.UTF-8" ;;
+    34) TMOE_LANG="ar_OM.UTF-8" ;;
+    35) TMOE_LANG="ar_QA.UTF-8" ;;
+    36) TMOE_LANG="ar_SA.UTF-8" ;;
+    37) TMOE_LANG="ar_SD.UTF-8" ;;
+    38) TMOE_LANG="ar_SS.UTF-8" ;;
+    39) TMOE_LANG="ar_SY.UTF-8" ;;
+    40) TMOE_LANG="ar_TN.UTF-8" ;;
+    41) TMOE_LANG="ar_YE.UTF-8" ;;
+    42) TMOE_LANG="as_IN.UTF-8" ;;
+    43) TMOE_LANG="ast_ES.UTF-8" ;;
+    44) TMOE_LANG="ayc_PE.UTF-8" ;;
+    45) TMOE_LANG="az_AZ.UTF-8" ;;
+    46) TMOE_LANG="az_IR.UTF-8" ;;
+    47) TMOE_LANG="be_BY@latin.UTF-8" ;;
+    48) TMOE_LANG="be_BY.UTF-8" ;;
+    49) TMOE_LANG="bem_ZM.UTF-8" ;;
+    50) TMOE_LANG="ber_DZ.UTF-8" ;;
+    51) TMOE_LANG="ber_MA.UTF-8" ;;
+    52) TMOE_LANG="bg_BG.UTF-8" ;;
+    53) TMOE_LANG="bhb_IN.UTF-8" ;;
+    54) TMOE_LANG="bho_IN.UTF-8" ;;
+    55) TMOE_LANG="bho_NP.UTF-8" ;;
+    56) TMOE_LANG="bi_VU.UTF-8" ;;
+    57) TMOE_LANG="bn_BD.UTF-8" ;;
+    58) TMOE_LANG="bn_IN.UTF-8" ;;
+    59) TMOE_LANG="bo_CN.UTF-8" ;;
+    60) TMOE_LANG="bo_IN.UTF-8" ;;
+    61) TMOE_LANG="br_FR.UTF-8" ;;
+    62) TMOE_LANG="brx_IN.UTF-8" ;;
+    63) TMOE_LANG="bs_BA.UTF-8" ;;
+    64) TMOE_LANG="byn_ER.UTF-8" ;;
+    65) TMOE_LANG="ca_AD.UTF-8" ;;
+    66) TMOE_LANG="ca_ES.UTF-8" ;;
+    67) TMOE_LANG="ca_ES@valencia.UTF-8" ;;
+    68) TMOE_LANG="ca_FR.UTF-8" ;;
+    69) TMOE_LANG="ca_IT.UTF-8" ;;
+    70) TMOE_LANG="ce_RU.UTF-8" ;;
+    71) TMOE_LANG="chr_US.UTF-8" ;;
+    72) TMOE_LANG="cmn_TW.UTF-8" ;;
+    73) TMOE_LANG="crh_UA.UTF-8" ;;
+    74) TMOE_LANG="csb_PL.UTF-8" ;;
+    75) TMOE_LANG="cs_CZ.UTF-8" ;;
+    76) TMOE_LANG="cv_RU.UTF-8" ;;
+    77) TMOE_LANG="cy_GB.UTF-8" ;;
+    78) TMOE_LANG="da_DK.UTF-8" ;;
+    79) TMOE_LANG="de_AT.UTF-8" ;;
+    80) TMOE_LANG="de_BE.UTF-8" ;;
+    81) TMOE_LANG="de_CH.UTF-8" ;;
+    82) TMOE_LANG="de_DE.UTF-8" ;;
+    83) TMOE_LANG="de_IT.UTF-8" ;;
+    84) TMOE_LANG="de_LI.UTF-8" ;;
+    85) TMOE_LANG="de_LU.UTF-8" ;;
+    86) TMOE_LANG="doi_IN.UTF-8" ;;
+    87) TMOE_LANG="dsb_DE.UTF-8" ;;
+    88) TMOE_LANG="dv_MV.UTF-8" ;;
+    89) TMOE_LANG="dz_BT.UTF-8" ;;
+    90) TMOE_LANG="el_CY.UTF-8" ;;
+    91) TMOE_LANG="el_GR.UTF-8" ;;
+    92) TMOE_LANG="en_AG.UTF-8" ;;
+    93) TMOE_LANG="en_AU.UTF-8" ;;
+    94) TMOE_LANG="en_BW.UTF-8" ;;
+    95) TMOE_LANG="en_CA.UTF-8" ;;
+    96) TMOE_LANG="en_DK.UTF-8" ;;
+    97) TMOE_LANG="en_GB.UTF-8" ;;
+    98) TMOE_LANG="en_HK.UTF-8" ;;
+    99) TMOE_LANG="en_IE.UTF-8" ;;
+    100) TMOE_LANG="en_IL.UTF-8" ;;
+    101) TMOE_LANG="en_IN.UTF-8" ;;
+    102) TMOE_LANG="en_NG.UTF-8" ;;
+    103) TMOE_LANG="en_NZ.UTF-8" ;;
+    104) TMOE_LANG="en_PH.UTF-8" ;;
+    105) TMOE_LANG="en_SC.UTF-8" ;;
+    106) TMOE_LANG="en_SG.UTF-8" ;;
+    107) TMOE_LANG="en_US.UTF-8" ;;
+    108) TMOE_LANG="en_ZA.UTF-8" ;;
+    109) TMOE_LANG="en_ZM.UTF-8" ;;
+    110) TMOE_LANG="en_ZW.UTF-8" ;;
+    111) TMOE_LANG="eo.UTF-8" ;;
+    112) TMOE_LANG="es_AR.UTF-8" ;;
+    113) TMOE_LANG="es_BO.UTF-8" ;;
+    114) TMOE_LANG="es_CL.UTF-8" ;;
+    115) TMOE_LANG="es_CO.UTF-8" ;;
+    116) TMOE_LANG="es_CR.UTF-8" ;;
+    117) TMOE_LANG="es_CU.UTF-8" ;;
+    118) TMOE_LANG="es_DO.UTF-8" ;;
+    119) TMOE_LANG="es_EC.UTF-8" ;;
+    120) TMOE_LANG="es_ES.UTF-8" ;;
+    121) TMOE_LANG="es_GT.UTF-8" ;;
+    122) TMOE_LANG="es_HN.UTF-8" ;;
+    123) TMOE_LANG="es_MX.UTF-8" ;;
+    124) TMOE_LANG="es_NI.UTF-8" ;;
+    125) TMOE_LANG="es_PA.UTF-8" ;;
+    126) TMOE_LANG="es_PE.UTF-8" ;;
+    127) TMOE_LANG="es_PR.UTF-8" ;;
+    128) TMOE_LANG="es_PY.UTF-8" ;;
+    129) TMOE_LANG="es_SV.UTF-8" ;;
+    130) TMOE_LANG="es_US.UTF-8" ;;
+    131) TMOE_LANG="es_UY.UTF-8" ;;
+    132) TMOE_LANG="es_VE.UTF-8" ;;
+    133) TMOE_LANG="et_EE.UTF-8" ;;
+    134) TMOE_LANG="eu_ES.UTF-8" ;;
+    135) TMOE_LANG="eu_FR.UTF-8" ;;
+    136) TMOE_LANG="fa_IR.UTF-8" ;;
+    137) TMOE_LANG="ff_SN.UTF-8" ;;
+    138) TMOE_LANG="fi_FI.UTF-8" ;;
+    139) TMOE_LANG="fil_PH.UTF-8" ;;
+    140) TMOE_LANG="fo_FO.UTF-8" ;;
+    141) TMOE_LANG="fr_BE.UTF-8" ;;
+    142) TMOE_LANG="fr_CA.UTF-8" ;;
+    143) TMOE_LANG="fr_CH.UTF-8" ;;
+    144) TMOE_LANG="fr_FR.UTF-8" ;;
+    145) TMOE_LANG="fr_LU.UTF-8" ;;
+    146) TMOE_LANG="fur_IT.UTF-8" ;;
+    147) TMOE_LANG="fy_DE.UTF-8" ;;
+    148) TMOE_LANG="fy_NL.UTF-8" ;;
+    149) TMOE_LANG="ga_IE.UTF-8" ;;
+    150) TMOE_LANG="gd_GB.UTF-8" ;;
+    151) TMOE_LANG="gez_ER@abegede.UTF-8" ;;
+    152) TMOE_LANG="gez_ER.UTF-8" ;;
+    153) TMOE_LANG="gez_ET@abeged.UTF-8" ;;
+    154) TMOE_LANG="gez_ET.UTF-8" ;;
+    155) TMOE_LANG="gl_ES.UTF-8" ;;
+    156) TMOE_LANG="gu_IN.UTF-8" ;;
+    157) TMOE_LANG="gv_GB.UTF-8" ;;
+    158) TMOE_LANG="hak_TW.UTF-8" ;;
+    159) TMOE_LANG="ha_NG.UTF-8" ;;
+    160) TMOE_LANG="he_IL.UTF-8" ;;
+    161) TMOE_LANG="hif_FJ.UTF-8" ;;
+    162) TMOE_LANG="hi_IN.UTF-8" ;;
+    163) TMOE_LANG="hne_IN.UTF-8" ;;
+    164) TMOE_LANG="hr_HR.UTF-8" ;;
+    165) TMOE_LANG="hsb_DE.UTF-8" ;;
+    166) TMOE_LANG="ht_HT.UTF-8" ;;
+    167) TMOE_LANG="hu_HU.UTF-8" ;;
+    168) TMOE_LANG="hy_AM.UTF-8" ;;
+    169) TMOE_LANG="ia_FR.UTF-8" ;;
+    170) TMOE_LANG="id_ID.UTF-8" ;;
+    171) TMOE_LANG="ig_NG.UTF-8" ;;
+    172) TMOE_LANG="ik_CA.UTF-8" ;;
+    173) TMOE_LANG="is_IS.UTF-8" ;;
+    174) TMOE_LANG="it_CH.UTF-8" ;;
+    175) TMOE_LANG="it_IT.UTF-8" ;;
+    176) TMOE_LANG="iu_CA.UTF-8" ;;
+    177) TMOE_LANG="ja_JP.UTF-8" ;;
+    178) TMOE_LANG="kab_DZ.UTF-8" ;;
+    179) TMOE_LANG="ka_GE.UTF-8" ;;
+    180) TMOE_LANG="kk_KZ.UTF-8" ;;
+    181) TMOE_LANG="kl_GL.UTF-8" ;;
+    182) TMOE_LANG="km_KH.UTF-8" ;;
+    183) TMOE_LANG="kn_IN.UTF-8" ;;
+    184) TMOE_LANG="kok_IN.UTF-8" ;;
+    185) TMOE_LANG="ko_KR.UTF-8" ;;
+    186) TMOE_LANG="ks_IN@devanagari.UTF-8" ;;
+    187) TMOE_LANG="ks_IN.UTF-8" ;;
+    188) TMOE_LANG="ku_TR.UTF-8" ;;
+    189) TMOE_LANG="kw_GB.UTF-8" ;;
+    190) TMOE_LANG="ky_KG.UTF-8" ;;
+    191) TMOE_LANG="lb_LU.UTF-8" ;;
+    192) TMOE_LANG="lg_UG.UTF-8" ;;
+    193) TMOE_LANG="li_BE.UTF-8" ;;
+    194) TMOE_LANG="lij_IT.UTF-8" ;;
+    195) TMOE_LANG="li_NL.UTF-8" ;;
+    196) TMOE_LANG="ln_CD.UTF-8" ;;
+    197) TMOE_LANG="lo_LA.UTF-8" ;;
+    198) TMOE_LANG="lt_LT.UTF-8" ;;
+    199) TMOE_LANG="lv_LV.UTF-8" ;;
+    200) TMOE_LANG="lzh_TW.UTF-8" ;;
+    201) TMOE_LANG="mag_IN.UTF-8" ;;
+    202) TMOE_LANG="mai_IN.UTF-8" ;;
+    203) TMOE_LANG="mai_NP.UTF-8" ;;
+    204) TMOE_LANG="mfe_MU.UTF-8" ;;
+    205) TMOE_LANG="mg_MG.UTF-8" ;;
+    206) TMOE_LANG="mhr_RU.UTF-8" ;;
+    207) TMOE_LANG="mi_NZ.UTF-8" ;;
+    208) TMOE_LANG="miq_NI.UTF-8" ;;
+    209) TMOE_LANG="mjw_IN.UTF-8" ;;
+    210) TMOE_LANG="mk_MK.UTF-8" ;;
+    211) TMOE_LANG="ml_IN.UTF-8" ;;
+    212) TMOE_LANG="mni_IN.UTF-8" ;;
+    213) TMOE_LANG="mn_MN.UTF-8" ;;
+    214) TMOE_LANG="mnw_MM.UTF-8" ;;
+    215) TMOE_LANG="mr_IN.UTF-8" ;;
+    216) TMOE_LANG="ms_MY.UTF-8" ;;
+    217) TMOE_LANG="mt_MT.UTF-8" ;;
+    218) TMOE_LANG="my_MM.UTF-8" ;;
+    219) TMOE_LANG="nan_TW@latin.UTF-8" ;;
+    220) TMOE_LANG="nan_TW.UTF-8" ;;
+    221) TMOE_LANG="nb_NO.UTF-8" ;;
+    222) TMOE_LANG="nds_DE.UTF-8" ;;
+    223) TMOE_LANG="nds_NL.UTF-8" ;;
+    224) TMOE_LANG="ne_NP.UTF-8" ;;
+    225) TMOE_LANG="nhn_MX.UTF-8" ;;
+    226) TMOE_LANG="niu_NU.UTF-8" ;;
+    227) TMOE_LANG="niu_NZ.UTF-8" ;;
+    228) TMOE_LANG="nl_AW.UTF-8" ;;
+    229) TMOE_LANG="nl_BE.UTF-8" ;;
+    230) TMOE_LANG="nl_NL.UTF-8" ;;
+    231) TMOE_LANG="nn_NO.UTF-8" ;;
+    232) TMOE_LANG="nr_ZA.UTF-8" ;;
+    233) TMOE_LANG="nso_ZA.UTF-8" ;;
+    234) TMOE_LANG="oc_FR.UTF-8" ;;
+    235) TMOE_LANG="om_ET.UTF-8" ;;
+    236) TMOE_LANG="om_KE.UTF-8" ;;
+    237) TMOE_LANG="or_IN.UTF-8" ;;
+    238) TMOE_LANG="os_RU.UTF-8" ;;
+    239) TMOE_LANG="pa_IN.UTF-8" ;;
+    240) TMOE_LANG="pap_AW.UTF-8" ;;
+    241) TMOE_LANG="pap_CW.UTF-8" ;;
+    242) TMOE_LANG="pa_PK.UTF-8" ;;
+    243) TMOE_LANG="pl_PL.UTF-8" ;;
+    244) TMOE_LANG="ps_AF.UTF-8" ;;
+    245) TMOE_LANG="pt_BR.UTF-8" ;;
+    246) TMOE_LANG="pt_PT.UTF-8" ;;
+    247) TMOE_LANG="quz_PE.UTF-8" ;;
+    248) TMOE_LANG="raj_IN.UTF-8" ;;
+    249) TMOE_LANG="ro_RO.UTF-8" ;;
+    250) TMOE_LANG="ru_RU.UTF-8" ;;
+    251) TMOE_LANG="ru_UA.UTF-8" ;;
+    252) TMOE_LANG="rw_RW.UTF-8" ;;
+    253) TMOE_LANG="sah_RU.UTF-8" ;;
+    254) TMOE_LANG="sa_IN.UTF-8" ;;
+    255) TMOE_LANG="sat_IN.UTF-8" ;;
+    256) TMOE_LANG="sc_IT.UTF-8" ;;
+    257) TMOE_LANG="sd_IN@devanagari.UTF-8" ;;
+    258) TMOE_LANG="sd_IN.UTF-8" ;;
+    259) TMOE_LANG="se_NO.UTF-8" ;;
+    260) TMOE_LANG="sgs_LT.UTF-8" ;;
+    261) TMOE_LANG="shn_MM.UTF-8" ;;
+    262) TMOE_LANG="shs_CA.UTF-8" ;;
+    263) TMOE_LANG="sid_ET.UTF-8" ;;
+    264) TMOE_LANG="si_LK.UTF-8" ;;
+    265) TMOE_LANG="sk_SK.UTF-8" ;;
+    266) TMOE_LANG="sl_SI.UTF-8" ;;
+    267) TMOE_LANG="sm_WS.UTF-8" ;;
+    268) TMOE_LANG="so_DJ.UTF-8" ;;
+    269) TMOE_LANG="so_ET.UTF-8" ;;
+    270) TMOE_LANG="so_KE.UTF-8" ;;
+    271) TMOE_LANG="so_SO.UTF-8" ;;
+    272) TMOE_LANG="sq_AL.UTF-8" ;;
+    273) TMOE_LANG="sq_MK.UTF-8" ;;
+    274) TMOE_LANG="sr_ME.UTF-8" ;;
+    275) TMOE_LANG="sr_RS@latin.UTF-8" ;;
+    276) TMOE_LANG="sr_RS.UTF-8" ;;
+    277) TMOE_LANG="ss_ZA.UTF-8" ;;
+    278) TMOE_LANG="st_ZA.UTF-8" ;;
+    279) TMOE_LANG="sv_FI.UTF-8" ;;
+    280) TMOE_LANG="sv_SE.UTF-8" ;;
+    281) TMOE_LANG="sw_KE.UTF-8" ;;
+    282) TMOE_LANG="sw_TZ.UTF-8" ;;
+    283) TMOE_LANG="szl_PL.UTF-8" ;;
+    284) TMOE_LANG="ta_IN.UTF-8" ;;
+    285) TMOE_LANG="ta_LK.UTF-8" ;;
+    286) TMOE_LANG="tcy_IN.UTF-8" ;;
+    287) TMOE_LANG="te_IN.UTF-8" ;;
+    288) TMOE_LANG="tg_TJ.UTF-8" ;;
+    289) TMOE_LANG="the_NP.UTF-8" ;;
+    290) TMOE_LANG="th_TH.UTF-8" ;;
+    291) TMOE_LANG="ti_ER.UTF-8" ;;
+    292) TMOE_LANG="ti_ET.UTF-8" ;;
+    293) TMOE_LANG="tig_ER.UTF-8" ;;
+    294) TMOE_LANG="tk_TM.UTF-8" ;;
+    295) TMOE_LANG="tl_PH.UTF-8" ;;
+    296) TMOE_LANG="tn_ZA.UTF-8" ;;
+    297) TMOE_LANG="to_TO.UTF-8" ;;
+    298) TMOE_LANG="tpi_PG.UTF-8" ;;
+    299) TMOE_LANG="tr_CY.UTF-8" ;;
+    300) TMOE_LANG="tr_TR.UTF-8" ;;
+    301) TMOE_LANG="ts_ZA.UTF-8" ;;
+    302) TMOE_LANG="tt_RU@iqtelif.UTF-8" ;;
+    303) TMOE_LANG="tt_RU.UTF-8" ;;
+    304) TMOE_LANG="ug_CN.UTF-8" ;;
+    305) TMOE_LANG="uk_UA.UTF-8" ;;
+    306) TMOE_LANG="unm_US.UTF-8" ;;
+    307) TMOE_LANG="ur_IN.UTF-8" ;;
+    308) TMOE_LANG="ur_PK.UTF-8" ;;
+    309) TMOE_LANG="uz_UZ@cyrillic.UTF-8" ;;
+    310) TMOE_LANG="uz_UZ.UTF-8" ;;
+    311) TMOE_LANG="ve_ZA.UTF-8" ;;
+    312) TMOE_LANG="vi_VN.UTF-8" ;;
+    313) TMOE_LANG="wa_BE.UTF-8" ;;
+    314) TMOE_LANG="wae_CH.UTF-8" ;;
+    315) TMOE_LANG="wal_ET.UTF-8" ;;
+    316) TMOE_LANG="wo_SN.UTF-8" ;;
+    317) TMOE_LANG="xh_ZA.UTF-8" ;;
+    318) TMOE_LANG="yi_US.UTF-8" ;;
+    319) TMOE_LANG="yo_NG.UTF-8" ;;
+    320) TMOE_LANG="yue_HK.UTF-8" ;;
+    321) TMOE_LANG="yuw_PG.UTF-8" ;;
+    322) TMOE_LANG="$(base64 -d <<<emhfQ04uVVRGLTgK)" ;;
+    323) TMOE_LANG="zh_HK.UTF-8" ;;
+    324) TMOE_LANG="zh_SG.UTF-8" ;;
+    325) TMOE_LANG="zh_TW.UTF-8" ;;
+    326) TMOE_LANG="zu_ZA.UTF-8" ;;
+    esac
+    ##############
+    case ${TMOE_LANG} in
+    "") ;;
+    *)
+        mkdir -pv ${CONFIG_FOLDER} "${TMOE_LINUX_DIR}"
+        printf "%s\n" "${TMOE_LANG}" >${TMOE_LOCALE_FILE}
+        cp -vf "${TMOE_LOCALE_FILE}" "${TMOE_LOCALE_FILE_202203}"
+        chmod 666 "${TMOE_LINUX_DIR}/locale.txt" 2>/dev/null
+        printf "%s\n" "${TMOE_LANG}" >"${TMOE_LINUX_DIR}/locale.txt"
+        case ${LINUX_DISTRO} in
+        Android) ;;
+        *) sudo cp -fv ${TMOE_LOCALE_FILE} "${TMOE_LINUX_DIR}/locale.txt" ;;
+        esac
+        ;;
+    esac
 }
 ###############
 source_locale_setting() {
-	TMOE_LOCALE_TMP_FILE=${TMPDIR}/.tmoe-locale
-	[[ ! -e ${TMOE_LOCALE_TMP_FILE} ]] || rm ${TMOE_LOCALE_TMP_FILE}
-	if [ $(command -v curl) ]; then
-		curl -Lo ${TMOE_LOCALE_TMP_FILE} "${TMOE_LOCALE_URL}"
-	elif [ $(command -v wget) ]; then
-		wget -O ${TMOE_LOCALE_TMP_FILE} "${TMOE_LOCALE_URL}"
-	fi
-	source "${TMOE_LOCALE_TMP_FILE}"
+    TMOE_LOCALE_TMP_FILE=${TMPDIR}/.tmoe-locale
+    [[ ! -e ${TMOE_LOCALE_TMP_FILE} ]] || rm ${TMOE_LOCALE_TMP_FILE}
+    if [ $(command -v curl) ]; then
+        curl -Lo ${TMOE_LOCALE_TMP_FILE} "${TMOE_LOCALE_URL}"
+    elif [ $(command -v wget) ]; then
+        wget -O ${TMOE_LOCALE_TMP_FILE} "${TMOE_LOCALE_URL}"
+    fi
+    source "${TMOE_LOCALE_TMP_FILE}"
 }
 ##########
 check_tmoe_menu_locale_file() {
-	for i in "${TMOE_LOCALE_FILE}" "${TMOE_LOCALE_FILE_202203}"; do
-		[[ -s ${i} ]] || choose_tmoe_locale_env
-	done
-	# [[ ! -s "${TMOE_LOCALE_FILE_202203}" ]] && choose_tmoe_locale_env
-	TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
-	TMOE_MENU_LANG=${TMOE_LANG}
-	TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
-	TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG_HALF}" | cut -d '_' -f 1)
+    for i in "${TMOE_LOCALE_FILE}" "${TMOE_LOCALE_FILE_202203}"; do
+        [[ -s ${i} ]] || choose_tmoe_locale_env
+    done
+    # [[ ! -s "${TMOE_LOCALE_FILE_202203}" ]] && choose_tmoe_locale_env
+    TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
+    TMOE_MENU_LANG=${TMOE_LANG}
+    TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
+    TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG_HALF}" | cut -d '_' -f 1)
 }
 #################
 install_dependencies_02() {
-	unset DEPENDENCIES
-	case ${LINUX_DISTRO} in
-	Android) TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/old-version/share/termux/termux" ;;
-	*) TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/old-version/share/environment/dependencies" ;;
-	esac
-	source_locale_setting
-	git_clone_tmoe_manager
+    unset DEPENDENCIES
+    case ${LINUX_DISTRO} in
+    Android) TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/old-version/share/termux/termux" ;;
+    *) TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/old-version/share/environment/dependencies" ;;
+    esac
+    source_locale_setting
+    git_clone_tmoe_manager
 }
 ##############
 check_dependencies_03() {
-	unset DEPENDENCIES
-	case ${LINUX_DISTRO} in
-	Android) source ${TMOE_SHARE_DIR}/termux/termux ;;
-	*) source ${TMOE_SHARE_DIR}/environment/dependencies ;;
-	esac
+    unset DEPENDENCIES
+    case ${LINUX_DISTRO} in
+    Android) source ${TMOE_SHARE_DIR}/termux/termux ;;
+    *) source ${TMOE_SHARE_DIR}/environment/dependencies ;;
+    esac
 }
 ##############
 choose_your_mirror() {
-	case ${SWITCH_MIRROR} in
-	true)
-		printf "%s\n" "您尚未安装相关依赖"
-		case ${LINUX_DISTRO} in
-		Android) install_dependencies_02 ;;
-		*)
-			case ${SWITCH_MIRROR} in
-			true)
-				if [[ -s "${TMOE_TOOL_DIR}/sources/gnu-linux_mirrors" ]]; then
-					source "${TMOE_TOOL_DIR}/sources/gnu-linux_mirrors"
-				else
-					TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/old-version/tools/sources/gnu-linux_mirrors"
-					source_locale_setting
-				fi
-				;;
-			*) install_dependencies_02 ;;
-			esac
-			;;
-		esac
-		;;
-	*) install_dependencies_02 ;;
-	esac
+    case ${SWITCH_MIRROR} in
+    true)
+        printf "%s\n" "您尚未安装相关依赖"
+        case ${LINUX_DISTRO} in
+        Android) install_dependencies_02 ;;
+        *)
+            case ${SWITCH_MIRROR} in
+            true)
+                if [[ -s "${TMOE_TOOL_DIR}/sources/gnu-linux_mirrors" ]]; then
+                    source "${TMOE_TOOL_DIR}/sources/gnu-linux_mirrors"
+                else
+                    TMOE_LOCALE_URL="https://${TMOE_GIT_URL}/raw/master/share/old-version/tools/sources/gnu-linux_mirrors"
+                    source_locale_setting
+                fi
+                ;;
+            *) install_dependencies_02 ;;
+            esac
+            ;;
+        esac
+        ;;
+    *) install_dependencies_02 ;;
+    esac
 }
 check_tmoe_manager_git() {
-	RETURN_TO_WHERE='exit'
-	printf "%s\n" "Do you want to ${GREEN}git clone${RESET} this repo to ${BLUE}${TMOE_GIT_DIR}${RESET}?"
-	printf "%s\n" "您需要克隆本項目倉庫方能繼續使用"
-	do_you_want_to_continue
-	rm -rvf ${TMOE_GIT_DIR} 2>/dev/null
-	RETURN_TO_MENU=install_dependencies_02
-	case ${TMOE_LANG} in
-	zh_*UTF-8)
-		if [[ ! $(command -v git) ]]; then
-			choose_your_mirror
-		else
-			${RETURN_TO_MENU}
-		fi
-		;;
-	*) ${RETURN_TO_MENU} ;;
-	esac
+    RETURN_TO_WHERE='exit'
+    printf "%s\n" "Do you want to ${GREEN}git clone${RESET} this repo to ${BLUE}${TMOE_GIT_DIR}${RESET}?"
+    printf "%s\n" "您需要克隆本項目倉庫方能繼續使用"
+    do_you_want_to_continue
+    rm -rvf ${TMOE_GIT_DIR} 2>/dev/null
+    RETURN_TO_MENU=install_dependencies_02
+    case ${TMOE_LANG} in
+    zh_*UTF-8)
+        if [[ ! $(command -v git) ]]; then
+            choose_your_mirror
+        else
+            ${RETURN_TO_MENU}
+        fi
+        ;;
+    *) ${RETURN_TO_MENU} ;;
+    esac
 }
 git_clone_tmoe_manager() {
-	[[ -e ${TMOE_LINUX_DIR} ]] || mkdir -pv ${TMOE_LINUX_DIR}
-	printf "%s\n" "${GREEN}git clone ${BLUE}-b master --depth=1 ${YELLOW}https://${TMOE_GIT_URL} ${PURPLE}${TMOE_GIT_DIR}${RESET}"
-	git clone -b master --depth=1 https://${TMOE_GIT_URL} "${TMOE_GIT_DIR}" || git clone -b master --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
-	source ${TMOE_SHARE_DIR}/environment/manager_environment
-	tmoe_manager_main_menu
+    [[ -e ${TMOE_LINUX_DIR} ]] || mkdir -pv ${TMOE_LINUX_DIR}
+    printf "%s\n" "${GREEN}git clone ${BLUE}-b master --depth=1 ${YELLOW}https://${TMOE_GIT_URL} ${PURPLE}${TMOE_GIT_DIR}${RESET}"
+    git clone -b master --depth=1 https://${TMOE_GIT_URL} "${TMOE_GIT_DIR}" || git clone -b master --depth=1 https://${TMOE_GIT_URL} ${TMOE_GIT_DIR}
+    source ${TMOE_SHARE_DIR}/environment/manager_environment
+    tmoe_manager_main_menu
 }
 termux_font_menu() {
-	TMOE_OPTION=$(whiptail --title "FONTS" --menu "Your font file does not exist,please choose a font.\n请选择终端字体,若您跳过选择字体,则部分字符可能无法正常显示" 0 50 0 \
-		"1" "Inconsolata-go(粗)" \
-		"2" "Iosevka(细)" \
-		"3" "Iosevka Term Bold Italic(斜)" \
-		"4" "Iosevka Term Mono" \
-		"5" "Fira code(细)" \
-		"6" "Fira code Medium" \
-		"0" "skip(跳过)" \
-		3>&1 1>&2 2>&3)
-	##############################
-	case "${TMOE_OPTION}" in
-	0 | "") unset FONT_FILE ;;
-	1) FONT_FILE="inconsolata-go-font/raw/master/inconsolatago.tar.xz" ;;
-	2) FONT_FILE="inconsolata-go-font/raw/master/iosevka.tar.xz" ;;
-	3) FONT_FILE="iosevka-italic-font/raw/master/font.tar.xz" ;;
-	4) FONT_FILE="iosevka-term-mono/raw/master/font.tar.xz" ;;
-	5) FONT_FILE="fira-code/raw/master/font.tar.xz" ;;
-	6) FONT_FILE="fira-code-medium/raw/master/font.tar.xz" ;;
-	esac
-	case ${FONT_FILE} in
-	"") ;;
-	*)
-		aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "font.tar.xz" "https://gitee.com/ak2/${FONT_FILE}"
-		tar -Jxvf font.tar.xz
-		;;
-	esac
+    TMOE_OPTION=$(whiptail --title "FONTS" --menu "Your font file does not exist,please choose a font.\n请选择终端字体,若您跳过选择字体,则部分字符可能无法正常显示" 0 50 0 \
+        "1" "Inconsolata-go(粗)" \
+        "2" "Iosevka(细)" \
+        "3" "Iosevka Term Bold Italic(斜)" \
+        "4" "Iosevka Term Mono" \
+        "5" "Fira code(细)" \
+        "6" "Fira code Medium" \
+        "0" "skip(跳过)" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${TMOE_OPTION}" in
+    0 | "") unset FONT_FILE ;;
+    1) FONT_FILE="inconsolata-go-font/raw/master/inconsolatago.tar.xz" ;;
+    2) FONT_FILE="inconsolata-go-font/raw/master/iosevka.tar.xz" ;;
+    3) FONT_FILE="iosevka-italic-font/raw/master/font.tar.xz" ;;
+    4) FONT_FILE="iosevka-term-mono/raw/master/font.tar.xz" ;;
+    5) FONT_FILE="fira-code/raw/master/font.tar.xz" ;;
+    6) FONT_FILE="fira-code-medium/raw/master/font.tar.xz" ;;
+    esac
+    case ${FONT_FILE} in
+    "") ;;
+    *)
+        aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "font.tar.xz" "https://gitee.com/ak2/${FONT_FILE}"
+        tar -Jxvf font.tar.xz
+        ;;
+    esac
 }
 termux_color_scheme_menu() {
-	TMOE_OPTION=$(whiptail --title "COLOR SCHEMES" --menu "Your colors.properties is empty,please choose color scheme of termux.\n请选择终端配色" 0 50 0 \
-		"1" "neon" \
-		"2" "monokai.dark" \
-		"3" "material(Cyan)" \
-		"4" "bright.light" \
-		"5" "materia(Orange)" \
-		"6" "miu" \
-		"7" "wild.cherry(Purple)" \
-		"0" "skip(跳过)" \
-		3>&1 1>&2 2>&3)
-	##############################
-	case "${TMOE_OPTION}" in
-	0 | "") unset COLOR_FILE ;;
-	1) COLOR_FILE="neon" ;;
-	2) COLOR_FILE="monokai.dark" ;;
-	3) COLOR_FILE="material" ;;
-	4) COLOR_FILE="bright.light" ;;
-	5) COLOR_FILE="materia" ;;
-	6) COLOR_FILE="miu" ;;
-	7) COLOR_FILE="wild.cherry" ;;
-	esac
-	case ${COLOR_FILE} in
-	"") ;;
-	*) aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" "https://raw.githubusercontent.com/2cd/zsh/master/share/colors/${COLOR_FILE}" ;;
-	esac
+    TMOE_OPTION=$(whiptail --title "COLOR SCHEMES" --menu "Your colors.properties is empty,please choose color scheme of termux.\n请选择终端配色" 0 50 0 \
+        "1" "neon" \
+        "2" "monokai.dark" \
+        "3" "material(Cyan)" \
+        "4" "bright.light" \
+        "5" "materia(Orange)" \
+        "6" "miu" \
+        "7" "wild.cherry(Purple)" \
+        "0" "skip(跳过)" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${TMOE_OPTION}" in
+    0 | "") unset COLOR_FILE ;;
+    1) COLOR_FILE="neon" ;;
+    2) COLOR_FILE="monokai.dark" ;;
+    3) COLOR_FILE="material" ;;
+    4) COLOR_FILE="bright.light" ;;
+    5) COLOR_FILE="materia" ;;
+    6) COLOR_FILE="miu" ;;
+    7) COLOR_FILE="wild.cherry" ;;
+    esac
+    case ${COLOR_FILE} in
+    "") ;;
+    *) aria2c --console-log-level=warn --no-conf -d "${HOME}/.termux" --allow-overwrite=true -o "colors.properties" "https://raw.githubusercontent.com/2cd/zsh/master/share/colors/${COLOR_FILE}" ;;
+    esac
 }
 choose_termux_color_scheme() {
-	mkdir -pv ${HOME}/.termux
-	cd ${HOME}/.termux
-	#[[ ! -s colors.properties ]] || cp -fv colors.properties $(pwd)/colors.properties.bak
-	if [[ ! -s colors.properties ]]; then
-		termux_color_scheme_menu
-	fi
+    mkdir -pv ${HOME}/.termux
+    cd ${HOME}/.termux
+    #[[ ! -s colors.properties ]] || cp -fv colors.properties $(pwd)/colors.properties.bak
+    if [[ ! -s colors.properties ]]; then
+        termux_color_scheme_menu
+    fi
 
-	if [[ ! -s "${HOME}/.termux/font.ttf" ]]; then
-		termux_font_menu
-	fi
+    if [[ ! -s "${HOME}/.termux/font.ttf" ]]; then
+        termux_font_menu
+    fi
 
-	printf "%s\n" "set-default-termux-color-scheme-and-font" >"${CONFIG_FOLDER}/v1.1beta"
-	if [[ ! -s "termux.properties" ]] || grep -q '# extra-keys-style = default' termux.properties; then
-		if (whiptail --title "termux.properties" --yesno "Your extra-keys-style is default,do you want to configure it? It will modify the keyboard layout.\n是否需要创建termux.properties？这将会修改小键盘布局。" 10 50); then
-			cp -vf termux.properties termux.properties.bak
-			aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o "termux.properties.02" 'https://raw.githubusercontent.com/2cd/zsh/master/share/termux.properties'
-			sed -i -E 's@# (extra-keys-style)@#\1@g;s@^[^#]@#&@g;1r termux.properties.02' termux.properties
-			if [[ ! -s termux.properties ]]; then
-				mv -fv termux.properties.02 termux.properties
-			fi
-		fi
-	fi
-	termux-reload-settings
+    printf "%s\n" "set-default-termux-color-scheme-and-font" >"${CONFIG_FOLDER}/v1.1beta"
+    if [[ ! -s "termux.properties" ]] || grep -q '# extra-keys-style = default' termux.properties; then
+        if (whiptail --title "termux.properties" --yesno "Your extra-keys-style is default,do you want to configure it? It will modify the keyboard layout.\n是否需要创建termux.properties？这将会修改小键盘布局。" 10 50); then
+            cp -vf termux.properties termux.properties.bak
+            aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o "termux.properties.02" 'https://raw.githubusercontent.com/2cd/zsh/master/share/termux.properties'
+            sed -i -E 's@# (extra-keys-style)@#\1@g;s@^[^#]@#&@g;1r termux.properties.02' termux.properties
+            if [[ ! -s termux.properties ]]; then
+                mv -fv termux.properties.02 termux.properties
+            fi
+        fi
+    fi
+    termux-reload-settings
 }
 ###########
 tmoe_manager_main_menu() {
-	RETURN_TO_WHERE='tmoe_manager_main_menu'
-	RETURN_TO_MENU="${RETURN_TO_WHERE}"
-	tmoe_manager_main_menu_ja() {
-		TMOE_MANAGER_MAIN_OPTION=$(
-			whiptail --title "Tmoe manager running on ${OSRELEASE}" \
-				--backtitle "Type tmoe m to start the manager" \
-				--menu "${TMOE_TIPS_00}\nエンターキーと矢印キーを使用して操作してください" 0 50 0 \
-				"1" "🍀 proot コンテナ(๑•̀ㅂ•́)و✧" \
-				"2" "🌸 chroot/unshare/systemd コンテナ" \
-				"3" "💔 削除する 天萌マネージャー" \
-				"4" "🌏 ロケール locale/\$LANG" \
-				"5" "📱 アンドロイド-termux 追加オプション" \
-				"6" "🌈 設定 zsh" \
-				"7" "🍧 *°▽°*更新" \
-				"8" "🍩 よくある質問" \
-				"9" "🐞 問題を報告します" \
-				"10" "android 12のクラッシュを修正(signal 9)" \
-				"0" "🌚 exit" \
-				3>&1 1>&2 2>&3
-		)
-	}
-	tmoe_manager_main_menu_en() {
-		TMOE_MANAGER_MAIN_OPTION=$(
-			whiptail --title "Tmoe manager running on ${OSRELEASE}" \
-				--backtitle "Type tmoe m to start the manager" \
-				--menu "${TMOE_TIPS_00}\nPlease use the touch screen or enter + arrow keys to operate." 0 50 0 \
-				"1" "🍀 proot container(๑•̀ㅂ•́)و✧" \
-				"2" "🌸 chroot/unshare/systemd container" \
-				"3" "💔 remove tmoe-manager" \
-				"4" "🌏 locale/\$LANG" \
-				"5" "📱 Android-termux extra options" \
-				"6" "🌈 Configure zsh" \
-				"7" "🍧 *°▽°*update" \
-				"8" "🍩 FAQ" \
-				"9" "🐞 Report a problem" \
-				"10" "Fix android 12 crashes(signal 9)" \
-				"0" "🌚 exit" \
-				3>&1 1>&2 2>&3
-		)
-	}
-	tmoe_manager_main_menu_zh_cn() {
-		TMOE_MANAGER_MAIN_OPTION=$(
-			whiptail --title "Tmoe manager running on ${OSRELEASE}" \
-				--backtitle "Type tmoe m to start the manager" \
-				--menu "${TMOE_TIPS_00}\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
-				"1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
-				"2" "🌸 chroot/unshare/systemd容器" \
-				"3" "💔 remove 移除" \
-				"4" "🌏 区域/语言 locale/\$LANG" \
-				"5" "📱 Android-termux额外选项" \
-				"6" "🌈 Configure zsh美化终端" \
-				"7" "🍧 *°▽°*update更新" \
-				"8" "🍩 FAQ常见问题" \
-				"9" "🐞 Report a problem(反馈问题/bug)" \
-				"10" "修复 android 12(signal 9)" \
-				"0" "🌚 exit 退出" \
-				3>&1 1>&2 2>&3
-		)
-	}
-	tmoe_manager_main_menu_zh_tw() {
-		TMOE_MANAGER_MAIN_OPTION=$(
-			whiptail --title "Tmoe manager running on ${OSRELEASE}" \
-				--backtitle "Type tmoe m to start the manager" \
-				--menu "${TMOE_TIPS_00}\n您可以使用方向鍵和回車鍵進行操作" 0 50 0 \
-				"1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
-				"2" "🌸 chroot/unshare/systemd容器" \
-				"3" "💔 remove 移除" \
-				"4" "🌏 區域/語言 locale/\$LANG" \
-				"5" "📱 Android-termux額外選項" \
-				"6" "🌈 Configure zsh美化終端" \
-				"7" "🍧 *°▽°*update更新" \
-				"8" "🍩 FAQ常見問題" \
-				"9" "🐞 Report a problem(反饋問題/bug)" \
-				"10" "修復 android 12(signal 9)" \
-				"0" "🌚 exit 退出" \
-				3>&1 1>&2 2>&3
-		)
-	}
-	tmoe_manager_main_menu_de() {
-		TMOE_MANAGER_MAIN_OPTION=$(
-			whiptail --title "Tmoe manager running on ${OSRELEASE}" \
-				--backtitle "Geben Sie tmoe m ein, um den Manager zu starten." \
-				--menu "${TMOE_TIPS_00}\nBitte benutzen Sie die Pfeiltasten, um zu bedienen." 0 50 0 \
-				"1" "🍀 proot container(๑•̀ㅂ•́)و✧" \
-				"2" "🌸 chroot/unshare/systemd container" \
-				"3" "💔 tmoe-manager entfernen" \
-				"4" "🌏 Gebietsschema/\$LANG" \
-				"5" "📱 Zusätzliche Optionen für Termux" \
-				"6" "🌈 Konfigurieren Sie zsh" \
-				"7" "🍧 *°▽°*aktualisieren" \
-				"8" "🍩 FAQ" \
-				"9" "🐞 ein Problem melden" \
-				"10" "Android 12-Abstürze beheben (signal 9)" \
-				"0" "🌚 Ausfahrt" \
-				3>&1 1>&2 2>&3
-		)
-	}
-	tmoe_manager_main_menu_ru() {
-		TMOE_MANAGER_MAIN_OPTION=$(
-			whiptail --title "Tmoe manager running on ${OSRELEASE}" \
-				--backtitle "Type tmoe m to start the manager" \
-				--menu "${TMOE_TIPS_00}\nВы можете использовать клавиши со стрелками и клавишу ввода для работы." 0 50 0 \
-				"1" "🍀 proot контейнер(๑•̀ㅂ•́)و✧" \
-				"2" "🌸 chroot/unshare/systemd контейнер" \
-				"3" "💔 Удалить" \
-				"4" "🌏 локаль/\$LANG" \
-				"5" "📱 Дополнительные опции for Termux" \
-				"6" "🌈 Настроить zsh" \
-				"7" "🍧 *°▽°*Обновить" \
-				"8" "🍩 FAQ" \
-				"9" "🐞 Сообщить о проблеме" \
-				"10" "Исправление сбоев android 12 (signal 9)" \
-				"0" "🌚 exit" \
-				3>&1 1>&2 2>&3
-		)
-	}
-	case ${TMOE_MENU_LANG} in
-	de_DE.UTF-8) tmoe_manager_main_menu_de ;;
-	ja_JP.UTF-8) tmoe_manager_main_menu_ja ;;
-	ru_RU.UTF-8) tmoe_manager_main_menu_ru ;;
-	zh_TW.UTF-8 | zh_HK.UTF-8) tmoe_manager_main_menu_zh_tw ;;
-	zh_*UTF-8) tmoe_manager_main_menu_zh_cn ;;
-	*) tmoe_manager_main_menu_en ;;
-	esac
-	if [[ ! -e ${TMOE_GIT_DIR}/.git/config && ! -s ${TMOE_GIT_DIR}/README.md ]]; then
-		check_tmoe_manager_git
-	fi
-	check_dependencies_03
-	##########################
-	case "${TMOE_MANAGER_MAIN_OPTION}" in
-	0 | "") exit 0 ;;
-	1)
-		source ${TMOE_SHARE_DIR}/configuration/menu
-		install_proot_container
-		;;
-	2)
-		source ${TMOE_SHARE_DIR}/configuration/menu
-		install_chroot_container
-		;;
-	3) tmoe_linux_remove_function ;;
-	4) tmoe_locale_settings ;;
-	5) android_termux_tmoe_area ;;
-	6) start_tmoe_zsh_manager ;;
-	7) update_tmoe_linux_manager ;;
-	8) frequently_asked_questions ;;
-	9) report_tmoe_linux_problem ;;
-	10) fix_android_12_signal_9 ;;
-	esac
+    RETURN_TO_WHERE='tmoe_manager_main_menu'
+    RETURN_TO_MENU="${RETURN_TO_WHERE}"
+    tmoe_manager_main_menu_ja() {
+        TMOE_MANAGER_MAIN_OPTION=$(
+            whiptail --title "Tmoe manager running on ${OSRELEASE}" \
+                --backtitle "Type tmoe m to start the manager" \
+                --menu "${TMOE_TIPS_00}\nエンターキーと矢印キーを使用して操作してください" 0 50 0 \
+                "1" "🍀 proot コンテナ(๑•̀ㅂ•́)و✧" \
+                "2" "🌸 chroot/unshare/systemd コンテナ" \
+                "3" "💔 削除する 天萌マネージャー" \
+                "4" "🌏 ロケール locale/\$LANG" \
+                "5" "📱 アンドロイド-termux 追加オプション" \
+                "6" "🌈 設定 zsh" \
+                "7" "🍧 *°▽°*更新" \
+                "8" "🍩 よくある質問" \
+                "9" "🐞 問題を報告します" \
+                "10" "android 12のクラッシュを修正(signal 9)" \
+                "0" "🌚 exit" \
+                3>&1 1>&2 2>&3
+        )
+    }
+    tmoe_manager_main_menu_en() {
+        TMOE_MANAGER_MAIN_OPTION=$(
+            whiptail --title "Tmoe manager running on ${OSRELEASE}" \
+                --backtitle "Type tmoe m to start the manager" \
+                --menu "${TMOE_TIPS_00}\nPlease use the touch screen or enter + arrow keys to operate." 0 50 0 \
+                "1" "🍀 proot container(๑•̀ㅂ•́)و✧" \
+                "2" "🌸 chroot/unshare/systemd container" \
+                "3" "💔 remove tmoe-manager" \
+                "4" "🌏 locale/\$LANG" \
+                "5" "📱 Android-termux extra options" \
+                "6" "🌈 Configure zsh" \
+                "7" "🍧 *°▽°*update" \
+                "8" "🍩 FAQ" \
+                "9" "🐞 Report a problem" \
+                "10" "Fix android 12 crashes(signal 9)" \
+                "0" "🌚 exit" \
+                3>&1 1>&2 2>&3
+        )
+    }
+    tmoe_manager_main_menu_zh_cn() {
+        TMOE_MANAGER_MAIN_OPTION=$(
+            whiptail --title "Tmoe manager running on ${OSRELEASE}" \
+                --backtitle "Type tmoe m to start the manager" \
+                --menu "${TMOE_TIPS_00}\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
+                "1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
+                "2" "🌸 chroot/unshare/systemd容器" \
+                "3" "💔 remove 移除" \
+                "4" "🌏 区域/语言 locale/\$LANG" \
+                "5" "📱 Android-termux额外选项" \
+                "6" "🌈 Configure zsh美化终端" \
+                "7" "🍧 *°▽°*update更新" \
+                "8" "🍩 FAQ常见问题" \
+                "9" "🐞 Report a problem(反馈问题/bug)" \
+                "10" "修复 android 12(signal 9)" \
+                "0" "🌚 exit 退出" \
+                3>&1 1>&2 2>&3
+        )
+    }
+    tmoe_manager_main_menu_zh_tw() {
+        TMOE_MANAGER_MAIN_OPTION=$(
+            whiptail --title "Tmoe manager running on ${OSRELEASE}" \
+                --backtitle "Type tmoe m to start the manager" \
+                --menu "${TMOE_TIPS_00}\n您可以使用方向鍵和回車鍵進行操作" 0 50 0 \
+                "1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
+                "2" "🌸 chroot/unshare/systemd容器" \
+                "3" "💔 remove 移除" \
+                "4" "🌏 區域/語言 locale/\$LANG" \
+                "5" "📱 Android-termux額外選項" \
+                "6" "🌈 Configure zsh美化終端" \
+                "7" "🍧 *°▽°*update更新" \
+                "8" "🍩 FAQ常見問題" \
+                "9" "🐞 Report a problem(反饋問題/bug)" \
+                "10" "修復 android 12(signal 9)" \
+                "0" "🌚 exit 退出" \
+                3>&1 1>&2 2>&3
+        )
+    }
+    tmoe_manager_main_menu_de() {
+        TMOE_MANAGER_MAIN_OPTION=$(
+            whiptail --title "Tmoe manager running on ${OSRELEASE}" \
+                --backtitle "Geben Sie tmoe m ein, um den Manager zu starten." \
+                --menu "${TMOE_TIPS_00}\nBitte benutzen Sie die Pfeiltasten, um zu bedienen." 0 50 0 \
+                "1" "🍀 proot container(๑•̀ㅂ•́)و✧" \
+                "2" "🌸 chroot/unshare/systemd container" \
+                "3" "💔 tmoe-manager entfernen" \
+                "4" "🌏 Gebietsschema/\$LANG" \
+                "5" "📱 Zusätzliche Optionen für Termux" \
+                "6" "🌈 Konfigurieren Sie zsh" \
+                "7" "🍧 *°▽°*aktualisieren" \
+                "8" "🍩 FAQ" \
+                "9" "🐞 ein Problem melden" \
+                "10" "Android 12-Abstürze beheben (signal 9)" \
+                "0" "🌚 Ausfahrt" \
+                3>&1 1>&2 2>&3
+        )
+    }
+    tmoe_manager_main_menu_ru() {
+        TMOE_MANAGER_MAIN_OPTION=$(
+            whiptail --title "Tmoe manager running on ${OSRELEASE}" \
+                --backtitle "Type tmoe m to start the manager" \
+                --menu "${TMOE_TIPS_00}\nВы можете использовать клавиши со стрелками и клавишу ввода для работы." 0 50 0 \
+                "1" "🍀 proot контейнер(๑•̀ㅂ•́)و✧" \
+                "2" "🌸 chroot/unshare/systemd контейнер" \
+                "3" "💔 Удалить" \
+                "4" "🌏 локаль/\$LANG" \
+                "5" "📱 Дополнительные опции for Termux" \
+                "6" "🌈 Настроить zsh" \
+                "7" "🍧 *°▽°*Обновить" \
+                "8" "🍩 FAQ" \
+                "9" "🐞 Сообщить о проблеме" \
+                "10" "Исправление сбоев android 12 (signal 9)" \
+                "0" "🌚 exit" \
+                3>&1 1>&2 2>&3
+        )
+    }
+    case ${TMOE_MENU_LANG} in
+    de_DE.UTF-8) tmoe_manager_main_menu_de ;;
+    ja_JP.UTF-8) tmoe_manager_main_menu_ja ;;
+    ru_RU.UTF-8) tmoe_manager_main_menu_ru ;;
+    zh_TW.UTF-8 | zh_HK.UTF-8) tmoe_manager_main_menu_zh_tw ;;
+    zh_*UTF-8) tmoe_manager_main_menu_zh_cn ;;
+    *) tmoe_manager_main_menu_en ;;
+    esac
+    if [[ ! -e ${TMOE_GIT_DIR}/.git/config && ! -s ${TMOE_GIT_DIR}/README.md ]]; then
+        check_tmoe_manager_git
+    fi
+    check_dependencies_03
+    ##########################
+    case "${TMOE_MANAGER_MAIN_OPTION}" in
+    0 | "") exit 0 ;;
+    1)
+        source ${TMOE_SHARE_DIR}/configuration/menu
+        install_proot_container
+        ;;
+    2)
+        source ${TMOE_SHARE_DIR}/configuration/menu
+        install_chroot_container
+        ;;
+    3) tmoe_linux_remove_function ;;
+    4) tmoe_locale_settings ;;
+    5) android_termux_tmoe_area ;;
+    6) start_tmoe_zsh_manager ;;
+    7) update_tmoe_linux_manager ;;
+    8) frequently_asked_questions ;;
+    9) report_tmoe_linux_problem ;;
+    10) fix_android_12_signal_9 ;;
+    esac
 }
 #"10" "🍒 赋予proot容器真实root权限" \
 #10) enable_root_mode ;;
 ##########################
 check_termux_color_scheme_file() {
-	case ${LINUX_DISTRO} in
-	Android) [[ -s ${CONFIG_FOLDER}/v1.1beta ]] || choose_termux_color_scheme ;;
-	esac
-	[[ -e ${CONFIG_FOLDER}/default-dns.conf ]] || tmoe_container_dns
-	[[ -e ${CONFIG_FOLDER}/hitokoto.conf ]] || do_you_want_to_enable_hitokoto
-	[[ -e ${CONFIG_FOLDER}/gitstatus/timezone.txt ]] || what_is_your_timezone
+    case ${LINUX_DISTRO} in
+    Android) [[ -s ${CONFIG_FOLDER}/v1.1beta ]] || choose_termux_color_scheme ;;
+    esac
+    [[ -e ${CONFIG_FOLDER}/default-dns.conf ]] || tmoe_container_dns
+    [[ -e ${CONFIG_FOLDER}/hitokoto.conf ]] || do_you_want_to_enable_hitokoto
+    [[ -e ${CONFIG_FOLDER}/gitstatus/timezone.txt ]] || what_is_your_timezone
 }
 fix_android_12_signal_9() {
-	source ${TMOE_SHARE_DIR}/termux/fix_signal9
+    source ${TMOE_SHARE_DIR}/termux/fix_signal9
 }
 ###################
 first_check_container_mount_conf() {
-	[[ -e ${CONFIG_FOLDER}/${Container_variants}/mount_sd.conf ]] || container_mount_sd_conf
-	# [[ -e ${CONFIG_FOLDER}/${Container_variants}/mount_storage.conf ]] || container_storage_conf ${Container_variants}
-	if [[ -L ${HOME}/storage/external-1 ]]; then
-		[[ -e ${CONFIG_FOLDER}/${Container_variants}/mount_tf.conf ]] || do_you_want_to_share_tf
-	fi
-	[[ -e ${CONFIG_FOLDER}/${Container_variants}/mount_termux.conf ]] || container_mount_termux_conf
+    [[ -e ${CONFIG_FOLDER}/${Container_variants}/mount_sd.conf ]] || container_mount_sd_conf
+    # [[ -e ${CONFIG_FOLDER}/${Container_variants}/mount_storage.conf ]] || container_storage_conf ${Container_variants}
+    if [[ -L ${HOME}/storage/external-1 ]]; then
+        [[ -e ${CONFIG_FOLDER}/${Container_variants}/mount_tf.conf ]] || do_you_want_to_share_tf
+    fi
+    [[ -e ${CONFIG_FOLDER}/${Container_variants}/mount_termux.conf ]] || container_mount_termux_conf
 }
 first_set_rootless_shared_dir() {
-	Container_variants="rootless"
-	first_check_container_mount_conf
+    Container_variants="rootless"
+    first_check_container_mount_conf
 }
 install_proot_container() {
-	RETURN_TO_MENU="install_proot_container"
-	check_termux_color_scheme_file
-	first_set_rootless_shared_dir
-	TMOE_CHROOT=false
-	check_tmoe_container_chroot
-	source ${TMOE_SHARE_DIR}/container/common
+    RETURN_TO_MENU="install_proot_container"
+    check_termux_color_scheme_file
+    first_set_rootless_shared_dir
+    TMOE_CHROOT=false
+    check_tmoe_container_chroot
+    source ${TMOE_SHARE_DIR}/container/common
 }
 first_set_rootful_shared_dir() {
-	Container_variants="rootful"
-	first_check_container_mount_conf
+    Container_variants="rootful"
+    first_check_container_mount_conf
 }
 install_chroot_container() {
-	RETURN_TO_MENU="install_chroot_container"
-	check_termux_color_scheme_file
-	first_set_rootful_shared_dir
-	source ${TMOE_SHARE_DIR}/container/chroot/notes
-	check_root_permissions
-	[[ -e "${CONFIG_FOLDER}/chroot-prompt" ]] || notes_of_chroot
-	TMOE_CHROOT=true
-	check_tmoe_container_chroot
-	source ${TMOE_SHARE_DIR}/container/common
+    RETURN_TO_MENU="install_chroot_container"
+    check_termux_color_scheme_file
+    first_set_rootful_shared_dir
+    source ${TMOE_SHARE_DIR}/container/chroot/notes
+    check_root_permissions
+    [[ -e "${CONFIG_FOLDER}/chroot-prompt" ]] || notes_of_chroot
+    TMOE_CHROOT=true
+    check_tmoe_container_chroot
+    source ${TMOE_SHARE_DIR}/container/common
 }
 tmoe_locale_settings() {
-	source ${TMOE_SHARE_DIR}/environment/locale
+    source ${TMOE_SHARE_DIR}/environment/locale
 }
 android_termux_tmoe_area() {
-	source ${TMOE_SHARE_DIR}/termux/menu
+    source ${TMOE_SHARE_DIR}/termux/menu
 }
 normally_start_zsh() {
-	if [ $(command -v zsh-i) ]; then
-		zsh-i
-	elif [ -e "${TMOE_ZSH_SCRIPT}" ]; then
-		bash ${TMOE_ZSH_SCRIPT}
-	else
-		bash -c "$(curl -LfsS ${ZSH_TOOL_URL})"
-	fi
+    if [ $(command -v zsh-i) ]; then
+        zsh-i
+    elif [ -e "${TMOE_ZSH_SCRIPT}" ]; then
+        bash ${TMOE_ZSH_SCRIPT}
+    else
+        bash -c "$(curl -LfsS ${ZSH_TOOL_URL})"
+    fi
 }
 start_zsh_tool_as_current_user() {
-	if [ $(command -v zsh-i) ]; then
-		su - ${CURRENT_USER_NAME} -c zsh-i
-	elif [ -e "${TMOE_ZSH_SCRIPT}" ]; then
-		su - ${CURRENT_USER_NAME} -c "bash ${TMOE_ZSH_SCRIPT}"
-	else
-		curl -Lo /tmp/.zsh-i.sh ${ZSH_TOOL_URL}
-		su - ${CURRENT_USER_NAME} -c "bash /tmp/.zsh-i.sh"
-	fi
+    if [ $(command -v zsh-i) ]; then
+        su - ${CURRENT_USER_NAME} -c zsh-i
+    elif [ -e "${TMOE_ZSH_SCRIPT}" ]; then
+        su - ${CURRENT_USER_NAME} -c "bash ${TMOE_ZSH_SCRIPT}"
+    else
+        curl -Lo /tmp/.zsh-i.sh ${ZSH_TOOL_URL}
+        su - ${CURRENT_USER_NAME} -c "bash /tmp/.zsh-i.sh"
+    fi
 }
 start_tmoe_zsh_manager() {
-	TMOE_ZSH_SCRIPT="${HOME}/.config/tmoe-zsh/git/zsh.sh"
-	ZSH_TOOL_URL="https://raw.githubusercontent.com/2cd/zsh/master/zsh.sh"
-	case ${HOME} in
-	/root) normally_start_zsh ;;
-	*)
-		case ${LINUX_DISTRO} in
-		Android) normally_start_zsh ;;
-		*) start_zsh_tool_as_current_user ;;
-		esac
-		;;
-	esac
+    TMOE_ZSH_SCRIPT="${HOME}/.config/tmoe-zsh/git/zsh.sh"
+    ZSH_TOOL_URL="https://raw.githubusercontent.com/2cd/zsh/master/zsh.sh"
+    case ${HOME} in
+    /root) normally_start_zsh ;;
+    *)
+        case ${LINUX_DISTRO} in
+        Android) normally_start_zsh ;;
+        *) start_zsh_tool_as_current_user ;;
+        esac
+        ;;
+    esac
 }
 update_tmoe_linux_manager() {
-	source ${TMOE_SHARE_DIR}/termux/update
+    source ${TMOE_SHARE_DIR}/termux/update
 }
 frequently_asked_questions() {
-	source ${TMOE_SHARE_DIR}/frequently_asked_questions/faq
+    source ${TMOE_SHARE_DIR}/frequently_asked_questions/faq
 }
 tmoe_linux_remove_function() {
-	source ${TMOE_SHARE_DIR}/removal/menu
+    source ${TMOE_SHARE_DIR}/removal/menu
 }
 report_tmoe_linux_problem() {
-	printf "${BLUE}%s\n${RESET}" "${TMOE_LINUX_ISSUE_URL}"
-	if [[ -e /mnt/c/WINDOWS/system32/cmd.exe ]]; then
-		cd /mnt/c/Users
-		/mnt/c/WINDOWS/system32/cmd.exe /c "start ${TMOE_LINUX_ISSUE_URL}"
-		cd -
-	fi
-	case ${LINUX_DISTRO} in
-	Android) am start -a android.intent.action.VIEW -d "${TMOE_LINUX_ISSUE_URL}" ;;
-	*) su "${CURRENT_USER_NAME}" -c "xdg-open ${TMOE_LINUX_ISSUE_URL}" ;;
-	esac
-	press_enter_to_return
-	tmoe_manager_main_menu
+    printf "${BLUE}%s\n${RESET}" "${TMOE_LINUX_ISSUE_URL}"
+    if [[ -e /mnt/c/WINDOWS/system32/cmd.exe ]]; then
+        cd /mnt/c/Users
+        /mnt/c/WINDOWS/system32/cmd.exe /c "start ${TMOE_LINUX_ISSUE_URL}"
+        cd -
+    fi
+    case ${LINUX_DISTRO} in
+    Android) am start -a android.intent.action.VIEW -d "${TMOE_LINUX_ISSUE_URL}" ;;
+    *) su "${CURRENT_USER_NAME}" -c "xdg-open ${TMOE_LINUX_ISSUE_URL}" ;;
+    esac
+    press_enter_to_return
+    tmoe_manager_main_menu
 }
 ##################
 if_return_to_where_no_empty() {
-	case ${RETURN_TO_WHERE} in
-	"") tmoe_manager_main_menu ;;
-	*) ${RETURN_TO_WHERE} ;;
-	esac
+    case ${RETURN_TO_WHERE} in
+    "") tmoe_manager_main_menu ;;
+    *) ${RETURN_TO_WHERE} ;;
+    esac
 }
 do_you_want_to_continue() {
-	printf "%s\n" "${YELLOW}Do you want to ${BLUE}continue?${PURPLE}[Y/n]${RESET}"
-	printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET},type ${YELLOW}n${RESET} to ${BLUE}return.${RESET}"
-	case ${TMOE_LANG} in
-	zh_*UTF-8) printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${BLUE}返回${RESET}" ;;
-	esac
-	read -r opt
-	case $opt in
-	y* | Y* | "") ;;
-	n* | N*)
-		printf "%s\n" "skipped."
-		if_return_to_where_no_empty
-		;;
-	*)
-		printf "%s\n" "Invalid choice. skipped."
-		if_return_to_where_no_empty
-		;;
-	esac
+    printf "%s\n" "${YELLOW}Do you want to ${BLUE}continue?${PURPLE}[Y/n]${RESET}"
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET},type ${YELLOW}n${RESET} to ${BLUE}return.${RESET}"
+    case ${TMOE_LANG} in
+    zh_*UTF-8) printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}，输${YELLOW}n${RESET}${BLUE}返回${RESET}" ;;
+    esac
+    read -r opt
+    case $opt in
+    y* | Y* | "") ;;
+    n* | N*)
+        printf "%s\n" "skipped."
+        if_return_to_where_no_empty
+        ;;
+    *)
+        printf "%s\n" "Invalid choice. skipped."
+        if_return_to_where_no_empty
+        ;;
+    esac
 }
 #######################
 manager_main "$@"
