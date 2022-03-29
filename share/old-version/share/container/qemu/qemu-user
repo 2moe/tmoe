@@ -1,29 +1,29 @@
 #!/usr/bin/env bash
 #######################################
 tmoe_qemu_user_static() {
-	RETURN_TO_WHERE='tmoe_qemu_user_static'
-	BETA_SYSTEM=$(
-		whiptail --title "qemu_user_static" --menu "QEMU的user模式跨架构运行的效率可能比system模式更高，但存在更多的局限性" 0 50 0 \
-			"1" "chart架构支持表格" \
-			"2" "install/upgrade(安装/更新)" \
-			"3" "remove(移除/卸载)" \
-			"0" "🌚 Return to previous menu 返回上级菜单" \
-			3>&1 1>&2 2>&3
-	)
-	##############################
-	case "${BETA_SYSTEM}" in
-	0 | "") tmoe_qemu_user_manager ;;
-	1) tmoe_qemu_user_chart ;;
-	2) install_qemu_user_static ;;
-	3) remove_qemu_user_static ;;
-	esac
-	######################
-	press_enter_to_return
-	tmoe_qemu_user_static
+    RETURN_TO_WHERE='tmoe_qemu_user_static'
+    BETA_SYSTEM=$(
+        whiptail --title "qemu_user_static" --menu "QEMU的user模式跨架构运行的效率可能比system模式更高，但存在更多的局限性" 0 50 0 \
+            "1" "chart架构支持表格" \
+            "2" "install/upgrade(安装/更新)" \
+            "3" "remove(移除/卸载)" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    ##############################
+    case "${BETA_SYSTEM}" in
+    0 | "") tmoe_qemu_user_manager ;;
+    1) tmoe_qemu_user_chart ;;
+    2) install_qemu_user_static ;;
+    3) remove_qemu_user_static ;;
+    esac
+    ######################
+    press_enter_to_return
+    tmoe_qemu_user_static
 }
 #####################
 tmoe_qemu_user_chart() {
-	cat <<-'ENDofTable'
+    cat <<-'ENDofTable'
 		下表中的所有系统均支持x64和arm64
 		*表示仅旧版支持
 		All distributions in the table below support amd64 and arm64.
@@ -56,114 +56,114 @@ tmoe_qemu_user_chart() {
 }
 ###############
 check_gnu_linux_qemu_version() {
-	if [ -e "${PREFIX}/bin/qemu-aarch64-static" ]; then
-		LOCAL_QEMU_USER_FILE="${PREFIX}/bin/qemu-aarch64-static"
-	elif [ -e "/usr/bin/qemu-aarch64-static" ]; then
-		LOCAL_QEMU_USER_FILE='/usr/bin/qemu-aarch64-static'
-	fi
-	case ${LOCAL_QEMU_USER_FILE} in
-	"") ;;
-	*) LOCAL_QEMU_USER_VERSION=$(${LOCAL_QEMU_USER_FILE} --version | head -n 1 | awk '{print $5}' | cut -d ':' -f 2 | cut -d ')' -f 1) ;;
-	esac
+    if [ -e "${PREFIX}/bin/qemu-aarch64-static" ]; then
+        LOCAL_QEMU_USER_FILE="${PREFIX}/bin/qemu-aarch64-static"
+    elif [ -e "/usr/bin/qemu-aarch64-static" ]; then
+        LOCAL_QEMU_USER_FILE='/usr/bin/qemu-aarch64-static'
+    fi
+    case ${LOCAL_QEMU_USER_FILE} in
+    "") ;;
+    *) LOCAL_QEMU_USER_VERSION=$(${LOCAL_QEMU_USER_FILE} --version | head -n 1 | awk '{print $5}' | cut -d ':' -f 2 | cut -d ')' -f 1) ;;
+    esac
 }
 ###########
 file_proot_bin() {
-	if [ ! "$(command -v file)" ]; then
-		printf "%s\n" "apt install -y file"
-		apt install -y file
-	fi
-	file "$(command -v proot)"
-	ldd "$(command -v proot)"
+    if [ ! "$(command -v file)" ]; then
+        printf "%s\n" "apt install -y file"
+        apt install -y file
+    fi
+    file "$(command -v proot)"
+    ldd "$(command -v proot)"
 }
 git_clone_i386_emu() {
-	mkdir -pv "${TMOE_LINUX_DIR}"/lib32/usr/bin
-	cd "${TMOE_LINUX_DIR}"/lib32/usr/bin
-	GIT_REPO_01="https://github.com/cu233/"
-	GIT_REPO_02="https://gitee.com/ak2/"
-	case ${TMOE_MENU_LANG} in
-	zh_C*UTF-8)
-		git clone \
-			--depth=1 \
-			${GIT_REPO_02}/"${EMU_NAME}" ||
-			git clone \
-				--depth=1 \
-				${GIT_REPO_01}/"${EMU_NAME}"
-		;;
-	*)
-		git clone \
-			--depth=1 \
-			${GIT_REPO_01}/"${EMU_NAME}" ||
-			git clone \
-				--depth=1 \
-				${GIT_REPO_02}/"${EMU_NAME}"
-		;;
-	esac
-	tar -Jxf "./${EMU_NAME}/${EMU_NAME}.tar.xz"
-	rm -rfv "${EMU_NAME}"
+    mkdir -pv "${TMOE_LINUX_DIR}"/lib32/usr/bin
+    cd "${TMOE_LINUX_DIR}"/lib32/usr/bin
+    GIT_REPO_01="https://github.com/cu233/"
+    GIT_REPO_02="https://gitee.com/ak2/"
+    case ${TMOE_MENU_LANG} in
+    zh_C*UTF-8)
+        git clone \
+            --depth=1 \
+            ${GIT_REPO_02}/"${EMU_NAME}" ||
+            git clone \
+                --depth=1 \
+                ${GIT_REPO_01}/"${EMU_NAME}"
+        ;;
+    *)
+        git clone \
+            --depth=1 \
+            ${GIT_REPO_01}/"${EMU_NAME}" ||
+            git clone \
+                --depth=1 \
+                ${GIT_REPO_02}/"${EMU_NAME}"
+        ;;
+    esac
+    tar -Jxf "./${EMU_NAME}/${EMU_NAME}.tar.xz"
+    rm -rfv "${EMU_NAME}"
 }
 dpkg_add_32bit_architecture() {
-	cd "${TMOE_LINUX_DIR}"/lib32
-	printf "%s\n" "${GREEN}dpkg ${BLUE}--add-architecture ${YELLOW}${ADD_ARCH}${RESET}"
-	printf "%s\n" "${GREEN}apt ${BLUE}download ${YELLOW}proot:${ADD_ARCH}${RESET}"
-	dpkg --add-architecture ${ADD_ARCH}
-	apt update
-	apt-get download proot:${ADD_ARCH}
-	for i in ./proot*.deb; do
-		dpkg-deb -X ${i} ./
-		rm -fv ${i}
-	done
-	# PROOT_DEPS=$(LANG=C apt-cache depends proot | grep "Depends:" | awk '{print $NF}' | sed "s@\$@:${ADD_ARCH}@g" | sed ":a;N;s/\n/ /g;ta")
-	# [[ -n ${PROOT_DEPS} ]] || PROOT_DEPS=libtalloc
-	case ${LINUX_DISTRO} in
-	Android) apt-get download libtalloc:${ADD_ARCH} ;;
-	*) apt download libtalloc2:${ADD_ARCH} ;;
-	esac
-	for i in ./libtalloc*.deb; do
-		dpkg-deb -X ${i} ./
-		rm -fv ${i}
-	done
-	dpkg_remove_32bit_architecture
-	file_proot_bin
+    cd "${TMOE_LINUX_DIR}"/lib32
+    printf "%s\n" "${GREEN}dpkg ${BLUE}--add-architecture ${YELLOW}${ADD_ARCH}${RESET}"
+    printf "%s\n" "${GREEN}apt ${BLUE}download ${YELLOW}proot:${ADD_ARCH}${RESET}"
+    dpkg --add-architecture ${ADD_ARCH}
+    apt update
+    apt-get download proot:${ADD_ARCH}
+    for i in ./proot*.deb; do
+        dpkg-deb -X ${i} ./
+        rm -fv ${i}
+    done
+    # PROOT_DEPS=$(LANG=C apt-cache depends proot | grep "Depends:" | awk '{print $NF}' | sed "s@\$@:${ADD_ARCH}@g" | sed ":a;N;s/\n/ /g;ta")
+    # [[ -n ${PROOT_DEPS} ]] || PROOT_DEPS=libtalloc
+    case ${LINUX_DISTRO} in
+    Android) apt-get download libtalloc:${ADD_ARCH} ;;
+    *) apt download libtalloc2:${ADD_ARCH} ;;
+    esac
+    for i in ./libtalloc*.deb; do
+        dpkg-deb -X ${i} ./
+        rm -fv ${i}
+    done
+    dpkg_remove_32bit_architecture
+    file_proot_bin
 }
 dpkg_remove_32bit_architecture() {
-	# printf "%s\n" "${GREEN}apt ${RED}autoremove -y --purge ${YELLOW}proot:${PURPLE}${ADD_ARCH}${RESET}"
-	printf "%s\n" "${GREEN}dpkg ${RED}--remove-architecture ${YELLOW}${ADD_ARCH}${RESET}"
-	# printf "%s\n" "${GREEN}apt ${BLUE}install -y ${YELLOW}proot${RESET}"
-	# do_you_want_to_continue
-	# apt autoremove -y --purge proot:${ADD_ARCH}
-	dpkg --remove-architecture ${ADD_ARCH}
-	# printf "%s\n" "If you can not rm 32bit arch, try using ${GREEN}aptitude ${RED}remove ${BLUE}~i~ri386 ~i~rarmhf${RESET}"
-	# apt update
-	# apt install -y proot
-	# file_proot_bin
+    # printf "%s\n" "${GREEN}apt ${RED}autoremove -y --purge ${YELLOW}proot:${PURPLE}${ADD_ARCH}${RESET}"
+    printf "%s\n" "${GREEN}dpkg ${RED}--remove-architecture ${YELLOW}${ADD_ARCH}${RESET}"
+    # printf "%s\n" "${GREEN}apt ${BLUE}install -y ${YELLOW}proot${RESET}"
+    # do_you_want_to_continue
+    # apt autoremove -y --purge proot:${ADD_ARCH}
+    dpkg --remove-architecture ${ADD_ARCH}
+    # printf "%s\n" "If you can not rm 32bit arch, try using ${GREEN}aptitude ${RED}remove ${BLUE}~i~ri386 ~i~rarmhf${RESET}"
+    # apt update
+    # apt install -y proot
+    # file_proot_bin
 }
 install_qemu_user_static() {
-	printf "%s\n" "正在检测版本信息..."
-	LOCAL_QEMU_USER_FILE=''
-	LOCAL_QEMU_USER_VERSION=''
-	case ${LINUX_DISTRO} in
-	Android)
-		if [ -e "${QEMU_USER_LOCAL_VERSION_FILE}" ]; then
-			LOCAL_QEMU_USER_VERSION=$(head -n 1 ${QEMU_USER_LOCAL_VERSION_FILE})
-		fi
-		;;
-	*) check_gnu_linux_qemu_version ;;
-	esac
+    printf "%s\n" "正在检测版本信息..."
+    LOCAL_QEMU_USER_FILE=''
+    LOCAL_QEMU_USER_VERSION=''
+    case ${LINUX_DISTRO} in
+    Android)
+        if [ -e "${QEMU_USER_LOCAL_VERSION_FILE}" ]; then
+            LOCAL_QEMU_USER_VERSION=$(head -n 1 ${QEMU_USER_LOCAL_VERSION_FILE})
+        fi
+        ;;
+    *) check_gnu_linux_qemu_version ;;
+    esac
 
-	case ${LOCAL_QEMU_USER_VERSION} in
-	"") LOCAL_QEMU_USER_VERSION='未安装Not Installed' ;;
-	*) ;;
-	esac
+    case ${LOCAL_QEMU_USER_VERSION} in
+    "") LOCAL_QEMU_USER_VERSION='未安装Not Installed' ;;
+    *) ;;
+    esac
 
-	cat <<-'EOF'
+    cat <<-'EOF'
 		---------------------------
 		一般来说，新版的qemu-user会引入新的功能，并带来性能上的提升。
 		尽管有可能会引入一些新bug，但是也有可能修复了旧版的bug。
 		We recommend that you to use the new version.
 		---------------------------
 	EOF
-	check_qemu_user_version
-	cat <<-ENDofTable
+    check_qemu_user_version
+    cat <<-ENDofTable
 		╔═══╦══════════╦═══════════════════╦════════════════════
 		║   ║          ║                   ║                    
 		║   ║ software ║    ✨最新版本     ║   本地版本 🎪
@@ -173,305 +173,305 @@ install_qemu_user_static() {
 		║   ║ static   ║${THE_LATEST_DEB_VERSION_CODE}
 
 	ENDofTable
-	do_you_want_to_continue
-	THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
-	printf "%s\n" "${YELLOW}${THE_LATEST_DEB_LINK}${RESET}"
-	printf "%s\n" "${THE_LATEST_DEB_VERSION_CODE}" >${QEMU_USER_LOCAL_VERSION_FILE}
-	mkdir -pv ${TMOE_LINUX_DIR}/lib ${TMOE_LINUX_DIR}/lib32
-	case "${LINUX_DISTRO}" in
-	"debian")
-		apt update
-		printf '%s\n' 'apt install -y qemu-user-static'
-		apt install -y qemu-user-static
-		;;
-	*) download_qemu_user ;;
-	esac
-	case ${LINUX_DISTRO} in
-	Android) debian_proot32 ;;
-	esac
+    do_you_want_to_continue
+    THE_LATEST_DEB_LINK="${REPO_URL}${THE_LATEST_DEB_VERSION}"
+    printf "%s\n" "${YELLOW}${THE_LATEST_DEB_LINK}${RESET}"
+    printf "%s\n" "${THE_LATEST_DEB_VERSION_CODE}" >${QEMU_USER_LOCAL_VERSION_FILE}
+    mkdir -pv ${TMOE_LINUX_DIR}/lib ${TMOE_LINUX_DIR}/lib32
+    case "${LINUX_DISTRO}" in
+    "debian")
+        apt update
+        printf '%s\n' 'apt install -y qemu-user-static'
+        apt install -y qemu-user-static
+        ;;
+    *) download_qemu_user ;;
+    esac
+    case ${LINUX_DISTRO} in
+    Android) debian_proot32 ;;
+    esac
 }
 ##############
 check_qemu_user_version() {
-	REPO_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/q/qemu/'
-	REPO_URL_02='https://ftp.debian.org/debian/pool/main/q/qemu/'
-	unset THE_LATEST_DEB_VERSION
-	THE_LATEST_DEB_VERSION="$(curl --connect-timeout 7 -L ${REPO_URL} | grep '\.deb' | grep 'qemu-user-static' | grep bpo | grep "${TRUE_ARCH_TYPE}" | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep deb | tail -n 1)"
-	if [[ -z ${THE_LATEST_DEB_VERSION} ]]; then
-		THE_LATEST_DEB_VERSION="$(curl --connect-timeout 30 -L ${REPO_URL_02} | grep '\.deb' | grep 'qemu-user-static' | grep "${TRUE_ARCH_TYPE}" | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep deb | tail -n 1)"
-		REPO_URL=${REPO_URL_02}
-	fi
+    REPO_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/q/qemu/'
+    REPO_URL_02='https://ftp.debian.org/debian/pool/main/q/qemu/'
+    unset THE_LATEST_DEB_VERSION
+    THE_LATEST_DEB_VERSION="$(curl --connect-timeout 7 -L ${REPO_URL} | grep '\.deb' | grep 'qemu-user-static' | grep bpo | grep "${TRUE_ARCH_TYPE}" | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep deb | tail -n 1)"
+    if [[ -z ${THE_LATEST_DEB_VERSION} ]]; then
+        THE_LATEST_DEB_VERSION="$(curl --connect-timeout 30 -L ${REPO_URL_02} | grep '\.deb' | grep 'qemu-user-static' | grep "${TRUE_ARCH_TYPE}" | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep deb | tail -n 1)"
+        REPO_URL=${REPO_URL_02}
+    fi
 
-	THE_LATEST_DEB_VERSION_CODE=$(printf '%s\n' "${THE_LATEST_DEB_VERSION}" | cut -d '_' -f 2 | sed 's@%2B@+@')
+    THE_LATEST_DEB_VERSION_CODE=$(printf '%s\n' "${THE_LATEST_DEB_VERSION}" | cut -d '_' -f 2 | sed 's@%2B@+@')
 }
 ###############
 unxz_deb_file() {
-	if [ ! $(command -v ar) ]; then
-		DEPENDENCY_01='binutils'
-		if [ $(command -v apt-get) ]; then
-			apt update
-			printf "%s\n" "apt install -y ${DEPENDENCY_01}"
-		else
-			printf "%s\n" "${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}"
-		fi
-		${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}
-	fi
-	ar xv ${THE_LATEST_DEB_VERSION}
-	#tar -Jxvf data.tar.xz ./usr/bin -C $PREFIX/..
-	tar -Jxvf data.tar.xz
+    if [ ! $(command -v ar) ]; then
+        DEPENDENCY_01='binutils'
+        if [ $(command -v apt-get) ]; then
+            apt update
+            printf "%s\n" "apt install -y ${DEPENDENCY_01}"
+        else
+            printf "%s\n" "${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}"
+        fi
+        ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_01}
+    fi
+    ar xv ${THE_LATEST_DEB_VERSION}
+    #tar -Jxvf data.tar.xz ./usr/bin -C $PREFIX/..
+    tar -Jxvf data.tar.xz
 }
 ########################
 copy_qemu_user_bin_files() {
-	cp -rf ./usr/bin ${QEMU_BIN_PREFIX}
-	cd ..
-	rm -rvf ${TEMP_FOLDER}
+    cp -rf ./usr/bin ${QEMU_BIN_PREFIX}
+    cd ..
+    rm -rvf ${TEMP_FOLDER}
 }
 ######################
 dpkg_x_deb_file_or_unxz_deb_file() {
-	if [ $(command -v dpkg-deb) ]; then
-		dpkg-deb -X "${THE_LATEST_DEB_VERSION}" ./
-	else
-		unxz_deb_file
-		# copy_qemu_user_bin_files
-	fi
-	for i in data.tar.xz ./*.deb ./*.aria2 control.tar.xz debian-binary; do
-		[[ ! -e ${i} ]] || rm -fv "${i}"
-	done
-	for i in qemu-hexagon-static qemu-hppa-static qemu-microblaze-static qemu-mips64-static qemu-mipsn32-static qemu-or1k-static qemu-sparc-static qemu-microblazeel-static qemu-mipsn32el-static qemu-ppc-static qemu-riscv32-static qemu-sh4-static qemu-sparc32plus-static qemu-xtensa-static qemu-alpha-static qemu-cris-static qemu-m68k-static qemu-mips-static qemu-nios2-static qemu-ppc64-static qemu-sh4eb-static qemu-sparc64-static qemu-xtensaeb-static; do
-		[[ ! -e ./usr/bin/${i} ]] || rm -fv "./usr/bin/${i}"
-	done
-	[ ! $(command -v file) ] || file ./usr/bin/qemu-i386-static
+    if [ $(command -v dpkg-deb) ]; then
+        dpkg-deb -X "${THE_LATEST_DEB_VERSION}" ./
+    else
+        unxz_deb_file
+        # copy_qemu_user_bin_files
+    fi
+    for i in data.tar.xz ./*.deb ./*.aria2 control.tar.xz debian-binary; do
+        [[ ! -e ${i} ]] || rm -fv "${i}"
+    done
+    for i in qemu-hexagon-static qemu-hppa-static qemu-microblaze-static qemu-mips64-static qemu-mipsn32-static qemu-or1k-static qemu-sparc-static qemu-microblazeel-static qemu-mipsn32el-static qemu-ppc-static qemu-riscv32-static qemu-sh4-static qemu-sparc32plus-static qemu-xtensa-static qemu-alpha-static qemu-cris-static qemu-m68k-static qemu-mips-static qemu-nios2-static qemu-ppc64-static qemu-sh4eb-static qemu-sparc64-static qemu-xtensaeb-static; do
+        [[ ! -e ./usr/bin/${i} ]] || rm -fv "./usr/bin/${i}"
+    done
+    [ ! $(command -v file) ] || file ./usr/bin/qemu-i386-static
 }
 download_qemu_user() {
-	if [ -z ${TMPDIR} ]; then
-		TMPDIR=/tmp
-		#mkdir -pv ${TMPDIR}
-		#chmod 777 /tmp
-	fi
-	cd ${TMPDIR}
-	TEMP_FOLDER='.QEMU_USER_BIN'
-	# mkdir -pv ${TEMP_FOLDER}
-	# cd ${TEMP_FOLDER}
-	cd ${TMOE_LINUX_DIR}/lib
-	aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
-	dpkg_x_deb_file_or_unxz_deb_file
-	case ${TRUE_ARCH_TYPE} in
-	arm64) QEMU_32_LINK="$(printf "%s\n" "${THE_LATEST_DEB_LINK}" | sed 's@arm64@armhf@g')" ;;
-	amd64) QEMU_32_LINK="$(printf "%s\n" "${THE_LATEST_DEB_LINK}" | sed 's@amd64@i386@g')" ;;
-	*) ;;
-	esac
-	case ${TRUE_ARCH_TYPE} in
-	arm64 | amd64)
-		cd ../lib32
-		printf "%s\n" "${YELLOW}${QEMU_32_LINK}${RESET}"
-		aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${QEMU_32_LINK}"
-		dpkg_x_deb_file_or_unxz_deb_file
-		;;
-	esac
+    if [ -z ${TMPDIR} ]; then
+        TMPDIR=/tmp
+        #mkdir -pv ${TMPDIR}
+        #chmod 777 /tmp
+    fi
+    cd ${TMPDIR}
+    TEMP_FOLDER='.QEMU_USER_BIN'
+    # mkdir -pv ${TEMP_FOLDER}
+    # cd ${TEMP_FOLDER}
+    cd ${TMOE_LINUX_DIR}/lib
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${THE_LATEST_DEB_LINK}"
+    dpkg_x_deb_file_or_unxz_deb_file
+    case ${TRUE_ARCH_TYPE} in
+    arm64) QEMU_32_LINK="$(printf "%s\n" "${THE_LATEST_DEB_LINK}" | sed 's@arm64@armhf@g')" ;;
+    amd64) QEMU_32_LINK="$(printf "%s\n" "${THE_LATEST_DEB_LINK}" | sed 's@amd64@i386@g')" ;;
+    *) ;;
+    esac
+    case ${TRUE_ARCH_TYPE} in
+    arm64 | amd64)
+        cd ../lib32
+        printf "%s\n" "${YELLOW}${QEMU_32_LINK}${RESET}"
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 5 -x 5 -k 1M -o "${THE_LATEST_DEB_VERSION}" "${QEMU_32_LINK}"
+        dpkg_x_deb_file_or_unxz_deb_file
+        ;;
+    esac
 }
 ##############
 debian_proot32() {
-	case ${TRUE_ARCH_TYPE} in
-	amd64)
-		ADD_ARCH=i686
-		dpkg_add_32bit_architecture
-		;;
-	arm64)
-		ADD_ARCH=arm
-		dpkg_add_32bit_architecture
-		;;
-	esac
+    case ${TRUE_ARCH_TYPE} in
+    amd64)
+        ADD_ARCH=i686
+        dpkg_add_32bit_architecture
+        ;;
+    arm64)
+        ADD_ARCH=arm
+        dpkg_add_32bit_architecture
+        ;;
+    esac
 }
 ############
 remove_qemu_user_static() {
-	ls -lah /usr/bin/qemu-*-static ${QEMU_BIN_PREFIX}/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib/usr/bin/qemu-*-static 2>/dev/null
-	printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}${QEMU_BIN_PREFIX}/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib/usr/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib32/usr/bin/qemu-*-static ${QEMU_USER_LOCAL_VERSION_FILE}${RESET}"
-	printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}qemu-user-static${RESET}"
-	do_you_want_to_continue
-	rm -rvf ${QEMU_BIN_PREFIX}/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib/usr/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib32/usr/bin/qemu-*-static "${QEMU_BIN_PREFIX}/bin/qemu-*-static" ${QEMU_USER_LOCAL_VERSION_FILE}
-	${TMOE_REMOVAL_COMMAND} qemu-user-static
+    ls -lah /usr/bin/qemu-*-static ${QEMU_BIN_PREFIX}/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib/usr/bin/qemu-*-static 2>/dev/null
+    printf "%s\n" "${RED}rm -rv${RESET} ${BLUE}${QEMU_BIN_PREFIX}/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib/usr/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib32/usr/bin/qemu-*-static ${QEMU_USER_LOCAL_VERSION_FILE}${RESET}"
+    printf "%s\n" "${RED}${TMOE_REMOVAL_COMMAND}${RESET} ${BLUE}qemu-user-static${RESET}"
+    do_you_want_to_continue
+    rm -rvf ${QEMU_BIN_PREFIX}/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib/usr/bin/qemu-*-static ${TMOE_LINUX_DIR}/lib32/usr/bin/qemu-*-static "${QEMU_BIN_PREFIX}/bin/qemu-*-static" ${QEMU_USER_LOCAL_VERSION_FILE}
+    ${TMOE_REMOVAL_COMMAND} qemu-user-static
 }
 ###############
 qemu_user_env() {
-	QEMU_USER_LOCAL_VERSION_FILE="${CONFIG_FOLDER}/qemu-user-static_version.txt"
-	case ${LINUX_DISTRO} in
-	Android) QEMU_BIN_PREFIX=${PREFIX} ;;
-	*) QEMU_BIN_PREFIX=/usr ;;
-	esac
+    QEMU_USER_LOCAL_VERSION_FILE="${CONFIG_FOLDER}/qemu-user-static_version.txt"
+    case ${LINUX_DISTRO} in
+    Android) QEMU_BIN_PREFIX=${PREFIX} ;;
+    *) QEMU_BIN_PREFIX=/usr ;;
+    esac
 }
 ##########
 tmoe_qemu_user_manager() {
-	cd ${CONFIG_FOLDER}
-	NEW_TMOE_ARCH=''
-	qemu_user_env
-	RETURN_TO_WHERE='tmoe_qemu_user_manager'
-	tmoe_qemu_user_manager_zh() {
-		BETA_SYSTEM=$(
-			whiptail --title "跨架构运行容器" --menu "您想要(模拟)运行哪个架构？\nWhich architecture do you want to simulate?" 0 50 0 \
-				"0" "🌚 Return to previous menu 返回上级菜单" \
-				"00" "qemu-user-static管理(跨架构模拟所需的基础依赖)" \
-				"1" "x64/amd64(64位架构,应用于pc和服务器）" \
-				"2" "x86/i386(常见于32位cpu的旧式传统pc)" \
-				"3" "arm64/aarch64(常见于移动平台的64位cpu架构)" \
-				"4" "armhf/armv7(32位arm架构,支持硬浮点运算)" \
-				"5" "riscv64(开源架构,精简指令集)" \
-				"6" "ppc64el(PowerPC,应用于通信、工控、航天国防等领域)" \
-				"7" "s390x(常见于IBM大型机)" \
-				"8" "mipsel(常见于嵌入式设备)" \
-				"9" "mips64el(常见于龙芯cpu)" \
-				"10" "armel(支持软浮点运算,常见于旧设备）" \
-				3>&1 1>&2 2>&3
-		)
-	}
-	tmoe_qemu_user_manager_ja() {
-		BETA_SYSTEM=$(
-			whiptail --title "cross-architecture" --menu "どのアーキテクチャをシミュレートしますか？" 0 50 0 \
-				"0" "🌚 戻る" \
-				"00" "qemu-user-static(基本的な依存関係)" \
-				"1" "x64/amd64:またはx86-64とは、x86アーキテクチャを64ビットに拡張した命令セットアーキテクチャ" \
-				"2" "i386/x86:Intel 8086、およびその後方互換性を持つマイクロプロセッサの命令セットアーキテクチャの総称" \
-				"3" "arm64/aarch64:64-bit extension of the ARM architecture" \
-				"4" "armhf/armv7:32-bit arm hard float" \
-				"5" "riscv64:確立された縮小命令セットコンピュータ の原則に基づいたオープン標準の命令セットアーキテクチャ である" \
-				"6" "ppc64el:64ビットビッグエンディアンPowerPCおよびPower ISAプロセッサ用に最適化されたアプリケーションのターゲットアーキテクチャを参照するために" \
-				"7" "s390x:IBMメインフレームコンピューターで一般的に見られる" \
-				"8" "mipsel:MIPSアーキテクチャは、ミップス・コンピュータシステムズが開発したRISCマイクロプロセッサの命令セット・アーキテクチャ である" \
-				"9" "mips64el" \
-				"10" "armel:32-bit arm soft float" \
-				3>&1 1>&2 2>&3
-		)
-	}
-	tmoe_qemu_user_manager_en() {
-		BETA_SYSTEM=$(
-			whiptail --title "cross-architecture" --menu "Which architecture do you want to simulate?" 0 50 0 \
-				"0" "🌚 Return to previous menu" \
-				"00" "qemu-user-static(Basic dependency)" \
-				"1" "x64/amd64:It defines a 64-bit virtual address format, of which the low-order 48 bits are used in current implementations." \
-				"2" "i386:x86 is a family of instruction set architectures initially developed by Intel based on the Intel 8086 microprocessor and its 8088 variant." \
-				"3" "arm64:64-bit extension of the ARM architecture" \
-				"4" "armhf:32-bit arm hard float" \
-				"5" "riscv64:RISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principles" \
-				"6" "ppc64el:a pure little-endian mode that has been introduced with the POWER8 as the prime target" \
-				"7" "s390x:Linux on IBM Z is not generally appropriate on premises for small businesses that would have fewer than about 10 distributed Linux servers" \
-				"8" "mipsel:Microprocessor without Interlocked Pipelined Stages little-endian" \
-				"9" "mips64el" \
-				"10" "armel:32-bit arm soft float" \
-				3>&1 1>&2 2>&3
-		)
-	}
-	##############################
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) tmoe_qemu_user_manager_zh ;;
-	ja_JP.UTF-8) tmoe_qemu_user_manager_ja ;;
-	*) tmoe_qemu_user_manager_en ;;
-	esac
-	############
-	case "${BETA_SYSTEM}" in
-	0 | "") proot_container_menu ;;
-	00) tmoe_qemu_user_static ;;
-	1)
-		NEW_TMOE_ARCH='amd64'
-		TMOE_QEMU_ARCH="x86_64"
-		;;
-	2)
-		NEW_TMOE_ARCH='i386'
-		case ${TRUE_ARCH_TYPE} in
-		amd64 | i386) TMOE_QEMU_ARCH="" ;;
-		*) TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}" ;;
-		esac
-		;;
-	3)
-		NEW_TMOE_ARCH='arm64'
-		TMOE_QEMU_ARCH="aarch64"
-		;;
-	4)
-		NEW_TMOE_ARCH='armhf'
-		case ${TRUE_ARCH_TYPE} in
-		arm64 | armhf) TMOE_QEMU_ARCH="" ;;
-		*) TMOE_QEMU_ARCH="arm" ;;
-		esac
-		;;
-	5)
-		NEW_TMOE_ARCH='riscv64'
-		TMOE_QEMU_ARCH="riscv64"
-		;;
-	6)
-		NEW_TMOE_ARCH='ppc64el'
-		TMOE_QEMU_ARCH="ppc64le"
-		;;
-	7)
-		NEW_TMOE_ARCH='s390x'
-		TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
-		;;
-	8)
-		NEW_TMOE_ARCH='mipsel'
-		TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
-		;;
-	9)
-		NEW_TMOE_ARCH='mips64el'
-		TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
-		;;
-	10)
-		NEW_TMOE_ARCH='armel'
-		case ${TRUE_ARCH_TYPE} in
-		arm64 | armhf | armel) TMOE_QEMU_ARCH="" ;;
-		*) TMOE_QEMU_ARCH="armeb" ;;
-		esac
-		;;
-	esac
-	######################
-	if [ ! -z "${NEW_TMOE_ARCH}" ]; then
-		if [ "${TRUE_ARCH_TYPE}" = "${NEW_TMOE_ARCH}" ]; then
-			TMOE_QEMU_ARCH=""
-		fi
-		create_tmoe_arch_file
-		ARCH_TYPE=${NEW_TMOE_ARCH}
+    cd ${CONFIG_FOLDER}
+    NEW_TMOE_ARCH=''
+    qemu_user_env
+    RETURN_TO_WHERE='tmoe_qemu_user_manager'
+    tmoe_qemu_user_manager_zh() {
+        BETA_SYSTEM=$(
+            whiptail --title "跨架构运行容器" --menu "您想要(模拟)运行哪个架构？\nWhich architecture do you want to simulate?" 0 50 0 \
+                "0" "🌚 Return to previous menu 返回上级菜单" \
+                "00" "qemu-user-static管理(跨架构模拟所需的基础依赖)" \
+                "1" "x64/amd64(64位架构,应用于pc和服务器）" \
+                "2" "x86/i386(常见于32位cpu的旧式传统pc)" \
+                "3" "arm64/aarch64(常见于移动平台的64位cpu架构)" \
+                "4" "armhf/armv7(32位arm架构,支持硬浮点运算)" \
+                "5" "riscv64(开源架构,精简指令集)" \
+                "6" "ppc64el(PowerPC,应用于通信、工控、航天国防等领域)" \
+                "7" "s390x(常见于IBM大型机)" \
+                "8" "mipsel(常见于嵌入式设备)" \
+                "9" "mips64el(常见于龙芯cpu)" \
+                "10" "armel(支持软浮点运算,常见于旧设备）" \
+                3>&1 1>&2 2>&3
+        )
+    }
+    tmoe_qemu_user_manager_ja() {
+        BETA_SYSTEM=$(
+            whiptail --title "cross-architecture" --menu "どのアーキテクチャをシミュレートしますか？" 0 50 0 \
+                "0" "🌚 戻る" \
+                "00" "qemu-user-static(基本的な依存関係)" \
+                "1" "x64/amd64:またはx86-64とは、x86アーキテクチャを64ビットに拡張した命令セットアーキテクチャ" \
+                "2" "i386/x86:Intel 8086、およびその後方互換性を持つマイクロプロセッサの命令セットアーキテクチャの総称" \
+                "3" "arm64/aarch64:64-bit extension of the ARM architecture" \
+                "4" "armhf/armv7:32-bit arm hard float" \
+                "5" "riscv64:確立された縮小命令セットコンピュータ の原則に基づいたオープン標準の命令セットアーキテクチャ である" \
+                "6" "ppc64el:64ビットビッグエンディアンPowerPCおよびPower ISAプロセッサ用に最適化されたアプリケーションのターゲットアーキテクチャを参照するために" \
+                "7" "s390x:IBMメインフレームコンピューターで一般的に見られる" \
+                "8" "mipsel:MIPSアーキテクチャは、ミップス・コンピュータシステムズが開発したRISCマイクロプロセッサの命令セット・アーキテクチャ である" \
+                "9" "mips64el" \
+                "10" "armel:32-bit arm soft float" \
+                3>&1 1>&2 2>&3
+        )
+    }
+    tmoe_qemu_user_manager_en() {
+        BETA_SYSTEM=$(
+            whiptail --title "cross-architecture" --menu "Which architecture do you want to simulate?" 0 50 0 \
+                "0" "🌚 Return to previous menu" \
+                "00" "qemu-user-static(Basic dependency)" \
+                "1" "x64/amd64:It defines a 64-bit virtual address format, of which the low-order 48 bits are used in current implementations." \
+                "2" "i386:x86 is a family of instruction set architectures initially developed by Intel based on the Intel 8086 microprocessor and its 8088 variant." \
+                "3" "arm64:64-bit extension of the ARM architecture" \
+                "4" "armhf:32-bit arm hard float" \
+                "5" "riscv64:RISC-V is an open standard instruction set architecture (ISA) based on established reduced instruction set computer (RISC) principles" \
+                "6" "ppc64el:a pure little-endian mode that has been introduced with the POWER8 as the prime target" \
+                "7" "s390x:Linux on IBM Z is not generally appropriate on premises for small businesses that would have fewer than about 10 distributed Linux servers" \
+                "8" "mipsel:Microprocessor without Interlocked Pipelined Stages little-endian" \
+                "9" "mips64el" \
+                "10" "armel:32-bit arm soft float" \
+                3>&1 1>&2 2>&3
+        )
+    }
+    ##############################
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) tmoe_qemu_user_manager_zh ;;
+    ja_JP.UTF-8) tmoe_qemu_user_manager_ja ;;
+    *) tmoe_qemu_user_manager_en ;;
+    esac
+    ############
+    case "${BETA_SYSTEM}" in
+    0 | "") proot_container_menu ;;
+    00) tmoe_qemu_user_static ;;
+    1)
+        NEW_TMOE_ARCH='amd64'
+        TMOE_QEMU_ARCH="x86_64"
+        ;;
+    2)
+        NEW_TMOE_ARCH='i386'
+        case ${TRUE_ARCH_TYPE} in
+        amd64 | i386) TMOE_QEMU_ARCH="" ;;
+        *) TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}" ;;
+        esac
+        ;;
+    3)
+        NEW_TMOE_ARCH='arm64'
+        TMOE_QEMU_ARCH="aarch64"
+        ;;
+    4)
+        NEW_TMOE_ARCH='armhf'
+        case ${TRUE_ARCH_TYPE} in
+        arm64 | armhf) TMOE_QEMU_ARCH="" ;;
+        *) TMOE_QEMU_ARCH="arm" ;;
+        esac
+        ;;
+    5)
+        NEW_TMOE_ARCH='riscv64'
+        TMOE_QEMU_ARCH="riscv64"
+        ;;
+    6)
+        NEW_TMOE_ARCH='ppc64el'
+        TMOE_QEMU_ARCH="ppc64le"
+        ;;
+    7)
+        NEW_TMOE_ARCH='s390x'
+        TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
+        ;;
+    8)
+        NEW_TMOE_ARCH='mipsel'
+        TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
+        ;;
+    9)
+        NEW_TMOE_ARCH='mips64el'
+        TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
+        ;;
+    10)
+        NEW_TMOE_ARCH='armel'
+        case ${TRUE_ARCH_TYPE} in
+        arm64 | armhf | armel) TMOE_QEMU_ARCH="" ;;
+        *) TMOE_QEMU_ARCH="armeb" ;;
+        esac
+        ;;
+    esac
+    ######################
+    if [ ! -z "${NEW_TMOE_ARCH}" ]; then
+        if [ "${TRUE_ARCH_TYPE}" = "${NEW_TMOE_ARCH}" ]; then
+            TMOE_QEMU_ARCH=""
+        fi
+        create_tmoe_arch_file
+        ARCH_TYPE=${NEW_TMOE_ARCH}
 
-		if [[ ! -e "${TMOE_LINUX_DIR}/lib/usr/bin/qemu-x86_64-static" && ! -e "/usr/bin/qemu-x86_64-static" ]]; then
-			install_qemu_user_static
-		fi
-		case ${TRUE_ARCH_TYPE} in
-		arm*)
-			if [[ ! -e ${TMOE_LINUX_DIR}/lib32/usr/bin/exa-i386_armeabi ]]; then
-				EMU_NAME="i386-emu"
-				git_clone_i386_emu
-			fi
-			;;
-		esac
-		case ${ARCH_TYPE} in
-		mips* | riscv64) git_clone_debian_ports_distro ;;
-		*) choose_which_gnu_linux_distro ;;
-		esac
-	fi
-	press_enter_to_return
-	tmoe_qemu_user_manager
+        if [[ ! -e "${TMOE_LINUX_DIR}/lib/usr/bin/qemu-x86_64-static" && ! -e "/usr/bin/qemu-x86_64-static" ]]; then
+            install_qemu_user_static
+        fi
+        case ${TRUE_ARCH_TYPE} in
+        arm*)
+            if [[ ! -e ${TMOE_LINUX_DIR}/lib32/usr/bin/exa-i386_armeabi ]]; then
+                EMU_NAME="i386-emu"
+                git_clone_i386_emu
+            fi
+            ;;
+        esac
+        case ${ARCH_TYPE} in
+        mips* | riscv64) git_clone_debian_ports_distro ;;
+        *) choose_which_gnu_linux_distro ;;
+        esac
+    fi
+    press_enter_to_return
+    tmoe_qemu_user_manager
 }
 #####################
 git_clone_debian_ports_distro() {
-	check_rootfs_dir
-	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv "${ROOTFS_DIR}"
-	cd ${ROOTFS_DIR}
-	DISTRO_NAME='debian'
-	case ${ARCH_TYPE} in
-	mips*) DISTRO_CODE='bullseye' ;;
-	riscv64) DISTRO_CODE='sid' ;;
-	esac
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	create_container_edition_txt
-	go_to_proot_management
+    check_rootfs_dir
+    [[ -e ${ROOTFS_DIR} ]] || mkdir -pv "${ROOTFS_DIR}"
+    cd ${ROOTFS_DIR}
+    DISTRO_NAME='debian'
+    case ${ARCH_TYPE} in
+    mips*) DISTRO_CODE='bullseye' ;;
+    riscv64) DISTRO_CODE='sid' ;;
+    esac
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    create_container_edition_txt
+    go_to_proot_management
 
-	DEBIAN_ROOTFS_FILE_NAME="${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}-rootfs.tar.xz"
-	if [ ! -e "${DEBIAN_ROOTFS_FILE_NAME}" ]; then
-		TEMP_DIR=".DEBIAN_${ARCH_TYPE}-TEMP_FOLDER"
-		[[ ! -e ${TEMP_DIR} ]] || rm -rfv ${TEMP_DIR}
-		git clone --depth=1 ${AK2_GIT_URL}/${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}.git ${TEMP_DIR}
-		cd ${TEMP_DIR}
-		cat .container_linux_* >${DEBIAN_ROOTFS_FILE_NAME}
-		mv -fv ${DEBIAN_ROOTFS_FILE_NAME} ../
-		cd ..
-		rm -rvf ${TEMP_DIR}
-	fi
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed "s:debian-sid:debian-${DISTRO_CODE}:g")"
+    DEBIAN_ROOTFS_FILE_NAME="${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}-rootfs.tar.xz"
+    if [ ! -e "${DEBIAN_ROOTFS_FILE_NAME}" ]; then
+        TEMP_DIR=".DEBIAN_${ARCH_TYPE}-TEMP_FOLDER"
+        [[ ! -e ${TEMP_DIR} ]] || rm -rfv ${TEMP_DIR}
+        git clone --depth=1 ${AK2_GIT_URL}/${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}.git ${TEMP_DIR}
+        cd ${TEMP_DIR}
+        cat .container_linux_* >${DEBIAN_ROOTFS_FILE_NAME}
+        mv -fv ${DEBIAN_ROOTFS_FILE_NAME} ../
+        cd ..
+        rm -rvf ${TEMP_DIR}
+    fi
+    bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
+        sed "s:debian-sid:debian-${DISTRO_CODE}:g")"
 }
 ###############
 #此文件靠source来执行，不包含$@

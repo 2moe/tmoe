@@ -1,159 +1,159 @@
 #!/usr/bin/env bash
 ###########
 termux_tuna_sources_list() {
-	if ! grep -q '^deb.*bfsu.*' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
-		sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-main stable main@' /data/data/com.termux/files/usr/etc/apt/sources.list
-		if ! grep -q '^deb' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
-			printf "%s\n" 'deb https://mirrors.bfsu.edu.cn/termux/apt/termux-main stable main' >>/data/data/com.termux/files/usr/etc/apt/sources.list
-		fi
-		[[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list
-	fi
+    if ! grep -q '^deb.*bfsu.*' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
+        sed -i 's@^\(deb.*stable main\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-main stable main@' /data/data/com.termux/files/usr/etc/apt/sources.list
+        if ! grep -q '^deb' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
+            printf "%s\n" 'deb https://mirrors.bfsu.edu.cn/termux/apt/termux-main stable main' >>/data/data/com.termux/files/usr/etc/apt/sources.list
+        fi
+        [[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list
+    fi
 
-	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list" ]; then
-		if ! grep -q '^deb.*bfsu' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list'; then
-			sed -i 's@^\(deb.*games stable\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-games games stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list
-		fi
-		[[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list
-	fi
+    if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list" ]; then
+        if ! grep -q '^deb.*bfsu' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list'; then
+            sed -i 's@^\(deb.*games stable\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-games games stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list
+        fi
+        [[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list.d/game.list
+    fi
 
-	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list" ]; then
-		if ! grep -q '^deb.*bfsu' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list'; then
-			sed -i 's@^\(deb.*science stable\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-science science stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list
-		fi
-		[[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list
-	fi
-	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list" ]; then
-		if ! grep -q '^deb.*bfsu' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list'; then
-			sed -i 's@^\(deb.*x11 main\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-x11 x11 main@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list
-		fi
-		[[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list
-	fi
+    if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list" ]; then
+        if ! grep -q '^deb.*bfsu' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list'; then
+            sed -i 's@^\(deb.*science stable\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-science science stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list
+        fi
+        [[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list.d/science.list
+    fi
+    if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list" ]; then
+        if ! grep -q '^deb.*bfsu' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list'; then
+            sed -i 's@^\(deb.*x11 main\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-x11 x11 main@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list
+        fi
+        [[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list.d/x11.list
+    fi
 
-	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list" ]; then
-		if ! grep -q '^deb.*bfsu' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list'; then
-			sed -i 's@^\(deb.*unstable main\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-unstable unstable main@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list
-		fi
-		[[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list
-	fi
+    if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list" ]; then
+        if ! grep -q '^deb.*bfsu' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list'; then
+            sed -i 's@^\(deb.*unstable main\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-unstable unstable main@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list
+        fi
+        [[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list.d/unstable.list
+    fi
 
-	if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list" ]; then
-		if ! grep -q '^deb.*bfsu' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list'; then
-			sed -i 's@^\(deb.*root stable\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-root root stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list
-		fi
-		[[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list
-	fi
-	apt_dist_upgrade
-	press_enter_to_return
-	android_termux
-	#此处要返回依赖检测处！
+    if [ -e "/data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list" ]; then
+        if ! grep -q '^deb.*bfsu' '/data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list'; then
+            sed -i 's@^\(deb.*root stable\)$@#\1\ndeb https://mirrors.bfsu.edu.cn/termux/apt/termux-root root stable@' /data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list
+        fi
+        [[ ${TUNA_MIRROR} != true ]] || sed -i -E 's@bfsu(.edu)@tuna.tsinghua\1@g' /data/data/com.termux/files/usr/etc/apt/sources.list.d/root.list
+    fi
+    apt_dist_upgrade
+    press_enter_to_return
+    android_termux
+    #此处要返回依赖检测处！
 }
 #############
 #此函数重复出现两次,另一次位于mirror
 apt_dist_upgrade() {
-	apt update
-	apt dist-upgrade -y
-	printf '%s\n' '修改完成，您当前的软件源列表如下所示。'
-	sed -n p /data/data/com.termux/files/usr/etc/apt/sources.list
-	sed -n p /data/data/com.termux/files/usr/etc/apt/sources.list.d/*
-	printf "%s\n" "您可以输${YELLOW}apt edit-sources${RESET}来手动编辑main源"
-	printf "%s\n" "您也可以输${YELLOW}cd ${PREFIX}/etc/apt/sources.list.d ; nano ./* ${RESET}来手动编辑其它源"
+    apt update
+    apt dist-upgrade -y
+    printf '%s\n' '修改完成，您当前的软件源列表如下所示。'
+    sed -n p /data/data/com.termux/files/usr/etc/apt/sources.list
+    sed -n p /data/data/com.termux/files/usr/etc/apt/sources.list.d/*
+    printf "%s\n" "您可以输${YELLOW}apt edit-sources${RESET}来手动编辑main源"
+    printf "%s\n" "您也可以输${YELLOW}cd ${PREFIX}/etc/apt/sources.list.d ; nano ./* ${RESET}来手动编辑其它源"
 }
 ######################
 switch_android_termux_mirror_to_bfsu() {
-	if ((ANDROID_VERSION >= 7)); then
-		unset TUNA_MIRROR
-		if ! grep -q '^deb.*edu.cn.*' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
-			printf "%s\n" "${YELLOW}检测到您当前使用的sources.list不是北外源,是否需要更换为北外源[Y/b/n]${RESET} "
-			printf "%s\n" "更换后可以加快中国境内的下载速度,${YELLOW}按回车键切换为bfsu北外源, 输t切换为tuna-tsinghua清华源，输n拒绝。${RESET}"
-			printf "%s\n" "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .${PURPLE}[Y/n]${RESET}"
-			read -r opt
-			case $opt in
-			y* | Y* | "") termux_tuna_sources_list ;;
-			t* | T*)
-				TUNA_MIRROR=true
-				termux_tuna_sources_list
-				;;
-			n* | N*) printf "%s\n" "skipped." ;;
-			*) printf "%s\n" "Invalid choice. skipped." ;;
-			esac
-		fi
-	fi
+    if ((ANDROID_VERSION >= 7)); then
+        unset TUNA_MIRROR
+        if ! grep -q '^deb.*edu.cn.*' '/data/data/com.termux/files/usr/etc/apt/sources.list'; then
+            printf "%s\n" "${YELLOW}检测到您当前使用的sources.list不是北外源,是否需要更换为北外源[Y/b/n]${RESET} "
+            printf "%s\n" "更换后可以加快中国境内的下载速度,${YELLOW}按回车键切换为bfsu北外源, 输t切换为tuna-tsinghua清华源，输n拒绝。${RESET}"
+            printf "%s\n" "If you are not living in the People's Republic of China, then please type ${YELLOW}n${RESET} .${PURPLE}[Y/n]${RESET}"
+            read -r opt
+            case $opt in
+            y* | Y* | "") termux_tuna_sources_list ;;
+            t* | T*)
+                TUNA_MIRROR=true
+                termux_tuna_sources_list
+                ;;
+            n* | N*) printf "%s\n" "skipped." ;;
+            *) printf "%s\n" "Invalid choice. skipped." ;;
+            esac
+        fi
+    fi
 }
 ################
 android_termux() {
-	DEPENDENCIES=""
-	# busybox
-	for i in curl git pv grep pulseaudio proot tar zstd; do
-		#if [ ! -e "${PREFIX}/bin/${i}" ]; then
-		if [ ! "$(command -v ${i})" ]; then
-			DEPENDENCIES="${DEPENDENCIES} ${i}"
-		fi
-	done
-	if [[ ! $(command -v bat) && ! $(command -v batcat) ]]; then
-		DEPENDENCIES="${DEPENDENCIES} bat"
-	fi
-	if [ ! "$(command -v lsof)" ]; then
-		if ((ANDROID_VERSION < 7)); then
-			DEPENDENCIES="${DEPENDENCIES} busybox"
-		else
-			DEPENDENCIES="${DEPENDENCIES} lsof"
-		fi
-	fi
+    DEPENDENCIES=""
+    # busybox
+    for i in curl git pv grep pulseaudio proot tar zstd; do
+        #if [ ! -e "${PREFIX}/bin/${i}" ]; then
+        if [ ! "$(command -v ${i})" ]; then
+            DEPENDENCIES="${DEPENDENCIES} ${i}"
+        fi
+    done
+    if [[ ! $(command -v bat) && ! $(command -v batcat) ]]; then
+        DEPENDENCIES="${DEPENDENCIES} bat"
+    fi
+    if [ ! "$(command -v lsof)" ]; then
+        if ((ANDROID_VERSION < 7)); then
+            DEPENDENCIES="${DEPENDENCIES} busybox"
+        else
+            DEPENDENCIES="${DEPENDENCIES} lsof"
+        fi
+    fi
 
-	if ((ANDROID_VERSION >= 7)); then
-		i=micro
-		if [ ! "$(command -v ${i})" ]; then
-			DEPENDENCIES="${DEPENDENCIES} ${i}"
-		fi
-	fi
+    if ((ANDROID_VERSION >= 7)); then
+        i=micro
+        if [ ! "$(command -v ${i})" ]; then
+            DEPENDENCIES="${DEPENDENCIES} ${i}"
+        fi
+    fi
 
-	for i in termux-audio-info aria2c xz termux-setup-storage whiptail pkill which chroot unshare; do
-		if [ ! -e "${PREFIX}/bin/${i}" ]; then
-			case ${i} in
-			termux-audio-info) DEPENDENCIES="${DEPENDENCIES} termux-api" ;;
-			xz) DEPENDENCIES="${DEPENDENCIES} xz-utils" ;;
-			aria2c) DEPENDENCIES="${DEPENDENCIES} aria2" ;;
-			termux-setup-storage) DEPENDENCIES="${DEPENDENCIES} termux-tools" ;;
-			whiptail) DEPENDENCIES="${DEPENDENCIES} dialog" ;;
-			pkill) DEPENDENCIES="${DEPENDENCIES} procps" ;;
-			# which) DEPENDENCIES="${DEPENDENCIES} debianutils" ;;
-			chroot) DEPENDENCIES="${DEPENDENCIES} coreutils" ;;
-			unshare) DEPENDENCIES="${DEPENDENCIES} util-linux" ;;
-			esac
-		fi
-	done
+    for i in termux-audio-info aria2c xz termux-setup-storage whiptail pkill which chroot unshare; do
+        if [ ! -e "${PREFIX}/bin/${i}" ]; then
+            case ${i} in
+            termux-audio-info) DEPENDENCIES="${DEPENDENCIES} termux-api" ;;
+            xz) DEPENDENCIES="${DEPENDENCIES} xz-utils" ;;
+            aria2c) DEPENDENCIES="${DEPENDENCIES} aria2" ;;
+            termux-setup-storage) DEPENDENCIES="${DEPENDENCIES} termux-tools" ;;
+            whiptail) DEPENDENCIES="${DEPENDENCIES} dialog" ;;
+            pkill) DEPENDENCIES="${DEPENDENCIES} procps" ;;
+            # which) DEPENDENCIES="${DEPENDENCIES} debianutils" ;;
+            chroot) DEPENDENCIES="${DEPENDENCIES} coreutils" ;;
+            unshare) DEPENDENCIES="${DEPENDENCIES} util-linux" ;;
+            esac
+        fi
+    done
 
-	if [ ! -z "${DEPENDENCIES}" ]; then
-		[[ -s ${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt ]] || printf "%s\n" ${DEPENDENCIES} >${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt
-		[[ -s ${TMOE_LINUX_DIR}/MANAGER_DEPENDENCIES.txt ]] || printf "%s\n" ${DEPENDENCIES} >${TMOE_LINUX_DIR}/MANAGER_DEPENDENCIES.txt
-		case ${TMOE_LANG} in
-		zh_*UTF-8) switch_android_termux_mirror_to_bfsu ;;
-		*) ;;
-		esac
-		notes_of_tmoe_package_installation
-		apt update
-		apt install -y ${DEPENDENCIES}
-		case ${TERMUX_STORAGE} in
-		false) termux-setup-storage ;;
-		esac
-	fi
+    if [ ! -z "${DEPENDENCIES}" ]; then
+        [[ -s ${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt ]] || printf "%s\n" ${DEPENDENCIES} >${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt
+        [[ -s ${TMOE_LINUX_DIR}/MANAGER_DEPENDENCIES.txt ]] || printf "%s\n" ${DEPENDENCIES} >${TMOE_LINUX_DIR}/MANAGER_DEPENDENCIES.txt
+        case ${TMOE_LANG} in
+        zh_*UTF-8) switch_android_termux_mirror_to_bfsu ;;
+        *) ;;
+        esac
+        notes_of_tmoe_package_installation
+        apt update
+        apt install -y ${DEPENDENCIES}
+        case ${TERMUX_STORAGE} in
+        false) termux-setup-storage ;;
+        esac
+    fi
 
-	PULSE_AUDIO_PA="${PREFIX}/etc/pulse/default.pa"
-	PULSE_AUDIO_CONF="${PREFIX}/etc/pulse/daemon.conf"
+    PULSE_AUDIO_PA="${PREFIX}/etc/pulse/default.pa"
+    PULSE_AUDIO_CONF="${PREFIX}/etc/pulse/daemon.conf"
 
-	if ! grep -Eq '^[^#]*load-module module-native-protocol-tcp' ${PULSE_AUDIO_PA}; then
-		sed -i '/auth-ip-acl/d;/module-native-protocol-tcp/d' ${PULSE_AUDIO_PA}
-		sed -i '$a\load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1' ${PULSE_AUDIO_PA}
-		#sed -i '/module-native-protocol-tcp/d' ${PULSE_AUDIO_PA}
-		#grep -q "anonymous" ${PULSE_AUDIO_PA}
-		#printf "%s\n" "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" >>${PULSE_AUDIO_PA}
-	fi
-	#auth-ip-acl=127.0.0.1;192.168.0.0/16时允许局域网内其它设备连接。
-	#auth-ip-acl不能是localhost，可以是127.0.0.1或0.0.0.0
-	if ! grep -Eq "^[^;]*exit-idle-time =" ${PULSE_AUDIO_CONF}; then
-		sed -i '/exit-idle/d;$ a\exit-idle-time = 3600' ${PULSE_AUDIO_CONF}
-	fi
-	# exit-idle-time 可设为-1
+    if ! grep -Eq '^[^#]*load-module module-native-protocol-tcp' ${PULSE_AUDIO_PA}; then
+        sed -i '/auth-ip-acl/d;/module-native-protocol-tcp/d' ${PULSE_AUDIO_PA}
+        sed -i '$a\load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1' ${PULSE_AUDIO_PA}
+        #sed -i '/module-native-protocol-tcp/d' ${PULSE_AUDIO_PA}
+        #grep -q "anonymous" ${PULSE_AUDIO_PA}
+        #printf "%s\n" "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" >>${PULSE_AUDIO_PA}
+    fi
+    #auth-ip-acl=127.0.0.1;192.168.0.0/16时允许局域网内其它设备连接。
+    #auth-ip-acl不能是localhost，可以是127.0.0.1或0.0.0.0
+    if ! grep -Eq "^[^;]*exit-idle-time =" ${PULSE_AUDIO_CONF}; then
+        sed -i '/exit-idle/d;$ a\exit-idle-time = 3600' ${PULSE_AUDIO_CONF}
+    fi
+    # exit-idle-time 可设为-1
 }
 #############
 android_termux

@@ -1,69 +1,69 @@
 #!/usr/bin/env bash
 #######################################
 welcome_to_wslg() {
-	printf "%s\n" \
-		"Welcome to wslg" \
-		"You can press Ctrl+C to abort the process" \
-		"If you cannot kill the process, then run pkill Xwayland."
+    printf "%s\n" \
+        "Welcome to wslg" \
+        "You can press Ctrl+C to abort the process" \
+        "If you cannot kill the process, then run pkill Xwayland."
 }
 set_env() {
-	DISPLAY_PORT=2
-	AUTO_STOP_VNC=true
-	ENV_FILE="/etc/environment"
-	XSESSION_FILE='/etc/X11/xinit/Xsession'
-	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
-	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
-	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
-	TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
-	TMOE_CHROOT=true
+    DISPLAY_PORT=2
+    AUTO_STOP_VNC=true
+    ENV_FILE="/etc/environment"
+    XSESSION_FILE='/etc/X11/xinit/Xsession'
+    TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+    TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+    TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
+    TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
+    TMOE_CHROOT=true
 }
 remove_xsession_lock() {
-	local port=$1
-	for i in /tmp/.X${port}-lock /tmp/.X11-unix/X${port}; do
-		rm -vf "$i" 2>/dev/null
-		if [[ -e "${i}" ]]; then
-			sudo rm -fv "$i"
-		fi
-	done
+    local port=$1
+    for i in /tmp/.X${port}-lock /tmp/.X11-unix/X${port}; do
+        rm -vf "$i" 2>/dev/null
+        if [[ -e "${i}" ]]; then
+            sudo rm -fv "$i"
+        fi
+    done
 }
 check_tmoe_locale() {
-	if [ -e "${TMOE_LOCALE_FILE}" ]; then
-		TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
-	else
-		TMOE_LANG="zh_CN.UTF-8"
-	fi
-	export LANG="${TMOE_LANG}"
+    if [ -e "${TMOE_LOCALE_FILE}" ]; then
+        TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
+    else
+        TMOE_LANG="zh_CN.UTF-8"
+    fi
+    export LANG="${TMOE_LANG}"
 }
 please_install_xwayland() {
-	printf "%s\n" \
-		"ERROR." \
-		"You need to install xwayland(xorg-xwayland)."
+    printf "%s\n" \
+        "ERROR." \
+        "You need to install xwayland(xorg-xwayland)."
 }
 check_xwayland_command() {
-	if [[ -z $(command -v Xwayland) ]]; then
-		if [[ -n $(command -v apt-get) ]]; then
-			sudo apt update
-			sudo apt install -y xwayland
-		elif [[ -n $(command -v pacman) ]]; then
-			sudo pacman -Sy xorg-xwayland
-		else
-			please_install_xwayland
-			exit 1
-		fi
-	fi
+    if [[ -z $(command -v Xwayland) ]]; then
+        if [[ -n $(command -v apt-get) ]]; then
+            sudo apt update
+            sudo apt install -y xwayland
+        elif [[ -n $(command -v pacman) ]]; then
+            sudo pacman -Sy xorg-xwayland
+        else
+            please_install_xwayland
+            exit 1
+        fi
+    fi
 }
 main() {
-	welcome_to_wslg
-	set_env
-	[[ ${AUTO_STOP_VNC} != true ]] || stopvnc -no-stop-dbus 2>/dev/null
-	remove_xsession_lock ${DISPLAY_PORT}
-	printf "%s\n" \
-		"sudo service dbus restart"
-	source ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
-	check_xwayland_command
-	Xwayland :${DISPLAY_PORT} -noreset &
-	[[ -r ${ENV_FILE} ]] && source "$ENV_FILE"
-	check_tmoe_locale
-	WAYLAND_DISPLAY= DISPLAY=:${DISPLAY_PORT} "${XSESSION_FILE}"
+    welcome_to_wslg
+    set_env
+    [[ ${AUTO_STOP_VNC} != true ]] || stopvnc -no-stop-dbus 2>/dev/null
+    remove_xsession_lock ${DISPLAY_PORT}
+    printf "%s\n" \
+        "sudo service dbus restart"
+    source ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
+    check_xwayland_command
+    Xwayland :${DISPLAY_PORT} -noreset &
+    [[ -r ${ENV_FILE} ]] && source "$ENV_FILE"
+    check_tmoe_locale
+    WAYLAND_DISPLAY= DISPLAY=:${DISPLAY_PORT} "${XSESSION_FILE}"
 }
 main "$@"

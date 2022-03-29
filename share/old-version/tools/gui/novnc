@@ -15,61 +15,61 @@ NOVNC_UTILS_DIR="${NOVNC_MAIN_DIR}/utils"
 NOVNC_STARTUP_SCRIPT="${NOVNC_UTILS_DIR}/launch.sh"
 NOVNC_PORT="36080"
 if [[ $(command -v Xvnc) || $(command -v vncsession) ]]; then
-	STARTVNC_COMMAND='startvnc'
-	CURRENT_PORT=$(grep '^VNC_DISPLAY=' "$(command -v ${STARTVNC_COMMAND})" | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
-	CURRENT_VNC_PORT=$((CURRENT_PORT + 5900))
+    STARTVNC_COMMAND='startvnc'
+    CURRENT_PORT=$(grep '^VNC_DISPLAY=' "$(command -v ${STARTVNC_COMMAND})" | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
+    CURRENT_VNC_PORT=$((CURRENT_PORT + 5900))
 else
-	STARTVNC_COMMAND='startx11vnc'
-	CURRENT_VNC_PORT=$(grep '^TCP_PORT_FOR_RFB_PROTOCOL=' $(command -v ${STARTVNC_COMMAND}) | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
+    STARTVNC_COMMAND='startx11vnc'
+    CURRENT_VNC_PORT=$(grep '^TCP_PORT_FOR_RFB_PROTOCOL=' $(command -v ${STARTVNC_COMMAND}) | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
 fi
 NOVNC_ADDR="localhost:${CURRENT_VNC_PORT}"
 NOVNC_WEB_ADDR="http://localhost:${NOVNC_PORT}/vnc.html"
 #######################
 show_novnc_addr() {
-	TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@^@http://@g;s@\$@:${NOVNC_PORT}/vnc.html@g")
-	case ${LANG} in
-	zh_*UTF-8)
-		cat <<-EOF
+    TMOE_IP_ADDR=$(ip -4 -br -c a | awk '{print $NF}' | cut -d '/' -f 1 | grep -v '127\.0\.0\.1' | sed "s@^@http://@g;s@\$@:${NOVNC_PORT}/vnc.html@g")
+    case ${LANG} in
+    zh_*UTF-8)
+        cat <<-EOF
 			${YELLOW}本机${RESET}novnc,${GREEN}浏览器${RESET}访问地址 ${BLUE}${NOVNC_WEB_ADDR}${RESET}
 			The LAN novnc address ${YELLOW}局域网${RESET}地址 ${TMOE_IP_ADDR}
 		EOF
-		;;
-	*)
-		cat <<-EOF
+        ;;
+    *)
+        cat <<-EOF
 			The ${YELLOW}local${RESET} novnc address is ${BLUE}${NOVNC_WEB_ADDR}${RESET}
 			The ${YELLOW}LAN${RESET} novnc address is ${TMOE_IP_ADDR}
 		EOF
-		;;
-	esac
+        ;;
+    esac
 }
 ###############
 start_tmoe_novnc() {
-	${STARTVNC_COMMAND}
-	printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "novnc" "..."
-	set -- "${@}" "--vnc" "${NOVNC_ADDR}"
-	set -- "${@}" "--listen" "${NOVNC_PORT}"
-	set -- "bash" "${NOVNC_STARTUP_SCRIPT}" "${@}"
-	"${@}" &
+    ${STARTVNC_COMMAND}
+    printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "novnc" "..."
+    set -- "${@}" "--vnc" "${NOVNC_ADDR}"
+    set -- "${@}" "--listen" "${NOVNC_PORT}"
+    set -- "bash" "${NOVNC_STARTUP_SCRIPT}" "${@}"
+    "${@}" &
 }
 ###############
 start_win10_edge_novnc_addr() {
-	if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-		#/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe "start ${NOVNC_WEB_ADDR}"
-		/mnt/c/WINDOWS/system32/cmd.exe /c "start ${NOVNC_WEB_ADDR}"
-	else
-		xdg-open ${NOVNC_WEB_ADDR} 2>/dev/null
-	fi
+    if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+        #/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe "start ${NOVNC_WEB_ADDR}"
+        /mnt/c/WINDOWS/system32/cmd.exe /c "start ${NOVNC_WEB_ADDR}"
+    else
+        xdg-open ${NOVNC_WEB_ADDR} 2>/dev/null
+    fi
 }
 ################
 start_web_novnc() {
-	cat <<-EOF
+    cat <<-EOF
 		Before starting novnc, you should know the following tips: 
 		1. Novnc without vncviewer.
 		2. You can use the bluetooth mouse to operate on the browser.
 	EOF
-	start_tmoe_novnc
-	show_novnc_addr
-	start_win10_edge_novnc_addr
+    start_tmoe_novnc
+    show_novnc_addr
+    start_win10_edge_novnc_addr
 }
 #################
 start_web_novnc "$@"

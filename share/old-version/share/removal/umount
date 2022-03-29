@@ -1,52 +1,52 @@
 #!/usr/bin/env bash
 #######################################
 unmount_chroot_proc_dev() {
-	#case ${TMOE_CHROOT} in
-	#true)
-	if [ $(command -v su) ]; then
-		for i in proc sys dev/pts dev/shm etc/gitstatus dev/fd dev/stdin dev/stout dev/sterr dev/tty0 dev media/tf media/termux media/sd tmp; do
-			#su -c "umount -lvf ${DEBIAN_CHROOT}/${i}  2>/dev/null"
-			if [[ $(su -c "ls ${DEBIAN_CHROOT}/${i} 2>/dev/null") ]]; then
-				printf "${PURPLE}%s ${BLUE}%s${RESET} %s\n" "Unmounting" "${i}" "..."
-				printf "${GREEN}%s${RESET}\n" "umount -lvf ${DEBIAN_CHROOT}/${i}"
-			fi
-			su -c "umount -lvf ${DEBIAN_CHROOT}/${i} 2>/dev/null"
-		done
-		#su -c "umount -lvf ${DEBIAN_CHROOT}/* 2>/dev/null"
-		#su -c "umount -lvf ${DEBIAN_CHROOT}/*/*  2>/dev/null"
-		printf "${PURPLE}%s ${BLUE}%s${RESET} %s\n" "Unmounting" "${DEBIAN_FOLDER}" "..."
-		if grep -q "${DEBIAN_CHROOT}" /proc/mounts; then
-			#[[ ! -e ${TMPDIR}/.umount-tmoe-container ]] || rm -vf ${TMPDIR}/.umount-tmoe-container
-			# sed 's@^@su -c "umount -lvf @g;s@$@"@g'
-			UMOUNT_EXTRA_DIR=$(${TMOE_PREFIX} grep ${DEBIAN_CHROOT} /proc/mounts | awk '{print $2}' | sed 's@^@umount -lvf @g')
-			printf "${GREEN}${UMOUNT_EXTRA_DIR}${RESET}\n"
-			su -c "${UMOUNT_EXTRA_DIR}"
-		fi
-		su -c "umount -lvf ${DEBIAN_CHROOT} 2>/dev/null"
-		printf "${BOLD}%s\n" "${YELLOW}CONGRATULATIONS！${BLUE}TMOE-LINUX-MANAGER${RESET}已经${PURPLE}UNMOUNTED${RESET}掉所有的挂载点"
-		su -c "ls -lAh  ${DEBIAN_CHROOT}/media/sd 2>/dev/null"
-	fi
-	#	;;
-	#esac
-	#/dev内自带null
-	for i in media/sd media/tf proc sys; do
-		if [[ $(su -c "ls ${DEBIAN_CHROOT}/${i} 2>/dev/null") ]]; then
-			printf "%s\n" "检测到${DEBIAN_CHROOT}/${i}目录不为空，为防止该目录被清空，无法继续执行操作！"
-			press_enter_to_return
-			#${RETURN_TO_WHERE}
-			#回到主菜单，而不是返回之前的菜单
-			tmoe_manager_main_menu
-		fi
-	done
-	unset i
+    #case ${TMOE_CHROOT} in
+    #true)
+    if [ $(command -v su) ]; then
+        for i in proc sys dev/pts dev/shm etc/gitstatus dev/fd dev/stdin dev/stout dev/sterr dev/tty0 dev media/tf media/termux media/sd tmp; do
+            #su -c "umount -lvf ${DEBIAN_CHROOT}/${i}  2>/dev/null"
+            if [[ $(su -c "ls ${DEBIAN_CHROOT}/${i} 2>/dev/null") ]]; then
+                printf "${PURPLE}%s ${BLUE}%s${RESET} %s\n" "Unmounting" "${i}" "..."
+                printf "${GREEN}%s${RESET}\n" "umount -lvf ${DEBIAN_CHROOT}/${i}"
+            fi
+            su -c "umount -lvf ${DEBIAN_CHROOT}/${i} 2>/dev/null"
+        done
+        #su -c "umount -lvf ${DEBIAN_CHROOT}/* 2>/dev/null"
+        #su -c "umount -lvf ${DEBIAN_CHROOT}/*/*  2>/dev/null"
+        printf "${PURPLE}%s ${BLUE}%s${RESET} %s\n" "Unmounting" "${DEBIAN_FOLDER}" "..."
+        if grep -q "${DEBIAN_CHROOT}" /proc/mounts; then
+            #[[ ! -e ${TMPDIR}/.umount-tmoe-container ]] || rm -vf ${TMPDIR}/.umount-tmoe-container
+            # sed 's@^@su -c "umount -lvf @g;s@$@"@g'
+            UMOUNT_EXTRA_DIR=$(${TMOE_PREFIX} grep ${DEBIAN_CHROOT} /proc/mounts | awk '{print $2}' | sed 's@^@umount -lvf @g')
+            printf "${GREEN}${UMOUNT_EXTRA_DIR}${RESET}\n"
+            su -c "${UMOUNT_EXTRA_DIR}"
+        fi
+        su -c "umount -lvf ${DEBIAN_CHROOT} 2>/dev/null"
+        printf "${BOLD}%s\n" "${YELLOW}CONGRATULATIONS！${BLUE}TMOE-LINUX-MANAGER${RESET}已经${PURPLE}UNMOUNTED${RESET}掉所有的挂载点"
+        su -c "ls -lAh  ${DEBIAN_CHROOT}/media/sd 2>/dev/null"
+    fi
+    #	;;
+    #esac
+    #/dev内自带null
+    for i in media/sd media/tf proc sys; do
+        if [[ $(su -c "ls ${DEBIAN_CHROOT}/${i} 2>/dev/null") ]]; then
+            printf "%s\n" "检测到${DEBIAN_CHROOT}/${i}目录不为空，为防止该目录被清空，无法继续执行操作！"
+            press_enter_to_return
+            #${RETURN_TO_WHERE}
+            #回到主菜单，而不是返回之前的菜单
+            tmoe_manager_main_menu
+        fi
+    done
+    unset i
 
-	if [ "$(ls ${DEBIAN_CHROOT}/proc 2>/dev/null)" ]; then
-		printf "%s\n" "Please restart the device to unmount the ${DEBIAN_CHROOT}/${i} directory."
-		press_enter_to_return
-		#${RETURN_TO_WHERE}
-		#回到主菜单，而不是返回之前的菜单
-		tmoe_manager_main_menu
-	fi
+    if [ "$(ls ${DEBIAN_CHROOT}/proc 2>/dev/null)" ]; then
+        printf "%s\n" "Please restart the device to unmount the ${DEBIAN_CHROOT}/${i} directory."
+        press_enter_to_return
+        #${RETURN_TO_WHERE}
+        #回到主菜单，而不是返回之前的菜单
+        tmoe_manager_main_menu
+    fi
 }
 ##########################
 unmount_chroot_proc_dev

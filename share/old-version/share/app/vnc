@@ -1,83 +1,83 @@
 #!/usr/bin/env bash
 #######################################
 download_vnc_apk_menu() {
-	cd /sdcard/Download || mkdir -pv /sdcard/Download && cd /sdcard/Download
-	RETURN_TO_WHERE='download_vnc_apk_menu'
-	#15 60 4
-	OPTION=$(whiptail --title "remote desktop apk" --menu "Which remote desktop software do you want to install?" 0 50 0 \
-		"1" "vnc/xsdl" \
-		"2" "xwayland" \
-		"0" "🌚 Back to the main menu 返回主菜单" \
-		3>&1 1>&2 2>&3)
-	##########################
-	case "${OPTION}" in
-	0 | "") ${RETURN_TO_MENU} ;;
-	1) download_vnc_or_xsdl_apk ;;
-	2) xwayland_warning ;;
-	esac
-	###########
-	press_enter_to_return
-	${RETURN_TO_WHERE}
+    cd /sdcard/Download || mkdir -pv /sdcard/Download && cd /sdcard/Download
+    RETURN_TO_WHERE='download_vnc_apk_menu'
+    #15 60 4
+    OPTION=$(whiptail --title "remote desktop apk" --menu "Which remote desktop software do you want to install?" 0 50 0 \
+        "1" "vnc/xsdl" \
+        "2" "xwayland" \
+        "0" "🌚 Back to the main menu 返回主菜单" \
+        3>&1 1>&2 2>&3)
+    ##########################
+    case "${OPTION}" in
+    0 | "") ${RETURN_TO_MENU} ;;
+    1) download_vnc_or_xsdl_apk ;;
+    2) xwayland_warning ;;
+    esac
+    ###########
+    press_enter_to_return
+    ${RETURN_TO_WHERE}
 }
 #########################################
 download_vnc_or_xsdl_apk() {
-	for i in /sdcard/Download ~/sd/Download /media/sd/Download; do
-		[[ ! -e ${i} ]] || cd ${i}
-	done
-	unset i
+    for i in /sdcard/Download ~/sd/Download /media/sd/Download; do
+        [[ ! -e ${i} ]] || cd ${i}
+    done
+    unset i
 
-	if (whiptail --title "您想要下载哪个软件?" --yes-button 'VNC Viewer' --no-button 'XServer XSDL' --yesno "vnc操作体验更好,当前版本已经可以通过pulse server来传输音频。xsdl对某些软件的兼容性更高，但操作体验没有vnc好。VNC has a better operating experience and is also smoother.XSDL is more compatible with some software， but the experience is not as good as VNC in every way.\n若VNC启动后仍无声音，则请前往Play商店或Fdroid更新termux至最新版本,再安装termux:api.apk" 16 50); then
-		printf "%s\n" "${YELLOW}按回车键开始下载${RESET}"
-		do_you_want_to_continue
-		printf '%s\n' 'Downloading vnc viewer...'
-		#rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' 2>/dev/null
-		printf '%s\n' '正在为您下载至/sdcard/Download目录...'
-		printf '%s\n' 'Download size ≈11MB'
-		if [ -d "/sdcard/Download/.GITCLONEVNCCLIENT" ]; then
-			rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
-		fi
+    if (whiptail --title "您想要下载哪个软件?" --yes-button 'VNC Viewer' --no-button 'XServer XSDL' --yesno "vnc操作体验更好,当前版本已经可以通过pulse server来传输音频。xsdl对某些软件的兼容性更高，但操作体验没有vnc好。VNC has a better operating experience and is also smoother.XSDL is more compatible with some software， but the experience is not as good as VNC in every way.\n若VNC启动后仍无声音，则请前往Play商店或Fdroid更新termux至最新版本,再安装termux:api.apk" 16 50); then
+        printf "%s\n" "${YELLOW}按回车键开始下载${RESET}"
+        do_you_want_to_continue
+        printf '%s\n' 'Downloading vnc viewer...'
+        #rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz' 2>/dev/null
+        printf '%s\n' '正在为您下载至/sdcard/Download目录...'
+        printf '%s\n' 'Download size ≈11MB'
+        if [ -d "/sdcard/Download/.GITCLONEVNCCLIENT" ]; then
+            rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
+        fi
 
-		git clone -b vnc --depth=1 https://gitee.com/mo2/VncClient.git .GITCLONEVNCCLIENT
-		mv -f /sdcard/Download/.GITCLONEVNCCLIENT/vnc/vnc36142089.tar.xz ./
-		printf '%s\n' '正在解压...'
-		tar -Jxvf vnc36142089.tar.xz
-		#tar -Jxvf 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
-		rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
-		rm -f /sdcard/Download/vnc36142089.tar.xz
-		printf '%s\n' '正在删除压缩包...'
-		printf '%s\n' 'Deleting ...'
-		#rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
-		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
-		printf "%s\n" "${YELLOW}解压成功，请进入下载目录手动安装。${RESET}"
-		printf '%s\n' '文件名称 VNC Viewer_com,realvnc,viewer,android_3,6,1,42089.apk'
-		cd ${CURRENT_DIR}
-	else
-		printf '%s\n' '按回车键开始下载'
-		do_you_want_to_continue
-		printf '%s\n' 'Downloading xsdl...'
-		#rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz' 2>/dev/null
-		printf '%s\n' '正在为您下载至/sdcard/Download目录...'
-		printf '%s\n' 'Download size ≈29MB'
-		if [ -d "/sdcard/Download/.GITCLONEVNCCLIENT" ]; then
-			rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
-		fi
+        git clone -b vnc --depth=1 https://gitee.com/mo2/VncClient.git .GITCLONEVNCCLIENT
+        mv -f /sdcard/Download/.GITCLONEVNCCLIENT/vnc/vnc36142089.tar.xz ./
+        printf '%s\n' '正在解压...'
+        tar -Jxvf vnc36142089.tar.xz
+        #tar -Jxvf 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
+        rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
+        rm -f /sdcard/Download/vnc36142089.tar.xz
+        printf '%s\n' '正在删除压缩包...'
+        printf '%s\n' 'Deleting ...'
+        #rm -f 'VNCViewer_com-realvnc-viewer-android-3-6-1-42089.tar.xz'
+        am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
+        printf "%s\n" "${YELLOW}解压成功，请进入下载目录手动安装。${RESET}"
+        printf '%s\n' '文件名称 VNC Viewer_com,realvnc,viewer,android_3,6,1,42089.apk'
+        cd ${CURRENT_DIR}
+    else
+        printf '%s\n' '按回车键开始下载'
+        do_you_want_to_continue
+        printf '%s\n' 'Downloading xsdl...'
+        #rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz' 2>/dev/null
+        printf '%s\n' '正在为您下载至/sdcard/Download目录...'
+        printf '%s\n' 'Download size ≈29MB'
+        if [ -d "/sdcard/Download/.GITCLONEVNCCLIENT" ]; then
+            rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
+        fi
 
-		git clone -b xsdl --depth=1 https://gitee.com/ak2/xsdl.git .GITCLONEVNCCLIENT
-		mv -f /sdcard/Download/.GITCLONEVNCCLIENT/xsdl/XSDL.tar.xz ./
-		printf '%s\n' '正在解压...'
-		tar -Jxvf XSDL.tar.xz
-		#tar -Jxvf 'XServerXSDL-X-org-server_1-20-41.tar.xz'
-		rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
-		rm -f /sdcard/Download/XSDL.tar.xz
-		printf '%s\n' '正在删除压缩包...'
-		printf '%s\n' 'Deleting ...'
-		#rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz'
+        git clone -b xsdl --depth=1 https://gitee.com/ak2/xsdl.git .GITCLONEVNCCLIENT
+        mv -f /sdcard/Download/.GITCLONEVNCCLIENT/xsdl/XSDL.tar.xz ./
+        printf '%s\n' '正在解压...'
+        tar -Jxvf XSDL.tar.xz
+        #tar -Jxvf 'XServerXSDL-X-org-server_1-20-41.tar.xz'
+        rm -rf /sdcard/Download/.GITCLONEVNCCLIENT
+        rm -f /sdcard/Download/XSDL.tar.xz
+        printf '%s\n' '正在删除压缩包...'
+        printf '%s\n' 'Deleting ...'
+        #rm -f 'XServerXSDL-X-org-server_1-20-41.tar.xz'
 
-		printf '%s\n' '解压成功，请进入下载目录手动安装。'
-		printf '%s\n' '文件名称 XServer XSDL*.apk'
-		am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
-		cd ${CURRENT_DIR}
-	fi
+        printf '%s\n' '解压成功，请进入下载目录手动安装。'
+        printf '%s\n' '文件名称 XServer XSDL*.apk'
+        am start -n com.android.documentsui/com.android.documentsui.ViewDownloadsActivity
+        cd ${CURRENT_DIR}
+    fi
 }
 ###################
 download_vnc_or_xsdl_apk

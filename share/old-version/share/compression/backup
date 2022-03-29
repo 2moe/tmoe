@@ -1,108 +1,108 @@
 #!/usr/bin/env bash
 #######################################
 backup_filename() {
-	unset BAK_FILE_PREFIX_02
-	for i in startplasma-x11 startkde mate-session xfce4-session startlxqt startdde startlxde gnome-session; do
-		if [[ -e ${DEBIAN_CHROOT}/usr/bin/${i} ]]; then
-			BAK_FILE_PREFIX_01=${i}
-			break
-		fi
-	done
-	case ${BAK_FILE_PREFIX_01} in
-	startplasma-x11 | startkde) BAK_FILE_PREFIX_02='kde' ;;
-	mate-session) BAK_FILE_PREFIX_02='mate' ;;
-	xfce4-session) BAK_FILE_PREFIX_02='xfce' ;;
-	startdde) BAK_FILE_PREFIX_02='deepin' ;;
-	startlxqt) BAK_FILE_PREFIX_02='lxqt' ;;
-	startlxde) BAK_FILE_PREFIX_02='lxde' ;;
-	gnome-session) BAK_FILE_PREFIX_02='gnome' ;;
-	esac
-	if [ -z "${BAK_FILE_PREFIX_02}" ]; then
-		BAK_FILE_PREFIX_03="${DEBIAN_FOLDER}"
-	else
-		BAK_FILE_PREFIX_03="${DEBIAN_FOLDER}+${BAK_FILE_PREFIX_02}"
-	fi
-	TARGET_BACKUP_FILE_NAME=$(whiptail --inputbox "请自定义备份的文件名称,若留空\n则将自动命名为${BAK_FILE_PREFIX_03}\nPlease type the filename." 10 50 --title "FILENAME" 3>&1 1>&2 2>&3)
-	TARGET_BACKUP_FILE_NAME="$(printf '%s\n' "${TARGET_BACKUP_FILE_NAME}" | head -n 1 | cut -d ' ' -f 1)"
-	printf "%s\n" "${TARGET_BACKUP_FILE_NAME}"
-	if [ -z ${TARGET_BACKUP_FILE_NAME} ]; then
-		#printf "%s\n" "文件名称不能为空！"
-		#printf "%s\n" "The file name is ${RED}empty${RESET}."
-		#press_enter_to_return
-		#backup_system
-		TARGET_BACKUP_FILE_NAME="${BAK_FILE_PREFIX_03}"
-	fi
+    unset BAK_FILE_PREFIX_02
+    for i in startplasma-x11 startkde mate-session xfce4-session startlxqt startdde startlxde gnome-session; do
+        if [[ -e ${DEBIAN_CHROOT}/usr/bin/${i} ]]; then
+            BAK_FILE_PREFIX_01=${i}
+            break
+        fi
+    done
+    case ${BAK_FILE_PREFIX_01} in
+    startplasma-x11 | startkde) BAK_FILE_PREFIX_02='kde' ;;
+    mate-session) BAK_FILE_PREFIX_02='mate' ;;
+    xfce4-session) BAK_FILE_PREFIX_02='xfce' ;;
+    startdde) BAK_FILE_PREFIX_02='deepin' ;;
+    startlxqt) BAK_FILE_PREFIX_02='lxqt' ;;
+    startlxde) BAK_FILE_PREFIX_02='lxde' ;;
+    gnome-session) BAK_FILE_PREFIX_02='gnome' ;;
+    esac
+    if [ -z "${BAK_FILE_PREFIX_02}" ]; then
+        BAK_FILE_PREFIX_03="${DEBIAN_FOLDER}"
+    else
+        BAK_FILE_PREFIX_03="${DEBIAN_FOLDER}+${BAK_FILE_PREFIX_02}"
+    fi
+    TARGET_BACKUP_FILE_NAME=$(whiptail --inputbox "请自定义备份的文件名称,若留空\n则将自动命名为${BAK_FILE_PREFIX_03}\nPlease type the filename." 10 50 --title "FILENAME" 3>&1 1>&2 2>&3)
+    TARGET_BACKUP_FILE_NAME="$(printf '%s\n' "${TARGET_BACKUP_FILE_NAME}" | head -n 1 | cut -d ' ' -f 1)"
+    printf "%s\n" "${TARGET_BACKUP_FILE_NAME}"
+    if [ -z ${TARGET_BACKUP_FILE_NAME} ]; then
+        #printf "%s\n" "文件名称不能为空！"
+        #printf "%s\n" "The file name is ${RED}empty${RESET}."
+        #press_enter_to_return
+        #backup_system
+        TARGET_BACKUP_FILE_NAME="${BAK_FILE_PREFIX_03}"
+    fi
 }
 ######################
 backup_tmoe_container_preconfigure() {
-	[[ -d ${CONTAINER_BACKUP_PATH} ]] || mkdir -pv ${CONTAINER_BACKUP_PATH}
-	cd ${CONTAINER_BACKUP_PATH}
-	backup_filename
-	BACKUP_TIME_TMP=$(date +%Y-%m-%d_%H-%M)
+    [[ -d ${CONTAINER_BACKUP_PATH} ]] || mkdir -pv ${CONTAINER_BACKUP_PATH}
+    cd ${CONTAINER_BACKUP_PATH}
+    backup_filename
+    BACKUP_TIME_TMP=$(date +%Y-%m-%d_%H-%M)
 }
 #####################
 backup_gnu_linux_container_to_external_tf() {
-	if [ -h "${HOME}/storage/external-1" ]; then
-		BACKUP_PATH="$(readlink ${HOME}/storage/external-1)/Download/backup/containers"
-		printf "%s\n" "${RED}卸载或清除${RESET}termux将有可能同时清空${BLUE}${BACKUP_PATH}${RESET}"
-		printf "%s\n" "${RED}Uninstalling${RESET} TERMUX will also clear the ${BLUE}${BACKUP_PATH}${RESET}."
-		press_enter_to_continue
-	else
-		printf "%s\n" "${HOME}/storage/external-1非软链接，无法保存至该目录,将自动切换为内置存储设备。"
-		check_container_backup_path
-	fi
-	case_backup_path_proot_or_chroot
-	backup_gnu_linux_container
+    if [ -h "${HOME}/storage/external-1" ]; then
+        BACKUP_PATH="$(readlink ${HOME}/storage/external-1)/Download/backup/containers"
+        printf "%s\n" "${RED}卸载或清除${RESET}termux将有可能同时清空${BLUE}${BACKUP_PATH}${RESET}"
+        printf "%s\n" "${RED}Uninstalling${RESET} TERMUX will also clear the ${BLUE}${BACKUP_PATH}${RESET}."
+        press_enter_to_continue
+    else
+        printf "%s\n" "${HOME}/storage/external-1非软链接，无法保存至该目录,将自动切换为内置存储设备。"
+        check_container_backup_path
+    fi
+    case_backup_path_proot_or_chroot
+    backup_gnu_linux_container
 }
 #####################
 backup_system() {
-	#check_zstd
-	RETURN_TO_WHERE='backup_system'
-	backup_system_menu_en() {
-		OPTION=$(whiptail --title "BACKUP ${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to backup the container?(๑´ڡ\`๑)" 0 50 0 \
-			"1" "Clean up garbage and private data" \
-			"2" "Backup ${DEBIAN_FOLDER} container" \
-			"3" "Backup container to sd/tf card (only for termux)" \
-			"0" "🌚 Return to previous menu" \
-			3>&1 1>&2 2>&3)
-	}
-	backup_system_menu_cn() {
-		OPTION=$(whiptail --title "BACKUP ${DEBIAN_FOLDER_CAPITAL}" --menu "您想要备份${DEBIAN_FOLDER}容器数据么？(๑´ڡ\`๑)" 0 50 0 \
-			"1" "清理${DEBIAN_FOLDER}容器垃圾和隐私数据" \
-			"2" "备份${DEBIAN_FOLDER} ${CONTAINER_TYPE}容器" \
-			"3" "备份容器至外置sd/tf(仅限termux)" \
-			"0" "🌚 Return to previous menu 返回上级菜单" \
-			3>&1 1>&2 2>&3)
-	}
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) backup_system_menu_cn ;;
-	*) backup_system_menu_en ;;
-	esac
-	#########################################
-	case "${OPTION}" in
-	0 | "") proot_management_menu ;;
-	1) clean_up_container_garbage ;;
-	2)
-		check_container_backup_path
-		backup_gnu_linux_container
-		;;
-	3) backup_gnu_linux_container_to_external_tf ;;
-	esac
-	####################
-	press_enter_to_return
-	backup_system
+    #check_zstd
+    RETURN_TO_WHERE='backup_system'
+    backup_system_menu_en() {
+        OPTION=$(whiptail --title "BACKUP ${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to backup the container?(๑´ڡ\`๑)" 0 50 0 \
+            "1" "Clean up garbage and private data" \
+            "2" "Backup ${DEBIAN_FOLDER} container" \
+            "3" "Backup container to sd/tf card (only for termux)" \
+            "0" "🌚 Return to previous menu" \
+            3>&1 1>&2 2>&3)
+    }
+    backup_system_menu_cn() {
+        OPTION=$(whiptail --title "BACKUP ${DEBIAN_FOLDER_CAPITAL}" --menu "您想要备份${DEBIAN_FOLDER}容器数据么？(๑´ڡ\`๑)" 0 50 0 \
+            "1" "清理${DEBIAN_FOLDER}容器垃圾和隐私数据" \
+            "2" "备份${DEBIAN_FOLDER} ${CONTAINER_TYPE}容器" \
+            "3" "备份容器至外置sd/tf(仅限termux)" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3)
+    }
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) backup_system_menu_cn ;;
+    *) backup_system_menu_en ;;
+    esac
+    #########################################
+    case "${OPTION}" in
+    0 | "") proot_management_menu ;;
+    1) clean_up_container_garbage ;;
+    2)
+        check_container_backup_path
+        backup_gnu_linux_container
+        ;;
+    3) backup_gnu_linux_container_to_external_tf ;;
+    esac
+    ####################
+    press_enter_to_return
+    backup_system
 }
 ###########################
 clean_up_container_garbage() {
-	if [ -e "${DEBIAN_CHROOT}" ]; then
-		cd ${DEBIAN_CHROOT}
-	else
-		printf "%s\n" "未检测到容器目录，无法清理垃圾文件。"
-		press_enter_to_return
-		backup_system
-	fi
-	CONTAINER_GARBAGE_FILES='tmp/.* tmp/* root/.cache root/.ICEauthority root/.Xauthority root/.bash_history root/.pki root/.chord root/.cocomusic.json root/.dbus root/.gnupg root/.gridea root/.l2s..ICEauthority* root/.l2s..Xauthority* root/.mozilla root/.petal.db root/.vnc/passwd root/.vnc/x11passwd root/.vnc/localhost* root/.config/Electron root/.config/Netron root/.config/chord root/.config/electron-netease-cloud-music root/.config/go-for-it root/.config/gridea root/.config/listen1 root/.config/lx-music-desktop root/.config/neofetch root/.config/netease-cloud-music-gtk root/.config/pulse root/.config/tenvideo_universal root/.xfce4-session.verbose-log root/.xfce4-session.verbose-log.last root/.zcompdump-localhost* root/.z root/.zsh_history'
-	CONTAINER_GARBAGE_FILES_02='var/cache/apt/archives/* \
+    if [ -e "${DEBIAN_CHROOT}" ]; then
+        cd ${DEBIAN_CHROOT}
+    else
+        printf "%s\n" "未检测到容器目录，无法清理垃圾文件。"
+        press_enter_to_return
+        backup_system
+    fi
+    CONTAINER_GARBAGE_FILES='tmp/.* tmp/* root/.cache root/.ICEauthority root/.Xauthority root/.bash_history root/.pki root/.chord root/.cocomusic.json root/.dbus root/.gnupg root/.gridea root/.l2s..ICEauthority* root/.l2s..Xauthority* root/.mozilla root/.petal.db root/.vnc/passwd root/.vnc/x11passwd root/.vnc/localhost* root/.config/Electron root/.config/Netron root/.config/chord root/.config/electron-netease-cloud-music root/.config/go-for-it root/.config/gridea root/.config/listen1 root/.config/lx-music-desktop root/.config/neofetch root/.config/netease-cloud-music-gtk root/.config/pulse root/.config/tenvideo_universal root/.xfce4-session.verbose-log root/.xfce4-session.verbose-log.last root/.zcompdump-localhost* root/.z root/.zsh_history'
+    CONTAINER_GARBAGE_FILES_02='var/cache/apt/archives/* \
 var/cache/apt/* \
 var/cache/pacman/pkg/* \
 var/mail/* \
@@ -110,77 +110,77 @@ var/log/* \
 var/log/apt/* \
 var/log/journal/* \
 var/lib/apt/lists/*'
-	#不要删除容器的dev/* \
+    #不要删除容器的dev/* \
 
-	if [ -e "root/.vnc/passwd" ]; then
-		ls -lah ${CONTAINER_GARBAGE_FILES} 2>/dev/null
-	fi
-	printf "${BOLD}${YELLOW}%s${RESET}${RESET}\n" "${DEBIAN_CHROOT}"
-	printf "%s\n" "${RED}rm -rvf${RESET} ${BLUE}${CONTAINER_GARBAGE_FILES}${RESET}"
-	printf "%s\n" "${RED}rm -fv${RESET} ${BLUE}${CONTAINER_GARBAGE_FILES_02}${RESET}"
-	cat <<-EOF
+    if [ -e "root/.vnc/passwd" ]; then
+        ls -lah ${CONTAINER_GARBAGE_FILES} 2>/dev/null
+    fi
+    printf "${BOLD}${YELLOW}%s${RESET}${RESET}\n" "${DEBIAN_CHROOT}"
+    printf "%s\n" "${RED}rm -rvf${RESET} ${BLUE}${CONTAINER_GARBAGE_FILES}${RESET}"
+    printf "%s\n" "${RED}rm -fv${RESET} ${BLUE}${CONTAINER_GARBAGE_FILES_02}${RESET}"
+    cat <<-EOF
 		如需将容器分享给他人，则可删除以上文件，否则请勿执行清理操作。
 		您若使用的是deb系列发行版，则在清理前，可以在容器内以sudo或root权限执行${GREEN}apt clean;apt autoclean;apt autoremove --purge || apt autoremove${RESET}
 		开发者不对误删除的文件负责，请您在清理前确保以上列表中无重要文件，否则请输n
 		If you want to share the container with others, you can delete the above files, otherwise, please type n to return.
 	EOF
-	do_you_want_to_continue
-	${TMOE_PREFIX} rm -rvf ${CONTAINER_GARBAGE_FILES}
-	${TMOE_PREFIX} rm -fv ${CONTAINER_GARBAGE_FILES_02}
+    do_you_want_to_continue
+    ${TMOE_PREFIX} rm -rvf ${CONTAINER_GARBAGE_FILES}
+    ${TMOE_PREFIX} rm -fv ${CONTAINER_GARBAGE_FILES_02}
 }
 #############
 backup_gnu_linux_container() {
-	backup_tmoe_container_preconfigure
-	case ${TMOE_CHROOT} in
-	true) CONTAINER_BACKUP_FILE_NAME="${TARGET_BACKUP_FILE_NAME}_${BACKUP_TIME_TMP}_chroot-rootfs_bak" ;;
-	*) CONTAINER_BACKUP_FILE_NAME="${TARGET_BACKUP_FILE_NAME}_${BACKUP_TIME_TMP}-rootfs_bak" ;;
-	esac
-	BACKUP_FOLDER="${DEBIAN_CHROOT}"
-	#絕對路徑。且不包含tmoe,debian-i和GIT_DIR
-	#${ACROSS_ARCH_FILE} ${LINUX_CONTAINER_DISTRO_FILE}
-	for i in ${PREFIX}/bin/tmoe ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startvnc ${PREFIX}/bin/novnc ${PREFIX}/bin/debian ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startx11vnc ${CONFIG_FOLDER} ${HOME}/容器选择菜单.sh ${HOME}/天萌-コンテナ-メニュー.sh ${HOME}/TMOE-CONTAINER-MENU.sh; do
-		[[ ! -e ${i} ]] || BACKUP_FOLDER="${BACKUP_FOLDER} ${i}"
-	done
+    backup_tmoe_container_preconfigure
+    case ${TMOE_CHROOT} in
+    true) CONTAINER_BACKUP_FILE_NAME="${TARGET_BACKUP_FILE_NAME}_${BACKUP_TIME_TMP}_chroot-rootfs_bak" ;;
+    *) CONTAINER_BACKUP_FILE_NAME="${TARGET_BACKUP_FILE_NAME}_${BACKUP_TIME_TMP}-rootfs_bak" ;;
+    esac
+    BACKUP_FOLDER="${DEBIAN_CHROOT}"
+    #絕對路徑。且不包含tmoe,debian-i和GIT_DIR
+    #${ACROSS_ARCH_FILE} ${LINUX_CONTAINER_DISTRO_FILE}
+    for i in ${PREFIX}/bin/tmoe ${PREFIX}/bin/startxsdl ${PREFIX}/bin/startvnc ${PREFIX}/bin/novnc ${PREFIX}/bin/debian ${PREFIX}/bin/stopvnc ${PREFIX}/bin/startx11vnc ${CONFIG_FOLDER} ${HOME}/容器选择菜单.sh ${HOME}/天萌-コンテナ-メニュー.sh ${HOME}/TMOE-CONTAINER-MENU.sh; do
+        [[ ! -e ${i} ]] || BACKUP_FOLDER="${BACKUP_FOLDER} ${i}"
+    done
 
-	case ${LINUX_DISTRO} in
-	Android) QEMU_PREFIX=${PREFIX}/bin ;;
-	*) QEMU_PREFIX=/usr/bin ;;
-	esac
+    case ${LINUX_DISTRO} in
+    Android) QEMU_PREFIX=${PREFIX}/bin ;;
+    *) QEMU_PREFIX=/usr/bin ;;
+    esac
 
-	for i in ${TMOE_LINUX_DIR}/lib ${TMOE_LINUX_DIR}/lib32; do
-		[[ ! -e ${i} ]] || BACKUP_FOLDER="${BACKUP_FOLDER} ${i}"
-	done
+    for i in ${TMOE_LINUX_DIR}/lib ${TMOE_LINUX_DIR}/lib32; do
+        [[ ! -e ${i} ]] || BACKUP_FOLDER="${BACKUP_FOLDER} ${i}"
+    done
 
-	if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.zst" --no-button "tar.xz" --yesno "tar.zst在速度和压缩率之间保持平衡\ntar.xz压缩率高,但速度慢\ntar.zst compresses faster.\ntar.xz has a higher compression ration, but is slower." 11 50); then
-		printf "${BLOD}%s${RESET} ${BLUE}%s${RESET}\n" "将备份以下文件/目录：" "${BACKUP_FOLDER}"
-		printf "%s\n" "您选择了tar.zst,即将为您备份至${CONTAINER_BACKUP_PATH}/${CONTAINER_BACKUP_FILE_NAME}.tar.zst"
-		printf "%s\n" "${YELLOW}按回车键开始备份。Press Enter to start the backup.${RESET} "
-		do_you_want_to_continue
-		case ${TMOE_CHROOT} in
-		true) ${TMOE_PREFIX} tar -I zstd -Ppcvf ${CONTAINER_BACKUP_FILE_NAME}.tar.zst --exclude=${DEBIAN_CHROOT}/media/sd --exclude=${DEBIAN_CHROOT}/media/tf --exclude=${DEBIAN_CHROOT}/media/termux ${BACKUP_FOLDER} ;;
-		*)
-			if [ "$(command -v pv)" ]; then
-				tar -I zstd -Ppcf - --exclude=${DEBIAN_CHROOT}/media/sd --exclude=${DEBIAN_CHROOT}/media/tf --exclude=${DEBIAN_CHROOT}/media/termux ${BACKUP_FOLDER} | (pv -p --timer --rate --bytes >${CONTAINER_BACKUP_FILE_NAME}.tar.zst)
-			else
-				tar -I zstd -Ppcvf ${CONTAINER_BACKUP_FILE_NAME}.tar.zst --exclude=${DEBIAN_CHROOT}/media/sd --exclude=${DEBIAN_CHROOT}/media/tf --exclude=${DEBIAN_CHROOT}/media/termux ${BACKUP_FOLDER}
-			fi
-			;;
-		esac
-	else
-		#Which do yo like better? \n
-		printf "${BLOD}%s${RESET} ${BLUE}%s${RESET}\n" "将备份以下文件/目录：" "${BACKUP_FOLDER}"
-		printf "%s\n" "您选择了tar.xz,即将为您备份至${CONTAINER_BACKUP_PATH}/${CONTAINER_BACKUP_FILE_NAME}.tar.xz"
-		printf "%s\n" "${YELLOW}按回车键开始备份。Press Enter to start the backup.${RESET} "
-		do_you_want_to_continue
-		#stopvnc（pkill all）在linux不会自动生成
-		${TMOE_PREFIX} tar -PJpcvf ${CONTAINER_BACKUP_FILE_NAME}.tar.xz --exclude=${DEBIAN_CHROOT}/media/sd --exclude=${DEBIAN_CHROOT}/media/tf --exclude=${DEBIAN_CHROOT}/media/termux ${BACKUP_FOLDER}
-	fi
-	printf "%s\n" "Don't worry too much, it is normal for some directories to backup without permission."
-	printf "%s\n" "部分目录无权限备份是正常现象。"
-	pwd
-	ls -lth ./*tar* | grep ^- | head -n 1
-	#printf "%s\n" 'gzip压缩至60%完成是正常现象。'
-	printf "%s\n" '备份完成'
+    if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.zst" --no-button "tar.xz" --yesno "tar.zst在速度和压缩率之间保持平衡\ntar.xz压缩率高,但速度慢\ntar.zst compresses faster.\ntar.xz has a higher compression ration, but is slower." 11 50); then
+        printf "${BLOD}%s${RESET} ${BLUE}%s${RESET}\n" "将备份以下文件/目录：" "${BACKUP_FOLDER}"
+        printf "%s\n" "您选择了tar.zst,即将为您备份至${CONTAINER_BACKUP_PATH}/${CONTAINER_BACKUP_FILE_NAME}.tar.zst"
+        printf "%s\n" "${YELLOW}按回车键开始备份。Press Enter to start the backup.${RESET} "
+        do_you_want_to_continue
+        case ${TMOE_CHROOT} in
+        true) ${TMOE_PREFIX} tar -I zstd -Ppcvf ${CONTAINER_BACKUP_FILE_NAME}.tar.zst --exclude=${DEBIAN_CHROOT}/media/sd --exclude=${DEBIAN_CHROOT}/media/tf --exclude=${DEBIAN_CHROOT}/media/termux ${BACKUP_FOLDER} ;;
+        *)
+            if [ "$(command -v pv)" ]; then
+                tar -I zstd -Ppcf - --exclude=${DEBIAN_CHROOT}/media/sd --exclude=${DEBIAN_CHROOT}/media/tf --exclude=${DEBIAN_CHROOT}/media/termux ${BACKUP_FOLDER} | (pv -p --timer --rate --bytes >${CONTAINER_BACKUP_FILE_NAME}.tar.zst)
+            else
+                tar -I zstd -Ppcvf ${CONTAINER_BACKUP_FILE_NAME}.tar.zst --exclude=${DEBIAN_CHROOT}/media/sd --exclude=${DEBIAN_CHROOT}/media/tf --exclude=${DEBIAN_CHROOT}/media/termux ${BACKUP_FOLDER}
+            fi
+            ;;
+        esac
+    else
+        #Which do yo like better? \n
+        printf "${BLOD}%s${RESET} ${BLUE}%s${RESET}\n" "将备份以下文件/目录：" "${BACKUP_FOLDER}"
+        printf "%s\n" "您选择了tar.xz,即将为您备份至${CONTAINER_BACKUP_PATH}/${CONTAINER_BACKUP_FILE_NAME}.tar.xz"
+        printf "%s\n" "${YELLOW}按回车键开始备份。Press Enter to start the backup.${RESET} "
+        do_you_want_to_continue
+        #stopvnc（pkill all）在linux不会自动生成
+        ${TMOE_PREFIX} tar -PJpcvf ${CONTAINER_BACKUP_FILE_NAME}.tar.xz --exclude=${DEBIAN_CHROOT}/media/sd --exclude=${DEBIAN_CHROOT}/media/tf --exclude=${DEBIAN_CHROOT}/media/termux ${BACKUP_FOLDER}
+    fi
+    printf "%s\n" "Don't worry too much, it is normal for some directories to backup without permission."
+    printf "%s\n" "部分目录无权限备份是正常现象。"
+    pwd
+    ls -lth ./*tar* | grep ^- | head -n 1
+    #printf "%s\n" 'gzip压缩至60%完成是正常现象。'
+    printf "%s\n" '备份完成'
 }
 ####################
 backup_system

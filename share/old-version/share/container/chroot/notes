@@ -1,52 +1,52 @@
 #!/usr/bin/env bash
 #######################################
 check_root_permissions() {
-	case ${LINUX_DISTRO} in
-	Android)
-		su -c "ls ${HOME} >/dev/null"
-		case "$?" in
-		0)
-			if [ ! "$(command -v sudo)" ] && [ ! "$(command -v tsu)" ]; then
-				printf "%s\n" "${GREEN}apt install -y${RESET} ${BLUE}tsu${RESET}"
-				printf "%s\n" "You can type ${RED}apt purge${RESET} ${BLUE}tsu${RESET} to remove it."
-				apt update
-				apt install -y tsu
-			fi
-			if [[ ! -e ${PREFIX}/bin/sudo && -e ${PREFIX}/bin/tsudo ]]; then
-				ln -svf "${PREFIX}"/bin/tsudo "${PREFIX}"/bin/sudo
-			fi
-			;;
-		*)
-			printf "%s\n" "Android :${BLUE}${ANDROID_VERSION}${RESET}"
-			printf "%s\n" "$(getprop ro.product.model)" 2>/dev/null
-			printf "%s\n" "${RED}ERROR${RESET},检测到root权限${PURPLE}授予失败${RESET}，您无法通过tmoe linux manager安装${BLUE}chroot${RESET}容器"
-			press_enter_to_return
-			tmoe_manager_main_menu
-			;;
-		esac
-		;;
-	esac
+    case ${LINUX_DISTRO} in
+    Android)
+        su -c "ls ${HOME} >/dev/null"
+        case "$?" in
+        0)
+            if [ ! "$(command -v sudo)" ] && [ ! "$(command -v tsu)" ]; then
+                printf "%s\n" "${GREEN}apt install -y${RESET} ${BLUE}tsu${RESET}"
+                printf "%s\n" "You can type ${RED}apt purge${RESET} ${BLUE}tsu${RESET} to remove it."
+                apt update
+                apt install -y tsu
+            fi
+            if [[ ! -e ${PREFIX}/bin/sudo && -e ${PREFIX}/bin/tsudo ]]; then
+                ln -svf "${PREFIX}"/bin/tsudo "${PREFIX}"/bin/sudo
+            fi
+            ;;
+        *)
+            printf "%s\n" "Android :${BLUE}${ANDROID_VERSION}${RESET}"
+            printf "%s\n" "$(getprop ro.product.model)" 2>/dev/null
+            printf "%s\n" "${RED}ERROR${RESET},检测到root权限${PURPLE}授予失败${RESET}，您无法通过tmoe linux manager安装${BLUE}chroot${RESET}容器"
+            press_enter_to_return
+            tmoe_manager_main_menu
+            ;;
+        esac
+        ;;
+    esac
 }
 #################
 notes_of_chroot() {
-	printf "%s\n %s\n" "If you find that some directories cannot be unmounted forcibly before removing the container,then please restart your device." "移除容器前若发现部分已挂载目录无法强制卸载，请重启设备再卸载chroot容器，防止已挂载目录被误删！" >"${CONFIG_FOLDER}"/chroot-prompt
-	sed -n p "${CONFIG_FOLDER}"/chroot-prompt
-	case ${LINUX_DISTRO} in
-	Android)
-		printf "%s\n" "If you can not use this function,try using magisk manager."
-		printf "%s\n" "您使用的是${YELLOW}Android${RESET}系统，ROOT环境${PURPLE}要求${RESET}：${BLUE}magisk(面具)${RESET}"
-		sleep 1
-		if ((ANDROID_VERSION <= 7)); then
-			printf "%s\n" "您的系统版本低于${BLUE}Android8${RESET},${PURPLE}可能无法${RESET}使用${YELLOW}tmoe-linux的chroot容器${RESET}配置功能。"
-			printf "%s\n" "Your android system version is lower than 8."
-			sleep 3
-		fi
-		;;
-	*)
-		printf "%s\n" "由于在测试chroot容器的过程中出现了部分已挂载的目录${RED}无法强制卸载${RESET}的情况，故建议您换用${BLUE}docker${RESET}容器。"
-		printf "%s\n" "We recommend that you run ${BLUE}docker${RESET} containers on GNU/Linux system instead of ${RED}chroot${RESET} containers."
-		;;
-	esac
+    printf "%s\n %s\n" "If you find that some directories cannot be unmounted forcibly before removing the container,then please restart your device." "移除容器前若发现部分已挂载目录无法强制卸载，请重启设备再卸载chroot容器，防止已挂载目录被误删！" >"${CONFIG_FOLDER}"/chroot-prompt
+    sed -n p "${CONFIG_FOLDER}"/chroot-prompt
+    case ${LINUX_DISTRO} in
+    Android)
+        printf "%s\n" "If you can not use this function,try using magisk manager."
+        printf "%s\n" "您使用的是${YELLOW}Android${RESET}系统，ROOT环境${PURPLE}要求${RESET}：${BLUE}magisk(面具)${RESET}"
+        sleep 1
+        if ((ANDROID_VERSION <= 7)); then
+            printf "%s\n" "您的系统版本低于${BLUE}Android8${RESET},${PURPLE}可能无法${RESET}使用${YELLOW}tmoe-linux的chroot容器${RESET}配置功能。"
+            printf "%s\n" "Your android system version is lower than 8."
+            sleep 3
+        fi
+        ;;
+    *)
+        printf "%s\n" "由于在测试chroot容器的过程中出现了部分已挂载的目录${RED}无法强制卸载${RESET}的情况，故建议您换用${BLUE}docker${RESET}容器。"
+        printf "%s\n" "We recommend that you run ${BLUE}docker${RESET} containers on GNU/Linux system instead of ${RED}chroot${RESET} containers."
+        ;;
+    esac
 }
 #############
 #此处不要加$@

@@ -1,124 +1,124 @@
 #!/usr/bin/env bash
 #######################################
 backup_filename() {
-	TARGET_BACKUP_FILE_NAME=$(whiptail --inputbox "请自定义备份的文件名称\nPlease type the filename." 9 50 --title "FILENAME" 3>&1 1>&2 2>&3)
-	TARGET_BACKUP_FILE_NAME=$(printf "%s\n" "${TARGET_BACKUP_FILE_NAME}" | head -n 1 | cut -d ' ' -f 1)
-	printf '%s\n' "${TARGET_BACKUP_FILE_NAME}"
-	if [ -z ${TARGET_BACKUP_FILE_NAME} ]; then
-		printf "%s\n" "文件名称不能为空！"
-		press_enter_to_return
-		backup_termux_system
-	fi
+    TARGET_BACKUP_FILE_NAME=$(whiptail --inputbox "请自定义备份的文件名称\nPlease type the filename." 9 50 --title "FILENAME" 3>&1 1>&2 2>&3)
+    TARGET_BACKUP_FILE_NAME=$(printf "%s\n" "${TARGET_BACKUP_FILE_NAME}" | head -n 1 | cut -d ' ' -f 1)
+    printf '%s\n' "${TARGET_BACKUP_FILE_NAME}"
+    if [ -z ${TARGET_BACKUP_FILE_NAME} ]; then
+        printf "%s\n" "文件名称不能为空！"
+        press_enter_to_return
+        backup_termux_system
+    fi
 }
 ######################
 backup_termux_system() {
-	#check_zstd
-	source ${TMOE_SHARE_DIR}/removal/umount
-	RETURN_TO_WHERE='backup_termux_system'
-	OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 0 50 0 \
-		"0" "🌚 Back 返回" \
-		"1" "备份Termux" \
-		"2" "使用Timeshift备份宿主机系统" \
-		3>&1 1>&2 2>&3)
-	#########################################
-	case "${OPTION}" in
-	0 | "") android_termux_tmoe_menu ;;
-	1) backup_termux ;;
-	2) install_timeshift ;;
-	esac
-	####################
-	press_enter_to_return
-	backup_termux_system
+    #check_zstd
+    source ${TMOE_SHARE_DIR}/removal/umount
+    RETURN_TO_WHERE='backup_termux_system'
+    OPTION=$(whiptail --title "Backup System" --menu "Choose your option" 0 50 0 \
+        "0" "🌚 Back 返回" \
+        "1" "备份Termux" \
+        "2" "使用Timeshift备份宿主机系统" \
+        3>&1 1>&2 2>&3)
+    #########################################
+    case "${OPTION}" in
+    0 | "") android_termux_tmoe_menu ;;
+    1) backup_termux ;;
+    2) install_timeshift ;;
+    esac
+    ####################
+    press_enter_to_return
+    backup_termux_system
 }
 ####################
 install_timeshift() {
-	if [ "${LINUX_DISTRO}" = "Android" ]; then
-		printf "%s\n" 'Sorry,本功能不支持Android系统'
-		press_enter_to_return
-		tmoe_manager_main_menu
-	fi
-	if [ ! -e "/usr/bin/timeshift" ]; then
-		case "${LINUX_DISTRO}" in
-		"debian")
-			apt update
-			apt install -y timeshift
-			;;
-		"arch") pacman -Syu --noconfirm --needed timeshift ;;
-		"redhat") dnf install timeshift ;;
-		*) ${TMOE_INSTALLATION_COMMAND} timeshift ;;
-		esac
-	fi
+    if [ "${LINUX_DISTRO}" = "Android" ]; then
+        printf "%s\n" 'Sorry,本功能不支持Android系统'
+        press_enter_to_return
+        tmoe_manager_main_menu
+    fi
+    if [ ! -e "/usr/bin/timeshift" ]; then
+        case "${LINUX_DISTRO}" in
+        "debian")
+            apt update
+            apt install -y timeshift
+            ;;
+        "arch") pacman -Syu --noconfirm --needed timeshift ;;
+        "redhat") dnf install timeshift ;;
+        *) ${TMOE_INSTALLATION_COMMAND} timeshift ;;
+        esac
+    fi
 
-	if [ -e "/usr/bin/timeshift" ]; then
-		timeshift-launcher &
-		printf "%s\n" "安装完成，如需卸载，请手动输${TMOE_REMOVAL_COMMAND} timeshift"
-	fi
+    if [ -e "/usr/bin/timeshift" ]; then
+        timeshift-launcher &
+        printf "%s\n" "安装完成，如需卸载，请手动输${TMOE_REMOVAL_COMMAND} timeshift"
+    fi
 }
 ######################
 termux_backup_pre() {
-	if [ ! -d /sdcard/Download/backup/termux/ ]; then
-		mkdir -pv /sdcard/Download/backup/termux/
-	fi
-	cd /sdcard/Download/backup/termux/
-	backup_filename
-	BACKUP_TIME=$(date +%Y-%m-%d_%H-%M)
+    if [ ! -d /sdcard/Download/backup/termux/ ]; then
+        mkdir -pv /sdcard/Download/backup/termux/
+    fi
+    cd /sdcard/Download/backup/termux/
+    backup_filename
+    BACKUP_TIME=$(date +%Y-%m-%d_%H-%M)
 }
 ####################
 backup_termux() {
-	#15 60 4
-	backup_termux_menu_en() {
-		TERMUX_BACKUP=$(whiptail --title "multiple choices" --checklist \
-			"Which directory do you want to backup? \nPress space key to select and press Enter to confirm." 0 0 0 \
-			"home" "Termux Home dir, mainly used to save user files" ON \
-			"usr" "Save software,commands,and other things" OFF \
-			3>&1 1>&2 2>&3)
-	}
-	backup_termux_menu_cn() {
-		TERMUX_BACKUP=$(whiptail --title "多项选择题" --checklist \
-			"您想要备份哪个目录？按空格键选择，*为选中状态，回车键确认。" 0 0 0 \
-			"home" "Termux主目录,主要用来保存用户文件" ON \
-			"usr" "保存软件、命令和其它东西" OFF \
-			3>&1 1>&2 2>&3)
-	}
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) backup_termux_menu_cn ;;
-	*) backup_termux_menu_en ;;
-	esac
-	case ${TERMUX_BACKUP} in
-	"") backup_termux_system ;;
-	home) TERMUX_BACKUP_DIR="${HOME}" ;;
-	usr) TERMUX_BACKUP_DIR="${PREFIX}" ;;
-	*) TERMUX_BACKUP_DIR="${HOME} ${PREFIX}" ;;
-	esac
-	printf "%s\n" "${TERMUX_BACKUP}"
-	########################
-	termux_backup_pre
-	TERMUX_TAR_FILE_NAME="${TARGET_BACKUP_FILE_NAME}_${BACKUP_TIME}-termux_bak"
-	if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.zst" --no-button "tar.xz" --yesno "tar.zst在速度和压缩率之间保持平衡\ntar.xz压缩率高,但速度慢\ntar.zst compresses faster.\ntar.xz has a higher compression ration, but is slower." 11 50); then
-		BACKUP_TYPE='tar.zst'
-	else
-		BACKUP_TYPE='tar.xz'
-	fi
+    #15 60 4
+    backup_termux_menu_en() {
+        TERMUX_BACKUP=$(whiptail --title "multiple choices" --checklist \
+            "Which directory do you want to backup? \nPress space key to select and press Enter to confirm." 0 0 0 \
+            "home" "Termux Home dir, mainly used to save user files" ON \
+            "usr" "Save software,commands,and other things" OFF \
+            3>&1 1>&2 2>&3)
+    }
+    backup_termux_menu_cn() {
+        TERMUX_BACKUP=$(whiptail --title "多项选择题" --checklist \
+            "您想要备份哪个目录？按空格键选择，*为选中状态，回车键确认。" 0 0 0 \
+            "home" "Termux主目录,主要用来保存用户文件" ON \
+            "usr" "保存软件、命令和其它东西" OFF \
+            3>&1 1>&2 2>&3)
+    }
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) backup_termux_menu_cn ;;
+    *) backup_termux_menu_en ;;
+    esac
+    case ${TERMUX_BACKUP} in
+    "") backup_termux_system ;;
+    home) TERMUX_BACKUP_DIR="${HOME}" ;;
+    usr) TERMUX_BACKUP_DIR="${PREFIX}" ;;
+    *) TERMUX_BACKUP_DIR="${HOME} ${PREFIX}" ;;
+    esac
+    printf "%s\n" "${TERMUX_BACKUP}"
+    ########################
+    termux_backup_pre
+    TERMUX_TAR_FILE_NAME="${TARGET_BACKUP_FILE_NAME}_${BACKUP_TIME}-termux_bak"
+    if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.zst" --no-button "tar.xz" --yesno "tar.zst在速度和压缩率之间保持平衡\ntar.xz压缩率高,但速度慢\ntar.zst compresses faster.\ntar.xz has a higher compression ration, but is slower." 11 50); then
+        BACKUP_TYPE='tar.zst'
+    else
+        BACKUP_TYPE='tar.xz'
+    fi
 
-	cat <<-EOF
+    cat <<-EOF
 		您选择了${BACKUP_TYPE},即将为您备份至/sdcard/Download/backup/termux/${TERMUX_TAR_FILE_NAME}.${BACKUP_TYPE}
 		以下目录将被备份:
 		${BLUE}${TERMUX_BACKUP_DIR}
 		${YELLOW}按回车键开始备份,press Enter to start the backup.${RESET}
 	EOF
-	do_you_want_to_continue
-	case ${BACKUP_TYPE} in
-	tar.zst) tar -I zstd -Ppvcf ${TERMUX_TAR_FILE_NAME}.tar.zst --exclude=${TMOE_SHARE_DIR}/containers ${TERMUX_BACKUP_DIR} ;;
-	tar.xz)
-		tar -PJpvcf ${TERMUX_TAR_FILE_NAME}.tar.xz --exclude=${TMOE_SHARE_DIR}/containers ${TERMUX_BACKUP_DIR}
-		;;
-	esac
-	printf "%s\n" "Don't worry too much, it is normal for some directories to backup without permission."
-	printf "%s\n" "部分目录无权限备份是正常现象。"
-	#ls -lth ./*termux_home*tar* | grep ^- | head -n 1
-	pwd
-	ls -lth ./*termux_bak*tar* | grep ^- | head -n 1
-	printf "%s ${GREEN}%s${RESET}\n" Backup complete.
+    do_you_want_to_continue
+    case ${BACKUP_TYPE} in
+    tar.zst) tar -I zstd -Ppvcf ${TERMUX_TAR_FILE_NAME}.tar.zst --exclude=${TMOE_SHARE_DIR}/containers ${TERMUX_BACKUP_DIR} ;;
+    tar.xz)
+        tar -PJpvcf ${TERMUX_TAR_FILE_NAME}.tar.xz --exclude=${TMOE_SHARE_DIR}/containers ${TERMUX_BACKUP_DIR}
+        ;;
+    esac
+    printf "%s\n" "Don't worry too much, it is normal for some directories to backup without permission."
+    printf "%s\n" "部分目录无权限备份是正常现象。"
+    #ls -lth ./*termux_home*tar* | grep ^- | head -n 1
+    pwd
+    ls -lth ./*termux_bak*tar* | grep ^- | head -n 1
+    printf "%s ${GREEN}%s${RESET}\n" Backup complete.
 }
 
 ##################################

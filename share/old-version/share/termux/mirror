@@ -1,365 +1,365 @@
 #!/usr/bin/env bash
 #######################################
 linux_distro_sources_list() {
-	case "$1" in
-	*)
-		case "${LINUX_DISTRO}" in
-		'Android')
-			check_android_version
-			tmoe_sources_list_manager
-			;;
-		*)
-			if [ -e "${TMOE_GIT_DIR}/share/old-version/tools/app/tool" ]; then
-				bash ${TMOE_GIT_DIR}/share/old-version/tools/app/tool --mirror-list
-			else
-				gnu_linux_mirror_source_manager
-			fi
-			;;
-		esac
-		# tmoe_sources_list_manager
-		;;
-	esac
+    case "$1" in
+    *)
+        case "${LINUX_DISTRO}" in
+        'Android')
+            check_android_version
+            tmoe_sources_list_manager
+            ;;
+        *)
+            if [ -e "${TMOE_GIT_DIR}/share/old-version/tools/app/tool" ]; then
+                bash ${TMOE_GIT_DIR}/share/old-version/tools/app/tool --mirror-list
+            else
+                gnu_linux_mirror_source_manager
+            fi
+            ;;
+        esac
+        # tmoe_sources_list_manager
+        ;;
+    esac
 }
 #######
 new_termux_mirror_source_format() {
-	TERMUX_MAIN_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-main stable main"
-	TERMUX_ROOT_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-root root stable"
-	TERMUX_GAME_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-games games stable"
-	TERMUX_SCIENCE_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-science science stable"
-	TERMUX_UNSTABLE_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-unstable unstable main"
-	TERMUX_X11_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-x11 x11 main"
+    TERMUX_MAIN_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-main stable main"
+    TERMUX_ROOT_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-root root stable"
+    TERMUX_GAME_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-games games stable"
+    TERMUX_SCIENCE_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-science science stable"
+    TERMUX_UNSTABLE_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-unstable unstable main"
+    TERMUX_X11_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-x11 x11 main"
 }
 #########
 old_termux_mirror_source_format() {
-	TERMUX_MAIN_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-packages-24 stable main"
-	TERMUX_ROOT_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-root-packages-24 root stable"
-	TERMUX_GAME_SOURCE="https://${SOURCE_MIRROR_STATION}/game-packages-24 games stable"
-	TERMUX_SCIENCE_SOURCE="https://${SOURCE_MIRROR_STATION}/science-packages-24 science stable"
-	TERMUX_UNSTABLE_SOURCE="https://${SOURCE_MIRROR_STATION}/unstable-packages unstable main"
-	TERMUX_X11_SOURCE="https://${SOURCE_MIRROR_STATION}/x11-packages x11 main"
+    TERMUX_MAIN_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-packages-24 stable main"
+    TERMUX_ROOT_SOURCE="https://${SOURCE_MIRROR_STATION}/termux-root-packages-24 root stable"
+    TERMUX_GAME_SOURCE="https://${SOURCE_MIRROR_STATION}/game-packages-24 games stable"
+    TERMUX_SCIENCE_SOURCE="https://${SOURCE_MIRROR_STATION}/science-packages-24 science stable"
+    TERMUX_UNSTABLE_SOURCE="https://${SOURCE_MIRROR_STATION}/unstable-packages unstable main"
+    TERMUX_X11_SOURCE="https://${SOURCE_MIRROR_STATION}/x11-packages x11 main"
 }
 ########
 china_university_mirror_station() {
-	#NEW_TERMUX_SOURCES_LIST=true
-	SOURCE_MIRROR_STATION=""
-	RETURN_TO_WHERE='china_university_mirror_station'
-	SOURCES_LIST=$(
-		whiptail --title "软件源列表" --menu \
-			"您想要切换为哪个镜像源呢？" 0 50 0 \
-			"1" "北京外国语大学mirrors.bfsu.edu.cn" \
-			"2" "腾讯云mirrors.cloud.tencent.com" \
-			"3" "清华大学mirrors.tuna.tsinghua.edu.cn" \
-			"4" "中国科学技术大学mirrors.ustc.edu.cn" \
-			"0" "🌚 Return to previous menu 返回上级菜单" \
-			3>&1 1>&2 2>&3
-	)
-	########################
-	case "${SOURCES_LIST}" in
-	0 | "") tmoe_sources_list_manager ;;
-	1) SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn/termux/apt' ;;
-	2) SOURCE_MIRROR_STATION='mirrors.cloud.tencent.com/termux/apt' ;;
-	3) SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn/termux/apt' ;;
-	4) SOURCE_MIRROR_STATION='mirrors.ustc.edu.cn/termux/apt' ;;
-	esac
-	new_termux_mirror_source_format
-	######################################
-	modify_android_termux_mirror_sources_list
-	press_enter_to_return
-	china_university_mirror_station
+    #NEW_TERMUX_SOURCES_LIST=true
+    SOURCE_MIRROR_STATION=""
+    RETURN_TO_WHERE='china_university_mirror_station'
+    SOURCES_LIST=$(
+        whiptail --title "软件源列表" --menu \
+            "您想要切换为哪个镜像源呢？" 0 50 0 \
+            "1" "北京外国语大学mirrors.bfsu.edu.cn" \
+            "2" "腾讯云mirrors.cloud.tencent.com" \
+            "3" "清华大学mirrors.tuna.tsinghua.edu.cn" \
+            "4" "中国科学技术大学mirrors.ustc.edu.cn" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    ########################
+    case "${SOURCES_LIST}" in
+    0 | "") tmoe_sources_list_manager ;;
+    1) SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn/termux/apt' ;;
+    2) SOURCE_MIRROR_STATION='mirrors.cloud.tencent.com/termux/apt' ;;
+    3) SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn/termux/apt' ;;
+    4) SOURCE_MIRROR_STATION='mirrors.ustc.edu.cn/termux/apt' ;;
+    esac
+    new_termux_mirror_source_format
+    ######################################
+    modify_android_termux_mirror_sources_list
+    press_enter_to_return
+    china_university_mirror_station
 }
 #############
 worldwide_mirror_station() {
-	NEW_TERMUX_SOURCES_LIST=true
-	SOURCE_MIRROR_STATION=""
-	RETURN_TO_WHERE='worldwide_mirror_station'
-	SOURCES_LIST=$(
-		whiptail --title "TERMUX MIRROR SOURCE" --menu \
-			"Which mirror source do you want to switch to?" 0 50 0 \
-			"1" "Extra source:its-pointless" \
-			"0" "🌚 Return to previous menu 返回上级菜单" \
-			3>&1 1>&2 2>&3
-	)
-	########################
-	case "${SOURCES_LIST}" in
-	0 | "") tmoe_sources_list_manager ;;
-	1)
-		POINTLESS_LIST="${PREFIX}/etc/apt/sources.list.d/pointless.list"
-		[[ ! -s ${POINTLESS_LIST} ]] || do_you_want_to_continue
-		cd ${TMPDIR}
-		curl -Lo .setup-pointless-repo.sh https://its-pointless.github.io/setup-pointless-repo.sh
-		if [ $(command -v bat) ]; then
-			bat -ppn .setup-pointless-repo.sh
-		else
-			cat .setup-pointless-repo.sh
-		fi
-		do_you_want_to_continue
-		bash .setup-pointless-repo.sh
-		rm -fv .setup-pointless-repo.sh
-		[[ ! -s ${POINTLESS_LIST} ]] || cat ${POINTLESS_LIST}
-		press_enter_to_return
-		worldwide_mirror_station
-		;;
-	esac
-	######################################
-	modify_android_termux_mirror_sources_list
-	press_enter_to_return
-	worldwide_mirror_station
+    NEW_TERMUX_SOURCES_LIST=true
+    SOURCE_MIRROR_STATION=""
+    RETURN_TO_WHERE='worldwide_mirror_station'
+    SOURCES_LIST=$(
+        whiptail --title "TERMUX MIRROR SOURCE" --menu \
+            "Which mirror source do you want to switch to?" 0 50 0 \
+            "1" "Extra source:its-pointless" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    ########################
+    case "${SOURCES_LIST}" in
+    0 | "") tmoe_sources_list_manager ;;
+    1)
+        POINTLESS_LIST="${PREFIX}/etc/apt/sources.list.d/pointless.list"
+        [[ ! -s ${POINTLESS_LIST} ]] || do_you_want_to_continue
+        cd ${TMPDIR}
+        curl -Lo .setup-pointless-repo.sh https://its-pointless.github.io/setup-pointless-repo.sh
+        if [ $(command -v bat) ]; then
+            bat -ppn .setup-pointless-repo.sh
+        else
+            cat .setup-pointless-repo.sh
+        fi
+        do_you_want_to_continue
+        bash .setup-pointless-repo.sh
+        rm -fv .setup-pointless-repo.sh
+        [[ ! -s ${POINTLESS_LIST} ]] || cat ${POINTLESS_LIST}
+        press_enter_to_return
+        worldwide_mirror_station
+        ;;
+    esac
+    ######################################
+    modify_android_termux_mirror_sources_list
+    press_enter_to_return
+    worldwide_mirror_station
 }
 ############
 check_tmoe_sources_list_backup_file() {
-	SOURCES_LIST_PATH="${PREFIX}/etc/apt/"
-	SOURCES_LIST_FILE="${PREFIX}/etc/apt/sources.list"
-	SOURCES_LIST_FILE_NAME="sources.list"
-	SOURCES_LIST_BACKUP_FILE="${CONFIG_FOLDER}/sources-list_bak.tar.xz"
-	SOURCES_LIST_BACKUP_FILE_02="${SOURCES_LIST_FILE}.bak"
-	EXTRA_SOURCE='TERMUX额外源'
-	if [ ! -e "${SOURCES_LIST_BACKUP_FILE}" ]; then
-		cp -pf "${SOURCES_LIST_FILE}" "${SOURCES_LIST_BACKUP_FILE_02}"
-		tar -PpcJvf ${SOURCES_LIST_BACKUP_FILE} ${SOURCES_LIST_FILE} "${SOURCES_LIST_FILE}.d"
-	fi
+    SOURCES_LIST_PATH="${PREFIX}/etc/apt/"
+    SOURCES_LIST_FILE="${PREFIX}/etc/apt/sources.list"
+    SOURCES_LIST_FILE_NAME="sources.list"
+    SOURCES_LIST_BACKUP_FILE="${CONFIG_FOLDER}/sources-list_bak.tar.xz"
+    SOURCES_LIST_BACKUP_FILE_02="${SOURCES_LIST_FILE}.bak"
+    EXTRA_SOURCE='TERMUX额外源'
+    if [ ! -e "${SOURCES_LIST_BACKUP_FILE}" ]; then
+        cp -pf "${SOURCES_LIST_FILE}" "${SOURCES_LIST_BACKUP_FILE_02}"
+        tar -PpcJvf ${SOURCES_LIST_BACKUP_FILE} ${SOURCES_LIST_FILE} "${SOURCES_LIST_FILE}.d"
+    fi
 }
 ##########
 restore_default_sources_list() {
-	if [ -e "${SOURCES_LIST_BACKUP_FILE}" ]; then
-		tar -PpJxvf ${SOURCES_LIST_BACKUP_FILE}
-		sed -n p ${SOURCES_LIST_FILE}.d/* ${SOURCES_LIST_FILE}
-	else
-		printf "%s\n" "${RED}File is missing, restore failed.${RESET}"
-		printf "%s\n" "备份文件丢失,恢复失败"
-	fi
+    if [ -e "${SOURCES_LIST_BACKUP_FILE}" ]; then
+        tar -PpJxvf ${SOURCES_LIST_BACKUP_FILE}
+        sed -n p ${SOURCES_LIST_FILE}.d/* ${SOURCES_LIST_FILE}
+    else
+        printf "%s\n" "${RED}File is missing, restore failed.${RESET}"
+        printf "%s\n" "备份文件丢失,恢复失败"
+    fi
 }
 ##############
 download_termux_clang() {
-	printf "%s\n" "${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}"
-	DOWNLOAD_FILE_URL="https://${SOURCE_MIRROR_STATION}/apt/termux-main/pool/main/c/clang/${CLANG_FILE}"
-	printf "%s\n" "${YELLOW}${DOWNLOAD_FILE_URL}${RESET}"
-	aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file" "${DOWNLOAD_FILE_URL}"
-	rm -f ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file"
-	printf "%s\n" "---------------------------"
+    printf "%s\n" "${BLUE}${SOURCE_MIRROR_STATION_NAME}${RESET}"
+    DOWNLOAD_FILE_URL="https://${SOURCE_MIRROR_STATION}/apt/termux-main/pool/main/c/clang/${CLANG_FILE}"
+    printf "%s\n" "${YELLOW}${DOWNLOAD_FILE_URL}${RESET}"
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file" "${DOWNLOAD_FILE_URL}"
+    rm -f ".tmoe_netspeed_test_${SOURCE_MIRROR_STATION_NAME}_temp_file"
+    printf "%s\n" "---------------------------"
 }
 ################
 mirror_sources_station_download_speed_test() {
-	printf "%s\n" "此操作可能会消耗您${YELLOW}数十至上百兆${RESET}的${BLUE}流量${RESET}"
-	printf "%s\n" "在测试过程中，您可以按${YELLOW}Ctrl+C${RESET}取消。"
-	do_you_want_to_continue
-	cd ${TMPDIR}
-	CLANG_FILE="$(curl -L https://mirrors.bfsu.edu.cn/termux/apt/termux-main/pool/main/c/clang/ | awk -F 'a href=' '{print $2}' | grep "clang_.*deb" | head -n 1 | cut -d '"' -f 2)"
-	printf "%s\n" "---------------------------"
-	SOURCE_MIRROR_STATION_NAME='清华镜像站'
-	SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn/termux'
-	download_termux_clang
-	SOURCE_MIRROR_STATION_NAME='中科大镜像站'
-	SOURCE_MIRROR_STATION='mirrors.ustc.edu.cn/termux'
-	download_termux_clang
-	SOURCE_MIRROR_STATION_NAME='北外镜像站'
-	SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn/termux'
-	download_termux_clang
-	SOURCE_MIRROR_STATION_NAME='腾讯云'
-	SOURCE_MIRROR_STATION='mirrors.cloud.tencent.com/termux'
-	download_termux_clang
-	SOURCE_MIRROR_STATION_NAME='official'
-	SOURCE_MIRROR_STATION='packages.termux.org'
-	download_termux_clang
-	###此处一定要将SOURCE_MIRROR_STATION赋值为空
-	SOURCE_MIRROR_STATION=""
-	rm -f .tmoe_netspeed_test_*_temp_file
-	printf "%s\n" "测试${YELLOW}完成${RESET}，已自动${RED}清除${RESET}${BLUE}临时文件。${RESET}"
-	printf "%s\n" "下载${GREEN}速度快${RESET}并不意味着${BLUE}更新频率高。${RESET}"
-	printf "%s\n" "请${YELLOW}自行${RESET}${BLUE}选择${RESET}"
+    printf "%s\n" "此操作可能会消耗您${YELLOW}数十至上百兆${RESET}的${BLUE}流量${RESET}"
+    printf "%s\n" "在测试过程中，您可以按${YELLOW}Ctrl+C${RESET}取消。"
+    do_you_want_to_continue
+    cd ${TMPDIR}
+    CLANG_FILE="$(curl -L https://mirrors.bfsu.edu.cn/termux/apt/termux-main/pool/main/c/clang/ | awk -F 'a href=' '{print $2}' | grep "clang_.*deb" | head -n 1 | cut -d '"' -f 2)"
+    printf "%s\n" "---------------------------"
+    SOURCE_MIRROR_STATION_NAME='清华镜像站'
+    SOURCE_MIRROR_STATION='mirrors.tuna.tsinghua.edu.cn/termux'
+    download_termux_clang
+    SOURCE_MIRROR_STATION_NAME='中科大镜像站'
+    SOURCE_MIRROR_STATION='mirrors.ustc.edu.cn/termux'
+    download_termux_clang
+    SOURCE_MIRROR_STATION_NAME='北外镜像站'
+    SOURCE_MIRROR_STATION='mirrors.bfsu.edu.cn/termux'
+    download_termux_clang
+    SOURCE_MIRROR_STATION_NAME='腾讯云'
+    SOURCE_MIRROR_STATION='mirrors.cloud.tencent.com/termux'
+    download_termux_clang
+    SOURCE_MIRROR_STATION_NAME='official'
+    SOURCE_MIRROR_STATION='packages.termux.org'
+    download_termux_clang
+    ###此处一定要将SOURCE_MIRROR_STATION赋值为空
+    SOURCE_MIRROR_STATION=""
+    rm -f .tmoe_netspeed_test_*_temp_file
+    printf "%s\n" "测试${YELLOW}完成${RESET}，已自动${RED}清除${RESET}${BLUE}临时文件。${RESET}"
+    printf "%s\n" "下载${GREEN}速度快${RESET}并不意味着${BLUE}更新频率高。${RESET}"
+    printf "%s\n" "请${YELLOW}自行${RESET}${BLUE}选择${RESET}"
 }
 ######################
 delete_sources_list_invalid_rows() {
-	printf "%s\n" "执行此操作将删除软件源列表内的所有注释行,并自动去除重复行"
-	do_you_want_to_continue
-	sed -i '/^#/d' ${SOURCES_LIST_FILE}
-	sed -i '/^#/d' ${SOURCES_LIST_FILE}.d/*list
-	sort -u ${SOURCES_LIST_FILE} -o ${SOURCES_LIST_FILE}
-	sed -n p ${SOURCES_LIST_FILE}
+    printf "%s\n" "执行此操作将删除软件源列表内的所有注释行,并自动去除重复行"
+    do_you_want_to_continue
+    sed -i '/^#/d' ${SOURCES_LIST_FILE}
+    sed -i '/^#/d' ${SOURCES_LIST_FILE}.d/*list
+    sort -u ${SOURCES_LIST_FILE} -o ${SOURCES_LIST_FILE}
+    sed -n p ${SOURCES_LIST_FILE}
 }
 ###################
 check_termux_repo() {
-	cd ${SOURCES_LIST_FILE}.d
-	if grep -q '^deb' ${TERMUX_REPO}.list; then
-		TERMUX_REPO_ENABLED_STATUS="检测到您已启用本仓库\nYou have enabled ${TERMUX_REPO}-repo."
-	else
-		TERMUX_REPO_ENABLED_STATUS="检测到您已禁用本仓库\nYou have disabled ${TERMUX_REPO}-repo"
-	fi
+    cd ${SOURCES_LIST_FILE}.d
+    if grep -q '^deb' ${TERMUX_REPO}.list; then
+        TERMUX_REPO_ENABLED_STATUS="检测到您已启用本仓库\nYou have enabled ${TERMUX_REPO}-repo."
+    else
+        TERMUX_REPO_ENABLED_STATUS="检测到您已禁用本仓库\nYou have disabled ${TERMUX_REPO}-repo"
+    fi
 }
 ##########
 enable_or_disable_termux_repo() {
-	check_termux_repo
-	if (whiptail --title "您想要对${TERMUX_REPO}小可爱做什么" --yes-button "enable启用" --no-button "disable禁用" --yesno "Do you want to enable or disable it?\n您是想要启用${TERMUX_REPO}-repo还是禁用呢？♪(^∇^*)\n${TERMUX_REPO_ENABLED_STATUS}" 9 50); then
-		apt update
-		apt install -y ${TERMUX_REPO}-repo
-		apt list | grep "/${TERMUX_REPO}"
-		printf "%s\n" "启用完成,默认为官方源"
-	else
-		apt purge -y ${TERMUX_REPO}-repo
-		apt update
-	fi
+    check_termux_repo
+    if (whiptail --title "您想要对${TERMUX_REPO}小可爱做什么" --yes-button "enable启用" --no-button "disable禁用" --yesno "Do you want to enable or disable it?\n您是想要启用${TERMUX_REPO}-repo还是禁用呢？♪(^∇^*)\n${TERMUX_REPO_ENABLED_STATUS}" 9 50); then
+        apt update
+        apt install -y ${TERMUX_REPO}-repo
+        apt list | grep "/${TERMUX_REPO}"
+        printf "%s\n" "启用完成,默认为官方源"
+    else
+        apt purge -y ${TERMUX_REPO}-repo
+        apt update
+    fi
 }
 ###########
 termux_repo_manager() {
-	RETURN_TO_WHERE='termux_repo_manager'
-	SOURCES_LIST=$(
-		whiptail --title "TERMUX REPO" --menu \
-			"Which repo do you want to enable?" 0 50 0 \
-			"1" "game:游戏" \
-			"2" "root:适用于已root设备" \
-			"3" "science:科学软件仓库" \
-			"4" "unstable:包含了最新/不稳定的包" \
-			"5" "x11:包含了桌面应用和qemu虚拟机等" \
-			"0" "🌚 Return to previous menu 返回上级菜单" \
-			3>&1 1>&2 2>&3
-	)
-	########################
-	case "${SOURCES_LIST}" in
-	0 | "") tmoe_sources_list_manager ;;
-	1) TERMUX_REPO='game' ;;
-	2) TERMUX_REPO='root' ;;
-	3) TERMUX_REPO='science' ;;
-	4) TERMUX_REPO='unstable' ;;
-	5) TERMUX_REPO='x11' ;;
-	esac
-	##########
-	enable_or_disable_termux_repo
-	press_enter_to_return
-	termux_repo_manager
+    RETURN_TO_WHERE='termux_repo_manager'
+    SOURCES_LIST=$(
+        whiptail --title "TERMUX REPO" --menu \
+            "Which repo do you want to enable?" 0 50 0 \
+            "1" "game:游戏" \
+            "2" "root:适用于已root设备" \
+            "3" "science:科学软件仓库" \
+            "4" "unstable:包含了最新/不稳定的包" \
+            "5" "x11:包含了桌面应用和qemu虚拟机等" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    ########################
+    case "${SOURCES_LIST}" in
+    0 | "") tmoe_sources_list_manager ;;
+    1) TERMUX_REPO='game' ;;
+    2) TERMUX_REPO='root' ;;
+    3) TERMUX_REPO='science' ;;
+    4) TERMUX_REPO='unstable' ;;
+    5) TERMUX_REPO='x11' ;;
+    esac
+    ##########
+    enable_or_disable_termux_repo
+    press_enter_to_return
+    termux_repo_manager
 }
 ########
 tmoe_sources_list_manager() {
-	#NEW_TERMUX_SOURCES_LIST=true
-	check_tmoe_sources_list_backup_file
-	SOURCE_MIRROR_STATION=""
-	RETURN_TO_WHERE='tmoe_sources_list_manager'
-	SOURCES_LIST=$(
-		whiptail --title "software-sources tmoe-manager" --menu \
-			"Do you want to switch the mirror source?" 0 50 0 \
-			"1" "清华,北外,中科大,腾讯云镜像站" \
-			"2" "extra:额外源" \
-			"3" "enable/disable repo(启用/禁用仓库)" \
-			"4" "speed(镜像站下载速度测试)" \
-			"5" "edit list manually(手动编辑)" \
-			"6" "delete invalid rows(去除无效行)" \
-			"7" "restore to default(恢复默认源)" \
-			"0" "🌚 Back 返回" \
-			3>&1 1>&2 2>&3
-	)
-	########################
-	case "${SOURCES_LIST}" in
-	0 | "") ${RETURN_TO_MENU} ;;
-	1) china_university_mirror_station ;;
-	2) worldwide_mirror_station ;;
-	3) termux_repo_manager ;;
-	4) mirror_sources_station_download_speed_test ;;
-	5) edit_sources_list_manually ;;
-	6) delete_sources_list_invalid_rows ;;
-	7) restore_default_sources_list ;;
-	esac
-	##########
-	press_enter_to_return
-	tmoe_sources_list_manager
+    #NEW_TERMUX_SOURCES_LIST=true
+    check_tmoe_sources_list_backup_file
+    SOURCE_MIRROR_STATION=""
+    RETURN_TO_WHERE='tmoe_sources_list_manager'
+    SOURCES_LIST=$(
+        whiptail --title "software-sources tmoe-manager" --menu \
+            "Do you want to switch the mirror source?" 0 50 0 \
+            "1" "清华,北外,中科大,腾讯云镜像站" \
+            "2" "extra:额外源" \
+            "3" "enable/disable repo(启用/禁用仓库)" \
+            "4" "speed(镜像站下载速度测试)" \
+            "5" "edit list manually(手动编辑)" \
+            "6" "delete invalid rows(去除无效行)" \
+            "7" "restore to default(恢复默认源)" \
+            "0" "🌚 Back 返回" \
+            3>&1 1>&2 2>&3
+    )
+    ########################
+    case "${SOURCES_LIST}" in
+    0 | "") ${RETURN_TO_MENU} ;;
+    1) china_university_mirror_station ;;
+    2) worldwide_mirror_station ;;
+    3) termux_repo_manager ;;
+    4) mirror_sources_station_download_speed_test ;;
+    5) edit_sources_list_manually ;;
+    6) delete_sources_list_invalid_rows ;;
+    7) restore_default_sources_list ;;
+    esac
+    ##########
+    press_enter_to_return
+    tmoe_sources_list_manager
 }
 ######################
 edit_sources_list_manually() {
-	apt edit-sources || nano ${SOURCES_LIST_FILE}
-	if [ ! -z "$(ls ${SOURCES_LIST_FILE}.d/)" ]; then
-		nano ${SOURCES_LIST_FILE}.d/*.list
-	fi
+    apt edit-sources || nano ${SOURCES_LIST_FILE}
+    if [ ! -z "$(ls ${SOURCES_LIST_FILE}.d/)" ]; then
+        nano ${SOURCES_LIST_FILE}.d/*.list
+    fi
 }
 #########
 check_android_version() {
-	ANDROID_6_FILE="${CONFIG_FOLDER}/android6_termux"
-	if [ "${LINUX_DISTRO}" = 'Android' ] && [ ! -e "${ANDROID_6_FILE}" ]; then
-		if (("${ANDROID_VERSION}" < 7)); then
-			printf "%s\n" "检测到您当前的安卓系统版本低于7,请勿使用本工具进行换源。" >${ANDROID_6_FILE}
-			sed -n p ${ANDROID_6_FILE}
-			printf "%s\n" "Your current Android system version is lower than 7."
-			printf "%s\n" "旧版Android可能无法使用本功能。"
-			press_enter_to_continue
-		fi
-	fi
+    ANDROID_6_FILE="${CONFIG_FOLDER}/android6_termux"
+    if [ "${LINUX_DISTRO}" = 'Android' ] && [ ! -e "${ANDROID_6_FILE}" ]; then
+        if (("${ANDROID_VERSION}" < 7)); then
+            printf "%s\n" "检测到您当前的安卓系统版本低于7,请勿使用本工具进行换源。" >${ANDROID_6_FILE}
+            sed -n p ${ANDROID_6_FILE}
+            printf "%s\n" "Your current Android system version is lower than 7."
+            printf "%s\n" "旧版Android可能无法使用本功能。"
+            press_enter_to_continue
+        fi
+    fi
 }
 ###########
 annotate_the_old_list() {
-	if [ -e "${SOURCES_LIST_FILE_NAME}" ]; then
-		sed -i 's@^@#&@g ; s@##@#@g' ${SOURCES_LIST_FILE_NAME}
-		cat >>${SOURCES_LIST_FILE_NAME} <<-EndOfSourcesList
+    if [ -e "${SOURCES_LIST_FILE_NAME}" ]; then
+        sed -i 's@^@#&@g ; s@##@#@g' ${SOURCES_LIST_FILE_NAME}
+        cat >>${SOURCES_LIST_FILE_NAME} <<-EndOfSourcesList
 			deb ${TERMUX_SOUCRE_URL}
 		EndOfSourcesList
-	fi
+    fi
 }
 ############
 modify_android_termux_mirror_sources_list() {
-	cd ${PREFIX}/etc/apt
-	SOURCES_LIST_FILE_NAME="sources.list"
-	TERMUX_SOUCRE_URL="${TERMUX_MAIN_SOURCE}"
-	annotate_the_old_list
-	#####
-	cd sources.list.d
-	SOURCES_LIST_FILE_NAME="root.list"
-	TERMUX_SOUCRE_URL="${TERMUX_ROOT_SOURCE}"
-	annotate_the_old_list
-	#######
-	SOURCES_LIST_FILE_NAME="game.list"
-	TERMUX_SOUCRE_URL="${TERMUX_GAME_SOURCE}"
-	annotate_the_old_list
-	######
-	SOURCES_LIST_FILE_NAME="science.list"
-	TERMUX_SOUCRE_URL="${TERMUX_SCIENCE_SOURCE}"
-	annotate_the_old_list
-	######
-	SOURCES_LIST_FILE_NAME="unstable.list"
-	TERMUX_SOUCRE_URL="${TERMUX_UNSTABLE_SOURCE}"
-	annotate_the_old_list
-	########
-	SOURCES_LIST_FILE_NAME="x11.list"
-	TERMUX_SOUCRE_URL="${TERMUX_X11_SOURCE}"
-	annotate_the_old_list
-	######
-	apt_dist_upgrade
+    cd ${PREFIX}/etc/apt
+    SOURCES_LIST_FILE_NAME="sources.list"
+    TERMUX_SOUCRE_URL="${TERMUX_MAIN_SOURCE}"
+    annotate_the_old_list
+    #####
+    cd sources.list.d
+    SOURCES_LIST_FILE_NAME="root.list"
+    TERMUX_SOUCRE_URL="${TERMUX_ROOT_SOURCE}"
+    annotate_the_old_list
+    #######
+    SOURCES_LIST_FILE_NAME="game.list"
+    TERMUX_SOUCRE_URL="${TERMUX_GAME_SOURCE}"
+    annotate_the_old_list
+    ######
+    SOURCES_LIST_FILE_NAME="science.list"
+    TERMUX_SOUCRE_URL="${TERMUX_SCIENCE_SOURCE}"
+    annotate_the_old_list
+    ######
+    SOURCES_LIST_FILE_NAME="unstable.list"
+    TERMUX_SOUCRE_URL="${TERMUX_UNSTABLE_SOURCE}"
+    annotate_the_old_list
+    ########
+    SOURCES_LIST_FILE_NAME="x11.list"
+    TERMUX_SOUCRE_URL="${TERMUX_X11_SOURCE}"
+    annotate_the_old_list
+    ######
+    apt_dist_upgrade
 }
 #############
 apt_dist_upgrade() {
-	apt update
-	apt dist-upgrade -y
-	printf '%s\n' '修改完成，您当前的软件源列表如下所示。'
-	sed -n p /data/data/com.termux/files/usr/etc/apt/sources.list
-	sed -n p /data/data/com.termux/files/usr/etc/apt/sources.list.d/*
-	printf "%s\n" "您可以输${YELLOW}apt edit-sources${RESET}来手动编辑main源"
-	printf "%s\n" "您也可以输${YELLOW}cd ${PREFIX}/etc/apt/sources.list.d ; nano ./* ${RESET}来手动编辑其它源"
+    apt update
+    apt dist-upgrade -y
+    printf '%s\n' '修改完成，您当前的软件源列表如下所示。'
+    sed -n p /data/data/com.termux/files/usr/etc/apt/sources.list
+    sed -n p /data/data/com.termux/files/usr/etc/apt/sources.list.d/*
+    printf "%s\n" "您可以输${YELLOW}apt edit-sources${RESET}来手动编辑main源"
+    printf "%s\n" "您也可以输${YELLOW}cd ${PREFIX}/etc/apt/sources.list.d ; nano ./* ${RESET}来手动编辑其它源"
 }
 ######################
 gnu_linux_mirror_source_manager() {
-	TMOE_LOCALE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool"
-	TMOE_LOCALE_TMP_FILE=/tmp/.tmoe-linux-tool.bash
-	if [ $(command -v aria2c) ]; then
-		aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.bash' "${TMOE_LOCALE_URL}"
-	elif [ $(command -v curl) ]; then
-		curl -Lo ${TMOE_LOCALE_TMP_FILE} "${TMOE_LOCALE_URL}"
-	elif [ $(command -v wget) ]; then
-		wget -O ${TMOE_LOCALE_TMP_FILE} "${TMOE_LOCALE_URL}"
-	fi
-	bash ${TMOE_LOCALE_TMP_FILE} --mirror-list
+    TMOE_LOCALE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool"
+    TMOE_LOCALE_TMP_FILE=/tmp/.tmoe-linux-tool.bash
+    if [ $(command -v aria2c) ]; then
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.bash' "${TMOE_LOCALE_URL}"
+    elif [ $(command -v curl) ]; then
+        curl -Lo ${TMOE_LOCALE_TMP_FILE} "${TMOE_LOCALE_URL}"
+    elif [ $(command -v wget) ]; then
+        wget -O ${TMOE_LOCALE_TMP_FILE} "${TMOE_LOCALE_URL}"
+    fi
+    bash ${TMOE_LOCALE_TMP_FILE} --mirror-list
 }
 ##################
 #初次安装时用curl或wget，之后用aria2c
 ###########
 gnu_linux_sources_list() {
-	if [ "${LINUX_DISTRO}" != "alpine" ]; then
-		if [ ! $(command -v curl) ]; then
-			wget -O /tmp/.tmoe-linux-tool.bash 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
-		else
-			curl -Lo /tmp/.tmoe-linux-tool.bash 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
-		fi
-		bash /tmp/.tmoe-linux-tool.bash -tuna
-	else
-		cp -af /etc/apk/repositories /etc/apk/repositories.bak
-		#sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
-		sed -i 's@http.*/alpine/@http://mirrors.tuna.tsinghua.edu.cn/alpine/@g' /etc/apk/repositories
-	fi
-	gnu_linux
-	#此处要返回依赖检测处！
+    if [ "${LINUX_DISTRO}" != "alpine" ]; then
+        if [ ! $(command -v curl) ]; then
+            wget -O /tmp/.tmoe-linux-tool.bash 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
+        else
+            curl -Lo /tmp/.tmoe-linux-tool.bash 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
+        fi
+        bash /tmp/.tmoe-linux-tool.bash -tuna
+    else
+        cp -af /etc/apk/repositories /etc/apk/repositories.bak
+        #sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+        sed -i 's@http.*/alpine/@http://mirrors.tuna.tsinghua.edu.cn/alpine/@g' /etc/apk/repositories
+    fi
+    gnu_linux
+    #此处要返回依赖检测处！
 }
 ####################
 linux_distro_sources_list "$@"

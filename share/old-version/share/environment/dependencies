@@ -1,155 +1,155 @@
 #!/usr/bin/env bash
 ####################
 check_zstd() {
-	if [ ! $(command -v zstd) ]; then
-		printf "%s\n" \
-			"正在${YELLOW}安装${GREEN}zstd${RESET}及其${BLUE}依赖...${RESET}" \
-			"${GREEN}${TMOE_INSTALLATION_COMMAND}${RESET} ${BLUE}zstd${RESET}"
-		${TMOE_INSTALLATION_COMMAND} zstd
-		printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}zstd${RESET}"
-	fi
+    if [ ! $(command -v zstd) ]; then
+        printf "%s\n" \
+            "正在${YELLOW}安装${GREEN}zstd${RESET}及其${BLUE}依赖...${RESET}" \
+            "${GREEN}${TMOE_INSTALLATION_COMMAND}${RESET} ${BLUE}zstd${RESET}"
+        ${TMOE_INSTALLATION_COMMAND} zstd
+        printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}zstd${RESET}"
+    fi
 }
 ###################
 gnu_linux_manager_dependencies() {
-	DEPENDENCIES=''
-	if [ ! $(command -v aria2c) ]; then
-		case "${LINUX_DISTRO}" in
-		gentoo) DEPENDENCIES="${DEPENDENCIES} net-misc/aria2" ;;
-		*) DEPENDENCIES="${DEPENDENCIES} aria2" ;;
-		esac
-	fi
+    DEPENDENCIES=''
+    if [ ! $(command -v aria2c) ]; then
+        case "${LINUX_DISTRO}" in
+        gentoo) DEPENDENCIES="${DEPENDENCIES} net-misc/aria2" ;;
+        *) DEPENDENCIES="${DEPENDENCIES} aria2" ;;
+        esac
+    fi
 
-	if [ ! $(command -v curl) ]; then
-		case "${LINUX_DISTRO}" in
-		gentoo) DEPENDENCIES="${DEPENDENCIES} net-misc/curl" ;;
-		*) DEPENDENCIES="${DEPENDENCIES} curl" ;;
-		esac
-	fi
+    if [ ! $(command -v curl) ]; then
+        case "${LINUX_DISTRO}" in
+        gentoo) DEPENDENCIES="${DEPENDENCIES} net-misc/curl" ;;
+        *) DEPENDENCIES="${DEPENDENCIES} curl" ;;
+        esac
+    fi
 
-	if [ ! $(command -v git) ]; then
-		case "${LINUX_DISTRO}" in
-		openwrt) DEPENDENCIES="${DEPENDENCIES} git git-http" ;;
-		gentoo) DEPENDENCIES="${DEPENDENCIES} dev-vcs/git" ;;
-		*) DEPENDENCIES="${DEPENDENCIES} git" ;;
-		esac
-	fi
+    if [ ! $(command -v git) ]; then
+        case "${LINUX_DISTRO}" in
+        openwrt) DEPENDENCIES="${DEPENDENCIES} git git-http" ;;
+        gentoo) DEPENDENCIES="${DEPENDENCIES} dev-vcs/git" ;;
+        *) DEPENDENCIES="${DEPENDENCIES} git" ;;
+        esac
+    fi
 
-	if [ ! $(command -v grep) ]; then
-		case "${LINUX_DISTRO}" in
-		gentoo) DEPENDENCIES="${DEPENDENCIES} sys-apps/grep" ;;
-		*) DEPENDENCIES="${DEPENDENCIES} grep" ;;
-		esac
-	fi
+    if [ ! $(command -v grep) ]; then
+        case "${LINUX_DISTRO}" in
+        gentoo) DEPENDENCIES="${DEPENDENCIES} sys-apps/grep" ;;
+        *) DEPENDENCIES="${DEPENDENCIES} grep" ;;
+        esac
+    fi
 
-	if [ ! $(command -v lsof) ]; then
-		printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}lsof${RESET}"
-		${TMOE_INSTALLATION_COMMAND} lsof
-		if [ ! $(command -v lsof) ]; then
-			case "${LINUX_DISTRO}" in
-			debian | arch) DEPENDENCIES="${DEPENDENCIES} lsof" ;;
-			esac
-		fi
-	fi
+    if [ ! $(command -v lsof) ]; then
+        printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}lsof${RESET}"
+        ${TMOE_INSTALLATION_COMMAND} lsof
+        if [ ! $(command -v lsof) ]; then
+            case "${LINUX_DISTRO}" in
+            debian | arch) DEPENDENCIES="${DEPENDENCIES} lsof" ;;
+            esac
+        fi
+    fi
 
-	if [ ! $(command -v pv) ]; then
-		case "${LINUX_DISTRO}" in
-		gentoo) DEPENDENCIES="${DEPENDENCIES} sys-apps/pv" ;;
-		redhat)
-			case "${REDHAT_DISTRO}" in
-			fedora) DEPENDENCIES="${DEPENDENCIES} pv" ;;
-			esac
-			;;
-		*) DEPENDENCIES="${DEPENDENCIES} pv" ;;
-		esac
-	fi
+    if [ ! $(command -v pv) ]; then
+        case "${LINUX_DISTRO}" in
+        gentoo) DEPENDENCIES="${DEPENDENCIES} sys-apps/pv" ;;
+        redhat)
+            case "${REDHAT_DISTRO}" in
+            fedora) DEPENDENCIES="${DEPENDENCIES} pv" ;;
+            esac
+            ;;
+        *) DEPENDENCIES="${DEPENDENCIES} pv" ;;
+        esac
+    fi
 
-	case "${LINUX_DISTRO}" in
-	"debian")
-		for i in proot chroot unshare; do
-			if [ ! $(command -v ${i}) ]; then
-				case ${i} in
-				proot) DEPENDENCIES="${DEPENDENCIES} proot" ;;
-				chroot) DEPENDENCIES="${DEPENDENCIES} coreutils" ;;
-				unshare) DEPENDENCIES="${DEPENDENCIES} util-linux" ;;
-				esac
-			fi
-		done
-		;;
-	esac
-	#####################
-	if [ ! $(command -v xz) ]; then
-		case "${LINUX_DISTRO}" in
-		"debian") DEPENDENCIES="${DEPENDENCIES} xz-utils" ;;
-		"gentoo") DEPENDENCIES="${DEPENDENCIES} app-arch/xz-utils" ;;
-		*) DEPENDENCIES="${DEPENDENCIES} xz" ;;
-		esac
-	fi
+    case "${LINUX_DISTRO}" in
+    "debian")
+        for i in proot chroot unshare; do
+            if [ ! $(command -v ${i}) ]; then
+                case ${i} in
+                proot) DEPENDENCIES="${DEPENDENCIES} proot" ;;
+                chroot) DEPENDENCIES="${DEPENDENCIES} coreutils" ;;
+                unshare) DEPENDENCIES="${DEPENDENCIES} util-linux" ;;
+                esac
+            fi
+        done
+        ;;
+    esac
+    #####################
+    if [ ! $(command -v xz) ]; then
+        case "${LINUX_DISTRO}" in
+        "debian") DEPENDENCIES="${DEPENDENCIES} xz-utils" ;;
+        "gentoo") DEPENDENCIES="${DEPENDENCIES} app-arch/xz-utils" ;;
+        *) DEPENDENCIES="${DEPENDENCIES} xz" ;;
+        esac
+    fi
 
-	if [ ! $(command -v pkill) ]; then
-		case "${LINUX_DISTRO}" in
-		"gentoo") DEPENDENCIES="${DEPENDENCIES} sys-process/procps" ;;
-		"redhat") DEPENDENCIES="${DEPENDENCIES} procps procps-ng procps-ng-i18n" ;;
-		"openwrt") ;;
-		*) DEPENDENCIES="${DEPENDENCIES} procps" ;;
-		esac
-	fi
-	#####################
-	if [ ! $(command -v tar) ]; then
-		case "${LINUX_DISTRO}" in
-		gentoo) DEPENDENCIES="${DEPENDENCIES} app-arch/tar" ;;
-		*) DEPENDENCIES="${DEPENDENCIES} tar" ;;
-		esac
-	fi
-	case "${LINUX_DISTRO}" in
-	alpine)
-		if [[ $(readlink /bin/tar) = /bin/busybox ]]; then
-			DEPENDENCIES="${DEPENDENCIES} tar"
-		fi
-		;;
-	esac
-	[[ -z ${DEPENDENCIES} ]] || install_gnu_linux_manager_dependencies_02
+    if [ ! $(command -v pkill) ]; then
+        case "${LINUX_DISTRO}" in
+        "gentoo") DEPENDENCIES="${DEPENDENCIES} sys-process/procps" ;;
+        "redhat") DEPENDENCIES="${DEPENDENCIES} procps procps-ng procps-ng-i18n" ;;
+        "openwrt") ;;
+        *) DEPENDENCIES="${DEPENDENCIES} procps" ;;
+        esac
+    fi
+    #####################
+    if [ ! $(command -v tar) ]; then
+        case "${LINUX_DISTRO}" in
+        gentoo) DEPENDENCIES="${DEPENDENCIES} app-arch/tar" ;;
+        *) DEPENDENCIES="${DEPENDENCIES} tar" ;;
+        esac
+    fi
+    case "${LINUX_DISTRO}" in
+    alpine)
+        if [[ $(readlink /bin/tar) = /bin/busybox ]]; then
+            DEPENDENCIES="${DEPENDENCIES} tar"
+        fi
+        ;;
+    esac
+    [[ -z ${DEPENDENCIES} ]] || install_gnu_linux_manager_dependencies_02
 }
 ######################
 install_gnu_linux_manager_dependencies_02() {
-	[[ -s ${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt ]] || printf "%s\n" ${DEPENDENCIES} >${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt
-	[[ -s ${TMOE_LINUX_DIR}/MANAGER_DEPENDENCIES.txt ]] || printf "%s\n" ${DEPENDENCIES} >${TMOE_LINUX_DIR}/MANAGER_DEPENDENCIES.txt
-	notes_of_tmoe_package_installation
-	case "${LINUX_DISTRO}" in
-	debian)
-		case ${DEBIAN_DISTRO} in
-		deepin) ;;
-		*)
-			if ! grep -q '^deb.*mirrors' "/etc/apt/sources.list"; then
-				MIRROR_LIST=false
-			fi
-			;;
-		esac
-		${TMOE_UPDATE_COMMAND}
-		${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} git wget curl whiptail aria2 xz-utils nano sudo less procps
-		;;
-	alpine | openwrt | slackware)
-		${TMOE_UPDATE_COMMAND}
-		${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
-		;;
-	arch | gentoo | suse | void | solus) ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} ;;
-	redhat)
-		if [ $(command -v dnf) ]; then
-			${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
-		else
-			yum install -y --skip-broken ${DEPENDENCIES}
-		fi
-		;;
-	*)
-		printf "%s\n" "${RED}Sorry${RESET}, tmoe does not support your distro. If you want to report a bug, please go to ${BLUE}github.${YELLOW}https://github.com/2moe/tmoe-linux${RESET}"
-		printf "%s\n" "${RED}不支持${RESET}您当前的发行版，您可以前往${YELLOW}https://github.com/2moe/tmoe-linux${RESET}提交issue,并附上${BLUE}cat /etc/os-release${RESET}的截图。"
-		press_enter_to_continue
-		exit 1
-		# apt update
-		# ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
-		# apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES} || pacman -Syu ${DEPENDENCIES}
-		;;
-	esac
-	check_zstd
+    [[ -s ${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt ]] || printf "%s\n" ${DEPENDENCIES} >${TMOE_LINUX_DIR}/TOOL_DEPENDENCIES.txt
+    [[ -s ${TMOE_LINUX_DIR}/MANAGER_DEPENDENCIES.txt ]] || printf "%s\n" ${DEPENDENCIES} >${TMOE_LINUX_DIR}/MANAGER_DEPENDENCIES.txt
+    notes_of_tmoe_package_installation
+    case "${LINUX_DISTRO}" in
+    debian)
+        case ${DEBIAN_DISTRO} in
+        deepin) ;;
+        *)
+            if ! grep -q '^deb.*mirrors' "/etc/apt/sources.list"; then
+                MIRROR_LIST=false
+            fi
+            ;;
+        esac
+        ${TMOE_UPDATE_COMMAND}
+        ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} || ${TMOE_INSTALLATION_COMMAND} git wget curl whiptail aria2 xz-utils nano sudo less procps
+        ;;
+    alpine | openwrt | slackware)
+        ${TMOE_UPDATE_COMMAND}
+        ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
+        ;;
+    arch | gentoo | suse | void | solus) ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES} ;;
+    redhat)
+        if [ $(command -v dnf) ]; then
+            ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
+        else
+            yum install -y --skip-broken ${DEPENDENCIES}
+        fi
+        ;;
+    *)
+        printf "%s\n" "${RED}Sorry${RESET}, tmoe does not support your distro. If you want to report a bug, please go to ${BLUE}github.${YELLOW}https://github.com/2moe/tmoe-linux${RESET}"
+        printf "%s\n" "${RED}不支持${RESET}您当前的发行版，您可以前往${YELLOW}https://github.com/2moe/tmoe-linux${RESET}提交issue,并附上${BLUE}cat /etc/os-release${RESET}的截图。"
+        press_enter_to_continue
+        exit 1
+        # apt update
+        # ${TMOE_INSTALLATION_COMMAND} ${DEPENDENCIES}
+        # apt install -y ${DEPENDENCIES} || port install ${DEPENDENCIES} || guix package -i ${DEPENDENCIES} || pkg install ${DEPENDENCIES} || pkg_add ${DEPENDENCIES} || pkgutil -i ${DEPENDENCIES} || pacman -Syu ${DEPENDENCIES}
+        ;;
+    esac
+    check_zstd
 }
 #################
 gnu_linux_manager_dependencies

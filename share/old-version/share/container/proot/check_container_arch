@@ -1,81 +1,81 @@
 #!/usr/bin/env bash
 ############################################
 if [[ $(command -v dpkg) && $(command -v apt-get) ]]; then
-	case $(dpkg --print-architecture) in
-	armel) ARCH_TYPE="armel" ;;
-	armv7* | armv8l | armhf | arm) ARCH_TYPE="armhf" ;;
-	aarch64 | arm64* | armv8* | arm*) ARCH_TYPE="arm64" ;;
-	i*86 | x86) ARCH_TYPE="i386" ;;
-	x86_64 | amd64) ARCH_TYPE="amd64" ;;
-	*) ARCH_TYPE=$(dpkg --print-architecture) ;;
-	esac
+    case $(dpkg --print-architecture) in
+    armel) ARCH_TYPE="armel" ;;
+    armv7* | armv8l | armhf | arm) ARCH_TYPE="armhf" ;;
+    aarch64 | arm64* | armv8* | arm*) ARCH_TYPE="arm64" ;;
+    i*86 | x86) ARCH_TYPE="i386" ;;
+    x86_64 | amd64) ARCH_TYPE="amd64" ;;
+    *) ARCH_TYPE=$(dpkg --print-architecture) ;;
+    esac
 else
-	case $(uname -m) in
-	armv7* | armv8l) ARCH_TYPE="armhf" ;;
-	armv[1-6]*) ARCH_TYPE="armel" ;;
-	aarch64 | armv8* | arm64 | arm*) ARCH_TYPE="arm64" ;;
-	x86_64 | amd64) ARCH_TYPE="amd64" ;;
-	i*86 | x86) ARCH_TYPE="i386" ;;
-	s390*) ARCH_TYPE="s390x" ;;
-	ppc*) ARCH_TYPE="ppc64el" ;;
-	mips64*) ARCH_TYPE="mips64el" ;;
-	mips*) ARCH_TYPE="mipsel" ;;
-	risc*) ARCH_TYPE="riscv64" ;;
-	esac
+    case $(uname -m) in
+    armv7* | armv8l) ARCH_TYPE="armhf" ;;
+    armv[1-6]*) ARCH_TYPE="armel" ;;
+    aarch64 | armv8* | arm64 | arm*) ARCH_TYPE="arm64" ;;
+    x86_64 | amd64) ARCH_TYPE="amd64" ;;
+    i*86 | x86) ARCH_TYPE="i386" ;;
+    s390*) ARCH_TYPE="s390x" ;;
+    ppc*) ARCH_TYPE="ppc64el" ;;
+    mips64*) ARCH_TYPE="mips64el" ;;
+    mips*) ARCH_TYPE="mipsel" ;;
+    risc*) ARCH_TYPE="riscv64" ;;
+    esac
 fi
 TRUE_ARCH_TYPE=${ARCH_TYPE}
 ######################
 TMOE_QEMU=true
 case "${CONTAINER_ARCH}" in
 i386)
-	NEW_TMOE_ARCH='i386'
-	case ${TRUE_ARCH_TYPE} in
-	amd64 | i386) TMOE_QEMU=false ;;
-	*) TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}" ;;
-	esac
-	;;
+    NEW_TMOE_ARCH='i386'
+    case ${TRUE_ARCH_TYPE} in
+    amd64 | i386) TMOE_QEMU=false ;;
+    *) TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}" ;;
+    esac
+    ;;
 amd64)
-	NEW_TMOE_ARCH='amd64'
-	TMOE_QEMU_ARCH="x86_64"
-	;;
+    NEW_TMOE_ARCH='amd64'
+    TMOE_QEMU_ARCH="x86_64"
+    ;;
 arm64)
-	NEW_TMOE_ARCH='arm64'
-	TMOE_QEMU_ARCH="aarch64"
-	;;
+    NEW_TMOE_ARCH='arm64'
+    TMOE_QEMU_ARCH="aarch64"
+    ;;
 armhf)
-	NEW_TMOE_ARCH='armhf'
-	case ${TRUE_ARCH_TYPE} in
-	arm64 | armhf) TMOE_QEMU=false ;;
-	*) TMOE_QEMU_ARCH="arm" ;;
-	esac
-	;;
+    NEW_TMOE_ARCH='armhf'
+    case ${TRUE_ARCH_TYPE} in
+    arm64 | armhf) TMOE_QEMU=false ;;
+    *) TMOE_QEMU_ARCH="arm" ;;
+    esac
+    ;;
 armel)
-	NEW_TMOE_ARCH='armel'
-	case ${TRUE_ARCH_TYPE} in
-	arm64 | armhf | armel) TMOE_QEMU=false ;;
-	*) TMOE_QEMU_ARCH="armeb" ;;
-	esac
-	;;
+    NEW_TMOE_ARCH='armel'
+    case ${TRUE_ARCH_TYPE} in
+    arm64 | armhf | armel) TMOE_QEMU=false ;;
+    *) TMOE_QEMU_ARCH="armeb" ;;
+    esac
+    ;;
 ppc64el)
-	NEW_TMOE_ARCH='ppc64el'
-	TMOE_QEMU_ARCH="ppc64le"
-	;;
+    NEW_TMOE_ARCH='ppc64el'
+    TMOE_QEMU_ARCH="ppc64le"
+    ;;
 s390x)
-	NEW_TMOE_ARCH='s390x'
-	TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
-	;;
+    NEW_TMOE_ARCH='s390x'
+    TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
+    ;;
 mipsel)
-	NEW_TMOE_ARCH='mipsel'
-	TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
-	;;
+    NEW_TMOE_ARCH='mipsel'
+    TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
+    ;;
 mips64el)
-	NEW_TMOE_ARCH='mips64el'
-	TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
-	;;
+    NEW_TMOE_ARCH='mips64el'
+    TMOE_QEMU_ARCH="${NEW_TMOE_ARCH}"
+    ;;
 riscv64)
-	NEW_TMOE_ARCH='riscv64'
-	TMOE_QEMU_ARCH="riscv64"
-	;;
+    NEW_TMOE_ARCH='riscv64'
+    TMOE_QEMU_ARCH="riscv64"
+    ;;
 esac
 #检测两次
 case "${CONTAINER_ARCH}" in

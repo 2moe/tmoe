@@ -1,27 +1,27 @@
 #!/usr/bin/env bash
 #######################################
 install_termux_xfce() {
-	if [ "${LINUX_DISTRO}" != 'Android' ]; then
-		aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.bash' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
-		bash /tmp/.tmoe-linux-tool.bash --install-gui
-		exit 0
-	fi
+    if [ "${LINUX_DISTRO}" != 'Android' ]; then
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.bash' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
+        bash /tmp/.tmoe-linux-tool.bash --install-gui
+        exit 0
+    fi
 
-	if [ -e "${PREFIX}/bin/${XSESSION}" ]; then
-		printf "%s\n" "You have installed ${BLUE}${XSESSION}${RESET}"
-		do_you_want_to_continue
-	fi
-	printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}x11-repo${RESET}"
-	apt update
-	apt install -y x11-repo
-	apt update
-	apt dist-upgrade -y
-	for i in ${DEPS}; do
-		printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
-		apt install -y ${i}
-	done
-	#無需set PULSE_SERVER var
-	cat >${PREFIX}/bin/startvnc <<-EndOfFile
+    if [ -e "${PREFIX}/bin/${XSESSION}" ]; then
+        printf "%s\n" "You have installed ${BLUE}${XSESSION}${RESET}"
+        do_you_want_to_continue
+    fi
+    printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}x11-repo${RESET}"
+    apt update
+    apt install -y x11-repo
+    apt update
+    apt dist-upgrade -y
+    for i in ${DEPS}; do
+        printf "%s\n" "${GREEN}apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
+        apt install -y ${i}
+    done
+    #無需set PULSE_SERVER var
+    cat >${PREFIX}/bin/startvnc <<-EndOfFile
 		#!/usr/bin/env bash
 		VNC_RESOLUTION=720x1440
 		export DISPLAY=:2
@@ -50,136 +50,136 @@ install_termux_xfce() {
 		${XSESSION} || ${XSESSION_02}
 
 	EndOfFile
-	termux-fix-shebang ${PREFIX}/bin/startvnc
-	chmod a+rx ${PREFIX}/bin/startvnc
-	printf "%s\n" "${GREEN}startvnc${RESET}"
-	do_you_want_to_continue
-	source ${PREFIX}/bin/startvnc
+    termux-fix-shebang ${PREFIX}/bin/startvnc
+    chmod a+rx ${PREFIX}/bin/startvnc
+    printf "%s\n" "${GREEN}startvnc${RESET}"
+    do_you_want_to_continue
+    source ${PREFIX}/bin/startvnc
 }
 ##########
 tmoe_modify_vnc_conf() {
-	if [ "${LINUX_DISTRO}" != 'Android' ]; then
-		aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.bash' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
-		bash /tmp/.tmoe-linux-tool.bash --modify_remote_desktop_config
-		exit 0
-	fi
-	modify_android_termux_vnc_config
+    if [ "${LINUX_DISTRO}" != 'Android' ]; then
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.bash' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
+        bash /tmp/.tmoe-linux-tool.bash --modify_remote_desktop_config
+        exit 0
+    fi
+    modify_android_termux_vnc_config
 }
 #########
 termux_original_system_gui_menu() {
-	RETURN_TO_WHERE='termux_original_system_gui_menu'
-	termux_original_system_gui_menu_en() {
-		OPTION=$(whiptail --title "Termux" --menu "Termux native GUI has fewer software packages.It is recommended to install a container." 0 50 0 \
-			"1" "modify termux-vnc conf" \
-			"2" "install termux-lxqt" \
-			"3" "🐹 install termux-xfce4" \
-			"4" "💔 remove xfce4 & lxqt" \
-			"0" "🌚 Return to previous menu" \
-			3>&1 1>&2 2>&3)
-	}
-	termux_original_system_gui_menu_cn() {
-		#\n这里是termux原系统的配置区域,不是GNU/Linux容器的哦！\nThe following options only apply to termux original system.
-		OPTION=$(whiptail --title "Termux" --menu "Termux原系统GUI可玩性较低,建议您安装GNU/Linux(proot/chroot)容器" 0 50 0 \
-			"1" "编辑配置 edit vnc conf" \
-			"2" "安装 termux-lxqt" \
-			"3" "🐹 安装 termux-xfce4" \
-			"4" "💔 移除 xfce4 & lxqt" \
-			"0" "🌚 back" \
-			3>&1 1>&2 2>&3)
-	}
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) termux_original_system_gui_menu_cn ;;
-	*) termux_original_system_gui_menu_en ;;
-	esac
-	#####################################
-	case "${OPTION}" in
-	0 | "") android_termux_tmoe_menu ;;
-	1) tmoe_modify_vnc_conf ;;
-	2)
-		DEPS='lxqt qterminal tigervnc'
-		TERMINAL='qterminal'
-		XSESSION="startlxqt"
-		XSESSION_02="lxqt-session"
-		install_termux_xfce
-		;;
-	3)
-		DEPS='xfce aterm xfce4-terminal tigervnc'
-		TERMINAL='aterm'
-		XSESSION="startxfce4"
-		XSESSION_02="xfce4-session"
-		install_termux_xfce
-		;;
-	4) remove_termux_xfce ;;
-	esac
-	####################################
-	press_enter_to_return
-	termux_original_system_gui_menu
+    RETURN_TO_WHERE='termux_original_system_gui_menu'
+    termux_original_system_gui_menu_en() {
+        OPTION=$(whiptail --title "Termux" --menu "Termux native GUI has fewer software packages.It is recommended to install a container." 0 50 0 \
+            "1" "modify termux-vnc conf" \
+            "2" "install termux-lxqt" \
+            "3" "🐹 install termux-xfce4" \
+            "4" "💔 remove xfce4 & lxqt" \
+            "0" "🌚 Return to previous menu" \
+            3>&1 1>&2 2>&3)
+    }
+    termux_original_system_gui_menu_cn() {
+        #\n这里是termux原系统的配置区域,不是GNU/Linux容器的哦！\nThe following options only apply to termux original system.
+        OPTION=$(whiptail --title "Termux" --menu "Termux原系统GUI可玩性较低,建议您安装GNU/Linux(proot/chroot)容器" 0 50 0 \
+            "1" "编辑配置 edit vnc conf" \
+            "2" "安装 termux-lxqt" \
+            "3" "🐹 安装 termux-xfce4" \
+            "4" "💔 移除 xfce4 & lxqt" \
+            "0" "🌚 back" \
+            3>&1 1>&2 2>&3)
+    }
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) termux_original_system_gui_menu_cn ;;
+    *) termux_original_system_gui_menu_en ;;
+    esac
+    #####################################
+    case "${OPTION}" in
+    0 | "") android_termux_tmoe_menu ;;
+    1) tmoe_modify_vnc_conf ;;
+    2)
+        DEPS='lxqt qterminal tigervnc'
+        TERMINAL='qterminal'
+        XSESSION="startlxqt"
+        XSESSION_02="lxqt-session"
+        install_termux_xfce
+        ;;
+    3)
+        DEPS='xfce aterm xfce4-terminal tigervnc'
+        TERMINAL='aterm'
+        XSESSION="startxfce4"
+        XSESSION_02="xfce4-session"
+        install_termux_xfce
+        ;;
+    4) remove_termux_xfce ;;
+    esac
+    ####################################
+    press_enter_to_return
+    termux_original_system_gui_menu
 }
 ###############
 remove_termux_xfce() {
-	if [ "${LINUX_DISTRO}" != 'Android' ]; then
-		aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.bash' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
-		bash /tmp/.tmoe-linux-tool.bash --remove_gui
-		exit 0
-	fi
-	remove_android_termux_xfce
+    if [ "${LINUX_DISTRO}" != 'Android' ]; then
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.bash' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
+        bash /tmp/.tmoe-linux-tool.bash --remove_gui
+        exit 0
+    fi
+    remove_android_termux_xfce
 }
 ##########I
 modify_android_termux_vnc_config() {
-	if [ ! -e ${PREFIX}/bin/startvnc ]; then
-		printf "%s\n" "${PREFIX}/bin/startvnc is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
-		printf '%s\n' '未检测到startvnc,您可能尚未安装图形桌面，是否继续编辑?'
-		printf "%s\n" "Press Enter to confirm."
-		printf "%s\n" "${YELLOW}按回车键确认编辑。${RESET}"
-		read
-	fi
-	CURRENTTERMUXVNCRES=$(grep '^VNC_RESOLUTION=' $(command -v startvnc) | awk -F '=' '{print $2}')
-	#CURRENTTERMUXVNCRES=$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
-	if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪项配置信息？Which configuration do you want to modify?" 9 50); then
-		if grep -q 'debian_' "$(command -v startvnc)"; then
-			printf "%s\n" "您当前使用的startvnc配置为Linux容器系统专用版，请输debian进入容器后再输tmoe t修改"
-			printf "%s\n" "本选项仅适用于termux原系统。"
-			press_enter_to_return
-			android_termux_tmoe_menu
-		fi
-		TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,1440x720,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为720x1440,当前为${CURRENTTERMUXVNCRES}。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
-		#此处termux的whiptail跟debian不同，必须截取Error前的字符。
-		#TRUETARGET="$(printf '%s\n' "${TARGET}" | cut -d 'E' -f 1)"
-		TRUETARGET="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
-		#下面那条变量TRUETARGETTARGET前加空格
-		#sed -i "s#${CURRENTTERMUXVNCRES}# ${TRUETARGETTARGET}#" "$(command -v startvnc)"
-		#sed -i "8 c Xvnc -geometry ${TRUETARGET} -depth 24 --SecurityTypes=None \$DISPLAY \&" "$(command -v startvnc)"
-		if [[ -n ${TRUETARGET} ]]; then
-			sed -i -E "s@^(VNC_RESOLUTION=).*@\1${TRUETARGET}@" $(command -v startvnc)
-			printf '%s\n' 'Your current resolution has been modified.'
-			printf '%s\n' '您当前的分辨率已经修改为'
-			printf "%s\n" $(grep '^VNC_RESOLUTION=' $(command -v startvnc) | awk -F '=' '{print $2}')
-		fi
-	else
-		printf '%s\n' '您可以手动修改vnc的配置信息'
-		printf '%s\n' 'If you want to modify the resolution, please change the 720x1440 (default resolution , vertical screen) to another resolution.For example, 1920x1080 (landscape).'
-		printf '%s\n' '若您想要修改分辨率，请将默认的720x1440（竖屏）改为其它您想要的分辨率，例如1920x1080（横屏）。'
-		#printf "%s\n" "您当前分辨率为${CURRENTTERMUXVNCRES}"
-		printf '%s\n' '改完后按Ctrl+S保存，Ctrl+X退出。'
-		printf "%s\n" "Press Enter to confirm."
-		printf "%s\n" "${YELLOW}按回车键确认编辑。${RESET}"
-		read
-		nano ${PREFIX}/bin/startvnc || nano $(command -v startvnc)
-		#printf "%s\n" "您当前分辨率为$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
-	fi
-	press_enter_to_return
-	termux_original_system_gui_menu
+    if [ ! -e ${PREFIX}/bin/startvnc ]; then
+        printf "%s\n" "${PREFIX}/bin/startvnc is not detected, maybe you have not installed the graphical desktop environment, do you want to continue editing?"
+        printf '%s\n' '未检测到startvnc,您可能尚未安装图形桌面，是否继续编辑?'
+        printf "%s\n" "Press Enter to confirm."
+        printf "%s\n" "${YELLOW}按回车键确认编辑。${RESET}"
+        read
+    fi
+    CURRENTTERMUXVNCRES=$(grep '^VNC_RESOLUTION=' $(command -v startvnc) | awk -F '=' '{print $2}')
+    #CURRENTTERMUXVNCRES=$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
+    if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪项配置信息？Which configuration do you want to modify?" 9 50); then
+        if grep -q 'debian_' "$(command -v startvnc)"; then
+            printf "%s\n" "您当前使用的startvnc配置为Linux容器系统专用版，请输debian进入容器后再输tmoe t修改"
+            printf "%s\n" "本选项仅适用于termux原系统。"
+            press_enter_to_return
+            android_termux_tmoe_menu
+        fi
+        TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,1440x720,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为720x1440,当前为${CURRENTTERMUXVNCRES}。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
+        #此处termux的whiptail跟debian不同，必须截取Error前的字符。
+        #TRUETARGET="$(printf '%s\n' "${TARGET}" | cut -d 'E' -f 1)"
+        TRUETARGET="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
+        #下面那条变量TRUETARGETTARGET前加空格
+        #sed -i "s#${CURRENTTERMUXVNCRES}# ${TRUETARGETTARGET}#" "$(command -v startvnc)"
+        #sed -i "8 c Xvnc -geometry ${TRUETARGET} -depth 24 --SecurityTypes=None \$DISPLAY \&" "$(command -v startvnc)"
+        if [[ -n ${TRUETARGET} ]]; then
+            sed -i -E "s@^(VNC_RESOLUTION=).*@\1${TRUETARGET}@" $(command -v startvnc)
+            printf '%s\n' 'Your current resolution has been modified.'
+            printf '%s\n' '您当前的分辨率已经修改为'
+            printf "%s\n" $(grep '^VNC_RESOLUTION=' $(command -v startvnc) | awk -F '=' '{print $2}')
+        fi
+    else
+        printf '%s\n' '您可以手动修改vnc的配置信息'
+        printf '%s\n' 'If you want to modify the resolution, please change the 720x1440 (default resolution , vertical screen) to another resolution.For example, 1920x1080 (landscape).'
+        printf '%s\n' '若您想要修改分辨率，请将默认的720x1440（竖屏）改为其它您想要的分辨率，例如1920x1080（横屏）。'
+        #printf "%s\n" "您当前分辨率为${CURRENTTERMUXVNCRES}"
+        printf '%s\n' '改完后按Ctrl+S保存，Ctrl+X退出。'
+        printf "%s\n" "Press Enter to confirm."
+        printf "%s\n" "${YELLOW}按回车键确认编辑。${RESET}"
+        read
+        nano ${PREFIX}/bin/startvnc || nano $(command -v startvnc)
+        #printf "%s\n" "您当前分辨率为$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)"
+    fi
+    press_enter_to_return
+    termux_original_system_gui_menu
 }
 ###############
 remove_android_termux_xfce() {
-	printf "%s\n" "apt purge -y ^xfce lxqt qterminal tigervnc aterm x11-repo"
-	do_you_want_to_continue
-	apt purge ^xfce tigervnc aterm
-	apt purge lxqt qterminal
-	apt purge x11-repo
-	apt autoremove --purge
-	press_enter_to_return
-	android_termux_tmoe_menu
+    printf "%s\n" "apt purge -y ^xfce lxqt qterminal tigervnc aterm x11-repo"
+    do_you_want_to_continue
+    apt purge ^xfce tigervnc aterm
+    apt purge lxqt qterminal
+    apt purge x11-repo
+    apt autoremove --purge
+    press_enter_to_return
+    android_termux_tmoe_menu
 }
 #################
 termux_original_system_gui_menu $@

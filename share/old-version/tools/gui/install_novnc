@@ -1,103 +1,103 @@
 #!/usr/bin/env bash
 #################
 check_python_novnc() {
-	case "${LINUX_DISTRO}" in
-	debian)
-		if [ ! -e "/usr/share/novnc/utils/launch.sh" ]; then
-			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}novnc${RESET}"
-			printf "%s\n" "You can type ${PURPLE}apt purge -y${RESET} ${BLUE}novnc python3-novnc${RESET} to remove it."
-			eatmydata apt update || apt update
-			eatmydata apt install -y novnc || apt install -y novnc || apt install -y python3-novnc
-		fi
+    case "${LINUX_DISTRO}" in
+    debian)
+        if [ ! -e "/usr/share/novnc/utils/launch.sh" ]; then
+            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}novnc${RESET}"
+            printf "%s\n" "You can type ${PURPLE}apt purge -y${RESET} ${BLUE}novnc python3-novnc${RESET} to remove it."
+            eatmydata apt update || apt update
+            eatmydata apt install -y novnc || apt install -y novnc || apt install -y python3-novnc
+        fi
 
-		if [ ! -e "/usr/bin/python3" ]; then
-			eatmydata apt install -y python3 || apt install -y python3
-		fi
-		if [ ! -e "/usr/bin/python" ]; then
-			update-alternatives --install /usr/bin/python python /usr/bin/python3 50
-			update-alternatives --set python /usr/bin/python3
-		fi
+        if [ ! -e "/usr/bin/python3" ]; then
+            eatmydata apt install -y python3 || apt install -y python3
+        fi
+        if [ ! -e "/usr/bin/python" ]; then
+            update-alternatives --install /usr/bin/python python /usr/bin/python3 50
+            update-alternatives --set python /usr/bin/python3
+        fi
 
-		if [[ ! $(command -v netstat) ]]; then
-			eatmydata apt install -y net-tools || apt install -y net-tools
-		fi
-		;;
-	redhat)
-		if [ ! -e "/usr/share/novnc/utils/launch.sh" ]; then
-			printf "%s\n" "${GREEN}dnf install -y ${BLUE}novnc${RESET}"
-			printf "%s\n" "You can type ${PURPLE}dnf remove -y${RESET} ${BLUE}novnc${RESET} to remove it."
-			dnf install -y novnc || yum install -y novnc
-		fi
-		;;
-	*)
-		printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}python3 net-tools${RESET}"
-		[[ $(command -v python3) ]] || ${TMOE_INSTALLATION_COMMAND} python3 || ${TMOE_INSTALLATION_COMMAND} python3
-		[[ $(command -v netstat) ]] || ${TMOE_INSTALLATION_COMMAND} net-tools || ${TMOE_INSTALLATION_COMMAND} net-tools
-		#[[ $(command -v websockify) ]] || ${TMOE_INSTALLATION_COMMAND} websockify
-		;;
-	esac
+        if [[ ! $(command -v netstat) ]]; then
+            eatmydata apt install -y net-tools || apt install -y net-tools
+        fi
+        ;;
+    redhat)
+        if [ ! -e "/usr/share/novnc/utils/launch.sh" ]; then
+            printf "%s\n" "${GREEN}dnf install -y ${BLUE}novnc${RESET}"
+            printf "%s\n" "You can type ${PURPLE}dnf remove -y${RESET} ${BLUE}novnc${RESET} to remove it."
+            dnf install -y novnc || yum install -y novnc
+        fi
+        ;;
+    *)
+        printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}python3 net-tools${RESET}"
+        [[ $(command -v python3) ]] || ${TMOE_INSTALLATION_COMMAND} python3 || ${TMOE_INSTALLATION_COMMAND} python3
+        [[ $(command -v netstat) ]] || ${TMOE_INSTALLATION_COMMAND} net-tools || ${TMOE_INSTALLATION_COMMAND} net-tools
+        #[[ $(command -v websockify) ]] || ${TMOE_INSTALLATION_COMMAND} websockify
+        ;;
+    esac
 
-	if [ ! $(command -v pip3) ]; then
-		unset DEPENDENCY_01 DEPENDENCY_02
-		case "$LINUX_DISTRO" in
-		alpine) DEPENDENCY_02="${DEPENDENCY_02} py3-pip" ;;
-		debian | redhat) DEPENDENCY_02="${DEPENDENCY_02} python3-pip" ;;
-		* | arch) DEPENDENCY_02="${DEPENDENCY_02} python-pip" ;;
-		esac
-		beta_features_quick_install
-	fi
+    if [ ! $(command -v pip3) ]; then
+        unset DEPENDENCY_01 DEPENDENCY_02
+        case "$LINUX_DISTRO" in
+        alpine) DEPENDENCY_02="${DEPENDENCY_02} py3-pip" ;;
+        debian | redhat) DEPENDENCY_02="${DEPENDENCY_02} python3-pip" ;;
+        * | arch) DEPENDENCY_02="${DEPENDENCY_02} python-pip" ;;
+        esac
+        beta_features_quick_install
+    fi
 
-	printf "%s\n" "${GREEN}pip3 install ${BLUE}numpy${RESET}"
-	if [[ ! $(sudo -H pip3 list | grep numpy) && ! $(ls /usr/lib/python3*/site-packages/numpy/version.py) ]]; then
-		#python3 -m pip install --upgrade pip
-		case ${AUTO_INSTALL_GUI} in
-		true) sudo -H pip3 install -vvv numpy ;;
-		*) sudo -H pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv numpy ;;
-			#|| su -c "pip3 install -vvv numpy"
-		esac
-	fi
+    printf "%s\n" "${GREEN}pip3 install ${BLUE}numpy${RESET}"
+    if [[ ! $(sudo -H pip3 list | grep numpy) && ! $(ls /usr/lib/python3*/site-packages/numpy/version.py) ]]; then
+        #python3 -m pip install --upgrade pip
+        case ${AUTO_INSTALL_GUI} in
+        true) sudo -H pip3 install -vvv numpy ;;
+        *) sudo -H pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv numpy ;;
+            #|| su -c "pip3 install -vvv numpy"
+        esac
+    fi
 
-	if [ ! -e "${TMOE_LINUX_DIR}/novnc/utils/launch.sh" ]; then
-		[[ ! -e ${TMOE_LINUX_DIR}/novnc ]] || rm -rfv ${TMOE_LINUX_DIR}/novnc
-		if [ -e "/usr/share/novnc/utils/launch.sh" ]; then
-			ln -svf /usr/share/novnc ${TMOE_LINUX_DIR}
-		else
-			mkdir -pv ${TMOE_LINUX_DIR}/novnc
-			cd ${TMOE_LINUX_DIR}/novnc
-			DEB_REPO_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/n/novnc/'
-			THE_LATEST_FILE_VERSION=$(curl -L ${DEB_REPO_URL} | grep -v python | grep novnc | grep '\.deb' | grep all | awk -F '=' '{print $3}' | cut -d '"' -f 2 | tail -n 1)
-			THE_LATEST_DEB_LINK="${DEB_REPO_URL}${THE_LATEST_FILE_VERSION}"
-			aria2c --console-log-level=warn --no-conf -x 3 -k 1M --split=5 --allow-overwrite=true -o 'novnc.deb' "${THE_LATEST_DEB_LINK}"
-			if [ $(command -v dpkg-deb) ]; then
-				dpkg-deb -X novnc.deb ./
-			else
-				ar xv novnc.deb
-				if [ -e "data.tar.xz" ]; then
-					tar -Jxvf data.tar.xz
-				else
-					tar -xvf data.tar.*
-				fi
-			fi
-			cp -prf ./usr/share/novnc/* ./
-			cp -rf ./usr/share/doc ./
-			rm -rf ./usr
-		fi
+    if [ ! -e "${TMOE_LINUX_DIR}/novnc/utils/launch.sh" ]; then
+        [[ ! -e ${TMOE_LINUX_DIR}/novnc ]] || rm -rfv ${TMOE_LINUX_DIR}/novnc
+        if [ -e "/usr/share/novnc/utils/launch.sh" ]; then
+            ln -svf /usr/share/novnc ${TMOE_LINUX_DIR}
+        else
+            mkdir -pv ${TMOE_LINUX_DIR}/novnc
+            cd ${TMOE_LINUX_DIR}/novnc
+            DEB_REPO_URL='https://mirrors.bfsu.edu.cn/debian/pool/main/n/novnc/'
+            THE_LATEST_FILE_VERSION=$(curl -L ${DEB_REPO_URL} | grep -v python | grep novnc | grep '\.deb' | grep all | awk -F '=' '{print $3}' | cut -d '"' -f 2 | tail -n 1)
+            THE_LATEST_DEB_LINK="${DEB_REPO_URL}${THE_LATEST_FILE_VERSION}"
+            aria2c --console-log-level=warn --no-conf -x 3 -k 1M --split=5 --allow-overwrite=true -o 'novnc.deb' "${THE_LATEST_DEB_LINK}"
+            if [ $(command -v dpkg-deb) ]; then
+                dpkg-deb -X novnc.deb ./
+            else
+                ar xv novnc.deb
+                if [ -e "data.tar.xz" ]; then
+                    tar -Jxvf data.tar.xz
+                else
+                    tar -xvf data.tar.*
+                fi
+            fi
+            cp -prf ./usr/share/novnc/* ./
+            cp -rf ./usr/share/doc ./
+            rm -rf ./usr
+        fi
 
-		printf "%s\n" "${GREEN}pip3 install ${BLUE}websockify${RESET}"
-		if [ ! $(command -v websockify) ]; then
-			case ${AUTO_INSTALL_GUI} in
-			true) sudo -H pip3 install -vvv websockify ;;
-			*) sudo -H pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv websockify ;;
-			esac
-			# || su -c "pip3 install -vvv websockify"
-		fi
-		if [ ! $(command -v websockify) ]; then
-			cd ${TMOE_LINUX_DIR}/novnc/utils/
-			if [ ! -d "websockify" ]; then
-				git clone https://github.com/novnc/websockify.git --depth=1 ./websockify || sudo git clone git://github.com/novnc/websockify.git --depth=1 ./websockify
-			fi
-		fi
-	fi
+        printf "%s\n" "${GREEN}pip3 install ${BLUE}websockify${RESET}"
+        if [ ! $(command -v websockify) ]; then
+            case ${AUTO_INSTALL_GUI} in
+            true) sudo -H pip3 install -vvv websockify ;;
+            *) sudo -H pip3 install -i https://mirrors.bfsu.edu.cn/pypi/web/simple -vvv websockify ;;
+            esac
+            # || su -c "pip3 install -vvv websockify"
+        fi
+        if [ ! $(command -v websockify) ]; then
+            cd ${TMOE_LINUX_DIR}/novnc/utils/
+            if [ ! -d "websockify" ]; then
+                git clone https://github.com/novnc/websockify.git --depth=1 ./websockify || sudo git clone git://github.com/novnc/websockify.git --depth=1 ./websockify
+            fi
+        fi
+    fi
 }
 #######################
 check_python_novnc $@

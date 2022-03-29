@@ -1,919 +1,919 @@
 #!/usr/bin/env bash
 ############################################
 proot_management_menu() {
-	case ${TMOE_CHROOT} in
-	false) TMOE_TIPS_02='' ;;
-	*) TMOE_TIPS_02='\nchroot在未umount前remove将导致宿主系统重要数据被清空' ;;
-	esac
-	RETURN_TO_WHERE='proot_management_menu'
-	CURRENT_DIR="$(pwd)"
-	TMOE_CONTAINER_FORTUNE=true
-	TMOE_CONTAINER_HITOKOTO=true
-	MACHINE_NAME=$(printf "%s\n" ${DEBIAN_FOLDER} | sed 's@_@-@g')
-	check_chroot_conf
-	# 🥤
-	proot_management_menu_en() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFor non-special circumstances,please do not run rm -rf \${CONTAINER_DIR} manually." 0 50 0 \
-			"1" "🌱 start ${DEBIAN_FOLDER}" \
-			"2" "⏹️ kill process" \
-			"3" "🐯 start gui(remote desktop)" \
-			"4" "🍧 user, env var & login item" \
-			"5" "edit script" \
-			"6" "💔 unmount & remove" \
-			"7" "🍹 backup ${CONTAINER_TYPE} container" \
-			"8" "📘 readme" \
-			"9" "🌈 create a new container" \
-			"10" "🍅 space occupation" \
-			"11" " unmount & remove (Compatibility mode)" \
-			"0" "🌚 back" \
-			3>&1 1>&2 2>&3)
-	}
-	proot_management_menu_cn() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "容器路径为${DEBIAN_CHROOT_MIN}\n非特殊情况下,请在本工具内正常移除容器,请勿手动rm -rf \${容器路径}${TMOE_TIPS_02}" 0 50 0 \
-			"1" "🌱 启动${CONTAINER_TYPE} ${DEBIAN_FOLDER}" \
-			"2" "⏹️ 停止容器进程" \
-			"3" "🐯 启动gui: x11/tiger vnc" \
-			"4" "🍧 环境变量与登录项管理" \
-			"5" "edit script 编辑脚本" \
-			"6" "💔 unmount & remove 卸载并移除" \
-			"7" "🍹 backup 备份${CONTAINER_TYPE}容器" \
-			"8" "📘 readme 自述/说明" \
-			"9" "🌈 create a new container新建容器" \
-			"10" "🍅 space occupation 空间占用大小" \
-			"11" "卸载并移除(兼容模式)" \
-			"0" "🌚 back 返回" \
-			3>&1 1>&2 2>&3)
-	}
-	proot_management_menu_de() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFühren Sie rm -rf \${CONTAINER_DIR} unter nicht besonderen Umständen nicht manuell aus." 0 50 0 \
-			"1" "🌱 start ${DEBIAN_FOLDER}" \
-			"2" "⏹️ Tötungsprozess" \
-			"3" "🐯 start gui(remote desktop)" \
-			"4" "🍧 Benutzer & Umgebung" \
-			"5" "Skript bearbeiten" \
-			"6" "💔 aushängen und entfernen" \
-			"7" "🍹 backup ${CONTAINER_TYPE} container" \
-			"8" "📘 Liesmich" \
-			"9" "🌈 Erstellen Sie einen neuen Container" \
-			"10" "🍅 Raumbesetzung" \
-			"11" "aushängen und entfernen (Compatibility mode)" \
-			"0" "🌚 zurück" \
-			3>&1 1>&2 2>&3)
-	}
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) proot_management_menu_cn ;;
-	de_DE.UTF-8) proot_management_menu_de ;; #Deutsche
-	*) proot_management_menu_en ;;
-	esac
-	##############################
-	case "${SELECTED_GNU_LINUX}" in
-	0 | "") ${RETURN_TO_MENU} ;;
-	1)
-		TEMP_FOLDER="${DEBIAN_CHROOT}/tmp/.tmoe_container_temporary"
-		if [[ -e ${TEMP_FOLDER} && ! -e ${TEMP_FOLDER}/.container.lock ]]; then
-			${TMOE_PREFIX} rm -rfv ${TEMP_FOLDER}
-		fi
-		normally_start_gnu_linux_distro
-		;;
-	2) kill_container_process ;;
-	3) start_gui_menu ;;
-	4) environment_variables_and_automatic_startup_script_management ;;
-	5) edit_container_startup_script ;;
-	6) umount_and_remove_gnu_linux_distro ;;
-	7) backup_tmoe_gnu_linux_distro ;;
-	8) readme_of_gnu_linux_distro ;;
-	9)
-		case ${RETURN_TO_MENU} in
-		'list_installed_tmoe_containers')
-			printf "%s\n" "${RED}Sorry${RESET}, it is not possible to create a new container in the current mode, please return to the main menu and select the architecture again."
-			printf "%s\n" "You can press ${YELLOW}Ctrl + C${RESET} to exit the current mode, and type ${GREEN}tmoe m${RESET} to enter the ${BLUE}main menu.${RESET}"
-			press_enter_to_return
-			proot_management_menu
-			;;
-		*) create_a_new_container ;;
-		esac
-		;;
-	10) du_sh_gnu_linux_distro ;;
-	11) umount_and_remove_gnu_linux_distro_compatibility_mode ;;
-	esac
-	#"9" "🥤 install 安装" \ 9) install_new_tmoe_gnu_linux_distro ;;
-	####################
-	case "${SELECTED_GNU_LINUX}" in
-	2 | 7 | 8 | 5 | 10)
-		#kill_container_process, backup_tmoe_gnu_linux_distro, readme_of_gnu_linux_distro, edit_container_startup_script, du_sh_gnu_linux_distro
-		#回到本菜单： 停止进程,备份，命令，空间 ,编辑
-		press_enter_to_return
-		proot_management_menu
-		;;
-	6 | 11)
-		#unmount & remove :umount_and_remove_gnu_linux_distro
-		#umount_and_remove_gnu_linux_distro_compatibility_mode
-		${RETURN_TO_MENU}
-		;;
-	esac
-	#卸载之后要回到发行版选择菜单，而非当前发行版菜单
+    case ${TMOE_CHROOT} in
+    false) TMOE_TIPS_02='' ;;
+    *) TMOE_TIPS_02='\nchroot在未umount前remove将导致宿主系统重要数据被清空' ;;
+    esac
+    RETURN_TO_WHERE='proot_management_menu'
+    CURRENT_DIR="$(pwd)"
+    TMOE_CONTAINER_FORTUNE=true
+    TMOE_CONTAINER_HITOKOTO=true
+    MACHINE_NAME=$(printf "%s\n" ${DEBIAN_FOLDER} | sed 's@_@-@g')
+    check_chroot_conf
+    # 🥤
+    proot_management_menu_en() {
+        SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFor non-special circumstances,please do not run rm -rf \${CONTAINER_DIR} manually." 0 50 0 \
+            "1" "🌱 start ${DEBIAN_FOLDER}" \
+            "2" "⏹️ kill process" \
+            "3" "🐯 start gui(remote desktop)" \
+            "4" "🍧 user, env var & login item" \
+            "5" "edit script" \
+            "6" "💔 unmount & remove" \
+            "7" "🍹 backup ${CONTAINER_TYPE} container" \
+            "8" "📘 readme" \
+            "9" "🌈 create a new container" \
+            "10" "🍅 space occupation" \
+            "11" " unmount & remove (Compatibility mode)" \
+            "0" "🌚 back" \
+            3>&1 1>&2 2>&3)
+    }
+    proot_management_menu_cn() {
+        SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "容器路径为${DEBIAN_CHROOT_MIN}\n非特殊情况下,请在本工具内正常移除容器,请勿手动rm -rf \${容器路径}${TMOE_TIPS_02}" 0 50 0 \
+            "1" "🌱 启动${CONTAINER_TYPE} ${DEBIAN_FOLDER}" \
+            "2" "⏹️ 停止容器进程" \
+            "3" "🐯 启动gui: x11/tiger vnc" \
+            "4" "🍧 环境变量与登录项管理" \
+            "5" "edit script 编辑脚本" \
+            "6" "💔 unmount & remove 卸载并移除" \
+            "7" "🍹 backup 备份${CONTAINER_TYPE}容器" \
+            "8" "📘 readme 自述/说明" \
+            "9" "🌈 create a new container新建容器" \
+            "10" "🍅 space occupation 空间占用大小" \
+            "11" "卸载并移除(兼容模式)" \
+            "0" "🌚 back 返回" \
+            3>&1 1>&2 2>&3)
+    }
+    proot_management_menu_de() {
+        SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFühren Sie rm -rf \${CONTAINER_DIR} unter nicht besonderen Umständen nicht manuell aus." 0 50 0 \
+            "1" "🌱 start ${DEBIAN_FOLDER}" \
+            "2" "⏹️ Tötungsprozess" \
+            "3" "🐯 start gui(remote desktop)" \
+            "4" "🍧 Benutzer & Umgebung" \
+            "5" "Skript bearbeiten" \
+            "6" "💔 aushängen und entfernen" \
+            "7" "🍹 backup ${CONTAINER_TYPE} container" \
+            "8" "📘 Liesmich" \
+            "9" "🌈 Erstellen Sie einen neuen Container" \
+            "10" "🍅 Raumbesetzung" \
+            "11" "aushängen und entfernen (Compatibility mode)" \
+            "0" "🌚 zurück" \
+            3>&1 1>&2 2>&3)
+    }
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) proot_management_menu_cn ;;
+    de_DE.UTF-8) proot_management_menu_de ;; #Deutsche
+    *) proot_management_menu_en ;;
+    esac
+    ##############################
+    case "${SELECTED_GNU_LINUX}" in
+    0 | "") ${RETURN_TO_MENU} ;;
+    1)
+        TEMP_FOLDER="${DEBIAN_CHROOT}/tmp/.tmoe_container_temporary"
+        if [[ -e ${TEMP_FOLDER} && ! -e ${TEMP_FOLDER}/.container.lock ]]; then
+            ${TMOE_PREFIX} rm -rfv ${TEMP_FOLDER}
+        fi
+        normally_start_gnu_linux_distro
+        ;;
+    2) kill_container_process ;;
+    3) start_gui_menu ;;
+    4) environment_variables_and_automatic_startup_script_management ;;
+    5) edit_container_startup_script ;;
+    6) umount_and_remove_gnu_linux_distro ;;
+    7) backup_tmoe_gnu_linux_distro ;;
+    8) readme_of_gnu_linux_distro ;;
+    9)
+        case ${RETURN_TO_MENU} in
+        'list_installed_tmoe_containers')
+            printf "%s\n" "${RED}Sorry${RESET}, it is not possible to create a new container in the current mode, please return to the main menu and select the architecture again."
+            printf "%s\n" "You can press ${YELLOW}Ctrl + C${RESET} to exit the current mode, and type ${GREEN}tmoe m${RESET} to enter the ${BLUE}main menu.${RESET}"
+            press_enter_to_return
+            proot_management_menu
+            ;;
+        *) create_a_new_container ;;
+        esac
+        ;;
+    10) du_sh_gnu_linux_distro ;;
+    11) umount_and_remove_gnu_linux_distro_compatibility_mode ;;
+    esac
+    #"9" "🥤 install 安装" \ 9) install_new_tmoe_gnu_linux_distro ;;
+    ####################
+    case "${SELECTED_GNU_LINUX}" in
+    2 | 7 | 8 | 5 | 10)
+        #kill_container_process, backup_tmoe_gnu_linux_distro, readme_of_gnu_linux_distro, edit_container_startup_script, du_sh_gnu_linux_distro
+        #回到本菜单： 停止进程,备份，命令，空间 ,编辑
+        press_enter_to_return
+        proot_management_menu
+        ;;
+    6 | 11)
+        #unmount & remove :umount_and_remove_gnu_linux_distro
+        #umount_and_remove_gnu_linux_distro_compatibility_mode
+        ${RETURN_TO_MENU}
+        ;;
+    esac
+    #卸载之后要回到发行版选择菜单，而非当前发行版菜单
 }
 ##############################
 check_chroot_conf() {
-	case ${TMOE_CHROOT} in
-	true)
-		CHROOT_CONF=${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/chroot.conf
-		if [[ -e ${CHROOT_CONF} ]]; then
-			if ! grep -Eq '^[^#]*SYSTEMD_NSPAWN=' ${CHROOT_CONF}; then
-				SYSTEMD_NSPAWN=false
-			else
-				SYSTEMD_NSPAWN=$(grep -E '^[^#]*SYSTEMD_NSPAWN=' ${CHROOT_CONF} | awk -F '=' '{print $2}')
-			fi
-		fi
-		;;
-	esac
+    case ${TMOE_CHROOT} in
+    true)
+        CHROOT_CONF=${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/chroot.conf
+        if [[ -e ${CHROOT_CONF} ]]; then
+            if ! grep -Eq '^[^#]*SYSTEMD_NSPAWN=' ${CHROOT_CONF}; then
+                SYSTEMD_NSPAWN=false
+            else
+                SYSTEMD_NSPAWN=$(grep -E '^[^#]*SYSTEMD_NSPAWN=' ${CHROOT_CONF} | awk -F '=' '{print $2}')
+            fi
+        fi
+        ;;
+    esac
 }
 environment_variables_and_automatic_startup_script_management() {
-	if [[ ! -e ${DEBIAN_CHROOT} ]]; then
-		printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} first."
-		press_enter_to_return
-		${RETURN_TO_WHERE}
-		# proot_management_menu
-	fi
-	OPT_17="fake cap_last_cap"
-	RETURN_TO_WHERE="environment_variables_and_automatic_startup_script_management"
-	environment_variables_and_automatic_startup_script_management_menu_en() {
-		ENV_VAR_AND_SCRIPT=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "You can manage login items and environment variables" 0 50 0 \
-			"1" "switch login user" \
-			"2" "Global environment variables" \
-			"3" "Entrypoint" \
-			"4" "Temporary auto-startup script" \
-			"5" "/etc/environment" \
-			"6" "README" \
-			"7" "boot mode of systemd-nspawn" \
-			"8" "switch login shell" \
-			"9" "switch chroot/unshare" \
-			"10" "proot/chroot/nspawn bin file" \
-			"11" "mount sd" \
-			"12" "mount HOME" \
-			"13" "mount storage" \
-			"14" "mount tf" \
-			"15" "mount tmp(shared wayland socket)" \
-			"16" "dotNET6 compatible mode" \
-			"17" "${OPT_17}" \
-			"0" "🌚 Return to previous menu" \
-			3>&1 1>&2 2>&3)
-	}
-	environment_variables_and_automatic_startup_script_management_menu_zh_cn() {
-		ENV_VAR_AND_SCRIPT=$(
-			whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "您可以此处管理登录项和环境变量" 0 50 0 \
-				"1" "切换登录用户" \
-				"2" "Global env var(全局环境变量)" \
-				"3" "Entrypoint(入口点)" \
-				"4" "Temporary(临时自启脚本)" \
-				"5" "/etc/environment" \
-				"6" "README 自述/说明" \
-				"7" "systemd-nspawn容器boot模式" \
-				"8" "切换登录shell" \
-				"9" "切换chroot/unshare" \
-				"10" "proot/chroot/nspawn二进制文件" \
-				"11" "挂载sd" \
-				"12" "挂载HOME" \
-				"13" "挂载storage" \
-				"14" "挂载tf" \
-				"15" "挂载tmp(共享wayland socket)" \
-				"16" "dotNET6 兼容模式" \
-				"17" "${OPT_17}" \
-				"0" "🌚 Return to previous menu" \
-				3>&1 1>&2 2>&3
-		)
-	}
-	#			"5" "Permanent(永久自启脚本)" \
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) environment_variables_and_automatic_startup_script_management_menu_zh_cn ;;
-	*) environment_variables_and_automatic_startup_script_management_menu_en ;;
-	esac
-	check_container_login_file_02
-	##############################
-	case "${ENV_VAR_AND_SCRIPT}" in
-	0 | "") proot_management_menu ;;
-	1) switch_container_login_user ;;
-	2) edit_container_global_env_var_file ;;
-	3) edit_container_entrypoint ;;
-	4) create_a_temp_script ;;
-	5) edit_container_etc_environment ;;
-	6) readme_of_env_var_and_autostartup_script ;;
-	7) switch_nspawn_boot_mode ;;
-	8) switch_login_shell ;;
-	9) switch_to_chroot_or_unshare ;;
-	10) switch_container_engine_bin_file ;;
-	11)
-		MOUNT_VAR="MOUNT_SD"
-		MOUNT_SOURCE_VAR="SD_DIR_0"
-		MOUNT_SOURCE_ORG="SD_DIR_01"
+    if [[ ! -e ${DEBIAN_CHROOT} ]]; then
+        printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} first."
+        press_enter_to_return
+        ${RETURN_TO_WHERE}
+        # proot_management_menu
+    fi
+    OPT_17="fake cap_last_cap"
+    RETURN_TO_WHERE="environment_variables_and_automatic_startup_script_management"
+    environment_variables_and_automatic_startup_script_management_menu_en() {
+        ENV_VAR_AND_SCRIPT=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "You can manage login items and environment variables" 0 50 0 \
+            "1" "switch login user" \
+            "2" "Global environment variables" \
+            "3" "Entrypoint" \
+            "4" "Temporary auto-startup script" \
+            "5" "/etc/environment" \
+            "6" "README" \
+            "7" "boot mode of systemd-nspawn" \
+            "8" "switch login shell" \
+            "9" "switch chroot/unshare" \
+            "10" "proot/chroot/nspawn bin file" \
+            "11" "mount sd" \
+            "12" "mount HOME" \
+            "13" "mount storage" \
+            "14" "mount tf" \
+            "15" "mount tmp(shared wayland socket)" \
+            "16" "dotNET6 compatible mode" \
+            "17" "${OPT_17}" \
+            "0" "🌚 Return to previous menu" \
+            3>&1 1>&2 2>&3)
+    }
+    environment_variables_and_automatic_startup_script_management_menu_zh_cn() {
+        ENV_VAR_AND_SCRIPT=$(
+            whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "您可以此处管理登录项和环境变量" 0 50 0 \
+                "1" "切换登录用户" \
+                "2" "Global env var(全局环境变量)" \
+                "3" "Entrypoint(入口点)" \
+                "4" "Temporary(临时自启脚本)" \
+                "5" "/etc/environment" \
+                "6" "README 自述/说明" \
+                "7" "systemd-nspawn容器boot模式" \
+                "8" "切换登录shell" \
+                "9" "切换chroot/unshare" \
+                "10" "proot/chroot/nspawn二进制文件" \
+                "11" "挂载sd" \
+                "12" "挂载HOME" \
+                "13" "挂载storage" \
+                "14" "挂载tf" \
+                "15" "挂载tmp(共享wayland socket)" \
+                "16" "dotNET6 兼容模式" \
+                "17" "${OPT_17}" \
+                "0" "🌚 Return to previous menu" \
+                3>&1 1>&2 2>&3
+        )
+    }
+    #			"5" "Permanent(永久自启脚本)" \
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) environment_variables_and_automatic_startup_script_management_menu_zh_cn ;;
+    *) environment_variables_and_automatic_startup_script_management_menu_en ;;
+    esac
+    check_container_login_file_02
+    ##############################
+    case "${ENV_VAR_AND_SCRIPT}" in
+    0 | "") proot_management_menu ;;
+    1) switch_container_login_user ;;
+    2) edit_container_global_env_var_file ;;
+    3) edit_container_entrypoint ;;
+    4) create_a_temp_script ;;
+    5) edit_container_etc_environment ;;
+    6) readme_of_env_var_and_autostartup_script ;;
+    7) switch_nspawn_boot_mode ;;
+    8) switch_login_shell ;;
+    9) switch_to_chroot_or_unshare ;;
+    10) switch_container_engine_bin_file ;;
+    11)
+        MOUNT_VAR="MOUNT_SD"
+        MOUNT_SOURCE_VAR="SD_DIR_0"
+        MOUNT_SOURCE_ORG="SD_DIR_01"
 
-		if ! grep -q "${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}; then
-			MOUNT_SOURCE_VAR=${MOUNT_SOURCE_ORG}
-		fi
+        if ! grep -q "${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}; then
+            MOUNT_SOURCE_VAR=${MOUNT_SOURCE_ORG}
+        fi
 
-		MOUNT_POINT_VAR="SD_MOUNT_POINT"
-		mount_dir_to_container
-		;;
-	12)
-		MOUNT_VAR="MOUNT_TERMUX"
-		MOUNT_SOURCE_VAR="TERMUX_DIR"
-		MOUNT_POINT_VAR="TERMUX_MOUNT_POINT"
-		mount_dir_to_container
-		;;
-	13)
-		case ${TMOE_CHROOT} in
-		true) printf "%s\n" "You are using a chroot container, the /storage directory will not be mounted by default" ;;
-		*)
-			MOUNT_VAR="MOUNT_STORAGE"
-			MOUNT_SOURCE_VAR="STORAGE_DIR"
-			MOUNT_POINT_VAR="STORAGE_DIR"
-			mount_dir_to_container
-			;;
-		esac
-		;;
-	14)
-		MOUNT_VAR="MOUNT_TF"
-		MOUNT_SOURCE_VAR="TF_CARD_LINK"
-		MOUNT_POINT_VAR="TF_MOUNT_POINT"
-		mount_dir_to_container
-		;;
-	15)
-		MOUNT_VAR="MOUNT_TMP"
-		MOUNT_SOURCE_VAR="TMP_SOURCE_DIR"
-		MOUNT_POINT_VAR="TMP_MOUNT_POINT"
-		mount_dir_to_container
-		;;
-	16) about_dot_net_6_compatible_mode ;;
-	17) about_cap_last_cap ;;
-	esac
-	press_enter_to_return
-	environment_variables_and_automatic_startup_script_management
+        MOUNT_POINT_VAR="SD_MOUNT_POINT"
+        mount_dir_to_container
+        ;;
+    12)
+        MOUNT_VAR="MOUNT_TERMUX"
+        MOUNT_SOURCE_VAR="TERMUX_DIR"
+        MOUNT_POINT_VAR="TERMUX_MOUNT_POINT"
+        mount_dir_to_container
+        ;;
+    13)
+        case ${TMOE_CHROOT} in
+        true) printf "%s\n" "You are using a chroot container, the /storage directory will not be mounted by default" ;;
+        *)
+            MOUNT_VAR="MOUNT_STORAGE"
+            MOUNT_SOURCE_VAR="STORAGE_DIR"
+            MOUNT_POINT_VAR="STORAGE_DIR"
+            mount_dir_to_container
+            ;;
+        esac
+        ;;
+    14)
+        MOUNT_VAR="MOUNT_TF"
+        MOUNT_SOURCE_VAR="TF_CARD_LINK"
+        MOUNT_POINT_VAR="TF_MOUNT_POINT"
+        mount_dir_to_container
+        ;;
+    15)
+        MOUNT_VAR="MOUNT_TMP"
+        MOUNT_SOURCE_VAR="TMP_SOURCE_DIR"
+        MOUNT_POINT_VAR="TMP_MOUNT_POINT"
+        mount_dir_to_container
+        ;;
+    16) about_dot_net_6_compatible_mode ;;
+    17) about_cap_last_cap ;;
+    esac
+    press_enter_to_return
+    environment_variables_and_automatic_startup_script_management
 }
 about_cap_last_cap() {
-	case ${TMOE_CHROOT} in
-	true)
-		printf "%s\n" \
-			"${RED}Sorry${RESET}, the chroot container does not need to care about this option." \
-			"Only rootless containers have ${BLUE}cap_last_cap${RESET} problem."
-		press_enter_to_return
-		environment_variables_and_automatic_startup_script_management
-		;;
-	*) ;;
-	esac
-	CURRENT_STATUS=$(grep -E "^[^#]*MOUNT_CAP_LAST_CAP=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+    case ${TMOE_CHROOT} in
+    true)
+        printf "%s\n" \
+            "${RED}Sorry${RESET}, the chroot container does not need to care about this option." \
+            "Only rootless containers have ${BLUE}cap_last_cap${RESET} problem."
+        press_enter_to_return
+        environment_variables_and_automatic_startup_script_management
+        ;;
+    *) ;;
+    esac
+    CURRENT_STATUS=$(grep -E "^[^#]*MOUNT_CAP_LAST_CAP=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
 
-	case ${CURRENT_STATUS} in
-	true) TMOE_TIPS_03="Currently enabled." ;;
-	false) TMOE_TIPS_03="Currently disabled." ;;
-	*) TMOE_TIPS_03="ERROR, unable to switch status." ;;
-	esac
+    case ${CURRENT_STATUS} in
+    true) TMOE_TIPS_03="Currently enabled." ;;
+    false) TMOE_TIPS_03="Currently disabled." ;;
+    *) TMOE_TIPS_03="ERROR, unable to switch status." ;;
+    esac
 
-	TMOE_TIPS_04="This is a reference to the man pages of capabilities. Since Linux 3.2, the file /proc/sys/kernel/cap_last_cap exposes the numerical value of the highest capability supported by the running kernel; this can be used to determine the highest bit that may be set in a capability set.\nBy faking it some problems can be solved, but other problems can be created. In general, please enable it. If you are experiencing problems with vnc starting slowly, disable it."
-	YES_BUTTON="enable"
-	NO_BUTTON="disable"
-	ARG_1="MOUNT_CAP_LAST_CAP"
-	if (whiptail --title "/dev/null:/proc/sys/kernel/cap_last_cap" --yes-button "$YES_BUTTON" --no-button "$NO_BUTTON" --yesno "${TMOE_TIPS_03}\n${TMOE_TIPS_04}" 0 50); then
-		ARG_2="true"
-		modify_the_bool_var
-	else
-		ARG_2="false"
-		modify_the_bool_var
-	fi
-	grep -E --color=auto "^[^#]*${ARG_1}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    TMOE_TIPS_04="This is a reference to the man pages of capabilities. Since Linux 3.2, the file /proc/sys/kernel/cap_last_cap exposes the numerical value of the highest capability supported by the running kernel; this can be used to determine the highest bit that may be set in a capability set.\nBy faking it some problems can be solved, but other problems can be created. In general, please enable it. If you are experiencing problems with vnc starting slowly, disable it."
+    YES_BUTTON="enable"
+    NO_BUTTON="disable"
+    ARG_1="MOUNT_CAP_LAST_CAP"
+    if (whiptail --title "/dev/null:/proc/sys/kernel/cap_last_cap" --yes-button "$YES_BUTTON" --no-button "$NO_BUTTON" --yesno "${TMOE_TIPS_03}\n${TMOE_TIPS_04}" 0 50); then
+        ARG_2="true"
+        modify_the_bool_var
+    else
+        ARG_2="false"
+        modify_the_bool_var
+    fi
+    grep -E --color=auto "^[^#]*${ARG_1}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 modify_the_bool_var() {
-	${TMOE_PREFIX} sed -E -i "s@^(${ARG_1}=).*@\1${ARG_2}@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    ${TMOE_PREFIX} sed -E -i "s@^(${ARG_1}=).*@\1${ARG_2}@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 about_dot_net_6_compatible_mode() {
 
-	case ${TMOE_CHROOT} in
-	true)
-		printf "%s\n" \
-			"${RED}Sorry${RESET}, this feature only supports the rootless(proot) container." \
-			"Only rootless containers have this problem."
-		press_enter_to_return
-		environment_variables_and_automatic_startup_script_management
-		;;
-	*) ;;
-	esac
+    case ${TMOE_CHROOT} in
+    true)
+        printf "%s\n" \
+            "${RED}Sorry${RESET}, this feature only supports the rootless(proot) container." \
+            "Only rootless containers have this problem."
+        press_enter_to_return
+        environment_variables_and_automatic_startup_script_management
+        ;;
+    *) ;;
+    esac
 
-	CURRENT_STATUS=$(grep -E "^[^#]*DOT_NET_6_COMPATIBLE_MODE=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+    CURRENT_STATUS=$(grep -E "^[^#]*DOT_NET_6_COMPATIBLE_MODE=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
 
-	case ${CURRENT_STATUS} in
-	true) TMOE_TIPS_03="This mode is currently enabled" ;;
-	false) TMOE_TIPS_03="This mode is currently disabled" ;;
-	*) TMOE_TIPS_03="ERROR, unable to switch status.\nPlease reinstall the container." ;;
-	esac
-	case ${TMOE_MENU_LANG} in
-	zh*)
-		TMOE_TIPS_04="在某些环境中，您可能会遇到一些兼容问题。\n例如：在proot中(宿主:android, 容器:gnu/linux, 架构:arm64)，\n您在使用微软的 .NET6.0 时可能会遇到 \"csc.dll exited with code 139\"，没有找到 loader 等错误。注：.NET 7 没有此问题。\n开启 .NET6 兼容模式将修复这些问题。在一般情况下，请不要开启此模式。"
-		YES_BUTTON="禁用"
-		NO_BUTTON="启用"
-		;;
-	*)
-		TMOE_TIPS_04="In some environments, you may encounter some strange compatibility issues.\nFor example: In proot(host: android, container: gnu/linux, arch: arm64), \nmicrosoft dotNET 6.0 may have \"csc.dll exited with code 139\" or \"loader not found\" when running a project.\nNote: dotNET 7 does not have these issues.\nEnabling .NET6 compatible mode will fix these issues. In general, you should not enable this mode."
-		YES_BUTTON="disable"
-		NO_BUTTON="enable"
-		;;
-	esac
+    case ${CURRENT_STATUS} in
+    true) TMOE_TIPS_03="This mode is currently enabled" ;;
+    false) TMOE_TIPS_03="This mode is currently disabled" ;;
+    *) TMOE_TIPS_03="ERROR, unable to switch status.\nPlease reinstall the container." ;;
+    esac
+    case ${TMOE_MENU_LANG} in
+    zh*)
+        TMOE_TIPS_04="在某些环境中，您可能会遇到一些兼容问题。\n例如：在proot中(宿主:android, 容器:gnu/linux, 架构:arm64)，\n您在使用微软的 .NET6.0 时可能会遇到 \"csc.dll exited with code 139\"，没有找到 loader 等错误。注：.NET 7 没有此问题。\n开启 .NET6 兼容模式将修复这些问题。在一般情况下，请不要开启此模式。"
+        YES_BUTTON="禁用"
+        NO_BUTTON="启用"
+        ;;
+    *)
+        TMOE_TIPS_04="In some environments, you may encounter some strange compatibility issues.\nFor example: In proot(host: android, container: gnu/linux, arch: arm64), \nmicrosoft dotNET 6.0 may have \"csc.dll exited with code 139\" or \"loader not found\" when running a project.\nNote: dotNET 7 does not have these issues.\nEnabling .NET6 compatible mode will fix these issues. In general, you should not enable this mode."
+        YES_BUTTON="disable"
+        NO_BUTTON="enable"
+        ;;
+    esac
 
-	if (whiptail --title "DOTNET6 COMP MODE" --yes-button "$YES_BUTTON" --no-button "$NO_BUTTON" --yesno "${TMOE_TIPS_03}\n${TMOE_TIPS_04}" 0 50); then
-		${TMOE_PREFIX} sed -E -i "s@^(DOT_NET_6_COMPATIBLE_MODE=).*@\1false@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	else
-		${TMOE_PREFIX} sed -E -i "s@^(DOT_NET_6_COMPATIBLE_MODE=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	fi
-	grep -E --color=auto "^[^#]*DOT_NET_6_COMPATIBLE_MODE=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	printf "%s\n" \
-		"By the way, if it ${RED}cannot find${RESET} the dotnet bin. " \
-		"You should create a symlink ${PURPLE}in the container ${BLUE}manually${RESET}:" \
-		"${RED}DOTNET_ROOT=${BLUE}\${DOTNET_ROOT:-\$HOME/.dotnet} ${YELLOW}\\" \
-		"&& ${GREEN}mkdir ${YELLOW}-pv ${BLUE}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT} ${YELLOW}\\" \
-		"&& ${GREEN}rm ${YELLOW}-rv ${BLUE}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}" \
-		"${GREEN}ln ${YELLOW}-svf ${BLUE}\${DOTNET_ROOT} ${CYAN}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}${RESET}" \
-		"If you cannot set ${BLUE}powershell${RESET} as your default shell, create a symbolic link ${PURPLE}in the container${RESET}" \
-		"${GREEN}ln ${YELLOW}-svf ${BLUE}\${DOTNET_ROOT} ${CYAN}/usr/share/dotnet${RESET}"
+    if (whiptail --title "DOTNET6 COMP MODE" --yes-button "$YES_BUTTON" --no-button "$NO_BUTTON" --yesno "${TMOE_TIPS_03}\n${TMOE_TIPS_04}" 0 50); then
+        ${TMOE_PREFIX} sed -E -i "s@^(DOT_NET_6_COMPATIBLE_MODE=).*@\1false@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    else
+        ${TMOE_PREFIX} sed -E -i "s@^(DOT_NET_6_COMPATIBLE_MODE=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    fi
+    grep -E --color=auto "^[^#]*DOT_NET_6_COMPATIBLE_MODE=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    printf "%s\n" \
+        "By the way, if it ${RED}cannot find${RESET} the dotnet bin. " \
+        "You should create a symlink ${PURPLE}in the container ${BLUE}manually${RESET}:" \
+        "${RED}DOTNET_ROOT=${BLUE}\${DOTNET_ROOT:-\$HOME/.dotnet} ${YELLOW}\\" \
+        "&& ${GREEN}mkdir ${YELLOW}-pv ${BLUE}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT} ${YELLOW}\\" \
+        "&& ${GREEN}rm ${YELLOW}-rv ${BLUE}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}" \
+        "${GREEN}ln ${YELLOW}-svf ${BLUE}\${DOTNET_ROOT} ${CYAN}\"${DEBIAN_CHROOT}\"/\${DOTNET_ROOT}${RESET}" \
+        "If you cannot set ${BLUE}powershell${RESET} as your default shell, create a symbolic link ${PURPLE}in the container${RESET}" \
+        "${GREEN}ln ${YELLOW}-svf ${BLUE}\${DOTNET_ROOT} ${CYAN}/usr/share/dotnet${RESET}"
 }
 
 switch_to_chroot_or_unshare() {
-	case ${TMOE_CHROOT} in
-	true) ;;
-	*)
-		printf "%s\n" "${RED}Sorry${RESET}, this feature only supports the chroot container."
-		press_enter_to_return
-		environment_variables_and_automatic_startup_script_management
-		;;
-	esac
-	CURRENT_STATUS=$(grep -E "^[^#]*UNSHARE_ENABLED=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
-	case ${CURRENT_STATUS} in
-	true) TMOE_TIPS_03="Currently in unshare mode" ;;
-	false) TMOE_TIPS_03="Currently in normal chroot mode" ;;
-	*) TMOE_TIPS_03="ERROR, cannot switch at this time.You may be using an old version, or non-normal chroot mode" ;;
-	esac
+    case ${TMOE_CHROOT} in
+    true) ;;
+    *)
+        printf "%s\n" "${RED}Sorry${RESET}, this feature only supports the chroot container."
+        press_enter_to_return
+        environment_variables_and_automatic_startup_script_management
+        ;;
+    esac
+    CURRENT_STATUS=$(grep -E "^[^#]*UNSHARE_ENABLED=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+    case ${CURRENT_STATUS} in
+    true) TMOE_TIPS_03="Currently in unshare mode" ;;
+    false) TMOE_TIPS_03="Currently in normal chroot mode" ;;
+    *) TMOE_TIPS_03="ERROR, cannot switch at this time.You may be using an old version, or non-normal chroot mode" ;;
+    esac
 
-	if (whiptail --title "CHROOT OR UNSHARE" --yes-button "chroot" --no-button "unshare" --yesno "${TMOE_TIPS_03}" 8 50); then
-		${TMOE_PREFIX} sed -E -i "s@^(UNSHARE_ENABLED=).*@\1false@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	else
-		${TMOE_PREFIX} sed -E -i "s@^(UNSHARE_ENABLED=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	fi
-	grep -E --color=auto "^[^#]*UNSHARE_ENABLED=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    if (whiptail --title "CHROOT OR UNSHARE" --yes-button "chroot" --no-button "unshare" --yesno "${TMOE_TIPS_03}" 8 50); then
+        ${TMOE_PREFIX} sed -E -i "s@^(UNSHARE_ENABLED=).*@\1false@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    else
+        ${TMOE_PREFIX} sed -E -i "s@^(UNSHARE_ENABLED=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    fi
+    grep -E --color=auto "^[^#]*UNSHARE_ENABLED=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 switch_container_engine_bin_file() {
-	unset TMOE_TIPS_05
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8)
-		TMOE_TIPS_03="若默认的${CONTAINER_TYPE} bin无法运行,则可在此处进行切换"
-		TMOE_TIPS_04="您可以自行编译proot/chroot/nspawn,并指定其二进制文件所在路径"
-		;;
-	*)
-		TMOE_TIPS_03="If you cannot use the default ${CONTAINER_TYPE} bin, you can switch here"
-		TMOE_TIPS_04="You can specify the path where the binary file\n of proot/chroot/nspawn is located."
-		;;
-	esac
-	if grep -q '^UNSHARE_ENABLED=true' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}; then
-		CURRENT_BIN=$(grep '^UNSHARE_BIN=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}' | head -n 1)
-	else
-		CURRENT_BIN=$(grep -E '^CHROOT_BIN=|^PROOT_BIN=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}' | head -n 1)
-	fi
-	[[ -n ${CURRENT_BIN} ]] || TMOE_TIPS_05="default. ERROR, you may be using a container installed by an older version of tmoe manager.\n您需要使用v1.4652.0或更新版本的容器。"
-	ENV_VAR_AND_SCRIPT=$(whiptail --title "${TMOE_TIPS_03}" --menu "${TMOE_TIPS_04}\nThe current bin is ${CURRENT_BIN} ${TMOE_TIPS_05}" 0 50 0 \
-		"1" "system(default)" \
-		"2" "termux/\$PREFIX" \
-		"3" "customize" \
-		"0" "🌚 back" \
-		3>&1 1>&2 2>&3)
-	##############################
-	case "${ENV_VAR_AND_SCRIPT}" in
-	0 | "") environment_variables_and_automatic_startup_script_management ;;
-	1) CHROOT_BIN=system ;;
-	2) CHROOT_BIN=termux ;;
-	3) please_type_the_container_engine_bin_file_path ;;
-	esac
-	${TMOE_PREFIX} sed -E -e "s@^(CHROOT_BIN=).*@\1\"${CHROOT_BIN}\"@" \
-		-e "s@^(PROOT_BIN=).*@\1\"${CHROOT_BIN}\"@" \
-		-e "s@^(UNSHARE_BIN=).*@\1\"${CHROOT_BIN}\"@" \
-		-i ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	grep -E --color=auto '^[^#]*^CHROOT_BIN=|^[^#]*^PROOT_BIN=|^[^#]*^UNSHARE_BIN=|^UNSHARE_ENABLED=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	press_enter_to_return
-	switch_container_engine_bin_file
+    unset TMOE_TIPS_05
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8)
+        TMOE_TIPS_03="若默认的${CONTAINER_TYPE} bin无法运行,则可在此处进行切换"
+        TMOE_TIPS_04="您可以自行编译proot/chroot/nspawn,并指定其二进制文件所在路径"
+        ;;
+    *)
+        TMOE_TIPS_03="If you cannot use the default ${CONTAINER_TYPE} bin, you can switch here"
+        TMOE_TIPS_04="You can specify the path where the binary file\n of proot/chroot/nspawn is located."
+        ;;
+    esac
+    if grep -q '^UNSHARE_ENABLED=true' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}; then
+        CURRENT_BIN=$(grep '^UNSHARE_BIN=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}' | head -n 1)
+    else
+        CURRENT_BIN=$(grep -E '^CHROOT_BIN=|^PROOT_BIN=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}' | head -n 1)
+    fi
+    [[ -n ${CURRENT_BIN} ]] || TMOE_TIPS_05="default. ERROR, you may be using a container installed by an older version of tmoe manager.\n您需要使用v1.4652.0或更新版本的容器。"
+    ENV_VAR_AND_SCRIPT=$(whiptail --title "${TMOE_TIPS_03}" --menu "${TMOE_TIPS_04}\nThe current bin is ${CURRENT_BIN} ${TMOE_TIPS_05}" 0 50 0 \
+        "1" "system(default)" \
+        "2" "termux/\$PREFIX" \
+        "3" "customize" \
+        "0" "🌚 back" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${ENV_VAR_AND_SCRIPT}" in
+    0 | "") environment_variables_and_automatic_startup_script_management ;;
+    1) CHROOT_BIN=system ;;
+    2) CHROOT_BIN=termux ;;
+    3) please_type_the_container_engine_bin_file_path ;;
+    esac
+    ${TMOE_PREFIX} sed -E -e "s@^(CHROOT_BIN=).*@\1\"${CHROOT_BIN}\"@" \
+        -e "s@^(PROOT_BIN=).*@\1\"${CHROOT_BIN}\"@" \
+        -e "s@^(UNSHARE_BIN=).*@\1\"${CHROOT_BIN}\"@" \
+        -i ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    grep -E --color=auto '^[^#]*^CHROOT_BIN=|^[^#]*^PROOT_BIN=|^[^#]*^UNSHARE_BIN=|^UNSHARE_ENABLED=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    press_enter_to_return
+    switch_container_engine_bin_file
 }
 please_type_the_container_engine_bin_file_path() {
-	TARGET=$(whiptail --inputbox "Please type the path.\nFor example, ${PREFIX}/bin/chroot" 10 50 --title "The absolute path of the binary file" 3>&1 1>&2 2>&3)
-	CHROOT_BIN="$(printf '%s\n' "${TARGET}" | head -n 1)"
-	if [ -z "${CHROOT_BIN}" ]; then
-		printf "%s\n" "Sorry,the value is empty."
-		press_enter_to_return
-		switch_container_engine_bin_file
-	fi
+    TARGET=$(whiptail --inputbox "Please type the path.\nFor example, ${PREFIX}/bin/chroot" 10 50 --title "The absolute path of the binary file" 3>&1 1>&2 2>&3)
+    CHROOT_BIN="$(printf '%s\n' "${TARGET}" | head -n 1)"
+    if [ -z "${CHROOT_BIN}" ]; then
+        printf "%s\n" "Sorry,the value is empty."
+        press_enter_to_return
+        switch_container_engine_bin_file
+    fi
 }
 change_the_mount_point() {
-	CURRENT_PATH=$(grep "^${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
-	TARGET=$(whiptail --inputbox "Please type the path.\nThe current mount point is ${CURRENT_PATH}" 10 50 --title "MOUNT POINT" 3>&1 1>&2 2>&3)
-	MOUNT_POINT="$(printf '%s\n' "${TARGET}" | head -n 1)"
-	if [ -z "${MOUNT_POINT}" ]; then
-		printf "%s\n" "Sorry,the value is empty."
-	else
-		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_POINT_VAR}=).*@\1\"${MOUNT_POINT}\"@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	fi
-	grep -E --color=auto "^[^#]*${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    CURRENT_PATH=$(grep "^${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+    TARGET=$(whiptail --inputbox "Please type the path.\nThe current mount point is ${CURRENT_PATH}" 10 50 --title "MOUNT POINT" 3>&1 1>&2 2>&3)
+    MOUNT_POINT="$(printf '%s\n' "${TARGET}" | head -n 1)"
+    if [ -z "${MOUNT_POINT}" ]; then
+        printf "%s\n" "Sorry,the value is empty."
+    else
+        ${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_POINT_VAR}=).*@\1\"${MOUNT_POINT}\"@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    fi
+    grep -E --color=auto "^[^#]*${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 change_the_mount_source_dir() {
-	CURRENT_PATH=$(grep "^${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
-	TARGET=$(whiptail --inputbox "Please type the path.\nThe current source dir is ${CURRENT_PATH}" 10 50 --title "SOURCE DIR" 3>&1 1>&2 2>&3)
-	MOUNT_DIR="$(printf '%s\n' "${TARGET}" | head -n 1)"
-	if [ -z "${MOUNT_DIR}" ]; then
-		printf "%s\n" "Sorry,the value is empty."
-	else
-		if [[ ! -e ${MOUNT_DIR} ]]; then
-			printf "%s\n" "${RED}WARNING${RESET}, this path may not exist."
-		fi
-		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_SOURCE_VAR}=).*@\1\"${MOUNT_DIR}\"@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	fi
-	grep -E --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	RETURN_TO_WHERE="change_the_mount_source_dir"
-	do_you_want_to_continue
+    CURRENT_PATH=$(grep "^${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+    TARGET=$(whiptail --inputbox "Please type the path.\nThe current source dir is ${CURRENT_PATH}" 10 50 --title "SOURCE DIR" 3>&1 1>&2 2>&3)
+    MOUNT_DIR="$(printf '%s\n' "${TARGET}" | head -n 1)"
+    if [ -z "${MOUNT_DIR}" ]; then
+        printf "%s\n" "Sorry,the value is empty."
+    else
+        if [[ ! -e ${MOUNT_DIR} ]]; then
+            printf "%s\n" "${RED}WARNING${RESET}, this path may not exist."
+        fi
+        ${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_SOURCE_VAR}=).*@\1\"${MOUNT_DIR}\"@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    fi
+    grep -E --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    RETURN_TO_WHERE="change_the_mount_source_dir"
+    do_you_want_to_continue
 }
 do_you_want_to_change_the_mount_source_dir() {
-	if (whiptail --title "SOURCE DIR" --yesno "Do you change the source dir?" 8 50); then
-		change_the_mount_source_dir
-	else
-		grep -E --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	fi
+    if (whiptail --title "SOURCE DIR" --yesno "Do you change the source dir?" 8 50); then
+        change_the_mount_source_dir
+    else
+        grep -E --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    fi
 }
 mount_dir_to_container() {
-	CURRENT_STATUS=$(grep "^${MOUNT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
-	CURRENT_MOUNT_SOURCE=$(grep "^${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
-	CURRENT_MOUNT_POINT=$(grep "^${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
-	if [[ -z ${CURRENT_MOUNT_POINT} ]]; then
-		CURRENT_MOUNT_POINT=default
-	fi
-	[[ -n ${CURRENT_STATUS} ]] || CURRENT_STATUS=false
-	if (whiptail --title "${MOUNT_VAR}" --yes-button "true" --no-button "false" --yesno "The current status is ${CURRENT_STATUS},\nsource dir is ${CURRENT_MOUNT_SOURCE},\nmount point is ${CURRENT_MOUNT_POINT}" 10 50); then
-		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_VAR}=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-		case ${MOUNT_VAR} in
-		MOUNT_SD | MOUNT_TERMUX | MOUNT_TMP) do_you_want_to_change_the_mount_source_dir ;;
-		esac
-		case ${TMOE_CHROOT} in
-		true) ;;
-		*)
-			if (whiptail --title "MOUNT POINT" --yesno "Do you want to change the mount point?" 8 50); then
-				change_the_mount_point
-			else
-				grep -E --color=auto "^[^#]*${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-			fi
-			;;
-		esac
-	else
-		${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_VAR}=).*@\1false@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	fi
-	printf "%s\n" "----------------------"
-	grep -E --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	grep -E --color=auto "^[^#]*${MOUNT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    CURRENT_STATUS=$(grep "^${MOUNT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+    CURRENT_MOUNT_SOURCE=$(grep "^${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+    CURRENT_MOUNT_POINT=$(grep "^${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+    if [[ -z ${CURRENT_MOUNT_POINT} ]]; then
+        CURRENT_MOUNT_POINT=default
+    fi
+    [[ -n ${CURRENT_STATUS} ]] || CURRENT_STATUS=false
+    if (whiptail --title "${MOUNT_VAR}" --yes-button "true" --no-button "false" --yesno "The current status is ${CURRENT_STATUS},\nsource dir is ${CURRENT_MOUNT_SOURCE},\nmount point is ${CURRENT_MOUNT_POINT}" 10 50); then
+        ${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_VAR}=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+        case ${MOUNT_VAR} in
+        MOUNT_SD | MOUNT_TERMUX | MOUNT_TMP) do_you_want_to_change_the_mount_source_dir ;;
+        esac
+        case ${TMOE_CHROOT} in
+        true) ;;
+        *)
+            if (whiptail --title "MOUNT POINT" --yesno "Do you want to change the mount point?" 8 50); then
+                change_the_mount_point
+            else
+                grep -E --color=auto "^[^#]*${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+            fi
+            ;;
+        esac
+    else
+        ${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_VAR}=).*@\1false@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    fi
+    printf "%s\n" "----------------------"
+    grep -E --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    grep -E --color=auto "^[^#]*${MOUNT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 switch_login_shell() {
-	LOGIN_SHELL_VAR="DEFAULT_LOGIN_SHELL_0"
-	LOGIN_SHELL_ORG="DEFAULT_LOGIN_SHELL_01"
+    LOGIN_SHELL_VAR="DEFAULT_LOGIN_SHELL_0"
+    LOGIN_SHELL_ORG="DEFAULT_LOGIN_SHELL_01"
 
-	if ! grep -q "${LOGIN_SHELL_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}; then
-		LOGIN_SHELL_VAR=${LOGIN_SHELL_ORG}
-	fi
+    if ! grep -q "${LOGIN_SHELL_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}; then
+        LOGIN_SHELL_VAR=${LOGIN_SHELL_ORG}
+    fi
 
-	CURRENT_SHELL=$(grep "^${LOGIN_SHELL_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
-	local PWSH="/usr/local/powershell/pwsh"
-	local NUSH="/usr/local/cargo/bin/nu"
-	ENV_VAR_AND_SCRIPT=$(whiptail --title "You can switch the default login shell" --menu "The current login shell is ${CURRENT_SHELL}, default is zsh." 0 50 0 \
-		"1" "zsh" \
-		"2" "fish" \
-		"3" "pwsh:$PWSH" \
-		"4" "nu:$NUSH" \
-		"5" "bash" \
-		"6" "ash" \
-		"7" "sh" \
-		"8" "ksh" \
-		"9" "csh" \
-		"10" "pdksh" \
-		"11" "tcsh" \
-		"0" "🌚 Return to previous menu" \
-		3>&1 1>&2 2>&3)
-	##############################
-	case "${ENV_VAR_AND_SCRIPT}" in
-	0 | "") environment_variables_and_automatic_startup_script_management ;;
-	1) DEFAULT_SHELL=zsh ;;
-	2) DEFAULT_SHELL=fish ;;
-	3) DEFAULT_SHELL=$PWSH ;;
-	4) DEFAULT_SHELL=$NUSH ;;
-	5) DEFAULT_SHELL=bash ;;
-	6) DEFAULT_SHELL=ash ;;
-	7) DEFAULT_SHELL="sh" ;;
-	8) DEFAULT_SHELL=ksh ;;
-	9) DEFAULT_SHELL=csh ;;
-	10) DEFAULT_SHELL=pdksh ;;
-	11) DEFAULT_SHELL=tcsh ;;
-	esac
-	${TMOE_PREFIX} sed -i -E "s@^(${LOGIN_SHELL_VAR}=).*@\1${DEFAULT_SHELL}@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	grep -E --color=auto "^[^#]*${LOGIN_SHELL_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    CURRENT_SHELL=$(grep "^${LOGIN_SHELL_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+    local PWSH="/usr/local/powershell/pwsh"
+    local NUSH="/usr/local/cargo/bin/nu"
+    ENV_VAR_AND_SCRIPT=$(whiptail --title "You can switch the default login shell" --menu "The current login shell is ${CURRENT_SHELL}, default is zsh." 0 50 0 \
+        "1" "zsh" \
+        "2" "fish" \
+        "3" "pwsh:$PWSH" \
+        "4" "nu:$NUSH" \
+        "5" "bash" \
+        "6" "ash" \
+        "7" "sh" \
+        "8" "ksh" \
+        "9" "csh" \
+        "10" "pdksh" \
+        "11" "tcsh" \
+        "0" "🌚 Return to previous menu" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${ENV_VAR_AND_SCRIPT}" in
+    0 | "") environment_variables_and_automatic_startup_script_management ;;
+    1) DEFAULT_SHELL=zsh ;;
+    2) DEFAULT_SHELL=fish ;;
+    3) DEFAULT_SHELL=$PWSH ;;
+    4) DEFAULT_SHELL=$NUSH ;;
+    5) DEFAULT_SHELL=bash ;;
+    6) DEFAULT_SHELL=ash ;;
+    7) DEFAULT_SHELL="sh" ;;
+    8) DEFAULT_SHELL=ksh ;;
+    9) DEFAULT_SHELL=csh ;;
+    10) DEFAULT_SHELL=pdksh ;;
+    11) DEFAULT_SHELL=tcsh ;;
+    esac
+    ${TMOE_PREFIX} sed -i -E "s@^(${LOGIN_SHELL_VAR}=).*@\1${DEFAULT_SHELL}@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    grep -E --color=auto "^[^#]*${LOGIN_SHELL_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 ####################
 switch_nspawn_boot_mode() {
-	case ${SYSTEMD_NSPAWN} in
-	true)
-		SYSTEMD_BOOT=$(grep -E '^[^#]*SYSTEMD_BOOT=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
-		case ${SYSTEMD_BOOT} in
-		true)
-			case ${TMOE_MENU_LANG} in
-			zh_*UTF-8) TMOE_TIPS_04="当前已启用boot模式,您可以在容器内执行systemctl命令" ;;
-			*) TMOE_TIPS_04="Boot mode is enabled, you can execute systemctl in the container." ;;
-			esac
-			;;
-		*)
-			case ${TMOE_MENU_LANG} in
-			zh_*UTF-8) TMOE_TIPS_04="当前未启用boot模式" ;;
-			*) TMOE_TIPS_04="Boot mode is currently disabled." ;;
-			esac
-			;;
-		esac
-		if (whiptail --title "BOOT MODE" --yes-button "enable" --no-button "disable" --yesno "Do you want to enable or disable it?\n${TMOE_TIPS_04}" 10 50); then
-			${TMOE_PREFIX} sed -i -E 's@^(SYSTEMD_BOOT=).*@\1true@' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-		else
-			${TMOE_PREFIX} sed -i -E 's@^(SYSTEMD_BOOT=).*@\1false@' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-		fi
-		grep -E --color=auto '^[^#]*SYSTEMD_BOOT=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-		;;
-	*) printf "%s\n" "${RED}Sorry${RESET}, this feature only supports the systemd-nspawn container." ;;
-	esac
+    case ${SYSTEMD_NSPAWN} in
+    true)
+        SYSTEMD_BOOT=$(grep -E '^[^#]*SYSTEMD_BOOT=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
+        case ${SYSTEMD_BOOT} in
+        true)
+            case ${TMOE_MENU_LANG} in
+            zh_*UTF-8) TMOE_TIPS_04="当前已启用boot模式,您可以在容器内执行systemctl命令" ;;
+            *) TMOE_TIPS_04="Boot mode is enabled, you can execute systemctl in the container." ;;
+            esac
+            ;;
+        *)
+            case ${TMOE_MENU_LANG} in
+            zh_*UTF-8) TMOE_TIPS_04="当前未启用boot模式" ;;
+            *) TMOE_TIPS_04="Boot mode is currently disabled." ;;
+            esac
+            ;;
+        esac
+        if (whiptail --title "BOOT MODE" --yes-button "enable" --no-button "disable" --yesno "Do you want to enable or disable it?\n${TMOE_TIPS_04}" 10 50); then
+            ${TMOE_PREFIX} sed -i -E 's@^(SYSTEMD_BOOT=).*@\1true@' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+        else
+            ${TMOE_PREFIX} sed -i -E 's@^(SYSTEMD_BOOT=).*@\1false@' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+        fi
+        grep -E --color=auto '^[^#]*SYSTEMD_BOOT=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+        ;;
+    *) printf "%s\n" "${RED}Sorry${RESET}, this feature only supports the systemd-nspawn container." ;;
+    esac
 }
 create_a_temp_script() {
-	TEMP_FILE="${TMPDIR}/start_01_${RANDOM}"
-	printf "%s\n" '#!/usr/bin/env bash' '#!/usr/bin/env ruby' '#!/usr/bin/env python' '#You can create a temporary automatic startup script' '#that will be automatically executed after the container is started,' '#and will be automatically deleted after the execution is complete.' '#Please remove unnecessary shebang' >${TEMP_FILE}
-	chmod a+rx ${TEMP_FILE}
-	for i in editor micro vim nano; do
-		if [ $(command -v ${i}) ]; then
-			${i} ${TEMP_FILE}
-			break
-		fi
-	done
-	${TMOE_PREFIX} mv -f ${TEMP_FILE} "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"
-	printf "%s\n" "Do you want to start the ${BLUE}${DEBIAN_FOLDER}${RESET} container now?${PURPLE}[Y/n]${RESET}"
-	do_you_want_to_continue
-	normally_start_gnu_linux_distro
+    TEMP_FILE="${TMPDIR}/start_01_${RANDOM}"
+    printf "%s\n" '#!/usr/bin/env bash' '#!/usr/bin/env ruby' '#!/usr/bin/env python' '#You can create a temporary automatic startup script' '#that will be automatically executed after the container is started,' '#and will be automatically deleted after the execution is complete.' '#Please remove unnecessary shebang' >${TEMP_FILE}
+    chmod a+rx ${TEMP_FILE}
+    for i in editor micro vim nano; do
+        if [ $(command -v ${i}) ]; then
+            ${i} ${TEMP_FILE}
+            break
+        fi
+    done
+    ${TMOE_PREFIX} mv -f ${TEMP_FILE} "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"
+    printf "%s\n" "Do you want to start the ${BLUE}${DEBIAN_FOLDER}${RESET} container now?${PURPLE}[Y/n]${RESET}"
+    do_you_want_to_continue
+    normally_start_gnu_linux_distro
 }
 edit_container_etc_environment() {
-	if [ $(command -v editor) ]; then
-		${TMOE_PREFIX} editor ${DEBIAN_CHROOT}/etc/environment
-	else
-		${TMOE_PREFIX} nano ${DEBIAN_CHROOT}/etc/environment
-	fi
+    if [ $(command -v editor) ]; then
+        ${TMOE_PREFIX} editor ${DEBIAN_CHROOT}/etc/environment
+    else
+        ${TMOE_PREFIX} nano ${DEBIAN_CHROOT}/etc/environment
+    fi
 }
 edit_container_global_env_var_file() {
-	if [ $(command -v editor) ]; then
-		${TMOE_PREFIX} editor ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/container.env
-	else
-		${TMOE_PREFIX} nano ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/container.env
-	fi
+    if [ $(command -v editor) ]; then
+        ${TMOE_PREFIX} editor ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/container.env
+    else
+        ${TMOE_PREFIX} nano ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/container.env
+    fi
 }
 edit_container_entrypoint() {
-	if [ $(command -v editor) ]; then
-		${TMOE_PREFIX} editor ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/entrypoint
-	else
-		${TMOE_PREFIX} nano ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/entrypoint
-	fi
+    if [ $(command -v editor) ]; then
+        ${TMOE_PREFIX} editor ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/entrypoint
+    else
+        ${TMOE_PREFIX} nano ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/entrypoint
+    fi
 }
 ##############################
 set_tmoe_user_as_the_default_user() {
-	${TMOE_PREFIX} sed -E -e "s@^(PROOT_USER)=.*@\1=${TMOE_USER_NAME}@" \
-		-e "s@^(CHROOT_USER)=.*@\1=${TMOE_USER_NAME}@" \
-		-i ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    ${TMOE_PREFIX} sed -E -e "s@^(PROOT_USER)=.*@\1=${TMOE_USER_NAME}@" \
+        -e "s@^(CHROOT_USER)=.*@\1=${TMOE_USER_NAME}@" \
+        -i ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
 }
 ##############################
 switch_container_login_user() {
-	cd "${TMPDIR}" || exit 1
-	grep -Ev 'nologin|halt|shutdown' ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{ print $1}' >.tmoe-linux_cache.01
-	grep -Ev 'nologin|halt|shutdown' ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{ print $3"|"$4 }' >.tmoe-linux_cache.02
-	TMOE_USER_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
-	rm -f .tmoe-linux_cache.0*
-	TMOE_USER_NAME=$(whiptail --title "USER LIST" --menu \
-		"The login user of the current container is $(grep -E '^PROOT_USER=|^CHROOT_USER=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')\nPlease choose a user." 0 0 0 \
-		${TMOE_USER_LIST} \
-		"0" "🌚 Back/zurück/返回" \
-		3>&1 1>&2 2>&3)
-	case ${TMOE_USER_NAME} in
-	0 | "") ${RETURN_TO_WHERE} ;;
-	esac
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8)
-		if (whiptail --title "DEFAULT USER" --yesno "Do you want to set ${TMOE_USER_NAME} as the default user?\n请问您是否想要将${TMOE_USER_NAME}设置为默认用户?" 0 0); then
-			set_tmoe_user_as_the_default_user
-		fi
-		;;
-	*)
-		if (whiptail --title "DEFAULT USER" --yesno "Do you want to set ${TMOE_USER_NAME} as the default user?" 0 0); then
-			set_tmoe_user_as_the_default_user
-		fi
-		;;
-	esac
-	grep -E --color=auto "^PROOT_USER=|^CHROOT_USER=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	press_enter_to_return
-	${RETURN_TO_WHERE}
+    cd "${TMPDIR}" || exit 1
+    grep -Ev 'nologin|halt|shutdown' ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{ print $1}' >.tmoe-linux_cache.01
+    grep -Ev 'nologin|halt|shutdown' ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{ print $3"|"$4 }' >.tmoe-linux_cache.02
+    TMOE_USER_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
+    rm -f .tmoe-linux_cache.0*
+    TMOE_USER_NAME=$(whiptail --title "USER LIST" --menu \
+        "The login user of the current container is $(grep -E '^PROOT_USER=|^CHROOT_USER=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')\nPlease choose a user." 0 0 0 \
+        ${TMOE_USER_LIST} \
+        "0" "🌚 Back/zurück/返回" \
+        3>&1 1>&2 2>&3)
+    case ${TMOE_USER_NAME} in
+    0 | "") ${RETURN_TO_WHERE} ;;
+    esac
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8)
+        if (whiptail --title "DEFAULT USER" --yesno "Do you want to set ${TMOE_USER_NAME} as the default user?\n请问您是否想要将${TMOE_USER_NAME}设置为默认用户?" 0 0); then
+            set_tmoe_user_as_the_default_user
+        fi
+        ;;
+    *)
+        if (whiptail --title "DEFAULT USER" --yesno "Do you want to set ${TMOE_USER_NAME} as the default user?" 0 0); then
+            set_tmoe_user_as_the_default_user
+        fi
+        ;;
+    esac
+    grep -E --color=auto "^PROOT_USER=|^CHROOT_USER=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    press_enter_to_return
+    ${RETURN_TO_WHERE}
 }
 readme_of_env_var_and_autostartup_script() {
-	if [ $(command -v bat) ]; then
-		bat -ppn ${TMOE_SHARE_DIR}/container/README.md
-	elif [ $(command -v bat) ]; then
-		bat -ppn ${TMOE_SHARE_DIR}/container/README.md
-	else
-		${TMOE_SHARE_DIR}/container/README.md
-	fi
+    if [ $(command -v bat) ]; then
+        bat -ppn ${TMOE_SHARE_DIR}/container/README.md
+    elif [ $(command -v bat) ]; then
+        bat -ppn ${TMOE_SHARE_DIR}/container/README.md
+    else
+        ${TMOE_SHARE_DIR}/container/README.md
+    fi
 }
 ##############################
 start_gui_menu() {
-	start_gui_menu_en() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to start vnc or x11?" 0 50 0 \
-			"1" "🐯 startvnc(tiger/tight)" \
-			"2" "⚔️ startx11vnc" \
-			"3" "⚒️ startxsdl" \
-			"4" "🍬 novnc(HTML5 VNC client)" \
-			"5" "tightvnc (only for debian,ubuntu &kali)" \
-			"6" "tigervnc" \
-			"0" "🌚 Return to previous menu" \
-			3>&1 1>&2 2>&3)
-	}
-	start_gui_menu_cn() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "是否需要启动远程桌面？" 0 50 0 \
-			"1" "🐯 startvnc:启动tiger/tightvnc" \
-			"2" "⚔️ startx11vnc:启动x11vnc" \
-			"3" "⚒️ startxsdl:启动xsdl/VcXsrv" \
-			"4" "🍬 novnc:在浏览器里连接vnc" \
-			"5" "tightvnc (only for debian,ubuntu &kali)" \
-			"6" "tigervnc" \
-			"0" "🌚 back 返回" \
-			3>&1 1>&2 2>&3)
-	}
-	start_gui_menu_de() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to start vnc or x11?" 0 50 0 \
-			"1" "🐯 startvnc (tiger/tight)" \
-			"2" "⚔️ startx11vnc" \
-			"3" "⚒️ startxsdl" \
-			"4" "🍬 novnc (HTML5 VNC client)" \
-			"5" "tightvnc (only for debian,ubuntu &kali)" \
-			"6" "tigervnc" \
-			"0" "🌚 zurück" \
-			3>&1 1>&2 2>&3)
-	}
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) start_gui_menu_cn ;;
-	de_DE.UTF-8) start_gui_menu_de ;; #Deutsche
-	*) start_gui_menu_en ;;
-	esac
-	##############################
-	case "${SELECTED_GNU_LINUX}" in
-	0 | "") ${RETURN_TO_WHERE} ;;
-	1) start_gnu_linux_distro_tigervnc ;;
-	2) start_gnu_linux_distro_x11vnc ;;
-	3) start_gnu_linux_distro_x ;;
-	4) install_web_novnc ;;
-	5)
-		EXEC_PROGRAM='tightvnc'
-		startvnc_and_exec_program
-		;;
-	6)
-		EXEC_PROGRAM='tigervnc'
-		startvnc_and_exec_program
-		;;
-	esac
+    start_gui_menu_en() {
+        SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to start vnc or x11?" 0 50 0 \
+            "1" "🐯 startvnc(tiger/tight)" \
+            "2" "⚔️ startx11vnc" \
+            "3" "⚒️ startxsdl" \
+            "4" "🍬 novnc(HTML5 VNC client)" \
+            "5" "tightvnc (only for debian,ubuntu &kali)" \
+            "6" "tigervnc" \
+            "0" "🌚 Return to previous menu" \
+            3>&1 1>&2 2>&3)
+    }
+    start_gui_menu_cn() {
+        SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "是否需要启动远程桌面？" 0 50 0 \
+            "1" "🐯 startvnc:启动tiger/tightvnc" \
+            "2" "⚔️ startx11vnc:启动x11vnc" \
+            "3" "⚒️ startxsdl:启动xsdl/VcXsrv" \
+            "4" "🍬 novnc:在浏览器里连接vnc" \
+            "5" "tightvnc (only for debian,ubuntu &kali)" \
+            "6" "tigervnc" \
+            "0" "🌚 back 返回" \
+            3>&1 1>&2 2>&3)
+    }
+    start_gui_menu_de() {
+        SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to start vnc or x11?" 0 50 0 \
+            "1" "🐯 startvnc (tiger/tight)" \
+            "2" "⚔️ startx11vnc" \
+            "3" "⚒️ startxsdl" \
+            "4" "🍬 novnc (HTML5 VNC client)" \
+            "5" "tightvnc (only for debian,ubuntu &kali)" \
+            "6" "tigervnc" \
+            "0" "🌚 zurück" \
+            3>&1 1>&2 2>&3)
+    }
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) start_gui_menu_cn ;;
+    de_DE.UTF-8) start_gui_menu_de ;; #Deutsche
+    *) start_gui_menu_en ;;
+    esac
+    ##############################
+    case "${SELECTED_GNU_LINUX}" in
+    0 | "") ${RETURN_TO_WHERE} ;;
+    1) start_gnu_linux_distro_tigervnc ;;
+    2) start_gnu_linux_distro_x11vnc ;;
+    3) start_gnu_linux_distro_x ;;
+    4) install_web_novnc ;;
+    5)
+        EXEC_PROGRAM='tightvnc'
+        startvnc_and_exec_program
+        ;;
+    6)
+        EXEC_PROGRAM='tigervnc'
+        startvnc_and_exec_program
+        ;;
+    esac
 }
 ##################
 startvnc_and_exec_program() {
-	[[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
-	exec_container_program
+    [[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
+    exec_container_program
 }
 edit_container_startup_script() {
-	for i in editor vim nano vi; do
-		if [ $(command -v ${i}) ]; then
-			${TMOE_PREFIX} ${i} ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container
-			break
-		fi
-	done
+    for i in editor vim nano vi; do
+        if [ $(command -v ${i}) ]; then
+            ${TMOE_PREFIX} ${i} ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container
+            break
+        fi
+    done
 }
 #####################
 create_a_new_container() {
-	unset NEW_DISTRO_CODE
-	TARGET=$(whiptail --inputbox "Please type the container name." 9 50 --title "CONTAINER NAME" 3>&1 1>&2 2>&3)
-	NEW_DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
-	if [ -z "${NEW_DISTRO_CODE}" ]; then
-		printf "%s\n" "Sorry,the value is empty."
-		press_enter_to_return
-		proot_management_menu
-	fi
-	DISTRO_NAME_01=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $1}')
-	DISTRO_CODE_01=$(printf '%s\n' "${NEW_DISTRO_CODE}" | awk '{print $1}')
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME_01}-${DISTRO_CODE_01}"
-	create_container_edition_txt
-	normally_start_gnu_linux_distro
+    unset NEW_DISTRO_CODE
+    TARGET=$(whiptail --inputbox "Please type the container name." 9 50 --title "CONTAINER NAME" 3>&1 1>&2 2>&3)
+    NEW_DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
+    if [ -z "${NEW_DISTRO_CODE}" ]; then
+        printf "%s\n" "Sorry,the value is empty."
+        press_enter_to_return
+        proot_management_menu
+    fi
+    DISTRO_NAME_01=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $1}')
+    DISTRO_CODE_01=$(printf '%s\n' "${NEW_DISTRO_CODE}" | awk '{print $1}')
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME_01}-${DISTRO_CODE_01}"
+    create_container_edition_txt
+    normally_start_gnu_linux_distro
 }
 #####################
 #EXEC_LSOF=$(sed -n p ${LSOF_TEMP_FILE})
 check_tmoe_container_pid() {
-	LIST_OPEN_FILES_COUNTS=$(awk '{print $1}' ${LSOF_TEMP_FILE} | grep -c '^lsof')
-	case ${LIST_OPEN_FILES_COUNTS} in
-	0)
-		LIST_OPEN_FILES=$(grep "${DEBIAN_CHROOT%/}" ${LSOF_TEMP_FILE} | awk '{print $1}' | uniq)
-		KILL_PID=$(printf "%s\n" "${LIST_OPEN_FILES}" | sed "s@^@pkill -9 @g")
-		;;
-	*)
-		LIST_OPEN_FILES=$(grep "${DEBIAN_CHROOT%/}" ${LSOF_TEMP_FILE} | awk '{print $2}' | uniq)
-		KILL_PID=$(printf "%s\n" "${LIST_OPEN_FILES}" | sed "s@^@kill -9 @g")
-		;;
-	esac
-	PROCESS_ID_AND_NAME=$(grep "${DEBIAN_CHROOT%/}" ${LSOF_TEMP_FILE} | awk '{print $2,$1}' | uniq)
+    LIST_OPEN_FILES_COUNTS=$(awk '{print $1}' ${LSOF_TEMP_FILE} | grep -c '^lsof')
+    case ${LIST_OPEN_FILES_COUNTS} in
+    0)
+        LIST_OPEN_FILES=$(grep "${DEBIAN_CHROOT%/}" ${LSOF_TEMP_FILE} | awk '{print $1}' | uniq)
+        KILL_PID=$(printf "%s\n" "${LIST_OPEN_FILES}" | sed "s@^@pkill -9 @g")
+        ;;
+    *)
+        LIST_OPEN_FILES=$(grep "${DEBIAN_CHROOT%/}" ${LSOF_TEMP_FILE} | awk '{print $2}' | uniq)
+        KILL_PID=$(printf "%s\n" "${LIST_OPEN_FILES}" | sed "s@^@kill -9 @g")
+        ;;
+    esac
+    PROCESS_ID_AND_NAME=$(grep "${DEBIAN_CHROOT%/}" ${LSOF_TEMP_FILE} | awk '{print $2,$1}' | uniq)
 
-	printf "${PURPLE}"
-	cat <<-EOF
+    printf "${PURPLE}"
+    cat <<-EOF
 		${PROCESS_ID_AND_NAME}
 	EOF
-	printf "${RESET}"
-	printf '%s\n' '--------------------'
-	case ${LIST_OPEN_FILES} in
-	"") ;;
-	*) printf "%s\n" "${KILL_PID}" ;;
-	esac
+    printf "${RESET}"
+    printf '%s\n' '--------------------'
+    case ${LIST_OPEN_FILES} in
+    "") ;;
+    *) printf "%s\n" "${KILL_PID}" ;;
+    esac
 }
 ##################
 tips_of_check_pid() {
-	printf "${GREEN}%s ${YELLOW}%s${RESET}\n" "DETECTING" "PROCESS ID ..."
-	printf "${BLOD}${YELLOW}%s${RESET}\n" "正在检测${DEBIAN_FOLDER}运行中的进程："
-	LSOF_TEMP_FILE="${TMPDIR}/.lsof.tmp"
-	[[ ! -e ${LSOF_TEMP_FILE} ]] || rm -f ${LSOF_TEMP_FILE}
-	[[ ! -e ${LSOF_TEMP_FILE}.02 ]] || rm -f ${LSOF_TEMP_FILE}.02
+    printf "${GREEN}%s ${YELLOW}%s${RESET}\n" "DETECTING" "PROCESS ID ..."
+    printf "${BLOD}${YELLOW}%s${RESET}\n" "正在检测${DEBIAN_FOLDER}运行中的进程："
+    LSOF_TEMP_FILE="${TMPDIR}/.lsof.tmp"
+    [[ ! -e ${LSOF_TEMP_FILE} ]] || rm -f ${LSOF_TEMP_FILE}
+    [[ ! -e ${LSOF_TEMP_FILE}.02 ]] || rm -f ${LSOF_TEMP_FILE}.02
 }
 ##########
 tips_of_kill_pid() {
-	printf "${RED}%s ${BLUE}%s${RESET}\n" "${PROCESS_ID_AND_NAME}" | sed "s@^@Killed @g"
-	printf "${BOLD}${YELLOW}%s\n" "All processes have been killed."
-	printf "%s\n" "已${RED}终止${BLUE}${DEBIAN_FOLDER}${RESET}容器进程"
-	[[ ! -e ${LSOF_TEMP_FILE} ]] || rm -f ${LSOF_TEMP_FILE}
+    printf "${RED}%s ${BLUE}%s${RESET}\n" "${PROCESS_ID_AND_NAME}" | sed "s@^@Killed @g"
+    printf "${BOLD}${YELLOW}%s\n" "All processes have been killed."
+    printf "%s\n" "已${RED}终止${BLUE}${DEBIAN_FOLDER}${RESET}容器进程"
+    [[ ! -e ${LSOF_TEMP_FILE} ]] || rm -f ${LSOF_TEMP_FILE}
 }
 ##########
 kill_chroot_container_process_gnu_linux() {
-	#if [ -e "${DEBIAN_CHROOT}/run/dbus/pid" ]; then
-	#	DBUS_PID="$(sed -n p ${DEBIAN_CHROOT}/run/dbus/pid)"
-	#	su -c "kill -9 ${DBUS_PID} 2>/dev/null"
-	#fi
+    #if [ -e "${DEBIAN_CHROOT}/run/dbus/pid" ]; then
+    #	DBUS_PID="$(sed -n p ${DEBIAN_CHROOT}/run/dbus/pid)"
+    #	su -c "kill -9 ${DBUS_PID} 2>/dev/null"
+    #fi
 
-	#for i in /var/run/dbus/pid /tmp/.X1-lock /tmp/.X11-unix/X1; do
-	#	if [ -e "${DEBIAN_CHROOT}${i}" ]; then
-	#		sudo rm -vf ${DEBIAN_CHROOT}${i}
-	#	fi
-	#done
-	tips_of_check_pid
-	#EXEC_LSOF=$(su -c "lsof")
-	su -c "lsof ${DEBIAN_CHROOT%/}" >${LSOF_TEMP_FILE}.02
-	if [[ $(command -v batcat) ]]; then
-		batcat -ppn -l ruby ${LSOF_TEMP_FILE}.02
-	elif [[ $(command -v bat) ]]; then
-		bat -ppn -l ruby ${LSOF_TEMP_FILE}.02
-	else
-		cat ${LSOF_TEMP_FILE}.02
-	fi
-	LIST_OPEN_FILES_02=$(awk '{print $2}' ${LSOF_TEMP_FILE}.02 | sed 1d | uniq)
-	KILL_PID_02=$(printf "%s\n" "${LIST_OPEN_FILES_02}" | sed "s@^@${GREEN}sudo ${RED}kill -9${BLUE} @g")
-	if [[ -n ${LIST_OPEN_FILES_02} ]]; then
-		case ${TMOE_MENU_LANG} in
-		zh_*UTF-8) printf "%s\n" "若无法${RED}终止${RESET}${BLUE}容器进程${RESET}，则请${PURPLE}手动执行${RESET}以下${GREEN}sudo${RESET}开头的命令。" ;;
-		esac
-		printf "%s\n" "If you can not ${RED}kill${RESET} these ${BLUE}processes${RESET},try running ${GREEN}the following commands.${RESET}"
-		printf "%s\n" "${GREEN}${KILL_PID_02}${RESET}"
-	fi
-	#此处执行bash -c "${KILL_PID_02}"会导致tmoe-manager退出。
+    #for i in /var/run/dbus/pid /tmp/.X1-lock /tmp/.X11-unix/X1; do
+    #	if [ -e "${DEBIAN_CHROOT}${i}" ]; then
+    #		sudo rm -vf ${DEBIAN_CHROOT}${i}
+    #	fi
+    #done
+    tips_of_check_pid
+    #EXEC_LSOF=$(su -c "lsof")
+    su -c "lsof ${DEBIAN_CHROOT%/}" >${LSOF_TEMP_FILE}.02
+    if [[ $(command -v batcat) ]]; then
+        batcat -ppn -l ruby ${LSOF_TEMP_FILE}.02
+    elif [[ $(command -v bat) ]]; then
+        bat -ppn -l ruby ${LSOF_TEMP_FILE}.02
+    else
+        cat ${LSOF_TEMP_FILE}.02
+    fi
+    LIST_OPEN_FILES_02=$(awk '{print $2}' ${LSOF_TEMP_FILE}.02 | sed 1d | uniq)
+    KILL_PID_02=$(printf "%s\n" "${LIST_OPEN_FILES_02}" | sed "s@^@${GREEN}sudo ${RED}kill -9${BLUE} @g")
+    if [[ -n ${LIST_OPEN_FILES_02} ]]; then
+        case ${TMOE_MENU_LANG} in
+        zh_*UTF-8) printf "%s\n" "若无法${RED}终止${RESET}${BLUE}容器进程${RESET}，则请${PURPLE}手动执行${RESET}以下${GREEN}sudo${RESET}开头的命令。" ;;
+        esac
+        printf "%s\n" "If you can not ${RED}kill${RESET} these ${BLUE}processes${RESET},try running ${GREEN}the following commands.${RESET}"
+        printf "%s\n" "${GREEN}${KILL_PID_02}${RESET}"
+    fi
+    #此处执行bash -c "${KILL_PID_02}"会导致tmoe-manager退出。
 }
 kill_chroot_container_process_old() {
-	case ${SYSTEMD_NSPAWN} in
-	true)
-		printf "%s\n" "${GREEN}machinectl ${PURPLE}terminate ${BLUE}${MACHINE_NAME}${RESET}"
-		machinectl terminate ${MACHINE_NAME}
-		;;
-	esac
-	case ${LINUX_DISTRO} in
-	Android) tips_of_check_pid ;;
-	*) kill_chroot_container_process_gnu_linux ;;
-	esac
-	su -c "lsof" >${LSOF_TEMP_FILE}
-	check_tmoe_container_pid
-	su -c "${KILL_PID}"
-	#必须在kill掉进程后再umount
-	source ${TMOE_SHARE_DIR}/removal/umount
-	tips_of_kill_pid
+    case ${SYSTEMD_NSPAWN} in
+    true)
+        printf "%s\n" "${GREEN}machinectl ${PURPLE}terminate ${BLUE}${MACHINE_NAME}${RESET}"
+        machinectl terminate ${MACHINE_NAME}
+        ;;
+    esac
+    case ${LINUX_DISTRO} in
+    Android) tips_of_check_pid ;;
+    *) kill_chroot_container_process_gnu_linux ;;
+    esac
+    su -c "lsof" >${LSOF_TEMP_FILE}
+    check_tmoe_container_pid
+    su -c "${KILL_PID}"
+    #必须在kill掉进程后再umount
+    source ${TMOE_SHARE_DIR}/removal/umount
+    tips_of_kill_pid
 }
 kill_chroot_container_process() {
-	cd ~
-	tips_of_check_pid
-	su -c "lsof ${DEBIAN_CHROOT%/}" | awk '{print $2}' | sed 1d | uniq | sed "s@^@kill -9 @g" >${LSOF_TEMP_FILE}.02
-	chmod 777 ${LSOF_TEMP_FILE}.02
-	if [[ $(command -v batcat) ]]; then
-		batcat -ppn -l ruby ${LSOF_TEMP_FILE}.02
-	elif [[ $(command -v bat) ]]; then
-		bat -ppn -l ruby ${LSOF_TEMP_FILE}.02
-	else
-		cat ${LSOF_TEMP_FILE}.02
-	fi
-	if [[ -s ${LSOF_TEMP_FILE}.02 ]]; then
-		su -c "${LSOF_TEMP_FILE}.02"
-	fi
-	source ${TMOE_SHARE_DIR}/removal/umount
-	tips_of_kill_pid
+    cd ~
+    tips_of_check_pid
+    su -c "lsof ${DEBIAN_CHROOT%/}" | awk '{print $2}' | sed 1d | uniq | sed "s@^@kill -9 @g" >${LSOF_TEMP_FILE}.02
+    chmod 777 ${LSOF_TEMP_FILE}.02
+    if [[ $(command -v batcat) ]]; then
+        batcat -ppn -l ruby ${LSOF_TEMP_FILE}.02
+    elif [[ $(command -v bat) ]]; then
+        bat -ppn -l ruby ${LSOF_TEMP_FILE}.02
+    else
+        cat ${LSOF_TEMP_FILE}.02
+    fi
+    if [[ -s ${LSOF_TEMP_FILE}.02 ]]; then
+        su -c "${LSOF_TEMP_FILE}.02"
+    fi
+    source ${TMOE_SHARE_DIR}/removal/umount
+    tips_of_kill_pid
 }
 kill_proot_container_process() {
-	tips_of_check_pid
-	#EXEC_LSOF=$(lsof 2>/dev/null)
-	lsof 2>/dev/null >${LSOF_TEMP_FILE}
-	check_tmoe_container_pid
-	bash -c "${KILL_PID}"
-	tips_of_kill_pid
+    tips_of_check_pid
+    #EXEC_LSOF=$(lsof 2>/dev/null)
+    lsof 2>/dev/null >${LSOF_TEMP_FILE}
+    check_tmoe_container_pid
+    bash -c "${KILL_PID}"
+    tips_of_kill_pid
 }
 ################
 kill_container_process() {
-	#printf "%s\n" "Sorry,由于本功能在调试中出现bug，因次无法准确地检测容器进程。"
-	#printf "%s\n" "Please look forward to the stable version tomorrow."
-	case ${TMOE_CHROOT} in
-	true)
-		case ${SYSTEMD_NSPAWN} in
-		true)
-			printf "%s\n" "${GREEN}machinectl ${PURPLE}terminate ${BLUE}${MACHINE_NAME}${RESET}"
-			machinectl terminate ${MACHINE_NAME}
-			;;
-		*) kill_chroot_container_process ;;
-		esac
-		;;
-	*) kill_proot_container_process ;;
-	esac
+    #printf "%s\n" "Sorry,由于本功能在调试中出现bug，因次无法准确地检测容器进程。"
+    #printf "%s\n" "Please look forward to the stable version tomorrow."
+    case ${TMOE_CHROOT} in
+    true)
+        case ${SYSTEMD_NSPAWN} in
+        true)
+            printf "%s\n" "${GREEN}machinectl ${PURPLE}terminate ${BLUE}${MACHINE_NAME}${RESET}"
+            machinectl terminate ${MACHINE_NAME}
+            ;;
+        *) kill_chroot_container_process ;;
+        esac
+        ;;
+    *) kill_proot_container_process ;;
+    esac
 }
 ##############
 readme_of_gnu_linux_distro() {
-	LONG_DISTRO_NAME=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $1}')
-	LONG_DISTRO_CODE=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $2}')
-	[[ ! $(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $3}') = Stream ]] || LONG_DISTRO_CODE=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $2"-"$3}')
-	case ${LONG_DISTRO_NAME} in
-	arch) SHORT_DISTRO_NAME='a' ;;
-	alpine) SHORT_DISTRO_NAME='ap' ;;
-	armbian) SHORT_DISTRO_NAME='arm' ;;
-	centos) SHORT_DISTRO_NAME='c' ;;
-	debian) SHORT_DISTRO_NAME='d' ;;
-	fedora) SHORT_DISTRO_NAME='f' ;;
-	funtoo) SHORT_DISTRO_NAME='ft' ;;
-	gentoo) SHORT_DISTRO_NAME='g' ;;
-	kali) SHORT_DISTRO_NAME='k' ;;
-	mint) SHORT_DISTRO_NAME='mi' ;;
-	manjaro) SHORT_DISTRO_NAME='m' ;;
-	opensuse) SHORT_DISTRO_NAME='o' ;;
-	openwrt) SHORT_DISTRO_NAME='ow' ;;
-	raspbios) SHORT_DISTRO_NAME='r' ;;
-	slackware) SHORT_DISTRO_NAME='s' ;;
-	ubuntu) SHORT_DISTRO_NAME='u' ;;
-	void) SHORT_DISTRO_NAME='v' ;;
-	*) SHORT_DISTRO_NAME=${LONG_DISTRO_NAME} ;;
-	esac
-	case ${TMOE_CHROOT} in
-	true) SHORT_VIRT_TYPE='c' ;;
-	*) SHORT_VIRT_TYPE='p' ;;
-	esac
-	case "${LONG_DISTRO_CODE}" in
-	alpine) SHORT_DISTRO_CODE='ap' ;;
-	focal) SHORT_DISTRO_CODE='20.04' ;;
-	groovy) SHORT_DISTRO_CODE='20.10' ;;
-	hirsute) SHORT_DISTRO_CODE='21.04' ;;
-	impish) SHORT_DISTRO_CODE='21.10' ;;
-	sid) SHORT_DISTRO_CODE='s' ;;
-	bionic) SHORT_DISTRO_CODE='18.04' ;;
-	rolling) SHORT_DISTRO_CODE='r' ;;
-	zsh) SHORT_DISTRO_CODE='z' ;;
-	8-Stream) SHORT_DISTRO_CODE='8s' ;;
-	9-Stream) SHORT_DISTRO_CODE='9s' ;;
-	"") SHORT_DISTRO_CODE="" ;;
-	*) SHORT_DISTRO_CODE=${LONG_DISTRO_CODE} ;;
-	esac
-	case ${ARCH_TYPE} in
-	amd64) SHORT_ARCH='x' ;;
-	arm64) SHORT_ARCH='a' ;;
-	armhf) SHORT_ARCH='h' ;;
-	armel) SHORT_ARCH='armel' ;;
-	i386) SHORT_ARCH='i' ;;
-	ppc*) SHORT_ARCH='p' ;;
-	s390*) SHORT_ARCH='s390' ;;
-	mips64el) SHORT_ARCH='m64' ;;
-	mipsel) SHORT_ARCH='m' ;;
-	risc*) SHORT_ARCH='risc' ;;
-	esac
-	if [ "$(ls ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/docs/README.* 2>/dev/null)" ]; then
-		for i in ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/docs/README.*; do
-			if [ $(command -v bat) ]; then
-				bat -ppn ${i}
-			elif [ $(command -v batcat) ]; then
-				batcat -ppn ${i}
-			else
-				cat ${i}
-			fi
-			break
-		done
-	fi
-	cat <<-EOF
+    LONG_DISTRO_NAME=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $1}')
+    LONG_DISTRO_CODE=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $2}')
+    [[ ! $(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $3}') = Stream ]] || LONG_DISTRO_CODE=$(printf '%s\n' "${TMOE_LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $2"-"$3}')
+    case ${LONG_DISTRO_NAME} in
+    arch) SHORT_DISTRO_NAME='a' ;;
+    alpine) SHORT_DISTRO_NAME='ap' ;;
+    armbian) SHORT_DISTRO_NAME='arm' ;;
+    centos) SHORT_DISTRO_NAME='c' ;;
+    debian) SHORT_DISTRO_NAME='d' ;;
+    fedora) SHORT_DISTRO_NAME='f' ;;
+    funtoo) SHORT_DISTRO_NAME='ft' ;;
+    gentoo) SHORT_DISTRO_NAME='g' ;;
+    kali) SHORT_DISTRO_NAME='k' ;;
+    mint) SHORT_DISTRO_NAME='mi' ;;
+    manjaro) SHORT_DISTRO_NAME='m' ;;
+    opensuse) SHORT_DISTRO_NAME='o' ;;
+    openwrt) SHORT_DISTRO_NAME='ow' ;;
+    raspbios) SHORT_DISTRO_NAME='r' ;;
+    slackware) SHORT_DISTRO_NAME='s' ;;
+    ubuntu) SHORT_DISTRO_NAME='u' ;;
+    void) SHORT_DISTRO_NAME='v' ;;
+    *) SHORT_DISTRO_NAME=${LONG_DISTRO_NAME} ;;
+    esac
+    case ${TMOE_CHROOT} in
+    true) SHORT_VIRT_TYPE='c' ;;
+    *) SHORT_VIRT_TYPE='p' ;;
+    esac
+    case "${LONG_DISTRO_CODE}" in
+    alpine) SHORT_DISTRO_CODE='ap' ;;
+    focal) SHORT_DISTRO_CODE='20.04' ;;
+    groovy) SHORT_DISTRO_CODE='20.10' ;;
+    hirsute) SHORT_DISTRO_CODE='21.04' ;;
+    impish) SHORT_DISTRO_CODE='21.10' ;;
+    sid) SHORT_DISTRO_CODE='s' ;;
+    bionic) SHORT_DISTRO_CODE='18.04' ;;
+    rolling) SHORT_DISTRO_CODE='r' ;;
+    zsh) SHORT_DISTRO_CODE='z' ;;
+    8-Stream) SHORT_DISTRO_CODE='8s' ;;
+    9-Stream) SHORT_DISTRO_CODE='9s' ;;
+    "") SHORT_DISTRO_CODE="" ;;
+    *) SHORT_DISTRO_CODE=${LONG_DISTRO_CODE} ;;
+    esac
+    case ${ARCH_TYPE} in
+    amd64) SHORT_ARCH='x' ;;
+    arm64) SHORT_ARCH='a' ;;
+    armhf) SHORT_ARCH='h' ;;
+    armel) SHORT_ARCH='armel' ;;
+    i386) SHORT_ARCH='i' ;;
+    ppc*) SHORT_ARCH='p' ;;
+    s390*) SHORT_ARCH='s390' ;;
+    mips64el) SHORT_ARCH='m64' ;;
+    mipsel) SHORT_ARCH='m' ;;
+    risc*) SHORT_ARCH='risc' ;;
+    esac
+    if [ "$(ls ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/docs/README.* 2>/dev/null)" ]; then
+        for i in ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/docs/README.*; do
+            if [ $(command -v bat) ]; then
+                bat -ppn ${i}
+            elif [ $(command -v batcat) ]; then
+                batcat -ppn ${i}
+            else
+                cat ${i}
+            fi
+            break
+        done
+    fi
+    cat <<-EOF
 
 		${BOLD}${YELLOW}LIST INSTALLED CONTAINERS:${RESET} ${BLUE}tmoe ls${RESET}, if you are using tmoe-zsh, just type ${GREEN}t ls${RESET}
 		${BOLD}${YELLOW}Start the default ${CONTAINER_TYPE} container:${RESET} ${BLUE}tmoe ${SHORT_VIRT_TYPE}${RESET}
@@ -996,9 +996,9 @@ readme_of_gnu_linux_distro() {
 		  2.在其他插件管理器配置的环境下，输入${YELLOW}tmoe${RESET},不按回车,按下TAB键${BLUE}⇄${RESET}进行补全.
 		  Type ${GREEN}tmoe${RESET}, then don't press ${RED}enter${RESET}, press Tab${BLUE}⇄${RESET} key to complete.
 	EOF
-	case ${SYSTEMD_NSPAWN} in
-	true)
-		cat <<-EOF
+    case ${SYSTEMD_NSPAWN} in
+    true)
+        cat <<-EOF
 
 			检测到您选择的${BLUE}systemd-nspawn${RESET}容器，在进入容器后，按下${GREEN}Ctrl${RESET}+三次${YELLOW}]]]${RED}退出${RESET}。
 			您可以使用${GREEN}machinectl${RESET}来管理nspawn容器。
@@ -1006,357 +1006,357 @@ readme_of_gnu_linux_distro() {
 			${GREEN}machinectl list${RESET} 列出容器
 			${GREEN}machinectl terminate ${DEBIAN_FOLDER}-${ARCH_TYPE}${RESET} 终止容器
 		EOF
-		;;
-	esac
+        ;;
+    esac
 }
 ######
 if_container_is_not_installed() {
-	[[ -e ${DEBIAN_CHROOT}/dev ]] || install_new_tmoe_gnu_linux_distro
-	case ${DEB_BOOT_STRAP} in
-	true) install_new_tmoe_gnu_linux_distro ;;
-	esac
+    [[ -e ${DEBIAN_CHROOT}/dev ]] || install_new_tmoe_gnu_linux_distro
+    case ${DEB_BOOT_STRAP} in
+    true) install_new_tmoe_gnu_linux_distro ;;
+    esac
 }
 git_pull_tmoe_linux() {
-	cd ${TMOE_GIT_DIR}
-	git reset --hard origin/master
-	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
-	cd ${CURRENT_DIR}
+    cd ${TMOE_GIT_DIR}
+    git reset --hard origin/master
+    git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
+    cd ${CURRENT_DIR}
 
 }
 normally_start_gnu_linux_distro() {
-	source ${CONFIG_FOLDER}/hitokoto.conf
-	case ${TMOE_CONTAINER_FORTUNE} in
-	true)
-		if [ $(command -v fortune) ]; then
-			fortune 2>/dev/null
-		elif [ -e /usr/games/fortune ]; then
-			/usr/games/fortune 2>/dev/null
-		fi
-		;;
-	esac
-	case ${TMOE_CONTAINER_HITOKOTO} in
-	true) [[ ! ${TMOE_LANG} =~ zh_.*UTF-8 ]] || get_hitokito_cn ;;
-	esac
-	if_container_is_not_installed
-	cat_release_file
-	case $(uname -o) in
-	Android)
-		[[ ! $(command -v termux-wake-unlock) ]] || termux-wake-lock 2>/dev/null
-		;;
-	esac
+    source ${CONFIG_FOLDER}/hitokoto.conf
+    case ${TMOE_CONTAINER_FORTUNE} in
+    true)
+        if [ $(command -v fortune) ]; then
+            fortune 2>/dev/null
+        elif [ -e /usr/games/fortune ]; then
+            /usr/games/fortune 2>/dev/null
+        fi
+        ;;
+    esac
+    case ${TMOE_CONTAINER_HITOKOTO} in
+    true) [[ ! ${TMOE_LANG} =~ zh_.*UTF-8 ]] || get_hitokito_cn ;;
+    esac
+    if_container_is_not_installed
+    cat_release_file
+    case $(uname -o) in
+    Android)
+        [[ ! $(command -v termux-wake-unlock) ]] || termux-wake-lock 2>/dev/null
+        ;;
+    esac
 
-	if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
-		pulseaudio --start --exit-idle-time=7200
-		pacmd load-module module-native-protocol-tcp auth-ip-acl='127.0.0.1;192.168.0.0/16;172.16.0.0/12' auth-anonymous=1 2>/dev/null
-	fi
-	# case ${SYSTEMD_NSPAWN} in
-	# true)
-	# 	# source ${TMOE_SHARE_DIR}/removal/umount
-	# 	source ${TMOE_SHARE_DIR}/container/nspawn/startup
-	# 	;;
-	# *)
-	${TMOE_PREFIX} bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container
-	# ;;
-	# esac
-	if [[ -e ${DEBIAN_CHROOT} ]]; then
-		press_enter_to_return
-		proot_management_menu
-	fi
+    if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
+        pulseaudio --start --exit-idle-time=7200
+        pacmd load-module module-native-protocol-tcp auth-ip-acl='127.0.0.1;192.168.0.0/16;172.16.0.0/12' auth-anonymous=1 2>/dev/null
+    fi
+    # case ${SYSTEMD_NSPAWN} in
+    # true)
+    # 	# source ${TMOE_SHARE_DIR}/removal/umount
+    # 	source ${TMOE_SHARE_DIR}/container/nspawn/startup
+    # 	;;
+    # *)
+    ${TMOE_PREFIX} bash ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container
+    # ;;
+    # esac
+    if [[ -e ${DEBIAN_CHROOT} ]]; then
+        press_enter_to_return
+        proot_management_menu
+    fi
 }
 #############################
 check_container_login_file_02() {
-	#env_02
-	TMOE_GNU_LINUX_CONTAINER_ENV_DIR="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment"
-	TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container"
-	TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR="${DEBIAN_CHROOT}/root/.vnc"
-	TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR="${DEBIAN_CHROOT}/tmp/.tmoe_container_temporary"
-	CONTAINER_ZSH_DIR="${DEBIAN_CHROOT}/etc/zsh"
-	CONTAINER_ZLOGIN_FILE="${DEBIAN_CHROOT}/etc/zsh/zlogin"
-	#######
-	rmdir_container_tmp() {
-		rm -rf ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
-		case ${?} in
-		0) ;;
-		*)
-			${TMOE_PREFIX} chmod 777 -Rv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
-			${TMOE_PREFIX} rm -rfv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
-			;;
-		esac
-	}
-	if [[ -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} ]]; then
-		if [[ ! -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/.container.lock ]]; then
-			rmdir_container_tmp
-		else
-			FILE_TIME=$(date -d "$(stat -c '%y' ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/.container.lock)" +"%Y%m%d")
-			case ${FILE_TIME} in
-			"$(date +%Y%m%d)") printf "%s\n" "${BLUE}/tmp/.tmoe_container_temporary/.container.lock${RESET}" ;;
-			*) rmdir_container_tmp ;;
-			esac
-		fi
-	fi
-	#######
-	if [ -r "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then
-		if ! grep -q 'tmp/.tmoe_container_temporary' "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login"; then
-			${TMOE_PREFIX} rm -fv "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh
-		fi
-	fi
-	if [ ! -e "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then
-		${TMOE_PREFIX} mkdir -p ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/permanent ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
-		${TMOE_PREFIX} chmod 777 ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
-		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}
-		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh
-		${TMOE_PREFIX} chmod -Rv a+rx ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh ${DEBIAN_CHROOT}/etc/profile.d/permanent ${DEBIAN_CHROOT}/tmp/.tmoe_container_temporary
-	fi
-	if [[ ! -e ${CONTAINER_ZLOGIN_FILE} ]]; then
-		${TMOE_PREFIX} mkdir -pv ${CONTAINER_ZSH_DIR}
-		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/zlogin ${CONTAINER_ZLOGIN_FILE}
-		${TMOE_PREFIX} chmod -Rv a+rx ${CONTAINER_ZSH_DIR}
-	elif ! grep -q 'environment/login' ${CONTAINER_ZLOGIN_FILE}; then
-		${TMOE_PREFIX} sed -i '$ a[[ ! -r /usr/local/etc/tmoe-linux/environment/login ]] || source /usr/local/etc/tmoe-linux/environment/login' ${CONTAINER_ZLOGIN_FILE}
-	fi
-	mkdir -p ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} || ${TMOE_PREFIX} mkdir -p ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
-	${TMOE_PREFIX} chmod 777 -R ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+    #env_02
+    TMOE_GNU_LINUX_CONTAINER_ENV_DIR="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/environment"
+    TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/tmoe-linux-container"
+    TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR="${DEBIAN_CHROOT}/root/.vnc"
+    TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR="${DEBIAN_CHROOT}/tmp/.tmoe_container_temporary"
+    CONTAINER_ZSH_DIR="${DEBIAN_CHROOT}/etc/zsh"
+    CONTAINER_ZLOGIN_FILE="${DEBIAN_CHROOT}/etc/zsh/zlogin"
+    #######
+    rmdir_container_tmp() {
+        rm -rf ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+        case ${?} in
+        0) ;;
+        *)
+            ${TMOE_PREFIX} chmod 777 -Rv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+            ${TMOE_PREFIX} rm -rfv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+            ;;
+        esac
+    }
+    if [[ -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} ]]; then
+        if [[ ! -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/.container.lock ]]; then
+            rmdir_container_tmp
+        else
+            FILE_TIME=$(date -d "$(stat -c '%y' ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/.container.lock)" +"%Y%m%d")
+            case ${FILE_TIME} in
+            "$(date +%Y%m%d)") printf "%s\n" "${BLUE}/tmp/.tmoe_container_temporary/.container.lock${RESET}" ;;
+            *) rmdir_container_tmp ;;
+            esac
+        fi
+    fi
+    #######
+    if [ -r "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then
+        if ! grep -q 'tmp/.tmoe_container_temporary' "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login"; then
+            ${TMOE_PREFIX} rm -fv "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh
+        fi
+    fi
+    if [ ! -e "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then
+        ${TMOE_PREFIX} mkdir -p ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/permanent ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+        ${TMOE_PREFIX} chmod 777 ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+        ${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}
+        ${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh
+        ${TMOE_PREFIX} chmod -Rv a+rx ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR} ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh ${DEBIAN_CHROOT}/etc/profile.d/permanent ${DEBIAN_CHROOT}/tmp/.tmoe_container_temporary
+    fi
+    if [[ ! -e ${CONTAINER_ZLOGIN_FILE} ]]; then
+        ${TMOE_PREFIX} mkdir -pv ${CONTAINER_ZSH_DIR}
+        ${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/zlogin ${CONTAINER_ZLOGIN_FILE}
+        ${TMOE_PREFIX} chmod -Rv a+rx ${CONTAINER_ZSH_DIR}
+    elif ! grep -q 'environment/login' ${CONTAINER_ZLOGIN_FILE}; then
+        ${TMOE_PREFIX} sed -i '$ a[[ ! -r /usr/local/etc/tmoe-linux/environment/login ]] || source /usr/local/etc/tmoe-linux/environment/login' ${CONTAINER_ZLOGIN_FILE}
+    fi
+    mkdir -p ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} || ${TMOE_PREFIX} mkdir -p ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+    ${TMOE_PREFIX} chmod 777 -R ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
 }
 chmod_777_temporary_file_02() {
-	# cat ${TMPDIR}/.tmoe_temporary_autostartup_script
-	${TMOE_PREFIX} chmod 777 ${TEMP_FILE}
-	${TMOE_PREFIX} mv -f ${TEMP_FILE} "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
+    # cat ${TMPDIR}/.tmoe_temporary_autostartup_script
+    ${TMOE_PREFIX} chmod 777 ${TEMP_FILE}
+    ${TMOE_PREFIX} mv -f ${TEMP_FILE} "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
 }
 create_and_move_temporary_script_05() {
-	printf "%s\n" \
-		'#!/usr/bin/env bash' \
-		"cd /tmp/.tmoe_container_temporary" \
-		"${EXEC_PROGRAM}" \
-		>${TEMP_FILE}
-	chmod_777_temporary_file_02
+    printf "%s\n" \
+        '#!/usr/bin/env bash' \
+        "cd /tmp/.tmoe_container_temporary" \
+        "${EXEC_PROGRAM}" \
+        >${TEMP_FILE}
+    chmod_777_temporary_file_02
 }
 create_and_move_temporary_script_06() {
-	printf "%s\n" \
-		'#!/usr/bin/env bash' \
-		"cd /tmp/.tmoe_container_temporary" \
-		"${TEMPORARY_SCRIPT_FILE}" \
-		>${TEMP_FILE}
-	chmod_777_temporary_file_02
+    printf "%s\n" \
+        '#!/usr/bin/env bash' \
+        "cd /tmp/.tmoe_container_temporary" \
+        "${TEMPORARY_SCRIPT_FILE}" \
+        >${TEMP_FILE}
+    chmod_777_temporary_file_02
 }
 create_and_move_temporary_script_07() {
-	TEMP_FILE="start_01_vnc"
-	printf "%s\n" \
-		'#!/usr/bin/env bash' \
-		"${EXEC_PROGRAM}" \
-		>${TEMP_FILE}
-	chmod_777_temporary_file_02
+    TEMP_FILE="start_01_vnc"
+    printf "%s\n" \
+        '#!/usr/bin/env bash' \
+        "${EXEC_PROGRAM}" \
+        >${TEMP_FILE}
+    chmod_777_temporary_file_02
 }
 create_and_move_temporary_script_08() {
-	printf "%s\n" \
-		'#!/usr/bin/env bash' \
-		"${TEMPORARY_SCRIPT_FILE}" \
-		>${TEMP_FILE}
-	chmod_777_temporary_file_02
+    printf "%s\n" \
+        '#!/usr/bin/env bash' \
+        "${TEMPORARY_SCRIPT_FILE}" \
+        >${TEMP_FILE}
+    chmod_777_temporary_file_02
 }
 ########
 exec_container_program() {
-	check_container_login_file_02
-	TEMP_FILE="${TMPDIR}/start_01_${RANDOM}"
-	${TMOE_PREFIX} chmod 777 -R ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
-	create_and_move_temporary_script_07
-	normally_start_gnu_linux_distro
+    check_container_login_file_02
+    TEMP_FILE="${TMPDIR}/start_01_${RANDOM}"
+    ${TMOE_PREFIX} chmod 777 -R ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+    create_and_move_temporary_script_07
+    normally_start_gnu_linux_distro
 }
 start_gnu_linux_distro_tigervnc() {
-	[[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
-	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startvnc
-	EXEC_PROGRAM="startvnc"
-	exec_container_program
+    [[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
+    ${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startvnc
+    EXEC_PROGRAM="startvnc"
+    exec_container_program
 }
 start_gnu_linux_distro_x11vnc() {
-	[[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
-	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startx11vnc
-	EXEC_PROGRAM="startx11vnc"
-	exec_container_program
+    [[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
+    ${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startx11vnc
+    EXEC_PROGRAM="startx11vnc"
+    exec_container_program
 }
 start_gnu_linux_distro_x() {
-	if [[ $(command -v am) ]]; then
-		am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
-		printf "%s\n" "Please ${CYAN}wait ${RED}6s${RESET}."
-		sleep 6
-	fi
-	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startxsdl
-	EXEC_PROGRAM="startxsdl"
-	exec_container_program
+    if [[ $(command -v am) ]]; then
+        am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
+        printf "%s\n" "Please ${CYAN}wait ${RED}6s${RESET}."
+        sleep 6
+    fi
+    ${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/startxsdl
+    EXEC_PROGRAM="startxsdl"
+    exec_container_program
 }
 install_web_novnc() {
-	NOVNC_PORT=$(grep '^NOVNC_PORT=' ${DEBIAN_CHROOT}/usr/local/bin/novnc | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
-	[[ -n ${NOVNC_PORT} ]] || NOVNC_PORT=36080
-	NOVNC_ADDR="http://localhost:${NOVNC_PORT}/vnc.html"
-	printf "${YELLOW}%s${RESET}\n" "${NOVNC_ADDR}"
-	if [[ $(command -v am) ]]; then
-		am start -a android.intent.action.VIEW -d "${NOVNC_ADDR}" 2>/dev/null
-	elif [[ $(command -v xdg-open) ]]; then
-		xdg-open ${NOVNC_ADDR} 2>/dev/null
-	elif [[ -e /mnt/c/WINDOWS/system32/cmd.exe ]]; then
-		/mnt/c/WINDOWS/system32/cmd.exe /c "start ${NOVNC_ADDR}"
-	fi
-	${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/novnc
-	EXEC_PROGRAM="novnc"
-	exec_container_program
+    NOVNC_PORT=$(grep '^NOVNC_PORT=' ${DEBIAN_CHROOT}/usr/local/bin/novnc | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
+    [[ -n ${NOVNC_PORT} ]] || NOVNC_PORT=36080
+    NOVNC_ADDR="http://localhost:${NOVNC_PORT}/vnc.html"
+    printf "${YELLOW}%s${RESET}\n" "${NOVNC_ADDR}"
+    if [[ $(command -v am) ]]; then
+        am start -a android.intent.action.VIEW -d "${NOVNC_ADDR}" 2>/dev/null
+    elif [[ $(command -v xdg-open) ]]; then
+        xdg-open ${NOVNC_ADDR} 2>/dev/null
+    elif [[ -e /mnt/c/WINDOWS/system32/cmd.exe ]]; then
+        /mnt/c/WINDOWS/system32/cmd.exe /c "start ${NOVNC_ADDR}"
+    fi
+    ${TMOE_PREFIX} touch ${DEBIAN_CHROOT}/root/.vnc/novnc
+    EXEC_PROGRAM="novnc"
+    exec_container_program
 }
 install_new_tmoe_gnu_linux_distro() {
-	# check_tmoe_completion_version
-	UPDATE_TMOE_COMPLETION=false
-	check_tmoe_completion
-	#git_pull_tmoe_linux
-	###
-	case ${WEEKLY_BUILD_CONTAINER} in
-	true) install_weekly_build_container ;;
-	*)
-		case ${ARCH_TYPE} in
-		mips* | risc*) ;;
-		*)
-			case ${DISTRO_NAME} in
-			debian) check_debian_distro_code ;;
-			ubuntu) check_ubuntu_distro_code ;;
-			kali) install_kali_rolling_gnu_linux_distro ;;
-			arch) install_arch_linux_distro ;;
-			esac
-			;;
-		esac
-		;;
-	esac
+    # check_tmoe_completion_version
+    UPDATE_TMOE_COMPLETION=false
+    check_tmoe_completion
+    #git_pull_tmoe_linux
+    ###
+    case ${WEEKLY_BUILD_CONTAINER} in
+    true) install_weekly_build_container ;;
+    *)
+        case ${ARCH_TYPE} in
+        mips* | risc*) ;;
+        *)
+            case ${DISTRO_NAME} in
+            debian) check_debian_distro_code ;;
+            ubuntu) check_ubuntu_distro_code ;;
+            kali) install_kali_rolling_gnu_linux_distro ;;
+            arch) install_arch_linux_distro ;;
+            esac
+            ;;
+        esac
+        ;;
+    esac
 }
 ##########
 bat_build_latest_txt() {
-	if [[ -e ${BUILD_LATEST_TXT} ]]; then
-		if [[ $(command -v bat) ]]; then
-			bat -ppn -l toml ${BUILD_LATEST_TXT}
-		elif [[ $(command -v batcat) ]]; then
-			batcat -ppn -l toml ${BUILD_LATEST_TXT}
-		else
-			cat ${BUILD_LATEST_TXT}
-		fi
-		printf "${BLUE}-----------------------------------------${RESET}\n"
-	fi
+    if [[ -e ${BUILD_LATEST_TXT} ]]; then
+        if [[ $(command -v bat) ]]; then
+            bat -ppn -l toml ${BUILD_LATEST_TXT}
+        elif [[ $(command -v batcat) ]]; then
+            batcat -ppn -l toml ${BUILD_LATEST_TXT}
+        else
+            cat ${BUILD_LATEST_TXT}
+        fi
+        printf "${BLUE}-----------------------------------------${RESET}\n"
+    fi
 }
 bat_build_latest02_txt() {
-	BUILD_LATEST_TXT=${CONFIG_FOLDER}/build-latest02.txt
-	bat_build_latest_txt
+    BUILD_LATEST_TXT=${CONFIG_FOLDER}/build-latest02.txt
+    bat_build_latest_txt
 }
 bat_build_latest01_txt() {
-	BUILD_LATEST_TXT=${CONFIG_FOLDER}/build-latest01.txt
-	bat_build_latest_txt
+    BUILD_LATEST_TXT=${CONFIG_FOLDER}/build-latest01.txt
+    bat_build_latest_txt
 }
 ########################
 network_node_menu_01_cn() {
-	NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node\n请选择网络节点" 0 50 0 \
-		"1" "Azure_CN" \
-		"2" "Tmoe_US" \
-		"3" "Azure_US" \
-		3>&1 1>&2 2>&3)
-	##############################
-	case "${NETWORK_NODE}" in
-	0 | "") ${RETURN_TO_WHERE} ;;
-	1)
-		NODE_NAME='node01-azure'
-		NODE_URL="${NODE01_URL}"
-		;;
-	2)
-		NODE_NAME='node02-tmoe'
-		NODE_URL="${NODE02_URL}"
-		;;
-	3)
-		NODE_NAME='node03-azure'
-		NODE_URL="${NODE03_URL}"
-		;;
-	esac
+    NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node\n请选择网络节点" 0 50 0 \
+        "1" "Azure_CN" \
+        "2" "Tmoe_US" \
+        "3" "Azure_US" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${NETWORK_NODE}" in
+    0 | "") ${RETURN_TO_WHERE} ;;
+    1)
+        NODE_NAME='node01-azure'
+        NODE_URL="${NODE01_URL}"
+        ;;
+    2)
+        NODE_NAME='node02-tmoe'
+        NODE_URL="${NODE02_URL}"
+        ;;
+    3)
+        NODE_NAME='node03-azure'
+        NODE_URL="${NODE03_URL}"
+        ;;
+    esac
 }
 network_node_menu_01_en() {
-	NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node" 0 50 0 \
-		"1" "Azure" \
-		"2" "Tmoe_US" \
-		"3" "Azure_CN" \
-		3>&1 1>&2 2>&3)
-	##############################
-	case "${NETWORK_NODE}" in
-	0 | "") ${RETURN_TO_WHERE} ;;
-	1)
-		NODE_NAME='node03-azure'
-		NODE_URL="${NODE03_URL}"
-		;;
-	2)
-		NODE_NAME='node02-tmoe'
-		NODE_URL="${NODE02_URL}"
-		;;
-	3)
-		NODE_NAME='node01-azure'
-		NODE_URL="${NODE01_URL}"
-		;;
-	esac
+    NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node" 0 50 0 \
+        "1" "Azure" \
+        "2" "Tmoe_US" \
+        "3" "Azure_CN" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${NETWORK_NODE}" in
+    0 | "") ${RETURN_TO_WHERE} ;;
+    1)
+        NODE_NAME='node03-azure'
+        NODE_URL="${NODE03_URL}"
+        ;;
+    2)
+        NODE_NAME='node02-tmoe'
+        NODE_URL="${NODE02_URL}"
+        ;;
+    3)
+        NODE_NAME='node01-azure'
+        NODE_URL="${NODE01_URL}"
+        ;;
+    esac
 }
 
 network_node_menu_02_cn() {
-	NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node\n请选择网络节点" 0 50 0 \
-		"1" "Azure_CN" \
-		"2" "Azure_US" \
-		3>&1 1>&2 2>&3)
-	##############################
-	case "${NETWORK_NODE}" in
-	0 | "") ${RETURN_TO_WHERE} ;;
-	1)
-		NODE_NAME='node01-azure'
-		NODE_URL="${NODE01_URL}"
-		;;
-	2)
-		NODE_NAME='node03-azure'
-		NODE_URL="${NODE03_URL}"
-		;;
-	esac
+    NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node\n请选择网络节点" 0 50 0 \
+        "1" "Azure_CN" \
+        "2" "Azure_US" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${NETWORK_NODE}" in
+    0 | "") ${RETURN_TO_WHERE} ;;
+    1)
+        NODE_NAME='node01-azure'
+        NODE_URL="${NODE01_URL}"
+        ;;
+    2)
+        NODE_NAME='node03-azure'
+        NODE_URL="${NODE03_URL}"
+        ;;
+    esac
 }
 network_node_menu_02_en() {
-	NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node" 0 50 0 \
-		"1" "Azure" \
-		"2" "Azure_CN" \
-		3>&1 1>&2 2>&3)
-	##############################
-	case "${NETWORK_NODE}" in
-	0 | "") ${RETURN_TO_WHERE} ;;
-	1)
-		NODE_NAME='node03-azure'
-		NODE_URL="${NODE03_URL}"
-		;;
-	2)
-		NODE_NAME='node01-azure'
-		NODE_URL="${NODE01_URL}"
-		;;
-	esac
+    NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node" 0 50 0 \
+        "1" "Azure" \
+        "2" "Azure_CN" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${NETWORK_NODE}" in
+    0 | "") ${RETURN_TO_WHERE} ;;
+    1)
+        NODE_NAME='node03-azure'
+        NODE_URL="${NODE03_URL}"
+        ;;
+    2)
+        NODE_NAME='node01-azure'
+        NODE_URL="${NODE01_URL}"
+        ;;
+    esac
 }
 
 network_node_menu_03_zh_cn() {
-	MENU="Please choose a network node\n请选择网络节点"
+    MENU="Please choose a network node\n请选择网络节点"
 }
 
 network_node_menu_03_zh_tw() {
-	MENU="Please choose a network node\n請選擇網路結點"
+    MENU="Please choose a network node\n請選擇網路結點"
 }
 
 network_node_menu_03_en() {
-	MENU="Please choose a network node"
+    MENU="Please choose a network node"
 }
 
 network_node_menu_03() {
-	NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "${MENU}" 0 50 0 \
-		"1" "Tmoe" \
-		"2" "Azure" \
-		3>&1 1>&2 2>&3)
-	##############################
-	case "${NETWORK_NODE}" in
-	0 | "") ${RETURN_TO_WHERE} ;;
-	1)
-		NODE_NAME='node02-tmoe'
-		NODE_URL="${NODE02_URL}"
-		;;
-	2)
-		NODE_NAME='node03-azure'
-		NODE_URL="${NODE03_URL}"
-		;;
-	esac
+    NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "${MENU}" 0 50 0 \
+        "1" "Tmoe" \
+        "2" "Azure" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${NETWORK_NODE}" in
+    0 | "") ${RETURN_TO_WHERE} ;;
+    1)
+        NODE_NAME='node02-tmoe'
+        NODE_URL="${NODE02_URL}"
+        ;;
+    2)
+        NODE_NAME='node03-azure'
+        NODE_URL="${NODE03_URL}"
+        ;;
+    esac
 }
 # cat_docker_readme_file() {
 # 	if [ "$(ls ${TMOE_GIT_DIR}/share/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/README.* 2>/dev/null)" ]; then
@@ -1374,285 +1374,285 @@ network_node_menu_03() {
 # 	fi
 # }
 download_proot_arm64_deb() {
-	mkdir -pv "${TMOE_LINUX_DIR}/lib/"
-	cd "${TMOE_LINUX_DIR}/lib/"
-	# apt update
-	# apt-get download proot
-	apt-get download libtalloc
-	curl -Lo "proot-build-time.txt" l.tmoe.me/proot-aarch64-time
-	curl -Lo proot.deb l.tmoe.me/proot-aarch64 || echo "Sorry, unable to use compatible mode."
+    mkdir -pv "${TMOE_LINUX_DIR}/lib/"
+    cd "${TMOE_LINUX_DIR}/lib/"
+    # apt update
+    # apt-get download proot
+    apt-get download libtalloc
+    curl -Lo "proot-build-time.txt" l.tmoe.me/proot-aarch64-time
+    curl -Lo proot.deb l.tmoe.me/proot-aarch64 || echo "Sorry, unable to use compatible mode."
 
-	for i in ./libtalloc*.deb ./proot*.deb; do
-		dpkg-deb -X "${i}" ./
-		rm -fv "${i}"
-	done
-	cd -
+    for i in ./libtalloc*.deb ./proot*.deb; do
+        dpkg-deb -X "${i}" ./
+        rm -fv "${i}"
+    done
+    cd -
 }
 get_android_proot_version() {
-	local Local_build_time=$(head -n 1 "${TMOE_LINUX_DIR}"/lib/proot-build-time.txt)
-	local Remote_build_time=$(curl -L --connect-timeout 3 --max-time 3 l.tmoe.me/proot-aarch64-time)
-	case "$Remote_build_time" in
-	"" | "${Local_build_time}") ;;
-	*) download_proot_arm64_deb ;;
-	esac
+    local Local_build_time=$(head -n 1 "${TMOE_LINUX_DIR}"/lib/proot-build-time.txt)
+    local Remote_build_time=$(curl -L --connect-timeout 3 --max-time 3 l.tmoe.me/proot-aarch64-time)
+    case "$Remote_build_time" in
+    "" | "${Local_build_time}") ;;
+    *) download_proot_arm64_deb ;;
+    esac
 }
 get_android_proot_arm64_deb() {
-	case ${LINUX_DISTRO} in
-	Android)
-		if [[ ${ARCH_TYPE} = arm64 ]]; then
-			PROOT_LOADER="${TMOE_LINUX_DIR}/lib/data/data/com.termux/files/usr/libexec/proot/loader"
-			if [[ ! -e ${PROOT_LOADER} ]]; then
-				echo "Your proot_loader is missing."
-				download_proot_arm64_deb
-			else
-				get_android_proot_version
-			fi
-		fi
-		;;
-	esac
+    case ${LINUX_DISTRO} in
+    Android)
+        if [[ ${ARCH_TYPE} = arm64 ]]; then
+            PROOT_LOADER="${TMOE_LINUX_DIR}/lib/data/data/com.termux/files/usr/libexec/proot/loader"
+            if [[ ! -e ${PROOT_LOADER} ]]; then
+                echo "Your proot_loader is missing."
+                download_proot_arm64_deb
+            else
+                get_android_proot_version
+            fi
+        fi
+        ;;
+    esac
 }
 install_weekly_build_container() {
-	case ${NODE01_ENABLED} in
-	true)
-		case ${TMOE_MENU_LANG} in
-		zh_*UTF-8) network_node_menu_01_cn ;;
-		*) network_node_menu_01_en ;;
-		esac
-		;;
-	*)
-		# case ${TMOE_MENU_LANG} in
-		# zh_*UTF-8) network_node_menu_02_cn ;;
-		# *) network_node_menu_02_en ;;
-		# esac
-		# ;;
-		case ${TMOE_MENU_LANG} in
-		zh_C* | zh_SG*) network_node_menu_03_zh_cn ;;
-		zh_*) network_node_menu_03_zh_tw ;;
-		*) network_node_menu_03_en ;;
-		esac
-		network_node_menu_03
-		;;
-	esac
-	# case ${TMOE_LANG} in
-	# zh_*UTF-8) printf "%s\n" "本容器使用以下Dockerfile进行构建。" ;;
-	# esac
-	# printf "%s\n" "${BOLD}${YELLOW}Dockerfile:${RESET}"
-	# DOCKERFILE="${TMOE_GIT_DIR}/share/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/${DESKTOP}/Dockerfile"
-	# printf "%s\n" "${BLUE}${DOCKERFILE}${RESET}"
-	# if [ $(command -v bat) ]; then
-	# 	bat -ppn "${DOCKERFILE}"
-	# elif [ $(command -v batcat) ]; then
-	# 	batcat -ppn "${DOCKERFILE}"
-	# else
-	# 	cat "${DOCKERFILE}"
-	# fi
-	for i in ${CONFIG_FOLDER}/build-latest02.txt ${CONFIG_FOLDER}/build-latest01.txt; do
-		if [[ -e ${i} ]]; then
-			rm -f ${i}
-		fi
-	done
-	# cat_docker_readme_file
-	BUILD_TXT="${ARCH_TYPE}/${DISTRO_NAME_02}/${DESKTOP}/build.txt"
-	case ${TMOE_LANG} in
-	zh_*UTF-8) printf "%s\n" "正在获取版本信息..." ;;
-	esac
-	printf "%s\n" "Getting ${DEBIAN_FOLDER} version info..."
-	case ${DISTRO_NAME} in
-	dotnet*) get_android_proot_arm64_deb ;;
-	esac
-	ROOTFS_VERSION='latest02'
+    case ${NODE01_ENABLED} in
+    true)
+        case ${TMOE_MENU_LANG} in
+        zh_*UTF-8) network_node_menu_01_cn ;;
+        *) network_node_menu_01_en ;;
+        esac
+        ;;
+    *)
+        # case ${TMOE_MENU_LANG} in
+        # zh_*UTF-8) network_node_menu_02_cn ;;
+        # *) network_node_menu_02_en ;;
+        # esac
+        # ;;
+        case ${TMOE_MENU_LANG} in
+        zh_C* | zh_SG*) network_node_menu_03_zh_cn ;;
+        zh_*) network_node_menu_03_zh_tw ;;
+        *) network_node_menu_03_en ;;
+        esac
+        network_node_menu_03
+        ;;
+    esac
+    # case ${TMOE_LANG} in
+    # zh_*UTF-8) printf "%s\n" "本容器使用以下Dockerfile进行构建。" ;;
+    # esac
+    # printf "%s\n" "${BOLD}${YELLOW}Dockerfile:${RESET}"
+    # DOCKERFILE="${TMOE_GIT_DIR}/share/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/${DESKTOP}/Dockerfile"
+    # printf "%s\n" "${BLUE}${DOCKERFILE}${RESET}"
+    # if [ $(command -v bat) ]; then
+    # 	bat -ppn "${DOCKERFILE}"
+    # elif [ $(command -v batcat) ]; then
+    # 	batcat -ppn "${DOCKERFILE}"
+    # else
+    # 	cat "${DOCKERFILE}"
+    # fi
+    for i in ${CONFIG_FOLDER}/build-latest02.txt ${CONFIG_FOLDER}/build-latest01.txt; do
+        if [[ -e ${i} ]]; then
+            rm -f ${i}
+        fi
+    done
+    # cat_docker_readme_file
+    BUILD_TXT="${ARCH_TYPE}/${DISTRO_NAME_02}/${DESKTOP}/build.txt"
+    case ${TMOE_LANG} in
+    zh_*UTF-8) printf "%s\n" "正在获取版本信息..." ;;
+    esac
+    printf "%s\n" "Getting ${DEBIAN_FOLDER} version info..."
+    case ${DISTRO_NAME} in
+    dotnet*) get_android_proot_arm64_deb ;;
+    esac
+    ROOTFS_VERSION='latest02'
 
-	case ${NODE_NAME} in
-	node02-tmoe)
-		aria2c --console-log-level=error --no-conf --allow-overwrite=true --http-user=${NODE02_USER} --http-passwd=${NODE02_PW} -d ${CONFIG_FOLDER} -o build-latest02.txt ${NODE_URL}/latest02/${BUILD_TXT}
-		bat_build_latest02_txt
-		;;
-	*)
-		aria2c --console-log-level=error --no-conf --allow-overwrite=true -d ${CONFIG_FOLDER} -o build-latest02.txt ${NODE_URL}/latest02/${BUILD_TXT}
-		bat_build_latest02_txt
-		case ${NODE_NAME} in
-		node03-azure)
-			CURRENT_DATE=$(date -u +%Y%m%d)
-			if ((CURRENT_DATE >= 20210507)); then
-				aria2c --console-log-level=error --no-conf --allow-overwrite=true -d ${CONFIG_FOLDER} -o build-latest01.txt ${NODE_URL}/latest01/${BUILD_TXT}
-			fi
-			;;
-		*) aria2c --console-log-level=error --no-conf --allow-overwrite=true -d ${CONFIG_FOLDER} -o build-latest01.txt ${NODE_URL}/latest01/${BUILD_TXT} ;;
-		esac
-		if grep -q 'DOCTYPE html' ${CONFIG_FOLDER}/build-latest01.txt 2>/dev/null; then
-			rm -f ${CONFIG_FOLDER}/build-latest01.txt
-		elif [[ ! -e ${CONFIG_FOLDER}/build-latest01.txt ]]; then
-			ROOTFS_VERSION='latest02'
-		elif ! grep -q 'STATUS=completed' ${CONFIG_FOLDER}/build-latest01.txt 2>/dev/null; then
-			ROOTFS_VERSION='latest02'
-		elif ! grep -q 'STATUS=completed' ${CONFIG_FOLDER}/build-latest02.txt; then
-			ROOTFS_VERSION='latest01'
-		else
-			if [[ -e ${CONFIG_FOLDER}/build-latest01.txt ]]; then
-				LATEST_01_DATE="$(grep 'BUILD_DATE=' ${CONFIG_FOLDER}/build-latest01.txt 2>/dev/null | awk -F'=' '{print $2}')"
-				LATEST_01_TIME="$(date -d $(grep 'END_TIME=' ${CONFIG_FOLDER}/build-latest01.txt | awk -F'=' '{print $2}') +%s)"
-			else
-				LATEST_01_DATE=0
-				LATEST_01_TIME=0
-			fi
-			LATEST_02_DATE="$(grep 'BUILD_DATE=' ${CONFIG_FOLDER}/build-latest02.txt | awk -F'=' '{print $2}')"
-			LATEST_02_TIME="$(date -d $(grep 'END_TIME=' ${CONFIG_FOLDER}/build-latest02.txt | awk -F'=' '{print $2}') +%s)"
-			if ((LATEST_02_DATE < LATEST_01_DATE)); then
-				ROOTFS_VERSION='latest01'
-			elif ((LATEST_02_DATE > LATEST_01_DATE)); then
-				ROOTFS_VERSION='latest02'
-			elif ((LATEST_02_TIME < LATEST_01_TIME)); then
-				ROOTFS_VERSION='latest01'
-			else
-				ROOTFS_VERSION='latest02'
-			fi
-		fi
-		bat_build_latest01_txt
-		;;
-	esac
-	ROOTFS_FILE="$(grep 'ROOTFS_FILE=' ${CONFIG_FOLDER}/build-${ROOTFS_VERSION}.txt | awk -F'=' '{print $2}')"
-	printf "%s\n" "Do you want to download ${BLUE}${ROOTFS_FILE}${RESET}(${YELLOW}${ROOTFS_VERSION}${RESET})?"
-	case ${ROOTFS_VERSION} in
-	latest01) ROOTFS_VERSION_02='latest02' ;;
-	latest02) ROOTFS_VERSION_02='latest01' ;;
-	esac
-	do_you_want_to_continue
-	if [[ -s ${CONFIG_FOLDER}/build-latest01.txt ]]; then
-		if grep -q 'STATUS=completed' ${CONFIG_FOLDER}/build-latest01.txt; then
-			if (whiptail --title "VERSION" --yes-button "${ROOTFS_VERSION}" --no-button "${ROOTFS_VERSION_02}" --yesno "Please choose a version.\n最新版为${ROOTFS_VERSION}" 8 50); then
-				printf "%s\n" "${YELLOW}${ROOTFS_VERSION}${RESET}"
-			else
-				ROOTFS_VERSION=${ROOTFS_VERSION_02}
-				printf "%s\n" "${PURPLE}${ROOTFS_VERSION}${RESET}"
-			fi
-		fi
-	fi
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed \
-			-e "1a\WEEKLY_BUILD_CONTAINER=true" \
-			-e "1a\DESKTOP=${DESKTOP}" \
-			-e "1a\NODE_URL=${NODE_URL}" \
-			-e "1a\NODE02_USER=${NODE02_USER}" \
-			-e "1a\NODE02_PW=${NODE02_PW}" \
-			-e "1a\ROOTFS_VERSION=${ROOTFS_VERSION}" \
-			-e "1a\NODE_NAME=${NODE_NAME}" \
-			-e "1a\DISTRO_NAME=${DISTRO_NAME}" \
-			-e "s@TMOE_ROOTFS_TAR_XZ=.*debian-sid_.*@TMOE_ROOTFS_TAR_XZ=${ROOTFS_FILE}@" \
-			-e "s/debian container/${DISTRO_NAME} container/g" \
-			-e "s@BFSU Open Source Mirror Station@${NODE_NAME}@" \
-			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
-	#--http-user=${NODE02_USER} --http-passwd=${NODE02_PW}
-	#		sed -E "s@(LINUX_CONTAINER_DISTRO_FILE)=.*@\1=\${CONFIG_FOLDER}/linux_container_distro_02.txt@" |
+    case ${NODE_NAME} in
+    node02-tmoe)
+        aria2c --console-log-level=error --no-conf --allow-overwrite=true --http-user=${NODE02_USER} --http-passwd=${NODE02_PW} -d ${CONFIG_FOLDER} -o build-latest02.txt ${NODE_URL}/latest02/${BUILD_TXT}
+        bat_build_latest02_txt
+        ;;
+    *)
+        aria2c --console-log-level=error --no-conf --allow-overwrite=true -d ${CONFIG_FOLDER} -o build-latest02.txt ${NODE_URL}/latest02/${BUILD_TXT}
+        bat_build_latest02_txt
+        case ${NODE_NAME} in
+        node03-azure)
+            CURRENT_DATE=$(date -u +%Y%m%d)
+            if ((CURRENT_DATE >= 20210507)); then
+                aria2c --console-log-level=error --no-conf --allow-overwrite=true -d ${CONFIG_FOLDER} -o build-latest01.txt ${NODE_URL}/latest01/${BUILD_TXT}
+            fi
+            ;;
+        *) aria2c --console-log-level=error --no-conf --allow-overwrite=true -d ${CONFIG_FOLDER} -o build-latest01.txt ${NODE_URL}/latest01/${BUILD_TXT} ;;
+        esac
+        if grep -q 'DOCTYPE html' ${CONFIG_FOLDER}/build-latest01.txt 2>/dev/null; then
+            rm -f ${CONFIG_FOLDER}/build-latest01.txt
+        elif [[ ! -e ${CONFIG_FOLDER}/build-latest01.txt ]]; then
+            ROOTFS_VERSION='latest02'
+        elif ! grep -q 'STATUS=completed' ${CONFIG_FOLDER}/build-latest01.txt 2>/dev/null; then
+            ROOTFS_VERSION='latest02'
+        elif ! grep -q 'STATUS=completed' ${CONFIG_FOLDER}/build-latest02.txt; then
+            ROOTFS_VERSION='latest01'
+        else
+            if [[ -e ${CONFIG_FOLDER}/build-latest01.txt ]]; then
+                LATEST_01_DATE="$(grep 'BUILD_DATE=' ${CONFIG_FOLDER}/build-latest01.txt 2>/dev/null | awk -F'=' '{print $2}')"
+                LATEST_01_TIME="$(date -d $(grep 'END_TIME=' ${CONFIG_FOLDER}/build-latest01.txt | awk -F'=' '{print $2}') +%s)"
+            else
+                LATEST_01_DATE=0
+                LATEST_01_TIME=0
+            fi
+            LATEST_02_DATE="$(grep 'BUILD_DATE=' ${CONFIG_FOLDER}/build-latest02.txt | awk -F'=' '{print $2}')"
+            LATEST_02_TIME="$(date -d $(grep 'END_TIME=' ${CONFIG_FOLDER}/build-latest02.txt | awk -F'=' '{print $2}') +%s)"
+            if ((LATEST_02_DATE < LATEST_01_DATE)); then
+                ROOTFS_VERSION='latest01'
+            elif ((LATEST_02_DATE > LATEST_01_DATE)); then
+                ROOTFS_VERSION='latest02'
+            elif ((LATEST_02_TIME < LATEST_01_TIME)); then
+                ROOTFS_VERSION='latest01'
+            else
+                ROOTFS_VERSION='latest02'
+            fi
+        fi
+        bat_build_latest01_txt
+        ;;
+    esac
+    ROOTFS_FILE="$(grep 'ROOTFS_FILE=' ${CONFIG_FOLDER}/build-${ROOTFS_VERSION}.txt | awk -F'=' '{print $2}')"
+    printf "%s\n" "Do you want to download ${BLUE}${ROOTFS_FILE}${RESET}(${YELLOW}${ROOTFS_VERSION}${RESET})?"
+    case ${ROOTFS_VERSION} in
+    latest01) ROOTFS_VERSION_02='latest02' ;;
+    latest02) ROOTFS_VERSION_02='latest01' ;;
+    esac
+    do_you_want_to_continue
+    if [[ -s ${CONFIG_FOLDER}/build-latest01.txt ]]; then
+        if grep -q 'STATUS=completed' ${CONFIG_FOLDER}/build-latest01.txt; then
+            if (whiptail --title "VERSION" --yes-button "${ROOTFS_VERSION}" --no-button "${ROOTFS_VERSION_02}" --yesno "Please choose a version.\n最新版为${ROOTFS_VERSION}" 8 50); then
+                printf "%s\n" "${YELLOW}${ROOTFS_VERSION}${RESET}"
+            else
+                ROOTFS_VERSION=${ROOTFS_VERSION_02}
+                printf "%s\n" "${PURPLE}${ROOTFS_VERSION}${RESET}"
+            fi
+        fi
+    fi
+    bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
+        sed \
+            -e "1a\WEEKLY_BUILD_CONTAINER=true" \
+            -e "1a\DESKTOP=${DESKTOP}" \
+            -e "1a\NODE_URL=${NODE_URL}" \
+            -e "1a\NODE02_USER=${NODE02_USER}" \
+            -e "1a\NODE02_PW=${NODE02_PW}" \
+            -e "1a\ROOTFS_VERSION=${ROOTFS_VERSION}" \
+            -e "1a\NODE_NAME=${NODE_NAME}" \
+            -e "1a\DISTRO_NAME=${DISTRO_NAME}" \
+            -e "s@TMOE_ROOTFS_TAR_XZ=.*debian-sid_.*@TMOE_ROOTFS_TAR_XZ=${ROOTFS_FILE}@" \
+            -e "s/debian container/${DISTRO_NAME} container/g" \
+            -e "s@BFSU Open Source Mirror Station@${NODE_NAME}@" \
+            -e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+    #--http-user=${NODE02_USER} --http-passwd=${NODE02_PW}
+    #		sed -E "s@(LINUX_CONTAINER_DISTRO_FILE)=.*@\1=\${CONFIG_FOLDER}/linux_container_distro_02.txt@" |
 }
 #############
 umount_and_remove_gnu_linux_distro_compatibility_mode() {
-	case ${TMOE_CHROOT} in
-	true) kill_chroot_container_process_old ;;
-	*) kill_proot_container_process ;;
-	esac
-	source ${TMOE_SHARE_DIR}/container/remove
+    case ${TMOE_CHROOT} in
+    true) kill_chroot_container_process_old ;;
+    *) kill_proot_container_process ;;
+    esac
+    source ${TMOE_SHARE_DIR}/container/remove
 }
 umount_and_remove_gnu_linux_distro() {
-	kill_container_process
-	# case ${SYSTEMD_NSPAWN} in
-	# true) kill_chroot_container_process ;;
-	# esac
-	source ${TMOE_SHARE_DIR}/container/remove
+    kill_container_process
+    # case ${SYSTEMD_NSPAWN} in
+    # true) kill_chroot_container_process ;;
+    # esac
+    source ${TMOE_SHARE_DIR}/container/remove
 }
 du_sh_gnu_linux_distro() {
-	case ${TMOE_CHROOT} in
-	true)
-		case ${SYSTEMD_NSPAWN} in
-		true) ;;
-		*)
-			printf "%s\n" "Unmounting dirs ..."
-			su -c "umount -lvf ${DEBIAN_CHROOT}/* 2>/dev/null"
-			su -c "umount -lvf ${DEBIAN_CHROOT}/*/*  2>/dev/null"
-			su -c "umount -lvf ${DEBIAN_CHROOT}  2>/dev/null"
-			;;
-		esac
-		;;
-	esac
-	printf "%s\n" "Detecting the space occupied by ${BLUE}${DEBIAN_FOLDER}${RESET} ..."
-	printf "%s\n" "正在检测${BLUE}${DEBIAN_FOLDER}${RESET}占用空间大小..."
-	case ${TMOE_CHROOT} in
-	true)
-		if [ -e "${DEBIAN_CHROOT}" ]; then
-			cd ${DEBIAN_CHROOT}
-			${TMOE_PREFIX} du -sh * 2>/dev/null
-			printf "%s\n" "${YELLOW}Listing leaderboard ...${RESET}"
-			${TMOE_PREFIX} find ./ -type d \( -path="./proc" \
-				-o -path="./media/sd" \
-				-o -path="./media/tf" \
-				-o -path="./media/termux" \
-				-o -path="./media/sd" \
-				-o -path="./media/termux" \
-				-o -path="./media/tf" \
-				-o -path="./sd" \
-				-o -path="./tf" \
-				-o -path="./dev" \
-				-o -path="./sys" \
-				-o -path="./system" \) -prune \
-				-type f -print0 2>/dev/null |
-				xargs -0 ${TMOE_PREFIX} du |
-				sort -n |
-				tail -10 |
-				cut -f 2 |
-				xargs -I{} ${TMOE_PREFIX} du -sh {}
-		else
-			printf "${RED}%s${RESET} ${BLUE}%s${RESET}\n" "You did not install" "${DEBIAN_FOLDER}"
-		fi
-		;;
-	*)
-		if [ -e "${DEBIAN_CHROOT}" ]; then
-			cd ${DEBIAN_CHROOT}
-			${TMOE_PREFIX} du -sh *
-			printf "%s\n" "${YELLOW}Listing leaderboard ...${RESET}"
-			${TMOE_PREFIX} find ./ -type d \( -path="./proc" \
-				-o -path="./media/sd" \
-				-o -path="./media/tf" \
-				-o -path="./media/termux" \
-				-o -path="./media/sd" \
-				-o -path="./media/termux" \
-				-o -path="./media/tf" \
-				-o -path="./sd" \
-				-o -path="./tf" \
-				-o -path="./dev" \
-				-o -path="./sys" \
-				-o -path="./system" \) -prune \
-				-type f -print0 2>/dev/null |
-				xargs -0 ${TMOE_PREFIX} du |
-				sort -n |
-				tail -30 |
-				cut -f 2 |
-				xargs -I{} ${TMOE_PREFIX} du -sh {}
-		else
-			printf "${RED}%s${RESET} ${BLUE}%s${RESET}\n" "You did not install" "${DEBIAN_FOLDER}"
-		fi
-		;;
-	esac
+    case ${TMOE_CHROOT} in
+    true)
+        case ${SYSTEMD_NSPAWN} in
+        true) ;;
+        *)
+            printf "%s\n" "Unmounting dirs ..."
+            su -c "umount -lvf ${DEBIAN_CHROOT}/* 2>/dev/null"
+            su -c "umount -lvf ${DEBIAN_CHROOT}/*/*  2>/dev/null"
+            su -c "umount -lvf ${DEBIAN_CHROOT}  2>/dev/null"
+            ;;
+        esac
+        ;;
+    esac
+    printf "%s\n" "Detecting the space occupied by ${BLUE}${DEBIAN_FOLDER}${RESET} ..."
+    printf "%s\n" "正在检测${BLUE}${DEBIAN_FOLDER}${RESET}占用空间大小..."
+    case ${TMOE_CHROOT} in
+    true)
+        if [ -e "${DEBIAN_CHROOT}" ]; then
+            cd ${DEBIAN_CHROOT}
+            ${TMOE_PREFIX} du -sh * 2>/dev/null
+            printf "%s\n" "${YELLOW}Listing leaderboard ...${RESET}"
+            ${TMOE_PREFIX} find ./ -type d \( -path="./proc" \
+                -o -path="./media/sd" \
+                -o -path="./media/tf" \
+                -o -path="./media/termux" \
+                -o -path="./media/sd" \
+                -o -path="./media/termux" \
+                -o -path="./media/tf" \
+                -o -path="./sd" \
+                -o -path="./tf" \
+                -o -path="./dev" \
+                -o -path="./sys" \
+                -o -path="./system" \) -prune \
+                -type f -print0 2>/dev/null |
+                xargs -0 ${TMOE_PREFIX} du |
+                sort -n |
+                tail -10 |
+                cut -f 2 |
+                xargs -I{} ${TMOE_PREFIX} du -sh {}
+        else
+            printf "${RED}%s${RESET} ${BLUE}%s${RESET}\n" "You did not install" "${DEBIAN_FOLDER}"
+        fi
+        ;;
+    *)
+        if [ -e "${DEBIAN_CHROOT}" ]; then
+            cd ${DEBIAN_CHROOT}
+            ${TMOE_PREFIX} du -sh *
+            printf "%s\n" "${YELLOW}Listing leaderboard ...${RESET}"
+            ${TMOE_PREFIX} find ./ -type d \( -path="./proc" \
+                -o -path="./media/sd" \
+                -o -path="./media/tf" \
+                -o -path="./media/termux" \
+                -o -path="./media/sd" \
+                -o -path="./media/termux" \
+                -o -path="./media/tf" \
+                -o -path="./sd" \
+                -o -path="./tf" \
+                -o -path="./dev" \
+                -o -path="./sys" \
+                -o -path="./system" \) -prune \
+                -type f -print0 2>/dev/null |
+                xargs -0 ${TMOE_PREFIX} du |
+                sort -n |
+                tail -30 |
+                cut -f 2 |
+                xargs -I{} ${TMOE_PREFIX} du -sh {}
+        else
+            printf "${RED}%s${RESET} ${BLUE}%s${RESET}\n" "You did not install" "${DEBIAN_FOLDER}"
+        fi
+        ;;
+    esac
 }
 ######################
 backup_tmoe_gnu_linux_distro() {
-	if [[ ! -e ${DEBIAN_CHROOT} ]]; then
-		cat <<-EOF
+    if [[ ! -e ${DEBIAN_CHROOT} ]]; then
+        cat <<-EOF
 			您${RED}尚未安装${RESET}${BLUE}${DEBIAN_FOLDER_CAPITAL}${RESET}容器
 			是否使用恢复容器的选项？
 		EOF
-		do_you_want_to_continue
-		source ${TMOE_SHARE_DIR}/compression/restore
-		restore_gnu_linux_container
-	else
-		case ${TMOE_CHROOT} in
-		true)
-			case ${SYSTEMD_NSPAWN} in
-			true) ;;
-			*) source ${TMOE_SHARE_DIR}/removal/umount ;;
-			esac
-			;;
-		esac
-		source ${TMOE_SHARE_DIR}/compression/backup
-	fi
+        do_you_want_to_continue
+        source ${TMOE_SHARE_DIR}/compression/restore
+        restore_gnu_linux_container
+    else
+        case ${TMOE_CHROOT} in
+        true)
+            case ${SYSTEMD_NSPAWN} in
+            true) ;;
+            *) source ${TMOE_SHARE_DIR}/removal/umount ;;
+            esac
+            ;;
+        esac
+        source ${TMOE_SHARE_DIR}/compression/backup
+    fi
 }
 #####################
 proot_management_menu "$@"

@@ -538,9 +538,9 @@ case $(uname -o) in
 Android) termux-fix-shebang "${TMP_FILE}" ;;
 esac
 if [[ ${SYSTEMD_NSPAWN} = true ]]; then
-	printf "%s\n" "SYSTEMD_NSPAWN=true" >"${TMPDIR}"/.chroot.conf
+    printf "%s\n" "SYSTEMD_NSPAWN=true" >"${TMPDIR}"/.chroot.conf
 else
-	printf "%s\n" "SYSTEMD_NSPAWN=false" >"${TMPDIR}"/.chroot.conf
+    printf "%s\n" "SYSTEMD_NSPAWN=false" >"${TMPDIR}"/.chroot.conf
 fi
 chmod a+rx "${TMP_FILE}" "${TMPDIR}"/.chroot.conf
 ${TMOE_CHROOT_PREFIX} cp -f "${TMP_FILE}" "${TMOE_STARTUP_SCRIPT}"

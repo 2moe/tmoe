@@ -1,846 +1,846 @@
 #!/usr/bin/env bash
 ########################
 locale_gen_or_choose_container_locale() {
-	case ${SET_TMOE_LOCALE} in
-	true) TMOE_LOCALE_GEN=false ;;
-	*)
-		if (whiptail --title "CONTAINER OR HOST" --yes-button "set default locale" --no-button "locale-gen" --yesno "Do you want to set the default locale or generate the localhost system locale?♪(^∇^*) " 8 60); then
-			TMOE_LOCALE_GEN=false
-		else
-			TMOE_LOCALE_GEN=true
-		fi
-		;;
-	esac
+    case ${SET_TMOE_LOCALE} in
+    true) TMOE_LOCALE_GEN=false ;;
+    *)
+        if (whiptail --title "CONTAINER OR HOST" --yes-button "set default locale" --no-button "locale-gen" --yesno "Do you want to set the default locale or generate the localhost system locale?♪(^∇^*) " 8 60); then
+            TMOE_LOCALE_GEN=false
+        else
+            TMOE_LOCALE_GEN=true
+        fi
+        ;;
+    esac
 }
 ###################
 tmoe_locale_menu() {
-	locale_gen_or_choose_container_locale
-	if [ -e "${TMOE_LOCALE_FILE}" ]; then
-		TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
-		TMOE_LOCALE_STATUS="Your current locale is ${TMOE_LANG}"
-	elif [ $(uname -o) != 'Android' ]; then
-		TMOE_LANG=$(locale | grep 'LANG=' | cut -d '=' -f 2 | cut -d '"' -f 2)
-		TMOE_LOCALE_STATUS="Your current locale is ${TMOE_LANG}"
-	else
-		TMOE_LOCALE_STATUS="Your current locale is default."
-	fi
-	#######################
-	CONTAINER_LOCALE=$(
-		whiptail --title "LOCALE SETTING" \
-			--menu "${TMOE_LOCALE_STATUS}" 0 0 0 \
-			"0" "🌚 Back" \
-			"1" "Edit manually" \
-			"2" "aa_DJ: Qafar_Yabuuti" \
-			"3" "aa_ER@saaho: Afar_Eritrea(Saaho Dialect)" \
-			"4" "aa_ER: Qafar_Eretria" \
-			"5" "aa_ET: Qafar_Otobbia" \
-			"6" "af_ZA: Afrikaans_Suid-Afrika" \
-			"7" "agr_PE: Awajún_Perú" \
-			"8" "ak_GH: Akan_Gaana" \
-			"9" "am_ET: አማርኛ_ኢትዮጵያ" \
-			"10" "an_ES: aragonés_Espanya" \
-			"11" "anp_IN: अंगिका_भारत" \
-			"12" "ar_AE: العربية_الإمارات العربية المتحدة" \
-			"13" "ar_BH: العربية_البحرين" \
-			"14" "ar_DZ: العربية_الجزائر" \
-			"15" "ar_EG: العربية_مصر" \
-			"16" "ar_IN: العربية_الهند" \
-			"17" "ar_IQ: العربية_العراق" \
-			"18" "ar_JO: العربية_الأردن" \
-			"19" "ar_KW: العربية_الكويت" \
-			"20" "ar_LB: العربية_لبنان" \
-			"21" "ar_LY: العربية_ليبيا" \
-			"22" "ar_MA: العربية_المغرب" \
-			"23" "ar_OM: العربية_عُمان" \
-			"24" "ar_QA: العربية_قطر" \
-			"25" "ar_SA: العربية_المملكة العربية السعودية" \
-			"26" "ar_SD: العربية_السودان" \
-			"27" "ar_SS: العربية_جنوب السودان" \
-			"28" "ar_SY: العربية_سوريا" \
-			"29" "ar_TN: العربية_تونس" \
-			"30" "ar_YE: العربية_اليمن" \
-			"31" "as_IN: অসমীয়া_ভাৰত" \
-			"32" "ast_ES: asturianu_España" \
-			"33" "ayc_PE: Aymar aru_Piruw" \
-			"34" "az_AZ: azərbaycan_Azərbaycan" \
-			"35" "az_IR: تۆرکجه_ایران" \
-			"36" "be_BY@latin: biełaruskaja_Biełaruś" \
-			"37" "be_BY: беларуская_Беларусь" \
-			"38" "bem_ZM: Ichibemba_Zambia" \
-			"39" "ber_DZ: Tamaziɣt_Lezzayer" \
-			"40" "ber_MA: ⵜⴰⵎⴰⵣⵉⵖⵜ_ⵜⴰⴳⵍⴷⵉⵜ ⵏ ⵍⵎⵖⵔⵉⴱ" \
-			"41" "bg_BG: български_България" \
-			"42" "bhb_IN: भीली_भारत" \
-			"43" "bho_IN: भोजपुरी_भारत" \
-			"44" "bho_NP: भोजपुरी_नेपाल" \
-			"45" "bi_VU: Bislama_Vanuatu" \
-			"46" "bn_BD: বাংলা_বাংলাদেশ" \
-			"47" "bn_IN: বাংলা_ভারত" \
-			"48" "bo_CN: བོད་སྐད་_རྒྱ་ནག" \
-			"49" "bo_IN: བོད་སྐད་_རྒྱ་གར་" \
-			"50" "br_FR: brezhoneg_Frañs" \
-			"51" "brx_IN: बड़ो_भारत" \
-			"52" "bs_BA: bosanski_Bosna i Hercegovina" \
-			"53" "byn_ER: ብሊን_ኤርትራ" \
-			"54" "ca_AD: català_Andorra" \
-			"55" "ca_ES: català_Espanya" \
-			"56" "ca_ES@valencia: Valencian (southern Catalan) locale for Spain with Euro" \
-			"57" "ca_FR: català_França" \
-			"58" "ca_IT: català_Itàlia" \
-			"59" "ce_RU: нохчийн_Росси" \
-			"60" "chr_US: ᏣᎳᎩ_ᏌᏊ ᎢᏳᎾᎵᏍᏔᏅ ᏍᎦᏚᎩ" \
-			"61" "cmn_TW: 漢語官話_臺灣" \
-			"62" "crh_UA: qırımtatar tili_Ukraine" \
-			"63" "csb_PL: kaszëbsczi jãzëk_Pòlskô" \
-			"64" "cs_CZ: čeština_Česká republika" \
-			"65" "cv_RU: Чӑвашла_Russia" \
-			"66" "cy_GB: Cymraeg_Y Deyrnas Unedig" \
-			"67" "da_DK: dansk_Danmark" \
-			"68" "de_AT: Deutsch_Austria" \
-			"69" "de_BE: Deutsch_Belgien" \
-			"70" "de_CH: Deutsch_Schweiz" \
-			"71" "de_DE: Deutsch_Deutschland" \
-			"72" "de_IT: Deutsch_Italien" \
-			"73" "de_LI: Deutsch_Liechtenstein" \
-			"74" "de_LU: Deutsch_Luxemburg" \
-			"75" "doi_IN: डोगरी_भारत" \
-			"76" "dsb_DE: dolnoserbšćina_Nimska" \
-			"77" "dv_MV: ދިވެހި_ދިވެހިރާއްޖެ" \
-			"78" "dz_BT: རྫོང་ཁ_འབྲུག" \
-			"79" "el_CY: Ελληνικά_Κύπρος" \
-			"80" "el_GR: Ελληνικά_Ελλάδα" \
-			"81" "en_AG: English_Antigua and Barbuda" \
-			"82" "en_AU: English_Australia" \
-			"83" "en_BW: English_Botswana" \
-			"84" "en_CA: English_Canada" \
-			"85" "en_DK: English_Denmark" \
-			"86" "en_GB: English_Great Britain" \
-			"87" "en_HK: English_Hong Kong SAR China" \
-			"88" "en_IE: English_Ireland" \
-			"89" "en_IL: English_Israel" \
-			"90" "en_IN: English_India" \
-			"91" "en_NG: English_Nigeria" \
-			"92" "en_NZ: English_New Zealand" \
-			"93" "en_PH: English_Philippines" \
-			"94" "en_SC: English_Seychelles" \
-			"95" "en_SG: English_Singapore" \
-			"96" "en_US: English_United States" \
-			"97" "en_ZA: English_South Africa" \
-			"98" "en_ZM: English_Zambia" \
-			"99" "en_ZW: English_Zimbabwe" \
-			"100" "eo: esperanto" \
-			"101" "es_AR: español_Argentina" \
-			"102" "es_BO: español_Bolivia" \
-			"103" "es_CL: español_Chile" \
-			"104" "es_CO: español_Colombia" \
-			"105" "es_CR: español_Costa Rica" \
-			"106" "es_CU: español_Cuba" \
-			"107" "es_DO: español_República Dominicana" \
-			"108" "es_EC: español_Ecuador" \
-			"109" "es_ES: español_España" \
-			"110" "es_GT: español_Guatemala" \
-			"111" "es_HN: español_Honduras" \
-			"112" "es_MX: español_México" \
-			"113" "es_NI: español_Nicaragua" \
-			"114" "es_PA: español_Panamá" \
-			"115" "es_PE: español_Perú" \
-			"116" "es_PR: español_Puerto Rico" \
-			"117" "es_PY: español_Paraguay" \
-			"118" "es_SV: español_El Salvador" \
-			"119" "es_US: español_Estados Unidos" \
-			"120" "es_UY: español_Uruguay" \
-			"121" "es_VE: español_Venezuela" \
-			"122" "et_EE: eesti_Eesti" \
-			"123" "eu_ES: euskara_Espainia" \
-			"124" "eu_FR: euskara_France" \
-			"125" "fa_IR: ‪ فارسی_ایران" \
-			"126" "ff_SN: Pulaar_Senegaal" \
-			"127" "fi_FI: suomi_Suomi" \
-			"128" "fil_PH: Filipino_Pilipinas" \
-			"129" "fo_FO: føroyskt_Føroyar" \
-			"130" "fr_BE: français_Belgique" \
-			"131" "fr_CA: français_Canada" \
-			"132" "fr_CH: français_Suisse" \
-			"133" "fr_FR: français_France" \
-			"134" "fr_LU: français_Luxembourg" \
-			"135" "fur_IT: furlan_Italie" \
-			"136" "fy_DE: Sater Frisian and North Frisian for Dútslân" \
-			"137" "fy_NL: Western Frisian_Nederlân" \
-			"138" "ga_IE: Gaeilge_níl" \
-			"139" "gd_GB: Gàidhlig_A\' Bhreatainn Mhòr" \
-			"140" "gez_ER@abegede: Ge\'ez language locale for Eritrea With Abegede Collation" \
-			"141" "gez_ER: ግዕዝ_ኤርትራ" \
-			"142" "gez_ET@abegede: Ge\'ez language locale for Ethiopia With Abegede Collation" \
-			"143" "gez_ET: ግዕዝ_ኢትዮጵያ" \
-			"144" "gl_ES: galego_España" \
-			"145" "gu_IN: ગુજરાતી_ભારત" \
-			"146" "gv_GB: Gaelg_Rywvaneth Unys" \
-			"147" "hak_TW: 客家話_臺灣" \
-			"148" "ha_NG: Hausa_Najeriya" \
-			"149" "he_IL: עִבְרִית_ישראל" \
-			"150" "hif_FJ: हिन्दी_Fiji" \
-			"151" "hi_IN: हिन्दी_भारत" \
-			"152" "hne_IN: छत्तीसगढ़ी_भारत" \
-			"153" "hr_HR: hrvatski_Hrvatska" \
-			"154" "hsb_DE: hornjoserbšćina_Němska" \
-			"155" "ht_HT: Kreyòl ayisyen_Ayiti" \
-			"156" "hu_HU: magyar_Magyarország" \
-			"157" "hy_AM: հայերեն_Հայաստան" \
-			"158" "ia_FR: interlingua_Francia" \
-			"159" "id_ID: Indonesia_Indonesia" \
-			"160" "ig_NG: Asụsụ Igbo_Naịjịrịa" \
-			"161" "ik_CA: Iñupiatun_Kanada" \
-			"162" "is_IS: íslenska_Ísland" \
-			"163" "it_CH: italiano_Svizzera" \
-			"164" "it_IT: italiano_Italia" \
-			"165" "iu_CA: ᐃᓄᒃᑎᑐᑦ_ᑲᓇᑕ" \
-			"166" "ja_JP: 日本語_日本" \
-			"167" "kab_DZ: Taqbaylit_Lezzayer" \
-			"168" "ka_GE: ქართული_საქართველო" \
-			"169" "kk_KZ: қазақ тілі_Қазақстан" \
-			"170" "kl_GL: kalaallisut_Kalaallit Nunaat" \
-			"171" "km_KH: ខ្មែរ_កម្ពុជា" \
-			"172" "kn_IN: ಕನ್ನಡ_ಭಾರತ" \
-			"173" "kok_IN: कोंकणी_भारत" \
-			"174" "ko_KR: 한국어_대한민국" \
-			"175" "ks_IN@devanagari: कॉशुर_भारत" \
-			"176" "ks_IN: कॉशुर_ہِندوستان" \
-			"177" "ku_TR: kurdî_Tirkiye" \
-			"178" "kw_GB: kernewek_Rywvaneth Unys" \
-			"179" "ky_KG: кыргызча_Кыргызстан" \
-			"180" "lb_LU: Lëtzebuergesch_Lëtzebuerg" \
-			"181" "lg_UG: Luganda_Yuganda" \
-			"182" "li_BE: Lèmbörgs_Bèlsj" \
-			"183" "lij_IT: Lìgure_Italia" \
-			"184" "li_NL: Lèmbörgs_Nederland" \
-			"185" "ln_CD: lingála_Republiki ya Kongó Demokratiki" \
-			"186" "lo_LA: ລາວ_ລາວ" \
-			"187" "lt_LT: lietuvių_Lietuva" \
-			"188" "lv_LV: latviešu_Latvija" \
-			"189" "lzh_TW: 漢語文言_臺灣" \
-			"190" "mag_IN: मगही_भारत" \
-			"191" "mai_IN: मैथिली_भारत" \
-			"192" "mai_NP: मैथिली_नेपाल" \
-			"193" "mfe_MU: kreol morisien_Moris" \
-			"194" "mg_MG: Malagasy_Madagasikara" \
-			"195" "mhr_RU: Mari locale for Russia" \
-			"196" "mi_NZ: Māori_Aotearoa" \
-			"197" "miq_NI: Miskito language locale for Nicaragua" \
-			"198" "mjw_IN: Karbi_Bhorot" \
-			"199" "mk_MK: македонски јазик_Македонија" \
-			"200" "ml_IN: മലയാളം_ഇന്ത്യ" \
-			"201" "mni_IN: মৈতৈলোন্_ভারত" \
-			"202" "mn_MN: монгол_Монгол" \
-			"203" "mnw_MM: မန်_ဗၟာ" \
-			"204" "mr_IN: मराठी_भारत" \
-			"205" "ms_MY: Melayu_Malaysia" \
-			"206" "mt_MT: Malti_Malta" \
-			"207" "my_MM: မြန်မာ_မြန်မာ" \
-			"208" "nan_TW@latin: Bân-lâm-gú_Tâi-oân" \
-			"209" "nan_TW: 閩南語_臺灣" \
-			"210" "nb_NO: norsk bokmål_Norge" \
-			"211" "nds_DE: Neddersass’sch_Düütschland" \
-			"212" "nds_NL: Neddersass’sch_Nedderlannen" \
-			"213" "ne_NP: नेपाली_नेपाल" \
-			"214" "nhn_MX: Tlahco nāhuatlahtōlli_Mexihco" \
-			"215" "niu_NU: Vagahau Niue_Niue" \
-			"216" "niu_NZ: Vagahau Niue_New Zealand" \
-			"217" "nl_AW: Nederlands_Aruba" \
-			"218" "nl_BE: Nederlands_België" \
-			"219" "nl_NL: Nederlands_Nederland" \
-			"220" "nn_NO: nynorsk_Noreg" \
-			"221" "nr_ZA: isiNdebele_iSewula Afrika" \
-			"222" "nso_ZA: Sesotho sa Leboa_Afrika Borwa" \
-			"223" "oc_FR: Occitan_França" \
-			"224" "om_ET: Oromoo_Itoophiyaa" \
-			"225" "om_KE: Oromoo_Keeniyaa" \
-			"226" "or_IN: ଓଡ଼ିଆ_ଭାରତ" \
-			"227" "os_RU: ирон_Уӕрӕсе" \
-			"228" "pa_IN: ਪੰਜਾਬੀ_ਭਾਰਤ" \
-			"229" "pap_AW: Papiamento_Aruba" \
-			"230" "pap_CW: Papiamento_Curaçao" \
-			"231" "pa_PK: پنجابی_پکستان" \
-			"232" "pl_PL: polski_Polska" \
-			"233" "ps_AF: پښتو_افغانستان" \
-			"234" "pt_BR: português_Brasil" \
-			"235" "pt_PT: português_Portugal" \
-			"236" "quz_PE: Qusqu runasimi_" \
-			"237" "raj_IN: राजस्थानी_भारत" \
-			"238" "ro_RO: română_România" \
-			"239" "ru_RU: ру́сский язы́к_Россия" \
-			"240" "ru_UA: русский_Украина" \
-			"241" "rw_RW: Kinyarwanda_U Rwanda" \
-			"242" "sah_RU: саха тыла_Арассыыйа" \
-			"243" "sa_IN: संस्कृतम्_भारतम्" \
-			"244" "sat_IN: ᱥᱟᱱᱛᱟᱲᱤ_ᱥᱤᱧᱚᱛ" \
-			"245" "sc_IT: sardu_Itàlia" \
-			"246" "sd_IN@devanagari: सिन्धी_भारत" \
-			"247" "sd_IN: سنڌي_انڊيا" \
-			"248" "se_NO: davvisámegiella_Norga" \
-			"249" "sgs_LT: Žemaitėškā_Lietova" \
-			"250" "shn_MM: လိၵ်ႈတႆး_မၢၼ်ႈ" \
-			"251" "shs_CA: Secwepemctsín_Canada" \
-			"252" "sid_ET: Sidaamu Afo_Itiyoophiya" \
-			"253" "si_LK: සිංහල_ශ්‍රී ලංකාව" \
-			"254" "sk_SK: slovenčina_Slovensko" \
-			"255" "sl_SI: slovenščina_Slovenija" \
-			"256" "sm_WS: Gagana faʻa Sāmoa_Sāmoa" \
-			"257" "so_DJ: Soomaali_Jabuuti" \
-			"258" "so_ET: Soomaali_Itoobiya" \
-			"259" "so_KE: Soomaali_Kiiniya" \
-			"260" "so_SO: Soomaali_Soomaaliya" \
-			"261" "sq_AL: shqip_Shqipëri" \
-			"262" "sq_MK: shqip_Maqedoni" \
-			"263" "sr_ME: српски_Црна Гора" \
-			"264" "sr_RS@latin: srpski_Srbija" \
-			"265" "sr_RS: српски_Србија" \
-			"266" "ss_ZA: siSwati_iNingizimu Afrika" \
-			"267" "st_ZA: Sesotho_Afrika Borwa" \
-			"268" "sv_FI: svenska_Finland" \
-			"269" "sv_SE: svenska_Sverige" \
-			"270" "sw_KE: Kiswahili_Kenya" \
-			"271" "sw_TZ: Swahili_Tanzania" \
-			"272" "szl_PL: ślōnskŏ gŏdka_Polska" \
-			"273" "ta_IN: தமிழ்_இந்தியா" \
-			"274" "ta_LK: தமிழ்_இலங்கை" \
-			"275" "tcy_IN: ತುಳು_ಭಾರತ" \
-			"276" "te_IN: తెలుగు_భారతదేశం" \
-			"277" "tg_TJ: тоҷикӣ_Тоҷикистон" \
-			"278" "the_NP: थारु_नेपाल" \
-			"279" "th_TH: ไทย_ไทย" \
-			"280" "ti_ER: ትግርኛ_ኤርትራ" \
-			"281" "ti_ET: ትግርኛ_ኢትዮጵያ" \
-			"282" "tig_ER: ትግረ_ኤርትራ" \
-			"283" "tk_TM: türkmen dili_Türkmenistan" \
-			"284" "tl_PH: Tagalog_Pilipinas" \
-			"285" "tn_ZA: Setswana_Aforika Borwa" \
-			"286" "to_TO: lea fakatonga_Tonga" \
-			"287" "tpi_PG: Tok Pisin_Papua Niugini" \
-			"288" "tr_CY: Türkçe_Kıbrıs" \
-			"289" "tr_TR: Türkçe_Türkiye" \
-			"290" "ts_ZA: Xitsonga_Afrika Dzonga" \
-			"291" "tt_RU@iqtelif: tatar tele_Urıs Patşahlıq" \
-			"292" "tt_RU: татар_Русия" \
-			"293" "ug_CN: ئۇيغۇرچە_جۇڭگو" \
-			"294" "uk_UA: українська_Україна" \
-			"295" "unm_US: Lenape_USA" \
-			"296" "ur_IN: اردو_بھارت" \
-			"297" "ur_PK: اردو_پاکستان" \
-			"298" "uz_UZ@cyrillic: Ўзбекча_Ўзбекистон" \
-			"299" "uz_UZ: o‘zbek_Oʻzbekiston" \
-			"300" "ve_ZA: Tshivenḓa_Afurika Tshipembe" \
-			"301" "vi_VN: Tiếng Việt_Việt Nam" \
-			"302" "wa_BE: walon_Beldjike" \
-			"303" "wae_CH: Walser_Schwiz" \
-			"304" "wal_ET: ወላይታቱ_ኢትዮጵያ" \
-			"305" "wo_SN: Wolof_Senegaal" \
-			"306" "xh_ZA: isiXhosa_uMzantsi Afrika" \
-			"307" "yi_US: ייִדיש_פֿאַראייניגטע שטאַטן" \
-			"308" "yo_NG: Èdè Yorùbá_Orilẹ̀-èdè Nàìjíríà" \
-			"309" "yue_HK: 粵語_香港特別行政區" \
-			"310" "yuw_PG: Uruwa_Papua New Guinea" \
-			"311" "en_US: 中文_中华人民共和国" \
-			"312" "zh_HK: 繁體中文_香港" \
-			"313" "zh_SG: 简体中文_新加坡" \
-			"314" "zh_TW: 正體中文_臺灣" \
-			"315" "zu_ZA: isiZulu_iNingizimu Afrika" \
-			3>&1 1>&2 2>&3
-	)
-	##########################
-	case "${CONTAINER_LOCALE}" in
-	0 | "") tmoe_manager_main_menu ;;
-	1) edit_tmoe_locale_file_manually ;;
-	2) TMOE_LANG="aa_DJ" ;;
-	3) TMOE_LANG="aa_ER@saaho" ;;
-	4) TMOE_LANG="aa_ER" ;;
-	5) TMOE_LANG="aa_ET" ;;
-	6) TMOE_LANG="af_ZA" ;;
-	7) TMOE_LANG="agr_PE" ;;
-	8) TMOE_LANG="ak_GH" ;;
-	9) TMOE_LANG="am_ET" ;;
-	10) TMOE_LANG="an_ES" ;;
-	11) TMOE_LANG="anp_IN" ;;
-	12) TMOE_LANG="ar_AE" ;;
-	13) TMOE_LANG="ar_BH" ;;
-	14) TMOE_LANG="ar_DZ" ;;
-	15) TMOE_LANG="ar_EG" ;;
-	16) TMOE_LANG="ar_IN" ;;
-	17) TMOE_LANG="ar_IQ" ;;
-	18) TMOE_LANG="ar_JO" ;;
-	19) TMOE_LANG="ar_KW" ;;
-	20) TMOE_LANG="ar_LB" ;;
-	21) TMOE_LANG="ar_LY" ;;
-	22) TMOE_LANG="ar_MA" ;;
-	23) TMOE_LANG="ar_OM" ;;
-	24) TMOE_LANG="ar_QA" ;;
-	25) TMOE_LANG="ar_SA" ;;
-	26) TMOE_LANG="ar_SD" ;;
-	27) TMOE_LANG="ar_SS" ;;
-	28) TMOE_LANG="ar_SY" ;;
-	29) TMOE_LANG="ar_TN" ;;
-	30) TMOE_LANG="ar_YE" ;;
-	31) TMOE_LANG="as_IN" ;;
-	32) TMOE_LANG="ast_ES" ;;
-	33) TMOE_LANG="ayc_PE" ;;
-	34) TMOE_LANG="az_AZ" ;;
-	35) TMOE_LANG="az_IR" ;;
-	36) TMOE_LANG="be_BY@latin" ;;
-	37) TMOE_LANG="be_BY" ;;
-	38) TMOE_LANG="bem_ZM" ;;
-	39) TMOE_LANG="ber_DZ" ;;
-	40) TMOE_LANG="ber_MA" ;;
-	41) TMOE_LANG="bg_BG" ;;
-	42) TMOE_LANG="bhb_IN" ;;
-	43) TMOE_LANG="bho_IN" ;;
-	44) TMOE_LANG="bho_NP" ;;
-	45) TMOE_LANG="bi_VU" ;;
-	46) TMOE_LANG="bn_BD" ;;
-	47) TMOE_LANG="bn_IN" ;;
-	48) TMOE_LANG="bo_CN" ;;
-	49) TMOE_LANG="bo_IN" ;;
-	50) TMOE_LANG="br_FR" ;;
-	51) TMOE_LANG="brx_IN" ;;
-	52) TMOE_LANG="bs_BA" ;;
-	53) TMOE_LANG="byn_ER" ;;
-	54) TMOE_LANG="ca_AD" ;;
-	55) TMOE_LANG="ca_ES" ;;
-	56) TMOE_LANG="ca_ES@valencia" ;;
-	57) TMOE_LANG="ca_FR" ;;
-	58) TMOE_LANG="ca_IT" ;;
-	59) TMOE_LANG="ce_RU" ;;
-	60) TMOE_LANG="chr_US" ;;
-	61) TMOE_LANG="cmn_TW" ;;
-	62) TMOE_LANG="crh_UA" ;;
-	63) TMOE_LANG="csb_PL" ;;
-	64) TMOE_LANG="cs_CZ" ;;
-	65) TMOE_LANG="cv_RU" ;;
-	66) TMOE_LANG="cy_GB" ;;
-	67) TMOE_LANG="da_DK" ;;
-	68) TMOE_LANG="de_AT" ;;
-	69) TMOE_LANG="de_BE" ;;
-	70) TMOE_LANG="de_CH" ;;
-	71) TMOE_LANG="de_DE" ;;
-	72) TMOE_LANG="de_IT" ;;
-	73) TMOE_LANG="de_LI" ;;
-	74) TMOE_LANG="de_LU" ;;
-	75) TMOE_LANG="doi_IN" ;;
-	76) TMOE_LANG="dsb_DE" ;;
-	77) TMOE_LANG="dv_MV" ;;
-	78) TMOE_LANG="dz_BT" ;;
-	79) TMOE_LANG="el_CY" ;;
-	80) TMOE_LANG="el_GR" ;;
-	81) TMOE_LANG="en_AG" ;;
-	82) TMOE_LANG="en_AU" ;;
-	83) TMOE_LANG="en_BW" ;;
-	84) TMOE_LANG="en_CA" ;;
-	85) TMOE_LANG="en_DK" ;;
-	86) TMOE_LANG="en_GB" ;;
-	87) TMOE_LANG="en_HK" ;;
-	88) TMOE_LANG="en_IE" ;;
-	89) TMOE_LANG="en_IL" ;;
-	90) TMOE_LANG="en_IN" ;;
-	91) TMOE_LANG="en_NG" ;;
-	92) TMOE_LANG="en_NZ" ;;
-	93) TMOE_LANG="en_PH" ;;
-	94) TMOE_LANG="en_SC" ;;
-	95) TMOE_LANG="en_SG" ;;
-	96) TMOE_LANG="en_US" ;;
-	97) TMOE_LANG="en_ZA" ;;
-	98) TMOE_LANG="en_ZM" ;;
-	99) TMOE_LANG="en_ZW" ;;
-	100) TMOE_LANG="eo" ;;
-	101) TMOE_LANG="es_AR" ;;
-	102) TMOE_LANG="es_BO" ;;
-	103) TMOE_LANG="es_CL" ;;
-	104) TMOE_LANG="es_CO" ;;
-	105) TMOE_LANG="es_CR" ;;
-	106) TMOE_LANG="es_CU" ;;
-	107) TMOE_LANG="es_DO" ;;
-	108) TMOE_LANG="es_EC" ;;
-	109) TMOE_LANG="es_ES" ;;
-	110) TMOE_LANG="es_GT" ;;
-	111) TMOE_LANG="es_HN" ;;
-	112) TMOE_LANG="es_MX" ;;
-	113) TMOE_LANG="es_NI" ;;
-	114) TMOE_LANG="es_PA" ;;
-	115) TMOE_LANG="es_PE" ;;
-	116) TMOE_LANG="es_PR" ;;
-	117) TMOE_LANG="es_PY" ;;
-	118) TMOE_LANG="es_SV" ;;
-	119) TMOE_LANG="es_US" ;;
-	120) TMOE_LANG="es_UY" ;;
-	121) TMOE_LANG="es_VE" ;;
-	122) TMOE_LANG="et_EE" ;;
-	123) TMOE_LANG="eu_ES" ;;
-	124) TMOE_LANG="eu_FR" ;;
-	125) TMOE_LANG="fa_IR" ;;
-	126) TMOE_LANG="ff_SN" ;;
-	127) TMOE_LANG="fi_FI" ;;
-	128) TMOE_LANG="fil_PH" ;;
-	129) TMOE_LANG="fo_FO" ;;
-	130) TMOE_LANG="fr_BE" ;;
-	131) TMOE_LANG="fr_CA" ;;
-	132) TMOE_LANG="fr_CH" ;;
-	133) TMOE_LANG="fr_FR" ;;
-	134) TMOE_LANG="fr_LU" ;;
-	135) TMOE_LANG="fur_IT" ;;
-	136) TMOE_LANG="fy_DE" ;;
-	137) TMOE_LANG="fy_NL" ;;
-	138) TMOE_LANG="ga_IE" ;;
-	139) TMOE_LANG="gd_GB" ;;
-	140) TMOE_LANG="gez_ER@abegede" ;;
-	141) TMOE_LANG="gez_ER" ;;
-	142) TMOE_LANG="gez_ET@abegede" ;;
-	143) TMOE_LANG="gez_ET" ;;
-	144) TMOE_LANG="gl_ES" ;;
-	145) TMOE_LANG="gu_IN" ;;
-	146) TMOE_LANG="gv_GB" ;;
-	147) TMOE_LANG="hak_TW" ;;
-	148) TMOE_LANG="ha_NG" ;;
-	149) TMOE_LANG="he_IL" ;;
-	150) TMOE_LANG="hif_FJ" ;;
-	151) TMOE_LANG="hi_IN" ;;
-	152) TMOE_LANG="hne_IN" ;;
-	153) TMOE_LANG="hr_HR" ;;
-	154) TMOE_LANG="hsb_DE" ;;
-	155) TMOE_LANG="ht_HT" ;;
-	156) TMOE_LANG="hu_HU" ;;
-	157) TMOE_LANG="hy_AM" ;;
-	158) TMOE_LANG="ia_FR" ;;
-	159) TMOE_LANG="id_ID" ;;
-	160) TMOE_LANG="ig_NG" ;;
-	161) TMOE_LANG="ik_CA" ;;
-	162) TMOE_LANG="is_IS" ;;
-	163) TMOE_LANG="it_CH" ;;
-	164) TMOE_LANG="it_IT" ;;
-	165) TMOE_LANG="iu_CA" ;;
-	166) TMOE_LANG="ja_JP" ;;
-	167) TMOE_LANG="kab_DZ" ;;
-	168) TMOE_LANG="ka_GE" ;;
-	169) TMOE_LANG="kk_KZ" ;;
-	170) TMOE_LANG="kl_GL" ;;
-	171) TMOE_LANG="km_KH" ;;
-	172) TMOE_LANG="kn_IN" ;;
-	173) TMOE_LANG="kok_IN" ;;
-	174) TMOE_LANG="ko_KR" ;;
-	175) TMOE_LANG="ks_IN@devanagari" ;;
-	176) TMOE_LANG="ks_IN" ;;
-	177) TMOE_LANG="ku_TR" ;;
-	178) TMOE_LANG="kw_GB" ;;
-	179) TMOE_LANG="ky_KG" ;;
-	180) TMOE_LANG="lb_LU" ;;
-	181) TMOE_LANG="lg_UG" ;;
-	182) TMOE_LANG="li_BE" ;;
-	183) TMOE_LANG="lij_IT" ;;
-	184) TMOE_LANG="li_NL" ;;
-	185) TMOE_LANG="ln_CD" ;;
-	186) TMOE_LANG="lo_LA" ;;
-	187) TMOE_LANG="lt_LT" ;;
-	188) TMOE_LANG="lv_LV" ;;
-	189) TMOE_LANG="lzh_TW" ;;
-	190) TMOE_LANG="mag_IN" ;;
-	191) TMOE_LANG="mai_IN" ;;
-	192) TMOE_LANG="mai_NP" ;;
-	193) TMOE_LANG="mfe_MU" ;;
-	194) TMOE_LANG="mg_MG" ;;
-	195) TMOE_LANG="mhr_RU" ;;
-	196) TMOE_LANG="mi_NZ" ;;
-	197) TMOE_LANG="miq_NI" ;;
-	198) TMOE_LANG="mjw_IN" ;;
-	199) TMOE_LANG="mk_MK" ;;
-	200) TMOE_LANG="ml_IN" ;;
-	201) TMOE_LANG="mni_IN" ;;
-	202) TMOE_LANG="mn_MN" ;;
-	203) TMOE_LANG="mnw_MM" ;;
-	204) TMOE_LANG="mr_IN" ;;
-	205) TMOE_LANG="ms_MY" ;;
-	206) TMOE_LANG="mt_MT" ;;
-	207) TMOE_LANG="my_MM" ;;
-	208) TMOE_LANG="nan_TW@latin" ;;
-	209) TMOE_LANG="nan_TW" ;;
-	210) TMOE_LANG="nb_NO" ;;
-	211) TMOE_LANG="nds_DE" ;;
-	212) TMOE_LANG="nds_NL" ;;
-	213) TMOE_LANG="ne_NP" ;;
-	214) TMOE_LANG="nhn_MX" ;;
-	215) TMOE_LANG="niu_NU" ;;
-	216) TMOE_LANG="niu_NZ" ;;
-	217) TMOE_LANG="nl_AW" ;;
-	218) TMOE_LANG="nl_BE" ;;
-	219) TMOE_LANG="nl_NL" ;;
-	220) TMOE_LANG="nn_NO" ;;
-	221) TMOE_LANG="nr_ZA" ;;
-	222) TMOE_LANG="nso_ZA" ;;
-	223) TMOE_LANG="oc_FR" ;;
-	224) TMOE_LANG="om_ET" ;;
-	225) TMOE_LANG="om_KE" ;;
-	226) TMOE_LANG="or_IN" ;;
-	227) TMOE_LANG="os_RU" ;;
-	228) TMOE_LANG="pa_IN" ;;
-	229) TMOE_LANG="pap_AW" ;;
-	230) TMOE_LANG="pap_CW" ;;
-	231) TMOE_LANG="pa_PK" ;;
-	232) TMOE_LANG="pl_PL" ;;
-	233) TMOE_LANG="ps_AF" ;;
-	234) TMOE_LANG="pt_BR" ;;
-	235) TMOE_LANG="pt_PT" ;;
-	236) TMOE_LANG="quz_PE" ;;
-	237) TMOE_LANG="raj_IN" ;;
-	238) TMOE_LANG="ro_RO" ;;
-	239) TMOE_LANG="ru_RU" ;;
-	240) TMOE_LANG="ru_UA" ;;
-	241) TMOE_LANG="rw_RW" ;;
-	242) TMOE_LANG="sah_RU" ;;
-	243) TMOE_LANG="sa_IN" ;;
-	244) TMOE_LANG="sat_IN" ;;
-	245) TMOE_LANG="sc_IT" ;;
-	246) TMOE_LANG="sd_IN@devanagari" ;;
-	247) TMOE_LANG="sd_IN" ;;
-	248) TMOE_LANG="se_NO" ;;
-	249) TMOE_LANG="sgs_LT" ;;
-	250) TMOE_LANG="shn_MM" ;;
-	251) TMOE_LANG="shs_CA" ;;
-	252) TMOE_LANG="sid_ET" ;;
-	253) TMOE_LANG="si_LK" ;;
-	254) TMOE_LANG="sk_SK" ;;
-	255) TMOE_LANG="sl_SI" ;;
-	256) TMOE_LANG="sm_WS" ;;
-	257) TMOE_LANG="so_DJ" ;;
-	258) TMOE_LANG="so_ET" ;;
-	259) TMOE_LANG="so_KE" ;;
-	260) TMOE_LANG="so_SO" ;;
-	261) TMOE_LANG="sq_AL" ;;
-	262) TMOE_LANG="sq_MK" ;;
-	263) TMOE_LANG="sr_ME" ;;
-	264) TMOE_LANG="sr_RS@latin" ;;
-	265) TMOE_LANG="sr_RS" ;;
-	266) TMOE_LANG="ss_ZA" ;;
-	267) TMOE_LANG="st_ZA" ;;
-	268) TMOE_LANG="sv_FI" ;;
-	269) TMOE_LANG="sv_SE" ;;
-	270) TMOE_LANG="sw_KE" ;;
-	271) TMOE_LANG="sw_TZ" ;;
-	272) TMOE_LANG="szl_PL" ;;
-	273) TMOE_LANG="ta_IN" ;;
-	274) TMOE_LANG="ta_LK" ;;
-	275) TMOE_LANG="tcy_IN" ;;
-	276) TMOE_LANG="te_IN" ;;
-	277) TMOE_LANG="tg_TJ" ;;
-	278) TMOE_LANG="the_NP" ;;
-	279) TMOE_LANG="th_TH" ;;
-	280) TMOE_LANG="ti_ER" ;;
-	281) TMOE_LANG="ti_ET" ;;
-	282) TMOE_LANG="tig_ER" ;;
-	283) TMOE_LANG="tk_TM" ;;
-	284) TMOE_LANG="tl_PH" ;;
-	285) TMOE_LANG="tn_ZA" ;;
-	286) TMOE_LANG="to_TO" ;;
-	287) TMOE_LANG="tpi_PG" ;;
-	288) TMOE_LANG="tr_CY" ;;
-	289) TMOE_LANG="tr_TR" ;;
-	290) TMOE_LANG="ts_ZA" ;;
-	291) TMOE_LANG="tt_RU@iqtelif" ;;
-	292) TMOE_LANG="tt_RU" ;;
-	293) TMOE_LANG="ug_CN" ;;
-	294) TMOE_LANG="uk_UA" ;;
-	295) TMOE_LANG="unm_US" ;;
-	296) TMOE_LANG="ur_IN" ;;
-	297) TMOE_LANG="ur_PK" ;;
-	298) TMOE_LANG="uz_UZ@cyrillic" ;;
-	299) TMOE_LANG="uz_UZ" ;;
-	300) TMOE_LANG="ve_ZA" ;;
-	301) TMOE_LANG="vi_VN" ;;
-	302) TMOE_LANG="wa_BE" ;;
-	303) TMOE_LANG="wae_CH" ;;
-	304) TMOE_LANG="wal_ET" ;;
-	305) TMOE_LANG="wo_SN" ;;
-	306) TMOE_LANG="xh_ZA" ;;
-	307) TMOE_LANG="yi_US" ;;
-	308) TMOE_LANG="yo_NG" ;;
-	309) TMOE_LANG="yue_HK" ;;
-	310) TMOE_LANG="yuw_PG" ;;
-	311) TMOE_LANG="$(base64 -d <<<emhfQ04K)" ;;
-	312) TMOE_LANG="zh_HK" ;;
-	313) TMOE_LANG="zh_SG" ;;
-	314) TMOE_LANG="zh_TW" ;;
-	315) TMOE_LANG="zu_ZA" ;;
-	esac
-	###############
-	case ${TMOE_LANG} in
-	"") tmoe_manager_main_menu ;;
-	esac
-	##############
-	TMOE_LANG="${TMOE_LANG}.UTF-8"
-	TMOE_MENU_LANG=${TMOE_LANG}
-	TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
-	TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG_HALF}" | cut -d '_' -f 1)
+    locale_gen_or_choose_container_locale
+    if [ -e "${TMOE_LOCALE_FILE}" ]; then
+        TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
+        TMOE_LOCALE_STATUS="Your current locale is ${TMOE_LANG}"
+    elif [ $(uname -o) != 'Android' ]; then
+        TMOE_LANG=$(locale | grep 'LANG=' | cut -d '=' -f 2 | cut -d '"' -f 2)
+        TMOE_LOCALE_STATUS="Your current locale is ${TMOE_LANG}"
+    else
+        TMOE_LOCALE_STATUS="Your current locale is default."
+    fi
+    #######################
+    CONTAINER_LOCALE=$(
+        whiptail --title "LOCALE SETTING" \
+            --menu "${TMOE_LOCALE_STATUS}" 0 0 0 \
+            "0" "🌚 Back" \
+            "1" "Edit manually" \
+            "2" "aa_DJ: Qafar_Yabuuti" \
+            "3" "aa_ER@saaho: Afar_Eritrea(Saaho Dialect)" \
+            "4" "aa_ER: Qafar_Eretria" \
+            "5" "aa_ET: Qafar_Otobbia" \
+            "6" "af_ZA: Afrikaans_Suid-Afrika" \
+            "7" "agr_PE: Awajún_Perú" \
+            "8" "ak_GH: Akan_Gaana" \
+            "9" "am_ET: አማርኛ_ኢትዮጵያ" \
+            "10" "an_ES: aragonés_Espanya" \
+            "11" "anp_IN: अंगिका_भारत" \
+            "12" "ar_AE: العربية_الإمارات العربية المتحدة" \
+            "13" "ar_BH: العربية_البحرين" \
+            "14" "ar_DZ: العربية_الجزائر" \
+            "15" "ar_EG: العربية_مصر" \
+            "16" "ar_IN: العربية_الهند" \
+            "17" "ar_IQ: العربية_العراق" \
+            "18" "ar_JO: العربية_الأردن" \
+            "19" "ar_KW: العربية_الكويت" \
+            "20" "ar_LB: العربية_لبنان" \
+            "21" "ar_LY: العربية_ليبيا" \
+            "22" "ar_MA: العربية_المغرب" \
+            "23" "ar_OM: العربية_عُمان" \
+            "24" "ar_QA: العربية_قطر" \
+            "25" "ar_SA: العربية_المملكة العربية السعودية" \
+            "26" "ar_SD: العربية_السودان" \
+            "27" "ar_SS: العربية_جنوب السودان" \
+            "28" "ar_SY: العربية_سوريا" \
+            "29" "ar_TN: العربية_تونس" \
+            "30" "ar_YE: العربية_اليمن" \
+            "31" "as_IN: অসমীয়া_ভাৰত" \
+            "32" "ast_ES: asturianu_España" \
+            "33" "ayc_PE: Aymar aru_Piruw" \
+            "34" "az_AZ: azərbaycan_Azərbaycan" \
+            "35" "az_IR: تۆرکجه_ایران" \
+            "36" "be_BY@latin: biełaruskaja_Biełaruś" \
+            "37" "be_BY: беларуская_Беларусь" \
+            "38" "bem_ZM: Ichibemba_Zambia" \
+            "39" "ber_DZ: Tamaziɣt_Lezzayer" \
+            "40" "ber_MA: ⵜⴰⵎⴰⵣⵉⵖⵜ_ⵜⴰⴳⵍⴷⵉⵜ ⵏ ⵍⵎⵖⵔⵉⴱ" \
+            "41" "bg_BG: български_България" \
+            "42" "bhb_IN: भीली_भारत" \
+            "43" "bho_IN: भोजपुरी_भारत" \
+            "44" "bho_NP: भोजपुरी_नेपाल" \
+            "45" "bi_VU: Bislama_Vanuatu" \
+            "46" "bn_BD: বাংলা_বাংলাদেশ" \
+            "47" "bn_IN: বাংলা_ভারত" \
+            "48" "bo_CN: བོད་སྐད་_རྒྱ་ནག" \
+            "49" "bo_IN: བོད་སྐད་_རྒྱ་གར་" \
+            "50" "br_FR: brezhoneg_Frañs" \
+            "51" "brx_IN: बड़ो_भारत" \
+            "52" "bs_BA: bosanski_Bosna i Hercegovina" \
+            "53" "byn_ER: ብሊን_ኤርትራ" \
+            "54" "ca_AD: català_Andorra" \
+            "55" "ca_ES: català_Espanya" \
+            "56" "ca_ES@valencia: Valencian (southern Catalan) locale for Spain with Euro" \
+            "57" "ca_FR: català_França" \
+            "58" "ca_IT: català_Itàlia" \
+            "59" "ce_RU: нохчийн_Росси" \
+            "60" "chr_US: ᏣᎳᎩ_ᏌᏊ ᎢᏳᎾᎵᏍᏔᏅ ᏍᎦᏚᎩ" \
+            "61" "cmn_TW: 漢語官話_臺灣" \
+            "62" "crh_UA: qırımtatar tili_Ukraine" \
+            "63" "csb_PL: kaszëbsczi jãzëk_Pòlskô" \
+            "64" "cs_CZ: čeština_Česká republika" \
+            "65" "cv_RU: Чӑвашла_Russia" \
+            "66" "cy_GB: Cymraeg_Y Deyrnas Unedig" \
+            "67" "da_DK: dansk_Danmark" \
+            "68" "de_AT: Deutsch_Austria" \
+            "69" "de_BE: Deutsch_Belgien" \
+            "70" "de_CH: Deutsch_Schweiz" \
+            "71" "de_DE: Deutsch_Deutschland" \
+            "72" "de_IT: Deutsch_Italien" \
+            "73" "de_LI: Deutsch_Liechtenstein" \
+            "74" "de_LU: Deutsch_Luxemburg" \
+            "75" "doi_IN: डोगरी_भारत" \
+            "76" "dsb_DE: dolnoserbšćina_Nimska" \
+            "77" "dv_MV: ދިވެހި_ދިވެހިރާއްޖެ" \
+            "78" "dz_BT: རྫོང་ཁ_འབྲུག" \
+            "79" "el_CY: Ελληνικά_Κύπρος" \
+            "80" "el_GR: Ελληνικά_Ελλάδα" \
+            "81" "en_AG: English_Antigua and Barbuda" \
+            "82" "en_AU: English_Australia" \
+            "83" "en_BW: English_Botswana" \
+            "84" "en_CA: English_Canada" \
+            "85" "en_DK: English_Denmark" \
+            "86" "en_GB: English_Great Britain" \
+            "87" "en_HK: English_Hong Kong SAR China" \
+            "88" "en_IE: English_Ireland" \
+            "89" "en_IL: English_Israel" \
+            "90" "en_IN: English_India" \
+            "91" "en_NG: English_Nigeria" \
+            "92" "en_NZ: English_New Zealand" \
+            "93" "en_PH: English_Philippines" \
+            "94" "en_SC: English_Seychelles" \
+            "95" "en_SG: English_Singapore" \
+            "96" "en_US: English_United States" \
+            "97" "en_ZA: English_South Africa" \
+            "98" "en_ZM: English_Zambia" \
+            "99" "en_ZW: English_Zimbabwe" \
+            "100" "eo: esperanto" \
+            "101" "es_AR: español_Argentina" \
+            "102" "es_BO: español_Bolivia" \
+            "103" "es_CL: español_Chile" \
+            "104" "es_CO: español_Colombia" \
+            "105" "es_CR: español_Costa Rica" \
+            "106" "es_CU: español_Cuba" \
+            "107" "es_DO: español_República Dominicana" \
+            "108" "es_EC: español_Ecuador" \
+            "109" "es_ES: español_España" \
+            "110" "es_GT: español_Guatemala" \
+            "111" "es_HN: español_Honduras" \
+            "112" "es_MX: español_México" \
+            "113" "es_NI: español_Nicaragua" \
+            "114" "es_PA: español_Panamá" \
+            "115" "es_PE: español_Perú" \
+            "116" "es_PR: español_Puerto Rico" \
+            "117" "es_PY: español_Paraguay" \
+            "118" "es_SV: español_El Salvador" \
+            "119" "es_US: español_Estados Unidos" \
+            "120" "es_UY: español_Uruguay" \
+            "121" "es_VE: español_Venezuela" \
+            "122" "et_EE: eesti_Eesti" \
+            "123" "eu_ES: euskara_Espainia" \
+            "124" "eu_FR: euskara_France" \
+            "125" "fa_IR: ‪ فارسی_ایران" \
+            "126" "ff_SN: Pulaar_Senegaal" \
+            "127" "fi_FI: suomi_Suomi" \
+            "128" "fil_PH: Filipino_Pilipinas" \
+            "129" "fo_FO: føroyskt_Føroyar" \
+            "130" "fr_BE: français_Belgique" \
+            "131" "fr_CA: français_Canada" \
+            "132" "fr_CH: français_Suisse" \
+            "133" "fr_FR: français_France" \
+            "134" "fr_LU: français_Luxembourg" \
+            "135" "fur_IT: furlan_Italie" \
+            "136" "fy_DE: Sater Frisian and North Frisian for Dútslân" \
+            "137" "fy_NL: Western Frisian_Nederlân" \
+            "138" "ga_IE: Gaeilge_níl" \
+            "139" "gd_GB: Gàidhlig_A\' Bhreatainn Mhòr" \
+            "140" "gez_ER@abegede: Ge\'ez language locale for Eritrea With Abegede Collation" \
+            "141" "gez_ER: ግዕዝ_ኤርትራ" \
+            "142" "gez_ET@abegede: Ge\'ez language locale for Ethiopia With Abegede Collation" \
+            "143" "gez_ET: ግዕዝ_ኢትዮጵያ" \
+            "144" "gl_ES: galego_España" \
+            "145" "gu_IN: ગુજરાતી_ભારત" \
+            "146" "gv_GB: Gaelg_Rywvaneth Unys" \
+            "147" "hak_TW: 客家話_臺灣" \
+            "148" "ha_NG: Hausa_Najeriya" \
+            "149" "he_IL: עִבְרִית_ישראל" \
+            "150" "hif_FJ: हिन्दी_Fiji" \
+            "151" "hi_IN: हिन्दी_भारत" \
+            "152" "hne_IN: छत्तीसगढ़ी_भारत" \
+            "153" "hr_HR: hrvatski_Hrvatska" \
+            "154" "hsb_DE: hornjoserbšćina_Němska" \
+            "155" "ht_HT: Kreyòl ayisyen_Ayiti" \
+            "156" "hu_HU: magyar_Magyarország" \
+            "157" "hy_AM: հայերեն_Հայաստան" \
+            "158" "ia_FR: interlingua_Francia" \
+            "159" "id_ID: Indonesia_Indonesia" \
+            "160" "ig_NG: Asụsụ Igbo_Naịjịrịa" \
+            "161" "ik_CA: Iñupiatun_Kanada" \
+            "162" "is_IS: íslenska_Ísland" \
+            "163" "it_CH: italiano_Svizzera" \
+            "164" "it_IT: italiano_Italia" \
+            "165" "iu_CA: ᐃᓄᒃᑎᑐᑦ_ᑲᓇᑕ" \
+            "166" "ja_JP: 日本語_日本" \
+            "167" "kab_DZ: Taqbaylit_Lezzayer" \
+            "168" "ka_GE: ქართული_საქართველო" \
+            "169" "kk_KZ: қазақ тілі_Қазақстан" \
+            "170" "kl_GL: kalaallisut_Kalaallit Nunaat" \
+            "171" "km_KH: ខ្មែរ_កម្ពុជា" \
+            "172" "kn_IN: ಕನ್ನಡ_ಭಾರತ" \
+            "173" "kok_IN: कोंकणी_भारत" \
+            "174" "ko_KR: 한국어_대한민국" \
+            "175" "ks_IN@devanagari: कॉशुर_भारत" \
+            "176" "ks_IN: कॉशुर_ہِندوستان" \
+            "177" "ku_TR: kurdî_Tirkiye" \
+            "178" "kw_GB: kernewek_Rywvaneth Unys" \
+            "179" "ky_KG: кыргызча_Кыргызстан" \
+            "180" "lb_LU: Lëtzebuergesch_Lëtzebuerg" \
+            "181" "lg_UG: Luganda_Yuganda" \
+            "182" "li_BE: Lèmbörgs_Bèlsj" \
+            "183" "lij_IT: Lìgure_Italia" \
+            "184" "li_NL: Lèmbörgs_Nederland" \
+            "185" "ln_CD: lingála_Republiki ya Kongó Demokratiki" \
+            "186" "lo_LA: ລາວ_ລາວ" \
+            "187" "lt_LT: lietuvių_Lietuva" \
+            "188" "lv_LV: latviešu_Latvija" \
+            "189" "lzh_TW: 漢語文言_臺灣" \
+            "190" "mag_IN: मगही_भारत" \
+            "191" "mai_IN: मैथिली_भारत" \
+            "192" "mai_NP: मैथिली_नेपाल" \
+            "193" "mfe_MU: kreol morisien_Moris" \
+            "194" "mg_MG: Malagasy_Madagasikara" \
+            "195" "mhr_RU: Mari locale for Russia" \
+            "196" "mi_NZ: Māori_Aotearoa" \
+            "197" "miq_NI: Miskito language locale for Nicaragua" \
+            "198" "mjw_IN: Karbi_Bhorot" \
+            "199" "mk_MK: македонски јазик_Македонија" \
+            "200" "ml_IN: മലയാളം_ഇന്ത്യ" \
+            "201" "mni_IN: মৈতৈলোন্_ভারত" \
+            "202" "mn_MN: монгол_Монгол" \
+            "203" "mnw_MM: မန်_ဗၟာ" \
+            "204" "mr_IN: मराठी_भारत" \
+            "205" "ms_MY: Melayu_Malaysia" \
+            "206" "mt_MT: Malti_Malta" \
+            "207" "my_MM: မြန်မာ_မြန်မာ" \
+            "208" "nan_TW@latin: Bân-lâm-gú_Tâi-oân" \
+            "209" "nan_TW: 閩南語_臺灣" \
+            "210" "nb_NO: norsk bokmål_Norge" \
+            "211" "nds_DE: Neddersass’sch_Düütschland" \
+            "212" "nds_NL: Neddersass’sch_Nedderlannen" \
+            "213" "ne_NP: नेपाली_नेपाल" \
+            "214" "nhn_MX: Tlahco nāhuatlahtōlli_Mexihco" \
+            "215" "niu_NU: Vagahau Niue_Niue" \
+            "216" "niu_NZ: Vagahau Niue_New Zealand" \
+            "217" "nl_AW: Nederlands_Aruba" \
+            "218" "nl_BE: Nederlands_België" \
+            "219" "nl_NL: Nederlands_Nederland" \
+            "220" "nn_NO: nynorsk_Noreg" \
+            "221" "nr_ZA: isiNdebele_iSewula Afrika" \
+            "222" "nso_ZA: Sesotho sa Leboa_Afrika Borwa" \
+            "223" "oc_FR: Occitan_França" \
+            "224" "om_ET: Oromoo_Itoophiyaa" \
+            "225" "om_KE: Oromoo_Keeniyaa" \
+            "226" "or_IN: ଓଡ଼ିଆ_ଭାରତ" \
+            "227" "os_RU: ирон_Уӕрӕсе" \
+            "228" "pa_IN: ਪੰਜਾਬੀ_ਭਾਰਤ" \
+            "229" "pap_AW: Papiamento_Aruba" \
+            "230" "pap_CW: Papiamento_Curaçao" \
+            "231" "pa_PK: پنجابی_پکستان" \
+            "232" "pl_PL: polski_Polska" \
+            "233" "ps_AF: پښتو_افغانستان" \
+            "234" "pt_BR: português_Brasil" \
+            "235" "pt_PT: português_Portugal" \
+            "236" "quz_PE: Qusqu runasimi_" \
+            "237" "raj_IN: राजस्थानी_भारत" \
+            "238" "ro_RO: română_România" \
+            "239" "ru_RU: ру́сский язы́к_Россия" \
+            "240" "ru_UA: русский_Украина" \
+            "241" "rw_RW: Kinyarwanda_U Rwanda" \
+            "242" "sah_RU: саха тыла_Арассыыйа" \
+            "243" "sa_IN: संस्कृतम्_भारतम्" \
+            "244" "sat_IN: ᱥᱟᱱᱛᱟᱲᱤ_ᱥᱤᱧᱚᱛ" \
+            "245" "sc_IT: sardu_Itàlia" \
+            "246" "sd_IN@devanagari: सिन्धी_भारत" \
+            "247" "sd_IN: سنڌي_انڊيا" \
+            "248" "se_NO: davvisámegiella_Norga" \
+            "249" "sgs_LT: Žemaitėškā_Lietova" \
+            "250" "shn_MM: လိၵ်ႈတႆး_မၢၼ်ႈ" \
+            "251" "shs_CA: Secwepemctsín_Canada" \
+            "252" "sid_ET: Sidaamu Afo_Itiyoophiya" \
+            "253" "si_LK: සිංහල_ශ්‍රී ලංකාව" \
+            "254" "sk_SK: slovenčina_Slovensko" \
+            "255" "sl_SI: slovenščina_Slovenija" \
+            "256" "sm_WS: Gagana faʻa Sāmoa_Sāmoa" \
+            "257" "so_DJ: Soomaali_Jabuuti" \
+            "258" "so_ET: Soomaali_Itoobiya" \
+            "259" "so_KE: Soomaali_Kiiniya" \
+            "260" "so_SO: Soomaali_Soomaaliya" \
+            "261" "sq_AL: shqip_Shqipëri" \
+            "262" "sq_MK: shqip_Maqedoni" \
+            "263" "sr_ME: српски_Црна Гора" \
+            "264" "sr_RS@latin: srpski_Srbija" \
+            "265" "sr_RS: српски_Србија" \
+            "266" "ss_ZA: siSwati_iNingizimu Afrika" \
+            "267" "st_ZA: Sesotho_Afrika Borwa" \
+            "268" "sv_FI: svenska_Finland" \
+            "269" "sv_SE: svenska_Sverige" \
+            "270" "sw_KE: Kiswahili_Kenya" \
+            "271" "sw_TZ: Swahili_Tanzania" \
+            "272" "szl_PL: ślōnskŏ gŏdka_Polska" \
+            "273" "ta_IN: தமிழ்_இந்தியா" \
+            "274" "ta_LK: தமிழ்_இலங்கை" \
+            "275" "tcy_IN: ತುಳು_ಭಾರತ" \
+            "276" "te_IN: తెలుగు_భారతదేశం" \
+            "277" "tg_TJ: тоҷикӣ_Тоҷикистон" \
+            "278" "the_NP: थारु_नेपाल" \
+            "279" "th_TH: ไทย_ไทย" \
+            "280" "ti_ER: ትግርኛ_ኤርትራ" \
+            "281" "ti_ET: ትግርኛ_ኢትዮጵያ" \
+            "282" "tig_ER: ትግረ_ኤርትራ" \
+            "283" "tk_TM: türkmen dili_Türkmenistan" \
+            "284" "tl_PH: Tagalog_Pilipinas" \
+            "285" "tn_ZA: Setswana_Aforika Borwa" \
+            "286" "to_TO: lea fakatonga_Tonga" \
+            "287" "tpi_PG: Tok Pisin_Papua Niugini" \
+            "288" "tr_CY: Türkçe_Kıbrıs" \
+            "289" "tr_TR: Türkçe_Türkiye" \
+            "290" "ts_ZA: Xitsonga_Afrika Dzonga" \
+            "291" "tt_RU@iqtelif: tatar tele_Urıs Patşahlıq" \
+            "292" "tt_RU: татар_Русия" \
+            "293" "ug_CN: ئۇيغۇرچە_جۇڭگو" \
+            "294" "uk_UA: українська_Україна" \
+            "295" "unm_US: Lenape_USA" \
+            "296" "ur_IN: اردو_بھارت" \
+            "297" "ur_PK: اردو_پاکستان" \
+            "298" "uz_UZ@cyrillic: Ўзбекча_Ўзбекистон" \
+            "299" "uz_UZ: o‘zbek_Oʻzbekiston" \
+            "300" "ve_ZA: Tshivenḓa_Afurika Tshipembe" \
+            "301" "vi_VN: Tiếng Việt_Việt Nam" \
+            "302" "wa_BE: walon_Beldjike" \
+            "303" "wae_CH: Walser_Schwiz" \
+            "304" "wal_ET: ወላይታቱ_ኢትዮጵያ" \
+            "305" "wo_SN: Wolof_Senegaal" \
+            "306" "xh_ZA: isiXhosa_uMzantsi Afrika" \
+            "307" "yi_US: ייִדיש_פֿאַראייניגטע שטאַטן" \
+            "308" "yo_NG: Èdè Yorùbá_Orilẹ̀-èdè Nàìjíríà" \
+            "309" "yue_HK: 粵語_香港特別行政區" \
+            "310" "yuw_PG: Uruwa_Papua New Guinea" \
+            "311" "en_US: 中文_中华人民共和国" \
+            "312" "zh_HK: 繁體中文_香港" \
+            "313" "zh_SG: 简体中文_新加坡" \
+            "314" "zh_TW: 正體中文_臺灣" \
+            "315" "zu_ZA: isiZulu_iNingizimu Afrika" \
+            3>&1 1>&2 2>&3
+    )
+    ##########################
+    case "${CONTAINER_LOCALE}" in
+    0 | "") tmoe_manager_main_menu ;;
+    1) edit_tmoe_locale_file_manually ;;
+    2) TMOE_LANG="aa_DJ" ;;
+    3) TMOE_LANG="aa_ER@saaho" ;;
+    4) TMOE_LANG="aa_ER" ;;
+    5) TMOE_LANG="aa_ET" ;;
+    6) TMOE_LANG="af_ZA" ;;
+    7) TMOE_LANG="agr_PE" ;;
+    8) TMOE_LANG="ak_GH" ;;
+    9) TMOE_LANG="am_ET" ;;
+    10) TMOE_LANG="an_ES" ;;
+    11) TMOE_LANG="anp_IN" ;;
+    12) TMOE_LANG="ar_AE" ;;
+    13) TMOE_LANG="ar_BH" ;;
+    14) TMOE_LANG="ar_DZ" ;;
+    15) TMOE_LANG="ar_EG" ;;
+    16) TMOE_LANG="ar_IN" ;;
+    17) TMOE_LANG="ar_IQ" ;;
+    18) TMOE_LANG="ar_JO" ;;
+    19) TMOE_LANG="ar_KW" ;;
+    20) TMOE_LANG="ar_LB" ;;
+    21) TMOE_LANG="ar_LY" ;;
+    22) TMOE_LANG="ar_MA" ;;
+    23) TMOE_LANG="ar_OM" ;;
+    24) TMOE_LANG="ar_QA" ;;
+    25) TMOE_LANG="ar_SA" ;;
+    26) TMOE_LANG="ar_SD" ;;
+    27) TMOE_LANG="ar_SS" ;;
+    28) TMOE_LANG="ar_SY" ;;
+    29) TMOE_LANG="ar_TN" ;;
+    30) TMOE_LANG="ar_YE" ;;
+    31) TMOE_LANG="as_IN" ;;
+    32) TMOE_LANG="ast_ES" ;;
+    33) TMOE_LANG="ayc_PE" ;;
+    34) TMOE_LANG="az_AZ" ;;
+    35) TMOE_LANG="az_IR" ;;
+    36) TMOE_LANG="be_BY@latin" ;;
+    37) TMOE_LANG="be_BY" ;;
+    38) TMOE_LANG="bem_ZM" ;;
+    39) TMOE_LANG="ber_DZ" ;;
+    40) TMOE_LANG="ber_MA" ;;
+    41) TMOE_LANG="bg_BG" ;;
+    42) TMOE_LANG="bhb_IN" ;;
+    43) TMOE_LANG="bho_IN" ;;
+    44) TMOE_LANG="bho_NP" ;;
+    45) TMOE_LANG="bi_VU" ;;
+    46) TMOE_LANG="bn_BD" ;;
+    47) TMOE_LANG="bn_IN" ;;
+    48) TMOE_LANG="bo_CN" ;;
+    49) TMOE_LANG="bo_IN" ;;
+    50) TMOE_LANG="br_FR" ;;
+    51) TMOE_LANG="brx_IN" ;;
+    52) TMOE_LANG="bs_BA" ;;
+    53) TMOE_LANG="byn_ER" ;;
+    54) TMOE_LANG="ca_AD" ;;
+    55) TMOE_LANG="ca_ES" ;;
+    56) TMOE_LANG="ca_ES@valencia" ;;
+    57) TMOE_LANG="ca_FR" ;;
+    58) TMOE_LANG="ca_IT" ;;
+    59) TMOE_LANG="ce_RU" ;;
+    60) TMOE_LANG="chr_US" ;;
+    61) TMOE_LANG="cmn_TW" ;;
+    62) TMOE_LANG="crh_UA" ;;
+    63) TMOE_LANG="csb_PL" ;;
+    64) TMOE_LANG="cs_CZ" ;;
+    65) TMOE_LANG="cv_RU" ;;
+    66) TMOE_LANG="cy_GB" ;;
+    67) TMOE_LANG="da_DK" ;;
+    68) TMOE_LANG="de_AT" ;;
+    69) TMOE_LANG="de_BE" ;;
+    70) TMOE_LANG="de_CH" ;;
+    71) TMOE_LANG="de_DE" ;;
+    72) TMOE_LANG="de_IT" ;;
+    73) TMOE_LANG="de_LI" ;;
+    74) TMOE_LANG="de_LU" ;;
+    75) TMOE_LANG="doi_IN" ;;
+    76) TMOE_LANG="dsb_DE" ;;
+    77) TMOE_LANG="dv_MV" ;;
+    78) TMOE_LANG="dz_BT" ;;
+    79) TMOE_LANG="el_CY" ;;
+    80) TMOE_LANG="el_GR" ;;
+    81) TMOE_LANG="en_AG" ;;
+    82) TMOE_LANG="en_AU" ;;
+    83) TMOE_LANG="en_BW" ;;
+    84) TMOE_LANG="en_CA" ;;
+    85) TMOE_LANG="en_DK" ;;
+    86) TMOE_LANG="en_GB" ;;
+    87) TMOE_LANG="en_HK" ;;
+    88) TMOE_LANG="en_IE" ;;
+    89) TMOE_LANG="en_IL" ;;
+    90) TMOE_LANG="en_IN" ;;
+    91) TMOE_LANG="en_NG" ;;
+    92) TMOE_LANG="en_NZ" ;;
+    93) TMOE_LANG="en_PH" ;;
+    94) TMOE_LANG="en_SC" ;;
+    95) TMOE_LANG="en_SG" ;;
+    96) TMOE_LANG="en_US" ;;
+    97) TMOE_LANG="en_ZA" ;;
+    98) TMOE_LANG="en_ZM" ;;
+    99) TMOE_LANG="en_ZW" ;;
+    100) TMOE_LANG="eo" ;;
+    101) TMOE_LANG="es_AR" ;;
+    102) TMOE_LANG="es_BO" ;;
+    103) TMOE_LANG="es_CL" ;;
+    104) TMOE_LANG="es_CO" ;;
+    105) TMOE_LANG="es_CR" ;;
+    106) TMOE_LANG="es_CU" ;;
+    107) TMOE_LANG="es_DO" ;;
+    108) TMOE_LANG="es_EC" ;;
+    109) TMOE_LANG="es_ES" ;;
+    110) TMOE_LANG="es_GT" ;;
+    111) TMOE_LANG="es_HN" ;;
+    112) TMOE_LANG="es_MX" ;;
+    113) TMOE_LANG="es_NI" ;;
+    114) TMOE_LANG="es_PA" ;;
+    115) TMOE_LANG="es_PE" ;;
+    116) TMOE_LANG="es_PR" ;;
+    117) TMOE_LANG="es_PY" ;;
+    118) TMOE_LANG="es_SV" ;;
+    119) TMOE_LANG="es_US" ;;
+    120) TMOE_LANG="es_UY" ;;
+    121) TMOE_LANG="es_VE" ;;
+    122) TMOE_LANG="et_EE" ;;
+    123) TMOE_LANG="eu_ES" ;;
+    124) TMOE_LANG="eu_FR" ;;
+    125) TMOE_LANG="fa_IR" ;;
+    126) TMOE_LANG="ff_SN" ;;
+    127) TMOE_LANG="fi_FI" ;;
+    128) TMOE_LANG="fil_PH" ;;
+    129) TMOE_LANG="fo_FO" ;;
+    130) TMOE_LANG="fr_BE" ;;
+    131) TMOE_LANG="fr_CA" ;;
+    132) TMOE_LANG="fr_CH" ;;
+    133) TMOE_LANG="fr_FR" ;;
+    134) TMOE_LANG="fr_LU" ;;
+    135) TMOE_LANG="fur_IT" ;;
+    136) TMOE_LANG="fy_DE" ;;
+    137) TMOE_LANG="fy_NL" ;;
+    138) TMOE_LANG="ga_IE" ;;
+    139) TMOE_LANG="gd_GB" ;;
+    140) TMOE_LANG="gez_ER@abegede" ;;
+    141) TMOE_LANG="gez_ER" ;;
+    142) TMOE_LANG="gez_ET@abegede" ;;
+    143) TMOE_LANG="gez_ET" ;;
+    144) TMOE_LANG="gl_ES" ;;
+    145) TMOE_LANG="gu_IN" ;;
+    146) TMOE_LANG="gv_GB" ;;
+    147) TMOE_LANG="hak_TW" ;;
+    148) TMOE_LANG="ha_NG" ;;
+    149) TMOE_LANG="he_IL" ;;
+    150) TMOE_LANG="hif_FJ" ;;
+    151) TMOE_LANG="hi_IN" ;;
+    152) TMOE_LANG="hne_IN" ;;
+    153) TMOE_LANG="hr_HR" ;;
+    154) TMOE_LANG="hsb_DE" ;;
+    155) TMOE_LANG="ht_HT" ;;
+    156) TMOE_LANG="hu_HU" ;;
+    157) TMOE_LANG="hy_AM" ;;
+    158) TMOE_LANG="ia_FR" ;;
+    159) TMOE_LANG="id_ID" ;;
+    160) TMOE_LANG="ig_NG" ;;
+    161) TMOE_LANG="ik_CA" ;;
+    162) TMOE_LANG="is_IS" ;;
+    163) TMOE_LANG="it_CH" ;;
+    164) TMOE_LANG="it_IT" ;;
+    165) TMOE_LANG="iu_CA" ;;
+    166) TMOE_LANG="ja_JP" ;;
+    167) TMOE_LANG="kab_DZ" ;;
+    168) TMOE_LANG="ka_GE" ;;
+    169) TMOE_LANG="kk_KZ" ;;
+    170) TMOE_LANG="kl_GL" ;;
+    171) TMOE_LANG="km_KH" ;;
+    172) TMOE_LANG="kn_IN" ;;
+    173) TMOE_LANG="kok_IN" ;;
+    174) TMOE_LANG="ko_KR" ;;
+    175) TMOE_LANG="ks_IN@devanagari" ;;
+    176) TMOE_LANG="ks_IN" ;;
+    177) TMOE_LANG="ku_TR" ;;
+    178) TMOE_LANG="kw_GB" ;;
+    179) TMOE_LANG="ky_KG" ;;
+    180) TMOE_LANG="lb_LU" ;;
+    181) TMOE_LANG="lg_UG" ;;
+    182) TMOE_LANG="li_BE" ;;
+    183) TMOE_LANG="lij_IT" ;;
+    184) TMOE_LANG="li_NL" ;;
+    185) TMOE_LANG="ln_CD" ;;
+    186) TMOE_LANG="lo_LA" ;;
+    187) TMOE_LANG="lt_LT" ;;
+    188) TMOE_LANG="lv_LV" ;;
+    189) TMOE_LANG="lzh_TW" ;;
+    190) TMOE_LANG="mag_IN" ;;
+    191) TMOE_LANG="mai_IN" ;;
+    192) TMOE_LANG="mai_NP" ;;
+    193) TMOE_LANG="mfe_MU" ;;
+    194) TMOE_LANG="mg_MG" ;;
+    195) TMOE_LANG="mhr_RU" ;;
+    196) TMOE_LANG="mi_NZ" ;;
+    197) TMOE_LANG="miq_NI" ;;
+    198) TMOE_LANG="mjw_IN" ;;
+    199) TMOE_LANG="mk_MK" ;;
+    200) TMOE_LANG="ml_IN" ;;
+    201) TMOE_LANG="mni_IN" ;;
+    202) TMOE_LANG="mn_MN" ;;
+    203) TMOE_LANG="mnw_MM" ;;
+    204) TMOE_LANG="mr_IN" ;;
+    205) TMOE_LANG="ms_MY" ;;
+    206) TMOE_LANG="mt_MT" ;;
+    207) TMOE_LANG="my_MM" ;;
+    208) TMOE_LANG="nan_TW@latin" ;;
+    209) TMOE_LANG="nan_TW" ;;
+    210) TMOE_LANG="nb_NO" ;;
+    211) TMOE_LANG="nds_DE" ;;
+    212) TMOE_LANG="nds_NL" ;;
+    213) TMOE_LANG="ne_NP" ;;
+    214) TMOE_LANG="nhn_MX" ;;
+    215) TMOE_LANG="niu_NU" ;;
+    216) TMOE_LANG="niu_NZ" ;;
+    217) TMOE_LANG="nl_AW" ;;
+    218) TMOE_LANG="nl_BE" ;;
+    219) TMOE_LANG="nl_NL" ;;
+    220) TMOE_LANG="nn_NO" ;;
+    221) TMOE_LANG="nr_ZA" ;;
+    222) TMOE_LANG="nso_ZA" ;;
+    223) TMOE_LANG="oc_FR" ;;
+    224) TMOE_LANG="om_ET" ;;
+    225) TMOE_LANG="om_KE" ;;
+    226) TMOE_LANG="or_IN" ;;
+    227) TMOE_LANG="os_RU" ;;
+    228) TMOE_LANG="pa_IN" ;;
+    229) TMOE_LANG="pap_AW" ;;
+    230) TMOE_LANG="pap_CW" ;;
+    231) TMOE_LANG="pa_PK" ;;
+    232) TMOE_LANG="pl_PL" ;;
+    233) TMOE_LANG="ps_AF" ;;
+    234) TMOE_LANG="pt_BR" ;;
+    235) TMOE_LANG="pt_PT" ;;
+    236) TMOE_LANG="quz_PE" ;;
+    237) TMOE_LANG="raj_IN" ;;
+    238) TMOE_LANG="ro_RO" ;;
+    239) TMOE_LANG="ru_RU" ;;
+    240) TMOE_LANG="ru_UA" ;;
+    241) TMOE_LANG="rw_RW" ;;
+    242) TMOE_LANG="sah_RU" ;;
+    243) TMOE_LANG="sa_IN" ;;
+    244) TMOE_LANG="sat_IN" ;;
+    245) TMOE_LANG="sc_IT" ;;
+    246) TMOE_LANG="sd_IN@devanagari" ;;
+    247) TMOE_LANG="sd_IN" ;;
+    248) TMOE_LANG="se_NO" ;;
+    249) TMOE_LANG="sgs_LT" ;;
+    250) TMOE_LANG="shn_MM" ;;
+    251) TMOE_LANG="shs_CA" ;;
+    252) TMOE_LANG="sid_ET" ;;
+    253) TMOE_LANG="si_LK" ;;
+    254) TMOE_LANG="sk_SK" ;;
+    255) TMOE_LANG="sl_SI" ;;
+    256) TMOE_LANG="sm_WS" ;;
+    257) TMOE_LANG="so_DJ" ;;
+    258) TMOE_LANG="so_ET" ;;
+    259) TMOE_LANG="so_KE" ;;
+    260) TMOE_LANG="so_SO" ;;
+    261) TMOE_LANG="sq_AL" ;;
+    262) TMOE_LANG="sq_MK" ;;
+    263) TMOE_LANG="sr_ME" ;;
+    264) TMOE_LANG="sr_RS@latin" ;;
+    265) TMOE_LANG="sr_RS" ;;
+    266) TMOE_LANG="ss_ZA" ;;
+    267) TMOE_LANG="st_ZA" ;;
+    268) TMOE_LANG="sv_FI" ;;
+    269) TMOE_LANG="sv_SE" ;;
+    270) TMOE_LANG="sw_KE" ;;
+    271) TMOE_LANG="sw_TZ" ;;
+    272) TMOE_LANG="szl_PL" ;;
+    273) TMOE_LANG="ta_IN" ;;
+    274) TMOE_LANG="ta_LK" ;;
+    275) TMOE_LANG="tcy_IN" ;;
+    276) TMOE_LANG="te_IN" ;;
+    277) TMOE_LANG="tg_TJ" ;;
+    278) TMOE_LANG="the_NP" ;;
+    279) TMOE_LANG="th_TH" ;;
+    280) TMOE_LANG="ti_ER" ;;
+    281) TMOE_LANG="ti_ET" ;;
+    282) TMOE_LANG="tig_ER" ;;
+    283) TMOE_LANG="tk_TM" ;;
+    284) TMOE_LANG="tl_PH" ;;
+    285) TMOE_LANG="tn_ZA" ;;
+    286) TMOE_LANG="to_TO" ;;
+    287) TMOE_LANG="tpi_PG" ;;
+    288) TMOE_LANG="tr_CY" ;;
+    289) TMOE_LANG="tr_TR" ;;
+    290) TMOE_LANG="ts_ZA" ;;
+    291) TMOE_LANG="tt_RU@iqtelif" ;;
+    292) TMOE_LANG="tt_RU" ;;
+    293) TMOE_LANG="ug_CN" ;;
+    294) TMOE_LANG="uk_UA" ;;
+    295) TMOE_LANG="unm_US" ;;
+    296) TMOE_LANG="ur_IN" ;;
+    297) TMOE_LANG="ur_PK" ;;
+    298) TMOE_LANG="uz_UZ@cyrillic" ;;
+    299) TMOE_LANG="uz_UZ" ;;
+    300) TMOE_LANG="ve_ZA" ;;
+    301) TMOE_LANG="vi_VN" ;;
+    302) TMOE_LANG="wa_BE" ;;
+    303) TMOE_LANG="wae_CH" ;;
+    304) TMOE_LANG="wal_ET" ;;
+    305) TMOE_LANG="wo_SN" ;;
+    306) TMOE_LANG="xh_ZA" ;;
+    307) TMOE_LANG="yi_US" ;;
+    308) TMOE_LANG="yo_NG" ;;
+    309) TMOE_LANG="yue_HK" ;;
+    310) TMOE_LANG="yuw_PG" ;;
+    311) TMOE_LANG="$(base64 -d <<<emhfQ04K)" ;;
+    312) TMOE_LANG="zh_HK" ;;
+    313) TMOE_LANG="zh_SG" ;;
+    314) TMOE_LANG="zh_TW" ;;
+    315) TMOE_LANG="zu_ZA" ;;
+    esac
+    ###############
+    case ${TMOE_LANG} in
+    "") tmoe_manager_main_menu ;;
+    esac
+    ##############
+    TMOE_LANG="${TMOE_LANG}.UTF-8"
+    TMOE_MENU_LANG=${TMOE_LANG}
+    TMOE_LANG_HALF=$(printf '%s\n' "${TMOE_LANG}" | cut -d '.' -f 1)
+    TMOE_LANG_QUATER=$(printf '%s\n' "${TMOE_LANG_HALF}" | cut -d '_' -f 1)
 
-	mkdir -pv ${HOME}/.config/tmoe-linux
-	cd ${HOME}/.config/tmoe-linux
-	printf "%s\n" "${TMOE_LANG}" >locale.txt
-	case $(uname -o) in
-	Android) ;;
-	*)
-		[[ -n ${TMOE_LINUX_DIR} ]] || TMOE_LINUX_DIR="/usr/local/etc/tmoe-linux"
-		mkdir -pv ${TMOE_LINUX_DIR}
-		chmod 666 "${TMOE_LINUX_DIR}/locale.txt" 2>/dev/null
-		printf "%s\n" "${TMOE_LANG}" >/usr/local/etc/tmoe-linux/locale.txt
-		;;
-	esac
+    mkdir -pv ${HOME}/.config/tmoe-linux
+    cd ${HOME}/.config/tmoe-linux
+    printf "%s\n" "${TMOE_LANG}" >locale.txt
+    case $(uname -o) in
+    Android) ;;
+    *)
+        [[ -n ${TMOE_LINUX_DIR} ]] || TMOE_LINUX_DIR="/usr/local/etc/tmoe-linux"
+        mkdir -pv ${TMOE_LINUX_DIR}
+        chmod 666 "${TMOE_LINUX_DIR}/locale.txt" 2>/dev/null
+        printf "%s\n" "${TMOE_LANG}" >/usr/local/etc/tmoe-linux/locale.txt
+        ;;
+    esac
 
-	if [ -e "${DEBIAN_CHROOT}" ]; then
-		TMOE_SCRIPT_PATH=${DEBIAN_CHROOT}
-		set_debian_default_locale
-	else
-		case "$(uname -o)" in
-		"Android")
-			printf "${RED}Congratulations${RESET},your current locale has been modified to ${BLUE}${TMOE_LANG}${RESET}\n"
-			press_enter_to_return
-			tmoe_manager_main_menu
-			;;
-		*)
-			TMOE_SCRIPT_PATH=''
-			;;
-		esac
-	fi
-	#cd ${TMOE_SCRIPT_PATH}/usr/local/bin
+    if [ -e "${DEBIAN_CHROOT}" ]; then
+        TMOE_SCRIPT_PATH=${DEBIAN_CHROOT}
+        set_debian_default_locale
+    else
+        case "$(uname -o)" in
+        "Android")
+            printf "${RED}Congratulations${RESET},your current locale has been modified to ${BLUE}${TMOE_LANG}${RESET}\n"
+            press_enter_to_return
+            tmoe_manager_main_menu
+            ;;
+        *)
+            TMOE_SCRIPT_PATH=''
+            ;;
+        esac
+    fi
+    #cd ${TMOE_SCRIPT_PATH}/usr/local/bin
 
-	if [ -e "${DEBIAN_CHROOT}" ]; then
-		mkdir -pv ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux
-		${TMOE_PREFIX} cp -fv ${HOME}/.config/tmoe-linux/locale.txt ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux
-		#chmod +r locale.txt
-	fi
-	case ${TMOE_LOCALE_GEN} in
-	true)
-		case "$(uname -o)" in
-		Android) ;;
-		*)
-			#if [ ! -z "${TMOE_SCRIPT_PATH}" ]; then
-			TMOE_SCRIPT_PATH=''
-			set_debian_default_locale
-			source /etc/default/locale 2>/dev/null
-			#fi
-			mkdir -pv /usr/local/etc/tmoe-linux/
-			cd /usr/local/etc/tmoe-linux/
-			cp -f ${HOME}/.config/tmoe-linux/locale.txt ./ || ${TMOE_PREFIX} cp -f ${HOME}/.config/tmoe-linux/locale.txt ./
-			chmod +r locale.txt
-			cd /etc
-			install_ubuntu_language_pack
-			sed -i 's@^[^#]@# &@g' locale.gen 2>/dev/null
-			if ! grep -qi "^${TMOE_LANG_HALF}" locale.gen; then
-				sed -i "s/^#.*${TMOE_LANG}.*/${TMOE_LANG} UTF-8/" locale.gen 2>/dev/null
-			fi
-			mv -f locale.gen locale.gen.bak
-			sort -u locale.gen.bak >locale.gen
-			if [ -z "${TMOE_SCRIPT_PATH}" ]; then
-				locale-gen ${TMOE_LANG} 2>/dev/null
-			fi
-			cat <<-EOF
+    if [ -e "${DEBIAN_CHROOT}" ]; then
+        mkdir -pv ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux
+        ${TMOE_PREFIX} cp -fv ${HOME}/.config/tmoe-linux/locale.txt ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux
+        #chmod +r locale.txt
+    fi
+    case ${TMOE_LOCALE_GEN} in
+    true)
+        case "$(uname -o)" in
+        Android) ;;
+        *)
+            #if [ ! -z "${TMOE_SCRIPT_PATH}" ]; then
+            TMOE_SCRIPT_PATH=''
+            set_debian_default_locale
+            source /etc/default/locale 2>/dev/null
+            #fi
+            mkdir -pv /usr/local/etc/tmoe-linux/
+            cd /usr/local/etc/tmoe-linux/
+            cp -f ${HOME}/.config/tmoe-linux/locale.txt ./ || ${TMOE_PREFIX} cp -f ${HOME}/.config/tmoe-linux/locale.txt ./
+            chmod +r locale.txt
+            cd /etc
+            install_ubuntu_language_pack
+            sed -i 's@^[^#]@# &@g' locale.gen 2>/dev/null
+            if ! grep -qi "^${TMOE_LANG_HALF}" locale.gen; then
+                sed -i "s/^#.*${TMOE_LANG}.*/${TMOE_LANG} UTF-8/" locale.gen 2>/dev/null
+            fi
+            mv -f locale.gen locale.gen.bak
+            sort -u locale.gen.bak >locale.gen
+            if [ -z "${TMOE_SCRIPT_PATH}" ]; then
+                locale-gen ${TMOE_LANG} 2>/dev/null
+            fi
+            cat <<-EOF
 				Please try running ${GREEN}source /etc/default/locale${RESET}
 				請手動執行${GREEN}source /etc/default/locale${RESET}以刷新locale設定
 				若无法生效，则请执行${GREEN}export LANG=${TMOE_LANG}${RESET}
 			EOF
-			;;
-		esac
-		;;
-	esac
-	#############
-	printf "%s\n" "${RED}Congratulations${RESET},your current locale has been modified to ${BLUE}${TMOE_LANG}${RESET}"
-	press_enter_to_return
-	tmoe_manager_main_menu
-	#tmoe_locale_settings
+            ;;
+        esac
+        ;;
+    esac
+    #############
+    printf "%s\n" "${RED}Congratulations${RESET},your current locale has been modified to ${BLUE}${TMOE_LANG}${RESET}"
+    press_enter_to_return
+    tmoe_manager_main_menu
+    #tmoe_locale_settings
 }
 #####################
 set_debian_default_locale() {
-	cd ${TMOE_SCRIPT_PATH}/etc/default
-	#if grep -q '^LANG=' locale; then
-	#	DEFAULT_LANG=$(cat locale | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1 | cut -d '.' -f 1)
-	#	DEFAULT_LANG_QUATER=$(printf '%s\n' "${DEFAULT_LANG}" | cut -d '_' -f 1)
-	#	sed -i "s@${DEFAULT_LANG}@${TMOE_LANG_HALF}@g;s@${TMOE_LANG_HALF}:${DEFAULT_LANG_QUATER}@${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}@g" locale
-	#	source ./locale 2>/dev/null
-	#else
-	mv -vf locale locale.bak 2>/dev/null
-	#sed -i 's@^@#&@g' locale
-	#sed -i 's@##@#@g' locale
-	cat >>locale <<-EOF
+    cd ${TMOE_SCRIPT_PATH}/etc/default
+    #if grep -q '^LANG=' locale; then
+    #	DEFAULT_LANG=$(cat locale | grep LANG= | cut -d '"' -f 2 | cut -d '=' -f 2 | tail -n 1 | cut -d '.' -f 1)
+    #	DEFAULT_LANG_QUATER=$(printf '%s\n' "${DEFAULT_LANG}" | cut -d '_' -f 1)
+    #	sed -i "s@${DEFAULT_LANG}@${TMOE_LANG_HALF}@g;s@${TMOE_LANG_HALF}:${DEFAULT_LANG_QUATER}@${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}@g" locale
+    #	source ./locale 2>/dev/null
+    #else
+    mv -vf locale locale.bak 2>/dev/null
+    #sed -i 's@^@#&@g' locale
+    #sed -i 's@##@#@g' locale
+    cat >>locale <<-EOF
 		LANG=${TMOE_LANG_HALF}.UTF-8
 		LANGUAGE=${TMOE_LANG_HALF}:${TMOE_LANG_QUATER}
 		LC_ALL=${TMOE_LANG_HALF}.UTF-8
 	EOF
-	#fi
+    #fi
 }
 ##########
 install_ubuntu_language_pack() {
-	case "${LINUX_DISTRO}" in
-	debian)
-		if [ ! -e "/usr/sbin/locale-gen" ]; then
-			apt update
-			apt install -y locales
-		fi
-		[[ -e /usr/lib/locale/en_US.utf8 ]] || apt install -y locales-all
-		case "${DEBIAN_DISTRO}" in
-		"ubuntu")
-			apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
-			cat <<-EOF
+    case "${LINUX_DISTRO}" in
+    debian)
+        if [ ! -e "/usr/sbin/locale-gen" ]; then
+            apt update
+            apt install -y locales
+        fi
+        [[ -e /usr/lib/locale/en_US.utf8 ]] || apt install -y locales-all
+        case "${DEBIAN_DISTRO}" in
+        "ubuntu")
+            apt install -y ^language-pack-${TMOE_LANG_QUATER} 2>/dev/null
+            cat <<-EOF
 				You are using ubuntu and you can try running ${GREEN}sudo apt install \$(check-language-support)${RESET}
 				檢測到您正在使用Ubuntu,您可以手動執行${GREEN}sudo apt install \$(check-language-support)${RESET}來安裝第三方程式的語言支持包
 			EOF
-			;;
-		esac
-		;;
-	redhat)
-		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
-			printf "${BLUE}%s${RESET}\n" "dnf install -y glibc-langpack-${TMOE_LANG_QUATER}*"
-			dnf install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*" glibc-minimal-langpack || yum install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*"
-		fi
-		;;
-	arch)
-		if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
-			printf "${BLUE}%s${RESET}\n" "pacman -Syu glibc"
-			pacman -Syu glibc
-		fi
-		;;
-	void) xbps-reconfigure -f glibc-locales ;;
-	suse)
-		printf "${BLUE}%s${RESET}\n" "zypper in -y glibc-locale glibc-i18ndata translation-update-${TMOE_LANG_HALF}"
-		zypper in -y glibc-locale glibc-i18ndata
-		zypper in -y translation-update-${TMOE_LANG_HALF}
-		;;
-	esac
+            ;;
+        esac
+        ;;
+    redhat)
+        if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+            printf "${BLUE}%s${RESET}\n" "dnf install -y glibc-langpack-${TMOE_LANG_QUATER}*"
+            dnf install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*" glibc-minimal-langpack || yum install -y --skip-broken "glibc-langpack-${TMOE_LANG_QUATER}*"
+        fi
+        ;;
+    arch)
+        if ! grep -qi "^${TMOE_LANG_HALF}" "/etc/locale.gen"; then
+            printf "${BLUE}%s${RESET}\n" "pacman -Syu glibc"
+            pacman -Syu glibc
+        fi
+        ;;
+    void) xbps-reconfigure -f glibc-locales ;;
+    suse)
+        printf "${BLUE}%s${RESET}\n" "zypper in -y glibc-locale glibc-i18ndata translation-update-${TMOE_LANG_HALF}"
+        zypper in -y glibc-locale glibc-i18ndata
+        zypper in -y translation-update-${TMOE_LANG_HALF}
+        ;;
+    esac
 }
 #############
 edit_tmoe_locale_file_manually() {
-	if [ -e "/etc/locale.gen" ]; then
-		if [ $(command -v editor) ]; then
-			editor /etc/default/locale
-			editor /etc/locale.gen
-		else
-			nano /etc/default/locale
-			nano /etc/locale.gen
-		fi
-	fi
-	for i in ${HOME}/.config/tmoe-linux/locale.txt /usr/local/etc/tmoe-linux/locale.txt; do
-		if [ -e "${i}" ]; then
-			if [ $(command -v editor) ]; then
-				editor ${i}
-			else
-				nano ${i}
-			fi
-		fi
-	done
+    if [ -e "/etc/locale.gen" ]; then
+        if [ $(command -v editor) ]; then
+            editor /etc/default/locale
+            editor /etc/locale.gen
+        else
+            nano /etc/default/locale
+            nano /etc/locale.gen
+        fi
+    fi
+    for i in ${HOME}/.config/tmoe-linux/locale.txt /usr/local/etc/tmoe-linux/locale.txt; do
+        if [ -e "${i}" ]; then
+            if [ $(command -v editor) ]; then
+                editor ${i}
+            else
+                nano ${i}
+            fi
+        fi
+    done
 
-	if [ -e "${DEBIAN_CHROOT}/etc" ]; then
-		if [ $(command -v editor) ]; then
-			editor ${DEBIAN_CHROOT}/etc/default/locale
-			editor ${DEBIAN_CHROOT}/etc/locale.gen
-		else
-			nano ${DEBIAN_CHROOT}/etc/default/locale
-			nano ${DEBIAN_CHROOT}/etc/locale.gen
-		fi
-	fi
-	press_enter_to_return
-	#tmoe_manager_main_menu
-	tmoe_locale_settings
+    if [ -e "${DEBIAN_CHROOT}/etc" ]; then
+        if [ $(command -v editor) ]; then
+            editor ${DEBIAN_CHROOT}/etc/default/locale
+            editor ${DEBIAN_CHROOT}/etc/locale.gen
+        else
+            nano ${DEBIAN_CHROOT}/etc/default/locale
+            nano ${DEBIAN_CHROOT}/etc/locale.gen
+        fi
+    fi
+    press_enter_to_return
+    #tmoe_manager_main_menu
+    tmoe_locale_settings
 }
 ############
 tmoe_locale_menu "$@"

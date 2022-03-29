@@ -3,59 +3,59 @@
 # set -x
 unset LINK_SOURCE_DIR TEMPORARY_SCRIPT_FILE TEMPORARY_SCRIPT_FILE_01 TEMPORARY_SCRIPT_FILE_02 TEMPORARY_SCRIPT_FILE_03
 tmoe_main() {
-	case "$1" in
-	p* | proot)
-		source_tmoe_env
-		TMOE_CHROOT=false
-		;;
-	c* | chroot)
-		source_tmoe_env
-		check_chroot_mode_01
-		TMOE_CHROOT=true
-		;;
-	systemd | sd | systemctl | ns | nspawn)
-		source_tmoe_env
-		SYSTEMD_NSPAWN=true
-		TMOE_CHROOT=true
-		;;
-	ls)
-		check_manager_dir
-		check_chroot_mode_02
-		bash "${MANAGER_DIR}"/share/old-version/share/container/debian/lnk-menu
-		exit 0
-		;;
-	zsh)
-		zsh-i
-		exit 0
-		;;
-	theme)
-		zshtheme
-		exit 0
-		;;
-	aria2)
-		aria2-i
-		exit 0
-		;;
-	i | -i)
-		debian-i
-		exit 0
-		;;
-	m | manager | "")
-		check_manager_dir
-		bash "${MANAGER_DIR}"/share/old-version/share/app/manager
-		exit 0
-		;;
-	t | tool)
-		check_manager_dir
-		if [[ $(uname -o) = Android ]]; then
-			bash "${MANAGER_DIR}"/share/old-version/share/app/manager
-		else
-			bash "${MANAGER_DIR}"/share/old-version/tools/app/tool
-		fi
-		exit 0
-		;;
-	-h* | --h* | *)
-		cat <<-EOF
+    case "$1" in
+    p* | proot)
+        source_tmoe_env
+        TMOE_CHROOT=false
+        ;;
+    c* | chroot)
+        source_tmoe_env
+        check_chroot_mode_01
+        TMOE_CHROOT=true
+        ;;
+    systemd | sd | systemctl | ns | nspawn)
+        source_tmoe_env
+        SYSTEMD_NSPAWN=true
+        TMOE_CHROOT=true
+        ;;
+    ls)
+        check_manager_dir
+        check_chroot_mode_02
+        bash "${MANAGER_DIR}"/share/old-version/share/container/debian/lnk-menu
+        exit 0
+        ;;
+    zsh)
+        zsh-i
+        exit 0
+        ;;
+    theme)
+        zshtheme
+        exit 0
+        ;;
+    aria2)
+        aria2-i
+        exit 0
+        ;;
+    i | -i)
+        debian-i
+        exit 0
+        ;;
+    m | manager | "")
+        check_manager_dir
+        bash "${MANAGER_DIR}"/share/old-version/share/app/manager
+        exit 0
+        ;;
+    t | tool)
+        check_manager_dir
+        if [[ $(uname -o) = Android ]]; then
+            bash "${MANAGER_DIR}"/share/old-version/share/app/manager
+        else
+            bash "${MANAGER_DIR}"/share/old-version/tools/app/tool
+        fi
+        exit 0
+        ;;
+    -h* | --h* | *)
+        cat <<-EOF
 			ls         --list installed containers
 			m          --tmoe manager
 			t          --tmoe tools
@@ -65,457 +65,457 @@ tmoe_main() {
 			theme      --zshtheme
 			zsh        --zsh manager
 		EOF
-		printf "%s\n" "You can go to the git repository for help information"
-		exit 0
-		;;
-	esac
-	case "$2" in
-	a | arch) DISTRO_NAME='arch' ;;
-	al | ap | alpine) DISTRO_NAME='alpine' ;;
-	arm | armbian) DISTRO_NAME='armbian' ;;
-	c | ce | cent | centos) DISTRO_NAME='centos' ;;
-	d | deb | debian) DISTRO_NAME='debian' ;;
-	dde | deepin) DISTRO_NAME='deepin' ;;
-	devuan) DISTRO_NAME='devuan' ;;
-	f | fe | fedora) DISTRO_NAME='fedora' ;;
-	ft | funtoo) DISTRO_NAME='funtoo' ;;
-	g | gt | gentoo) DISTRO_NAME='gentoo' ;;
-	k | kali) DISTRO_NAME='kali' ;;
-	mi | mint) DISTRO_NAME='mint' ;;
-	m | mj | mjr | manjaro) DISTRO_NAME='manjaro' ;;
-	o | suse | opensuse) DISTRO_NAME='opensuse' ;;
-	ow | wrt | openwrt) DISTRO_NAME='openwrt' ;;
-	r | rasp | raspios) DISTRO_NAME='raspios' ;;
-	raspbian) DISTRO_NAME='raspios' ;;
-	s | sl | slackware) DISTRO_NAME='slackware' ;;
-	u | ub | ubuntu) DISTRO_NAME='ubuntu' ;;
-	v | void) DISTRO_NAME='void' ;;
-	vnc | startvnc) EXEC_PROGRAM='startvnc' ;;
-	xs | xsdl | xserver | startxsdl) EXEC_PROGRAM='startxsdl' ;;
-	x11 | x11vnc | startx11vnc) EXEC_PROGRAM='startx11vnc' ;;
-	no | novnc) EXEC_PROGRAM='novnc' ;;
-	*) DISTRO_NAME="$2" ;;
-	esac
-	case "$3" in
-	20.10) DISTRO_CODE='groovy' ;;
-	21.04) DISTRO_CODE='hirsute' ;;
-	21.10) DISTRO_CODE='impish' ;;
-	20.04) DISTRO_CODE='focal' ;;
-	18.04) DISTRO_CODE='bionic' ;;
-	al | ap) DISTRO_CODE="alpine" ;; #This is not DISTRO_NAME
-	8s) DISTRO_CODE='8-Stream' ;;
-	9s) DISTRO_CODE='9-Stream' ;;
-	s) DISTRO_CODE='sid' ;;
-	r | ro) DISTRO_CODE='rolling' ;;
-	raw) DISTRO_CODE='rawhide' ;;
-	n | none) DISTRO_CODE='' ;;
-	x | amd64 | x64) ARCH_TYPE='amd64' ;;
-	a | aarch64 | arm64) ARCH_TYPE='arm64' ;;
-	h | arm | armhf) ARCH_TYPE='armhf' ;;
-	armel) ARCH_TYPE='armel' ;;
-	i | i386 | x86 | x32) ARCH_TYPE='i386' ;;
-	p | ppc) ARCH_TYPE='ppc64el' ;;
-	s390x) ARCH_TYPE='s390x' ;;
-	m | mips | mipsel) ARCH_TYPE='mipsel' ;;
-	m64 | mips64 | mips64el) ARCH_TYPE='mips64el' ;;
-	risc*) ARCH_TYPE='riscv64' ;;
-	v | vnc | startvnc) EXEC_PROGRAM='startvnc' ;;
-	xs | xsdl | xserver | startxsdl) EXEC_PROGRAM='startxsdl' ;;
-	x11 | x11vnc | startx11vnc) EXEC_PROGRAM='startx11vnc' ;;
-	no | novnc) EXEC_PROGRAM='novnc' ;;
-	bash) TMOE_SHELL='/bin/bash' ;;
-	ash) TMOE_SHELL='/bin/ash' ;;
-	zs) TMOE_SHELL='/bin/zsh' ;;
-	z | zsh) DISTRO_CODE="zsh" ;;
-	*) DISTRO_CODE="$3" ;;
-	esac
+        printf "%s\n" "You can go to the git repository for help information"
+        exit 0
+        ;;
+    esac
+    case "$2" in
+    a | arch) DISTRO_NAME='arch' ;;
+    al | ap | alpine) DISTRO_NAME='alpine' ;;
+    arm | armbian) DISTRO_NAME='armbian' ;;
+    c | ce | cent | centos) DISTRO_NAME='centos' ;;
+    d | deb | debian) DISTRO_NAME='debian' ;;
+    dde | deepin) DISTRO_NAME='deepin' ;;
+    devuan) DISTRO_NAME='devuan' ;;
+    f | fe | fedora) DISTRO_NAME='fedora' ;;
+    ft | funtoo) DISTRO_NAME='funtoo' ;;
+    g | gt | gentoo) DISTRO_NAME='gentoo' ;;
+    k | kali) DISTRO_NAME='kali' ;;
+    mi | mint) DISTRO_NAME='mint' ;;
+    m | mj | mjr | manjaro) DISTRO_NAME='manjaro' ;;
+    o | suse | opensuse) DISTRO_NAME='opensuse' ;;
+    ow | wrt | openwrt) DISTRO_NAME='openwrt' ;;
+    r | rasp | raspios) DISTRO_NAME='raspios' ;;
+    raspbian) DISTRO_NAME='raspios' ;;
+    s | sl | slackware) DISTRO_NAME='slackware' ;;
+    u | ub | ubuntu) DISTRO_NAME='ubuntu' ;;
+    v | void) DISTRO_NAME='void' ;;
+    vnc | startvnc) EXEC_PROGRAM='startvnc' ;;
+    xs | xsdl | xserver | startxsdl) EXEC_PROGRAM='startxsdl' ;;
+    x11 | x11vnc | startx11vnc) EXEC_PROGRAM='startx11vnc' ;;
+    no | novnc) EXEC_PROGRAM='novnc' ;;
+    *) DISTRO_NAME="$2" ;;
+    esac
+    case "$3" in
+    20.10) DISTRO_CODE='groovy' ;;
+    21.04) DISTRO_CODE='hirsute' ;;
+    21.10) DISTRO_CODE='impish' ;;
+    20.04) DISTRO_CODE='focal' ;;
+    18.04) DISTRO_CODE='bionic' ;;
+    al | ap) DISTRO_CODE="alpine" ;; #This is not DISTRO_NAME
+    8s) DISTRO_CODE='8-Stream' ;;
+    9s) DISTRO_CODE='9-Stream' ;;
+    s) DISTRO_CODE='sid' ;;
+    r | ro) DISTRO_CODE='rolling' ;;
+    raw) DISTRO_CODE='rawhide' ;;
+    n | none) DISTRO_CODE='' ;;
+    x | amd64 | x64) ARCH_TYPE='amd64' ;;
+    a | aarch64 | arm64) ARCH_TYPE='arm64' ;;
+    h | arm | armhf) ARCH_TYPE='armhf' ;;
+    armel) ARCH_TYPE='armel' ;;
+    i | i386 | x86 | x32) ARCH_TYPE='i386' ;;
+    p | ppc) ARCH_TYPE='ppc64el' ;;
+    s390x) ARCH_TYPE='s390x' ;;
+    m | mips | mipsel) ARCH_TYPE='mipsel' ;;
+    m64 | mips64 | mips64el) ARCH_TYPE='mips64el' ;;
+    risc*) ARCH_TYPE='riscv64' ;;
+    v | vnc | startvnc) EXEC_PROGRAM='startvnc' ;;
+    xs | xsdl | xserver | startxsdl) EXEC_PROGRAM='startxsdl' ;;
+    x11 | x11vnc | startx11vnc) EXEC_PROGRAM='startx11vnc' ;;
+    no | novnc) EXEC_PROGRAM='novnc' ;;
+    bash) TMOE_SHELL='/bin/bash' ;;
+    ash) TMOE_SHELL='/bin/ash' ;;
+    zs) TMOE_SHELL='/bin/zsh' ;;
+    z | zsh) DISTRO_CODE="zsh" ;;
+    *) DISTRO_CODE="$3" ;;
+    esac
 
-	case "$4" in
-	x | amd64 | x64) ARCH_TYPE='amd64' ;;
-	a | aarch* | arm64) ARCH_TYPE='arm64' ;;
-	h | arm | armhf) ARCH_TYPE='armhf' ;;
-	armel) ARCH_TYPE='armel' ;;
-	i | i386 | x86 | x32) ARCH_TYPE='i386' ;;
-	p | ppc*) ARCH_TYPE='ppc64el' ;;
-	s390*) ARCH_TYPE='s390x' ;;
-	m | mips | mipsel) ARCH_TYPE='mipsel' ;;
-	m64 | mips64 | mips64el) ARCH_TYPE='mips64el' ;;
-	risc*) ARCH_TYPE='riscv64' ;;
-	v | vnc | startvnc) EXEC_PROGRAM='startvnc' ;;
-	xs | xsdl | xserver | startxsdl) EXEC_PROGRAM='startxsdl' ;;
-	x11 | x11vnc | startx11vnc) EXEC_PROGRAM='startx11vnc' ;;
-	no | novnc) EXEC_PROGRAM='novnc' ;;
-	bash) TMOE_SHELL='/bin/bash' ;;
-	z | zsh) TMOE_SHELL='/bin/zsh' ;;
-	ash) TMOE_SHELL='/bin/ash' ;;
-	ln)
-		CREATE_A_SOFT_LINK=true
-		LINK_SOURCE_DIR="/etc/profile.d/permanent"
-		;;
-	"") ;;
-	~/* | ./* | ../* | /*) TEMPORARY_SCRIPT_FILE_01="${4}" ;;
-	*) EXEC_PROGRAM_01="${4}" ;;
-	esac
+    case "$4" in
+    x | amd64 | x64) ARCH_TYPE='amd64' ;;
+    a | aarch* | arm64) ARCH_TYPE='arm64' ;;
+    h | arm | armhf) ARCH_TYPE='armhf' ;;
+    armel) ARCH_TYPE='armel' ;;
+    i | i386 | x86 | x32) ARCH_TYPE='i386' ;;
+    p | ppc*) ARCH_TYPE='ppc64el' ;;
+    s390*) ARCH_TYPE='s390x' ;;
+    m | mips | mipsel) ARCH_TYPE='mipsel' ;;
+    m64 | mips64 | mips64el) ARCH_TYPE='mips64el' ;;
+    risc*) ARCH_TYPE='riscv64' ;;
+    v | vnc | startvnc) EXEC_PROGRAM='startvnc' ;;
+    xs | xsdl | xserver | startxsdl) EXEC_PROGRAM='startxsdl' ;;
+    x11 | x11vnc | startx11vnc) EXEC_PROGRAM='startx11vnc' ;;
+    no | novnc) EXEC_PROGRAM='novnc' ;;
+    bash) TMOE_SHELL='/bin/bash' ;;
+    z | zsh) TMOE_SHELL='/bin/zsh' ;;
+    ash) TMOE_SHELL='/bin/ash' ;;
+    ln)
+        CREATE_A_SOFT_LINK=true
+        LINK_SOURCE_DIR="/etc/profile.d/permanent"
+        ;;
+    "") ;;
+    ~/* | ./* | ../* | /*) TEMPORARY_SCRIPT_FILE_01="${4}" ;;
+    *) EXEC_PROGRAM_01="${4}" ;;
+    esac
 
-	case "$5" in
-	v | vnc | startvnc) EXEC_PROGRAM='startvnc' ;;
-	x | xs | xsdl | xserver | startxsdl) EXEC_PROGRAM='startxsdl' ;;
-	x11 | x11vnc | startx11vnc) EXEC_PROGRAM='startx11vnc' ;;
-	no | novnc) EXEC_PROGRAM='novnc' ;;
-	bash) TMOE_SHELL='/bin/bash' ;;
-	z | zsh) TMOE_SHELL='/bin/zsh' ;;
-	ash) TMOE_SHELL='/bin/ash' ;;
-	ln)
-		CREATE_A_SOFT_LINK=true
-		LINK_SOURCE_DIR="/etc/profile.d/permanent"
-		;;
-	en | entrypoint)
-		case ${CREATE_A_SOFT_LINK} in
-		true) LINK_SOURCE_DIR="/usr/local/etc/tmoe-linux/environment/entrypoint" ;;
-		*) EXEC_PROGRAM_02="${5}" ;;
-		esac
-		;;
-	"") ;;
-	~/* | ./* | ../* | /*)
-		case ${CREATE_A_SOFT_LINK} in
-		true) LINK_SOURCE_DIR="${5}" ;;
-		*) TEMPORARY_SCRIPT_FILE_02="${5}" ;;
-		esac
-		;;
-	*) EXEC_PROGRAM_02="${5}" ;;
-	esac
+    case "$5" in
+    v | vnc | startvnc) EXEC_PROGRAM='startvnc' ;;
+    x | xs | xsdl | xserver | startxsdl) EXEC_PROGRAM='startxsdl' ;;
+    x11 | x11vnc | startx11vnc) EXEC_PROGRAM='startx11vnc' ;;
+    no | novnc) EXEC_PROGRAM='novnc' ;;
+    bash) TMOE_SHELL='/bin/bash' ;;
+    z | zsh) TMOE_SHELL='/bin/zsh' ;;
+    ash) TMOE_SHELL='/bin/ash' ;;
+    ln)
+        CREATE_A_SOFT_LINK=true
+        LINK_SOURCE_DIR="/etc/profile.d/permanent"
+        ;;
+    en | entrypoint)
+        case ${CREATE_A_SOFT_LINK} in
+        true) LINK_SOURCE_DIR="/usr/local/etc/tmoe-linux/environment/entrypoint" ;;
+        *) EXEC_PROGRAM_02="${5}" ;;
+        esac
+        ;;
+    "") ;;
+    ~/* | ./* | ../* | /*)
+        case ${CREATE_A_SOFT_LINK} in
+        true) LINK_SOURCE_DIR="${5}" ;;
+        *) TEMPORARY_SCRIPT_FILE_02="${5}" ;;
+        esac
+        ;;
+    *) EXEC_PROGRAM_02="${5}" ;;
+    esac
 
-	case "$6" in
-	"") ;;
-	en | entrypoint)
-		case ${CREATE_A_SOFT_LINK} in
-		true) LINK_SOURCE_DIR="/usr/local/etc/tmoe-linux/environment/entrypoint" ;;
-		*) EXEC_PROGRAM_03="${6}" ;;
-		esac
-		;;
-	~/* | ./* | ../* | /*)
-		case ${CREATE_A_SOFT_LINK} in
-		true) LINK_SOURCE_DIR="${6}" ;;
-		*) TEMPORARY_SCRIPT_FILE_03="${6}" ;;
-		esac
-		;;
-	*) EXEC_PROGRAM_03="${6}" ;;
-	esac
+    case "$6" in
+    "") ;;
+    en | entrypoint)
+        case ${CREATE_A_SOFT_LINK} in
+        true) LINK_SOURCE_DIR="/usr/local/etc/tmoe-linux/environment/entrypoint" ;;
+        *) EXEC_PROGRAM_03="${6}" ;;
+        esac
+        ;;
+    ~/* | ./* | ../* | /*)
+        case ${CREATE_A_SOFT_LINK} in
+        true) LINK_SOURCE_DIR="${6}" ;;
+        *) TEMPORARY_SCRIPT_FILE_03="${6}" ;;
+        esac
+        ;;
+    *) EXEC_PROGRAM_03="${6}" ;;
+    esac
 
-	if ((${#} >= 7)); then
-		printf "%s\n" \
-			"ERROR, number of arguments exceeded." \
-			"Please retype the commands:" \
-			"tmoe ${1} ${2} ${3} ${4} ${5} ${6}"
-	fi
-	TMOE_PARAMETERS="$*"
-	start_tmoe_container
+    if ((${#} >= 7)); then
+        printf "%s\n" \
+            "ERROR, number of arguments exceeded." \
+            "Please retype the commands:" \
+            "tmoe ${1} ${2} ${3} ${4} ${5} ${6}"
+    fi
+    TMOE_PARAMETERS="$*"
+    start_tmoe_container
 }
 #############
 check_chroot_mode_02() {
-	CONFIG_FOLDER=${HOME}/.config/tmoe-linux
-	if [[ -s ${CONFIG_FOLDER}/chroot.conf ]]; then
-		if ! grep -Eq '^[^#]*SYSTEMD_NSPAWN=' "${CONFIG_FOLDER}"/chroot.conf; then
-			export SYSTEMD_NSPAWN=false
-		else
-			export SYSTEMD_NSPAWN=$(grep -E '^[^#]*SYSTEMD_NSPAWN=' "${CONFIG_FOLDER}"/chroot.conf | awk -F '=' '{print $2}')
-		fi
-	else
-		export SYSTEMD_NSPAWN=false
-	fi
+    CONFIG_FOLDER=${HOME}/.config/tmoe-linux
+    if [[ -s ${CONFIG_FOLDER}/chroot.conf ]]; then
+        if ! grep -Eq '^[^#]*SYSTEMD_NSPAWN=' "${CONFIG_FOLDER}"/chroot.conf; then
+            export SYSTEMD_NSPAWN=false
+        else
+            export SYSTEMD_NSPAWN=$(grep -E '^[^#]*SYSTEMD_NSPAWN=' "${CONFIG_FOLDER}"/chroot.conf | awk -F '=' '{print $2}')
+        fi
+    else
+        export SYSTEMD_NSPAWN=false
+    fi
 }
 check_chroot_mode_01() {
-	CHROOT_CONF=${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/chroot.conf
-	SYSTEMD_NSPAWN=false
-	if [[ -s ${CONFIG_FOLDER}/chroot.conf ]]; then
-		if ! grep -Eq '^[^#]*SYSTEMD_NSPAWN=' "${CONFIG_FOLDER}"/chroot.conf; then
-			SYSTEMD_NSPAWN=false
-		else
-			SYSTEMD_NSPAWN=$(grep -E '^[^#]*SYSTEMD_NSPAWN=' "${CONFIG_FOLDER}"/chroot.conf | awk -F '=' '{print $2}')
-		fi
-	fi
-	if [[ -e ${CHROOT_CONF} ]]; then
-		if ! grep -Eq '^[^#]*SYSTEMD_NSPAWN=' "${CHROOT_CONF}"; then
-			SYSTEMD_NSPAWN=false
-		else
-			SYSTEMD_NSPAWN=$(grep -E '^[^#]*SYSTEMD_NSPAWN=' "${CHROOT_CONF}" | awk -F '=' '{print $2}')
-		fi
-	fi
+    CHROOT_CONF=${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container/chroot.conf
+    SYSTEMD_NSPAWN=false
+    if [[ -s ${CONFIG_FOLDER}/chroot.conf ]]; then
+        if ! grep -Eq '^[^#]*SYSTEMD_NSPAWN=' "${CONFIG_FOLDER}"/chroot.conf; then
+            SYSTEMD_NSPAWN=false
+        else
+            SYSTEMD_NSPAWN=$(grep -E '^[^#]*SYSTEMD_NSPAWN=' "${CONFIG_FOLDER}"/chroot.conf | awk -F '=' '{print $2}')
+        fi
+    fi
+    if [[ -e ${CHROOT_CONF} ]]; then
+        if ! grep -Eq '^[^#]*SYSTEMD_NSPAWN=' "${CHROOT_CONF}"; then
+            SYSTEMD_NSPAWN=false
+        else
+            SYSTEMD_NSPAWN=$(grep -E '^[^#]*SYSTEMD_NSPAWN=' "${CHROOT_CONF}" | awk -F '=' '{print $2}')
+        fi
+    fi
 }
 check_manager_dir() {
-	MANAGER_DIR_01="${HOME}/.local/share/tmoe-linux/git"
-	MANAGER_DIR_02="/usr/local/etc/tmoe-linux/git"
-	if [ -e "${MANAGER_DIR_01}" ]; then
-		MANAGER_DIR=${MANAGER_DIR_01}
-	else
-		MANAGER_DIR=${MANAGER_DIR_02}
-	fi
+    MANAGER_DIR_01="${HOME}/.local/share/tmoe-linux/git"
+    MANAGER_DIR_02="/usr/local/etc/tmoe-linux/git"
+    if [ -e "${MANAGER_DIR_01}" ]; then
+        MANAGER_DIR=${MANAGER_DIR_01}
+    else
+        MANAGER_DIR=${MANAGER_DIR_02}
+    fi
 }
 source_tmoe_env() {
-	TMOE_CONTAINER_FORTUNE=true
-	TMOE_CONTAINER_HITOKOTO=true
-	CONFIG_FOLDER=${HOME}/.config/tmoe-linux
-	source ${CONFIG_FOLDER}/hitokoto.conf 2>/dev/null
-	case $(uname -o) in
-	Android)
-		TMOE_LINUX_DIR="${HOME}/.local/share/tmoe-linux"
-		[[ ! $(command -v termux-wake-lock) ]] || termux-wake-lock 2>/dev/null
-		;;
-	*) TMOE_LINUX_DIR="/usr/local/etc/tmoe-linux" ;;
-	esac
-	case ${TMOE_CONTAINER_FORTUNE} in
-	true)
-		if [ $(command -v fortune) ]; then
-			fortune 2>/dev/null
-		elif [ -e /usr/games/fortune ]; then
-			/usr/games/fortune 2>/dev/null
-		fi
-		;;
-	esac
-	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
-	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
-	TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
-	ENV_FILE="${TMOE_SHARE_DIR}/environment/manager_environment"
-	source ${ENV_FILE}
-	check_arch
-	ACROSS_ARCH_FILE="${CONFIG_FOLDER}/across_architecture_container.txt"
-	[[ ! -s "${ACROSS_ARCH_FILE}" ]] || ARCH_TYPE="$(head -n 1 ${ACROSS_ARCH_FILE})"
+    TMOE_CONTAINER_FORTUNE=true
+    TMOE_CONTAINER_HITOKOTO=true
+    CONFIG_FOLDER=${HOME}/.config/tmoe-linux
+    source ${CONFIG_FOLDER}/hitokoto.conf 2>/dev/null
+    case $(uname -o) in
+    Android)
+        TMOE_LINUX_DIR="${HOME}/.local/share/tmoe-linux"
+        [[ ! $(command -v termux-wake-lock) ]] || termux-wake-lock 2>/dev/null
+        ;;
+    *) TMOE_LINUX_DIR="/usr/local/etc/tmoe-linux" ;;
+    esac
+    case ${TMOE_CONTAINER_FORTUNE} in
+    true)
+        if [ $(command -v fortune) ]; then
+            fortune 2>/dev/null
+        elif [ -e /usr/games/fortune ]; then
+            /usr/games/fortune 2>/dev/null
+        fi
+        ;;
+    esac
+    TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+    TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
+    TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
+    ENV_FILE="${TMOE_SHARE_DIR}/environment/manager_environment"
+    source ${ENV_FILE}
+    check_arch
+    ACROSS_ARCH_FILE="${CONFIG_FOLDER}/across_architecture_container.txt"
+    [[ ! -s "${ACROSS_ARCH_FILE}" ]] || ARCH_TYPE="$(head -n 1 ${ACROSS_ARCH_FILE})"
 }
 ########
 check_container_login_file_01() {
-	if [ -r "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then
-		if ! grep -q 'tmp/.tmoe_container_temporary' "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login"; then
-			${TMOE_PREFIX} rm -fv "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh
-		fi
-	fi
-	if [ ! -e "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then
-		${TMOE_PREFIX} mkdir -pv "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}" ${DEBIAN_CHROOT}/etc/profile.d/permanent
-		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}
-		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh
-		${TMOE_PREFIX} chmod -Rv a+rx "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}" ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh ${DEBIAN_CHROOT}/etc/profile.d/permanent
-	fi
-	if [[ ! -e ${CONTAINER_ZLOGIN_FILE} ]]; then
-		${TMOE_PREFIX} mkdir -pv "${CONTAINER_ZSH_DIR}"
-		${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/zlogin ${CONTAINER_ZLOGIN_FILE}
-		${TMOE_PREFIX} chmod -Rv a+rx "${CONTAINER_ZSH_DIR}"
-	elif ! grep -q 'environment/login' "${CONTAINER_ZLOGIN_FILE}"; then
-		${TMOE_PREFIX} sed -i '$ a[[ ! -r /usr/local/etc/tmoe-linux/environment/login ]] || source /usr/local/etc/tmoe-linux/environment/login' ${CONTAINER_ZLOGIN_FILE}
-	fi
+    if [ -r "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then
+        if ! grep -q 'tmp/.tmoe_container_temporary' "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login"; then
+            ${TMOE_PREFIX} rm -fv "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh
+        fi
+    fi
+    if [ ! -e "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}/login" ]; then
+        ${TMOE_PREFIX} mkdir -pv "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}" ${DEBIAN_CHROOT}/etc/profile.d/permanent
+        ${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}
+        ${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/login ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh
+        ${TMOE_PREFIX} chmod -Rv a+rx "${TMOE_GNU_LINUX_CONTAINER_ENV_DIR}" ${DEBIAN_CHROOT}/etc/profile.d/001_login.sh ${DEBIAN_CHROOT}/etc/profile.d/permanent
+    fi
+    if [[ ! -e ${CONTAINER_ZLOGIN_FILE} ]]; then
+        ${TMOE_PREFIX} mkdir -pv "${CONTAINER_ZSH_DIR}"
+        ${TMOE_PREFIX} cp -fv ${TMOE_SHARE_DIR}/container/profile/zlogin ${CONTAINER_ZLOGIN_FILE}
+        ${TMOE_PREFIX} chmod -Rv a+rx "${CONTAINER_ZSH_DIR}"
+    elif ! grep -q 'environment/login' "${CONTAINER_ZLOGIN_FILE}"; then
+        ${TMOE_PREFIX} sed -i '$ a[[ ! -r /usr/local/etc/tmoe-linux/environment/login ]] || source /usr/local/etc/tmoe-linux/environment/login' ${CONTAINER_ZLOGIN_FILE}
+    fi
 }
 ########
 chmod_777_temporary_file_01() {
-	if [ $(command -v bat) ]; then
-		sed '/\/tmp\/.tmoe_container_temporary/d' "${TEMP_FILE}" | bat -ppn
-	elif [ $(command -v batcat) ]; then
-		sed '/\/tmp\/.tmoe_container_temporary/d' "${TEMP_FILE}" | batcat -ppn
-	else
-		sed '/\/tmp\/.tmoe_container_temporary/d' "${TEMP_FILE}" | cat
-	fi
-	${TMOE_PREFIX} chmod a+rx "${TEMP_FILE}"
-	${TMOE_PREFIX} mv -f "${TEMP_FILE}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
+    if [ $(command -v bat) ]; then
+        sed '/\/tmp\/.tmoe_container_temporary/d' "${TEMP_FILE}" | bat -ppn
+    elif [ $(command -v batcat) ]; then
+        sed '/\/tmp\/.tmoe_container_temporary/d' "${TEMP_FILE}" | batcat -ppn
+    else
+        sed '/\/tmp\/.tmoe_container_temporary/d' "${TEMP_FILE}" | cat
+    fi
+    ${TMOE_PREFIX} chmod a+rx "${TEMP_FILE}"
+    ${TMOE_PREFIX} mv -f "${TEMP_FILE}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
 }
 set_temp_file_env() {
-	TEMP_FILE="${TMPDIR}/start_01_${RANDOM}"
-	mkdir -p "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}" || ${TMOE_PREFIX} mkdir -pv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
-	${TMOE_PREFIX} chmod 777 -R "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"
+    TEMP_FILE="${TMPDIR}/start_01_${RANDOM}"
+    mkdir -p "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}" || ${TMOE_PREFIX} mkdir -pv ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}
+    ${TMOE_PREFIX} chmod 777 -R "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"
 }
 create_and_move_temporary_script_01() {
-	set_temp_file_env
-	printf "%s\n" \
-		'#!/usr/bin/env bash' \
-		"cd /tmp/.tmoe_container_temporary" \
-		"${EXEC_PROGRAM}" \
-		>"${TEMP_FILE}"
-	chmod_777_temporary_file_01
+    set_temp_file_env
+    printf "%s\n" \
+        '#!/usr/bin/env bash' \
+        "cd /tmp/.tmoe_container_temporary" \
+        "${EXEC_PROGRAM}" \
+        >"${TEMP_FILE}"
+    chmod_777_temporary_file_01
 }
 create_and_move_temporary_script_02() {
-	set_temp_file_env
-	printf "%s\n" \
-		'#!/usr/bin/env bash' \
-		"cd /tmp/.tmoe_container_temporary" \
-		"${TEMPORARY_SCRIPT_FILE}" \
-		>"${TEMP_FILE}"
-	chmod_777_temporary_file_01
+    set_temp_file_env
+    printf "%s\n" \
+        '#!/usr/bin/env bash' \
+        "cd /tmp/.tmoe_container_temporary" \
+        "${TEMPORARY_SCRIPT_FILE}" \
+        >"${TEMP_FILE}"
+    chmod_777_temporary_file_01
 }
 create_and_move_temporary_script_03() {
-	set_temp_file_env
-	TEMP_FILE="start_01_vnc"
-	printf "%s\n" \
-		'#!/usr/bin/env bash' \
-		"${EXEC_PROGRAM}" \
-		>${TEMP_FILE}
-	chmod_777_temporary_file_01
+    set_temp_file_env
+    TEMP_FILE="start_01_vnc"
+    printf "%s\n" \
+        '#!/usr/bin/env bash' \
+        "${EXEC_PROGRAM}" \
+        >${TEMP_FILE}
+    chmod_777_temporary_file_01
 }
 create_and_move_temporary_script_04() {
-	set_temp_file_env
-	printf "%s\n" \
-		'#!/usr/bin/env bash' \
-		"${TEMPORARY_SCRIPT_FILE}" \
-		>${TEMP_FILE}
-	chmod_777_temporary_file_01
+    set_temp_file_env
+    printf "%s\n" \
+        '#!/usr/bin/env bash' \
+        "${TEMPORARY_SCRIPT_FILE}" \
+        >${TEMP_FILE}
+    chmod_777_temporary_file_01
 }
 start_tmoe_container() {
-	DEFAULT_SHELL_CONF=${CONFIG_FOLDER}/default_shell.conf
-	case ${TMOE_SHELL} in
-	"") rm -f "${DEFAULT_SHELL_CONF}" 2>/dev/null ;;
-	*) printf "%s\n" "TMOE_SHELL=${TMOE_SHELL}" >"${DEFAULT_SHELL_CONF}" ;;
-	esac
-	case "${DISTRO_NAME}" in
-	"") ;;
-	*)
-		case ${DISTRO_CODE} in
-		"") DEBIAN_FOLDER=${DISTRO_NAME}_${ARCH_TYPE} ;;
-		*) DEBIAN_FOLDER=${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE} ;;
-		esac
-		;;
-	esac
-	tmoe_env_02 #source DEBIAN_CHROOT以及其它变量
-	if [ -e "${DEBIAN_CHROOT}"/etc/os-release ]; then
-		grep 'PRETTY_NAME' "${DEBIAN_CHROOT}"/etc/os-release 2>/dev/null | awk -F '"' '{print $2}'
-	else
-		sed -n p "${DEBIAN_CHROOT}"/etc/issue 2>/dev/null
-	fi
-	if [[ ${CREATE_A_SOFT_LINK} = true ]]; then
-		ln -svf "${DEBIAN_CHROOT}${LINK_SOURCE_DIR}" "./container_link_${LINK_SOURCE_DIR##*/}_${RANDOM}"
-		exit 0
-	fi
-	case ${TMOE_CONTAINER_HITOKOTO} in
-	true) [[ ! ${TMOE_LANG} =~ zh_.*UTF-8 ]] || get_hitokito_cn ;;
-	esac
-	if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
-		pulseaudio --start --exit-idle-time=3600
-		pacmd load-module module-native-protocol-tcp auth-ip-acl='127.0.0.1;192.168.0.0/16;172.16.0.0/12' 2>/dev/null
-	fi
-	###############
-	rmdir_container_tmp() {
-		rm -rf "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"
-		case ${?} in
-		0) ;;
-		*)
-			${TMOE_PREFIX} chmod 777 -Rv "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"
-			${TMOE_PREFIX} rm -rfv "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"
-			;;
-		esac
-	}
-	if [[ -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} ]]; then
-		if [[ ! -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/.container.lock ]]; then
-			rmdir_container_tmp
-		else
-			FILE_TIME=$(date -d "$(stat -c '%y' "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"/.container.lock)" +"%Y%m%d")
-			case ${FILE_TIME} in
-			"$(date +%Y%m%d)") printf "%s\n" "${BLUE}/tmp/.tmoe_container_temporary/.container.lock${RESET}" ;;
-			*) rmdir_container_tmp ;;
-			esac
-		fi
-	fi
-	###############
-	if [[ -n ${EXEC_PROGRAM} ]]; then
-		case ${EXEC_PROGRAM} in
-		startx11vnc | startvnc)
-			# ${TMOE_PREFIX} touch ${TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR}/${EXEC_PROGRAM}
-			[[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
-			;;
-		no | novnc)
-			NOVNC_PORT=$(grep '^NOVNC_PORT=' "${DEBIAN_CHROOT}"/usr/local/bin/novnc | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
-			[[ -n ${NOVNC_PORT} ]] || NOVNC_PORT=36080
-			NOVNC_ADDR="http://localhost:${NOVNC_PORT}/vnc.html"
-			printf "${YELLOW}%s${RESET}\n" "${NOVNC_ADDR}"
-			if [[ $(command -v am) ]]; then
-				am start -a android.intent.action.VIEW -d "${NOVNC_ADDR}" 2>/dev/null
-			elif [[ $(command -v xdg-open) ]]; then
-				xdg-open ${NOVNC_ADDR} 2>/dev/null
-			elif [[ -e /mnt/c/WINDOWS/system32/cmd.exe ]]; then
-				cd /mnt/c/Users
-				/mnt/c/WINDOWS/system32/cmd.exe /c "start ${NOVNC_ADDR}"
-				cd -
-			fi
-			;;
-		startxsdl)
-			if [[ $(command -v am) ]]; then
-				am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
-				printf "%s\n" "Please ${CYAN}wait ${RED}6s${RESET}."
-				sleep 6
-			fi
-			;;
-		esac
-		if [[ -e ${DEBIAN_CHROOT} ]]; then
-			check_container_login_file_01
-			case ${EXEC_PROGRAM} in
-			startx11vnc | startvnc | novnc | startxsdl) create_and_move_temporary_script_03 ;;
-			*) create_and_move_temporary_script_01 ;;
-			esac
-		else
-			printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
-			exit 1
-		fi
-	fi
+    DEFAULT_SHELL_CONF=${CONFIG_FOLDER}/default_shell.conf
+    case ${TMOE_SHELL} in
+    "") rm -f "${DEFAULT_SHELL_CONF}" 2>/dev/null ;;
+    *) printf "%s\n" "TMOE_SHELL=${TMOE_SHELL}" >"${DEFAULT_SHELL_CONF}" ;;
+    esac
+    case "${DISTRO_NAME}" in
+    "") ;;
+    *)
+        case ${DISTRO_CODE} in
+        "") DEBIAN_FOLDER=${DISTRO_NAME}_${ARCH_TYPE} ;;
+        *) DEBIAN_FOLDER=${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE} ;;
+        esac
+        ;;
+    esac
+    tmoe_env_02 #source DEBIAN_CHROOT以及其它变量
+    if [ -e "${DEBIAN_CHROOT}"/etc/os-release ]; then
+        grep 'PRETTY_NAME' "${DEBIAN_CHROOT}"/etc/os-release 2>/dev/null | awk -F '"' '{print $2}'
+    else
+        sed -n p "${DEBIAN_CHROOT}"/etc/issue 2>/dev/null
+    fi
+    if [[ ${CREATE_A_SOFT_LINK} = true ]]; then
+        ln -svf "${DEBIAN_CHROOT}${LINK_SOURCE_DIR}" "./container_link_${LINK_SOURCE_DIR##*/}_${RANDOM}"
+        exit 0
+    fi
+    case ${TMOE_CONTAINER_HITOKOTO} in
+    true) [[ ! ${TMOE_LANG} =~ zh_.*UTF-8 ]] || get_hitokito_cn ;;
+    esac
+    if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
+        pulseaudio --start --exit-idle-time=3600
+        pacmd load-module module-native-protocol-tcp auth-ip-acl='127.0.0.1;192.168.0.0/16;172.16.0.0/12' 2>/dev/null
+    fi
+    ###############
+    rmdir_container_tmp() {
+        rm -rf "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"
+        case ${?} in
+        0) ;;
+        *)
+            ${TMOE_PREFIX} chmod 777 -Rv "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"
+            ${TMOE_PREFIX} rm -rfv "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"
+            ;;
+        esac
+    }
+    if [[ -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR} ]]; then
+        if [[ ! -e ${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/.container.lock ]]; then
+            rmdir_container_tmp
+        else
+            FILE_TIME=$(date -d "$(stat -c '%y' "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}"/.container.lock)" +"%Y%m%d")
+            case ${FILE_TIME} in
+            "$(date +%Y%m%d)") printf "%s\n" "${BLUE}/tmp/.tmoe_container_temporary/.container.lock${RESET}" ;;
+            *) rmdir_container_tmp ;;
+            esac
+        fi
+    fi
+    ###############
+    if [[ -n ${EXEC_PROGRAM} ]]; then
+        case ${EXEC_PROGRAM} in
+        startx11vnc | startvnc)
+            # ${TMOE_PREFIX} touch ${TMOE_GNU_LINUX_CONTAINER_ROOT_VNC_DIR}/${EXEC_PROGRAM}
+            [[ ! $(command -v am) ]] || am start -n com.realvnc.viewer.android/com.realvnc.viewer.android.app.ConnectionChooserActivity 2>/dev/null
+            ;;
+        no | novnc)
+            NOVNC_PORT=$(grep '^NOVNC_PORT=' "${DEBIAN_CHROOT}"/usr/local/bin/novnc | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
+            [[ -n ${NOVNC_PORT} ]] || NOVNC_PORT=36080
+            NOVNC_ADDR="http://localhost:${NOVNC_PORT}/vnc.html"
+            printf "${YELLOW}%s${RESET}\n" "${NOVNC_ADDR}"
+            if [[ $(command -v am) ]]; then
+                am start -a android.intent.action.VIEW -d "${NOVNC_ADDR}" 2>/dev/null
+            elif [[ $(command -v xdg-open) ]]; then
+                xdg-open ${NOVNC_ADDR} 2>/dev/null
+            elif [[ -e /mnt/c/WINDOWS/system32/cmd.exe ]]; then
+                cd /mnt/c/Users
+                /mnt/c/WINDOWS/system32/cmd.exe /c "start ${NOVNC_ADDR}"
+                cd -
+            fi
+            ;;
+        startxsdl)
+            if [[ $(command -v am) ]]; then
+                am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
+                printf "%s\n" "Please ${CYAN}wait ${RED}6s${RESET}."
+                sleep 6
+            fi
+            ;;
+        esac
+        if [[ -e ${DEBIAN_CHROOT} ]]; then
+            check_container_login_file_01
+            case ${EXEC_PROGRAM} in
+            startx11vnc | startvnc | novnc | startxsdl) create_and_move_temporary_script_03 ;;
+            *) create_and_move_temporary_script_01 ;;
+            esac
+        else
+            printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
+            exit 1
+        fi
+    fi
 
-	if [[ -n ${EXEC_PROGRAM_01} || -n ${EXEC_PROGRAM_02} || -n ${EXEC_PROGRAM_03} ]]; then
-		if [[ -e ${DEBIAN_CHROOT} ]]; then
-			check_container_login_file_01
-			set_temp_file_env
-		else
-			printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
-			exit 1
-		fi
-		for i in "${EXEC_PROGRAM_01}" "${EXEC_PROGRAM_02}" "${EXEC_PROGRAM_03}"; do
-			if [[ -n ${i} ]]; then
-				printf "%s\n" "${GREEN}command:${RESET}"
-				EXEC_PROGRAM="${i}"
-				create_and_move_temporary_script_01
-			fi
-		done
-	fi
+    if [[ -n ${EXEC_PROGRAM_01} || -n ${EXEC_PROGRAM_02} || -n ${EXEC_PROGRAM_03} ]]; then
+        if [[ -e ${DEBIAN_CHROOT} ]]; then
+            check_container_login_file_01
+            set_temp_file_env
+        else
+            printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
+            exit 1
+        fi
+        for i in "${EXEC_PROGRAM_01}" "${EXEC_PROGRAM_02}" "${EXEC_PROGRAM_03}"; do
+            if [[ -n ${i} ]]; then
+                printf "%s\n" "${GREEN}command:${RESET}"
+                EXEC_PROGRAM="${i}"
+                create_and_move_temporary_script_01
+            fi
+        done
+    fi
 
-	if [[ -n ${TEMPORARY_SCRIPT_FILE_01} || -n ${TEMPORARY_SCRIPT_FILE_02} || -n ${TEMPORARY_SCRIPT_FILE_03} ]]; then
-		if [[ -e ${DEBIAN_CHROOT} ]]; then
-			check_container_login_file_01
-			set_temp_file_env
-		else
-			printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
-			exit 1
-		fi
-		for i in "${TEMPORARY_SCRIPT_FILE_01}" "${TEMPORARY_SCRIPT_FILE_02}" "${TEMPORARY_SCRIPT_FILE_03}"; do
-			if [[ -e ${i} ]]; then
-				printf "%s\n" "${YELLOW}file: ${BLUE}${i}${RESET}"
-				${TMOE_PREFIX} cp -rf "${i}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
-				${TMOE_PREFIX} chmod a+rx "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/${i}"
-			elif [[ -n ${i} ]]; then
-				TEMPORARY_SCRIPT_FILE="${i}"
-				create_and_move_temporary_script_02
-			fi
-		done
-	fi
+    if [[ -n ${TEMPORARY_SCRIPT_FILE_01} || -n ${TEMPORARY_SCRIPT_FILE_02} || -n ${TEMPORARY_SCRIPT_FILE_03} ]]; then
+        if [[ -e ${DEBIAN_CHROOT} ]]; then
+            check_container_login_file_01
+            set_temp_file_env
+        else
+            printf "%s\n" "${RED}ERROR${RESET}, please install the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
+            exit 1
+        fi
+        for i in "${TEMPORARY_SCRIPT_FILE_01}" "${TEMPORARY_SCRIPT_FILE_02}" "${TEMPORARY_SCRIPT_FILE_03}"; do
+            if [[ -e ${i} ]]; then
+                printf "%s\n" "${YELLOW}file: ${BLUE}${i}${RESET}"
+                ${TMOE_PREFIX} cp -rf "${i}" "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/"
+                ${TMOE_PREFIX} chmod a+rx "${TMOE_GNU_LINUX_CONTAINER_TEMPORARY_STARTUP_DIR}/${i}"
+            elif [[ -n ${i} ]]; then
+                TEMPORARY_SCRIPT_FILE="${i}"
+                create_and_move_temporary_script_02
+            fi
+        done
+    fi
 
-	# case ${SYSTEMD_NSPAWN} in
-	# true)
-	# 	case $(uname -o) in
-	# 	Android)
-	# 		printf "%s\n" "Sorry,this feature does not support ${PURPLE}Android${RESET} system."
-	# 		# printf "${YELLOW}%s\n" "如需运行systemd容器，请换用${BLUE}GNU/Linux${RESET}系统。"
-	# 		exit 1
-	# 		;;
-	# 	esac
-	# 	case $(id -u) in
-	# 	0)
-	# 		# source ${TMOE_SHARE_DIR}/removal/umount
-	# 		source ${TMOE_SHARE_DIR}/container/nspawn/startup
-	# 		;;
-	# 	*)
-	# 		sudo -E tmoe ${TMOE_PARAMETERS}
-	# 		exit 1
-	# 		;;
-	# 	esac
-	# 	;;
-	# *)
-	if [[ -e ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} ]]; then
-		${TMOE_PREFIX} bash ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
-	else
-		printf "%s\n" "${CYAN}${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}${RESET}"
-		printf "%s\n" "${RED}ERROR${RESET}, please ${GREEN}install${RESET} the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
-	fi
-	# ;;
-	# esac
+    # case ${SYSTEMD_NSPAWN} in
+    # true)
+    # 	case $(uname -o) in
+    # 	Android)
+    # 		printf "%s\n" "Sorry,this feature does not support ${PURPLE}Android${RESET} system."
+    # 		# printf "${YELLOW}%s\n" "如需运行systemd容器，请换用${BLUE}GNU/Linux${RESET}系统。"
+    # 		exit 1
+    # 		;;
+    # 	esac
+    # 	case $(id -u) in
+    # 	0)
+    # 		# source ${TMOE_SHARE_DIR}/removal/umount
+    # 		source ${TMOE_SHARE_DIR}/container/nspawn/startup
+    # 		;;
+    # 	*)
+    # 		sudo -E tmoe ${TMOE_PARAMETERS}
+    # 		exit 1
+    # 		;;
+    # 	esac
+    # 	;;
+    # *)
+    if [[ -e ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} ]]; then
+        ${TMOE_PREFIX} bash ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
+    else
+        printf "%s\n" "${CYAN}${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}${RESET}"
+        printf "%s\n" "${RED}ERROR${RESET}, please ${GREEN}install${RESET} the ${BLUE}${DEBIAN_FOLDER}${RESET} container first."
+    fi
+    # ;;
+    # esac
 }
 ##########
 tmoe_main "$@"

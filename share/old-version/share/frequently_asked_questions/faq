@@ -1,35 +1,35 @@
 #!/usr/bin/env bash
 #######################################
 vnc_can_not_call_pulse_audio() {
-	printf "%s\n" "如果您的宿主机为GNU/linux实体机，那么您可以手动配置音频服务。"
-	printf "%s\n" "${RED}sudo ${GREEN}editor ${BLUE}/etc/pulse/default.pa${RESET} || ${RED}sudo ${GREEN}nano ${BLUE}/etc/pulse/default.pa${RESET}"
-	printf "%s\n" "在最后一行里加上${GREEN}load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=0${RESET}，接着重启pulseaudio服务"
-	printf "%s\n" "除了修改配置外，您也可以用普通用户身份执行${GREEN}pulseaudio ${YELLOW}--start --exit-idle-time=-1;pacmd load-module module-native-protocol-tcp auth-ip-acl=${BLUE}'127.0.0.1;192.168.0.0/16;172.16.0.0/12'${RESET}"
-	printf "%s\n" "执行${GREEN}pulseaudio ${RED}-k${RESET}或者${RED}pkill ${BLUE}pulseaudio${RESET}杀死音频服务后台进程。"
+    printf "%s\n" "如果您的宿主机为GNU/linux实体机，那么您可以手动配置音频服务。"
+    printf "%s\n" "${RED}sudo ${GREEN}editor ${BLUE}/etc/pulse/default.pa${RESET} || ${RED}sudo ${GREEN}nano ${BLUE}/etc/pulse/default.pa${RESET}"
+    printf "%s\n" "在最后一行里加上${GREEN}load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=0${RESET}，接着重启pulseaudio服务"
+    printf "%s\n" "除了修改配置外，您也可以用普通用户身份执行${GREEN}pulseaudio ${YELLOW}--start --exit-idle-time=-1;pacmd load-module module-native-protocol-tcp auth-ip-acl=${BLUE}'127.0.0.1;192.168.0.0/16;172.16.0.0/12'${RESET}"
+    printf "%s\n" "执行${GREEN}pulseaudio ${RED}-k${RESET}或者${RED}pkill ${BLUE}pulseaudio${RESET}杀死音频服务后台进程。"
 
-	printf "%s\n" "若您的宿主机为Android系统，则请阅览下面的说明。"
-	printf "%s\n" "首先请确保您的termux为最新版本，并安装了termux:api"
-	printf "%s\n" "若音频服务无法启动，则请在启动完成后，新建一个termux session会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
-	printf "%s\n" "您亦可输${GREEN}pulseaudio --start${RESET}"
-	printf "%s\n" "您若无法记住该命令，则只需输${GREEN}debian${RESET}"
-	printf "%s\n" "若您无法调用termux的音频，则请将xsdl app挂于后台，此时执行${GREEN}startvnc${RESET}将调用xsdl的音频服务。"
-	printf "%s\n" "按回车键自动启动音频服务"
-	printf "%s\n" "Press ${GREEN}Enter${RESET} to start ${BLUE}pulseaudio${RESET}."
-	do_you_want_to_continue
-	if [[ $(command -v am) ]]; then
-		printf "%s\n" "${GREEN}Staring ${BLUE}x.org.server/x.org.server.MainActivity${RESET} ..."
-		am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
-		sleep 3
-	fi
-	printf "%s\n" "${GREEN}Staring ${BLUE}pulseaudio${RESET} ..."
-	pulseaudio --start --exit-idle-time=3600
-	pacmd load-module module-native-protocol-tcp auth-ip-acl='127.0.0.1;192.168.0.0/16;172.16.0.0/12' auth-anonymous=1
+    printf "%s\n" "若您的宿主机为Android系统，则请阅览下面的说明。"
+    printf "%s\n" "首先请确保您的termux为最新版本，并安装了termux:api"
+    printf "%s\n" "若音频服务无法启动，则请在启动完成后，新建一个termux session会话窗口，然后手动在termux原系统里输${GREEN}pulseaudio -D${RESET}来启动音频服务后台进程"
+    printf "%s\n" "您亦可输${GREEN}pulseaudio --start${RESET}"
+    printf "%s\n" "您若无法记住该命令，则只需输${GREEN}debian${RESET}"
+    printf "%s\n" "若您无法调用termux的音频，则请将xsdl app挂于后台，此时执行${GREEN}startvnc${RESET}将调用xsdl的音频服务。"
+    printf "%s\n" "按回车键自动启动音频服务"
+    printf "%s\n" "Press ${GREEN}Enter${RESET} to start ${BLUE}pulseaudio${RESET}."
+    do_you_want_to_continue
+    if [[ $(command -v am) ]]; then
+        printf "%s\n" "${GREEN}Staring ${BLUE}x.org.server/x.org.server.MainActivity${RESET} ..."
+        am start -n x.org.server/x.org.server.MainActivity 2>/dev/null
+        sleep 3
+    fi
+    printf "%s\n" "${GREEN}Staring ${BLUE}pulseaudio${RESET} ..."
+    pulseaudio --start --exit-idle-time=3600
+    pacmd load-module module-native-protocol-tcp auth-ip-acl='127.0.0.1;192.168.0.0/16;172.16.0.0/12' auth-anonymous=1
 }
 ###############
 create_start_linux_deploy_sh() {
-	cd $PREFIX/bin
-	printf "%s\n" "${CUT_TARGET}"
-	cat >"${CUT_TARGET}" <<-'EndofFile'
+    cd $PREFIX/bin
+    printf "%s\n" "${CUT_TARGET}"
+    cat >"${CUT_TARGET}" <<-'EndofFile'
 		#!/usr/bin/env bash
 		pulseaudio --start
 		printf "%s\n" "pulseaudio服务启动完成，将为您自动打开LinuxDeploy,请点击“启动”。"
@@ -40,75 +40,75 @@ create_start_linux_deploy_sh() {
 }
 ##############
 linux_deploy_pulse_server() {
-	printf "%s\n" "若您需要在Linux Deploy上配置VNC的音频转发功能，请使用本工具箱(Tmoe-linux tools)覆盖安装桌面环境"
-	printf "%s\n" "您在安装Linux deploy的chroot容器前，可以将安装类型修改为目录，安装路径修改为/data/data/ru.meefik.linuxdeploy/linux"
-	printf "%s\n" "脚本用法：ssh连接后，输入apt install -y curl;bash -c \"(curl -L ${TMOE_GIT_URL}/raw/2/2)\""
-	#printf "%s\n" "覆盖安装之后，您需要通过本工具进行VNC和音频服务的配置"
-	printf "%s\n" "接下来您需要设定一个您独有的启动命令，例如startl"
-	printf "%s\n" "您之后可以在termux里输入此命令来启动Linux Deploy以及音频服务"
-	do_you_want_to_continue
-	TARGET=$(whiptail --inputbox "请自定义启动命令名称\n Please enter the command name." 12 50 --title "COMMAND" 3>&1 1>&2 2>&3)
-	CUT_TARGET="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
-	if [ -z "${CUT_TARGET}" ]; then
-		printf "%s\n" "命令名称不能为空！！！"
-	else
-		create_start_linux_deploy_sh
-	fi
-	if [ ! -z ${CUT_TARGET} ]; then
-		chmod a+rx ${CUT_TARGET}
-		ls -lh ${PREFIX}/bin/${CUT_TARGET}
-		printf "%s\n" "Congratulations!配置成功，您之后可以输${CUT_TARGET}来启动"
-	else
-		printf "%s\n" "检测到您取消了操作"
-	fi
+    printf "%s\n" "若您需要在Linux Deploy上配置VNC的音频转发功能，请使用本工具箱(Tmoe-linux tools)覆盖安装桌面环境"
+    printf "%s\n" "您在安装Linux deploy的chroot容器前，可以将安装类型修改为目录，安装路径修改为/data/data/ru.meefik.linuxdeploy/linux"
+    printf "%s\n" "脚本用法：ssh连接后，输入apt install -y curl;bash -c \"(curl -L ${TMOE_GIT_URL}/raw/2/2)\""
+    #printf "%s\n" "覆盖安装之后，您需要通过本工具进行VNC和音频服务的配置"
+    printf "%s\n" "接下来您需要设定一个您独有的启动命令，例如startl"
+    printf "%s\n" "您之后可以在termux里输入此命令来启动Linux Deploy以及音频服务"
+    do_you_want_to_continue
+    TARGET=$(whiptail --inputbox "请自定义启动命令名称\n Please enter the command name." 12 50 --title "COMMAND" 3>&1 1>&2 2>&3)
+    CUT_TARGET="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
+    if [ -z "${CUT_TARGET}" ]; then
+        printf "%s\n" "命令名称不能为空！！！"
+    else
+        create_start_linux_deploy_sh
+    fi
+    if [ ! -z ${CUT_TARGET} ]; then
+        chmod a+rx ${CUT_TARGET}
+        ls -lh ${PREFIX}/bin/${CUT_TARGET}
+        printf "%s\n" "Congratulations!配置成功，您之后可以输${CUT_TARGET}来启动"
+    else
+        printf "%s\n" "检测到您取消了操作"
+    fi
 }
 ##########################
 manager_frequently_asked_questions() {
-	RETURN_TO_WHERE=manager_frequently_asked_questions
-	# 15 60 5
-	TMOE_FAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
-		"您有哪些疑问？\nWhat questions do you have?" 0 50 0 \
-		"1" "how to customize the dir如何自定义容器目录" \
-		"2" "how to use micro editor如何使用micro" \
-		"3" "cannot rm container无法移除容器" \
-		"4" "About auto conf(关于自动配置)" \
-		"5" "VNC无法调用音频" \
-		"6" "给Linux Deploy配置VNC音频" \
-		"7" "当容器目录位于外置硬盘时,sudo出现nosuid错误" \
-		"0" "🌚 Back to the main menu 返回主菜单" \
-		3>&1 1>&2 2>&3)
-	##############################
-	case "${TMOE_FAQ}" in
-	0 | "") tmoe_manager_main_menu ;;
-	1) how_to_customize_the_container_dir ;;
-	2) how_to_use_micro_editor ;;
-	3) can_not_remove_the_container ;;
-	4) questions_about_tmoe_automatic_configuration ;;
-	5) vnc_can_not_call_pulse_audio ;;
-	6) linux_deploy_pulse_server ;;
-	7)
-		printf "%s\n" "假设您将容器路径软链接到外置移动硬盘的某个分区里的某个目录"
-		printf "%s\n" "注:该分区的文件系统(File system)可为ext4/btrfs/xfs等, 不能为ntfs/fat32/exfat"
-		printf "%s\n" "首先请确保容器内部/usr/bin/sudo文件权限为4755,且所属为0:0"
+    RETURN_TO_WHERE=manager_frequently_asked_questions
+    # 15 60 5
+    TMOE_FAQ=$(whiptail --title "FAQ(よくある質問)" --menu \
+        "您有哪些疑问？\nWhat questions do you have?" 0 50 0 \
+        "1" "how to customize the dir如何自定义容器目录" \
+        "2" "how to use micro editor如何使用micro" \
+        "3" "cannot rm container无法移除容器" \
+        "4" "About auto conf(关于自动配置)" \
+        "5" "VNC无法调用音频" \
+        "6" "给Linux Deploy配置VNC音频" \
+        "7" "当容器目录位于外置硬盘时,sudo出现nosuid错误" \
+        "0" "🌚 Back to the main menu 返回主菜单" \
+        3>&1 1>&2 2>&3)
+    ##############################
+    case "${TMOE_FAQ}" in
+    0 | "") tmoe_manager_main_menu ;;
+    1) how_to_customize_the_container_dir ;;
+    2) how_to_use_micro_editor ;;
+    3) can_not_remove_the_container ;;
+    4) questions_about_tmoe_automatic_configuration ;;
+    5) vnc_can_not_call_pulse_audio ;;
+    6) linux_deploy_pulse_server ;;
+    7)
+        printf "%s\n" "假设您将容器路径软链接到外置移动硬盘的某个分区里的某个目录"
+        printf "%s\n" "注:该分区的文件系统(File system)可为ext4/btrfs/xfs等, 不能为ntfs/fat32/exfat"
+        printf "%s\n" "首先请确保容器内部/usr/bin/sudo文件权限为4755,且所属为0:0"
 
-		printf "%s\n" "接着在宿主环境下对该硬盘进行重新挂载"
-		printf "%s\n" "${YELLOW}Example:${RESET}"
-		printf "%s\n" "假设该硬盘为/dev/nvmexnxpx"
-		printf "%s\n" "输入  ${GREEN}mount${RESET} | grep ${BLUE}/dev/nvmexnxpx${RESET} 获取挂载参数"
-		printf "%s\n" "若获取到的结果为${YELLOW}/dev/nvmexnxpx on /media/xxx/mountpoint type btrfs (rw,nosuid,nodev,relatime,space_cache,subvolid=5,subvol=/,uhelper=udisks2)${RESET}"
-		printf "%s\n" "那么稍微改动一下, 生成新的挂载命令"
-		printf "%s\n" "sudo mount -o remount,rw,suid,nodev,relatime,space_cache,subvolid=5,subvol=/,uhelper=udisks2 /dev/nvmexnxpx /media/xxx/mountpoint"
-		;;
-	esac
-	#subvolid=5,subvol=/,compress=zstd
-	#############
-	press_enter_to_return
-	manager_frequently_asked_questions
+        printf "%s\n" "接着在宿主环境下对该硬盘进行重新挂载"
+        printf "%s\n" "${YELLOW}Example:${RESET}"
+        printf "%s\n" "假设该硬盘为/dev/nvmexnxpx"
+        printf "%s\n" "输入  ${GREEN}mount${RESET} | grep ${BLUE}/dev/nvmexnxpx${RESET} 获取挂载参数"
+        printf "%s\n" "若获取到的结果为${YELLOW}/dev/nvmexnxpx on /media/xxx/mountpoint type btrfs (rw,nosuid,nodev,relatime,space_cache,subvolid=5,subvol=/,uhelper=udisks2)${RESET}"
+        printf "%s\n" "那么稍微改动一下, 生成新的挂载命令"
+        printf "%s\n" "sudo mount -o remount,rw,suid,nodev,relatime,space_cache,subvolid=5,subvol=/,uhelper=udisks2 /dev/nvmexnxpx /media/xxx/mountpoint"
+        ;;
+    esac
+    #subvolid=5,subvol=/,compress=zstd
+    #############
+    press_enter_to_return
+    manager_frequently_asked_questions
 }
 ###########################
 how_to_use_micro_editor() {
-	how_to_use_micro_editor_zh() {
-		cat <<-EOF
+    how_to_use_micro_editor_zh() {
+        cat <<-EOF
 			${GREEN}Ctrl + ${YELLOW}S  ${BLUE}保存
 			${GREEN}Ctrl + ${YELLOW}Q  ${BLUE}退出
 			${GREEN}Ctrl + ${YELLOW}C  ${BLUE}复制
@@ -122,9 +122,9 @@ how_to_use_micro_editor() {
 			${GREEN}Ctrl + ${YELLOW}N  ${BLUE}搜索下一个
 			${GREEN}Ctrl + ${YELLOW}P  ${BLUE}搜索上一个${RESET}
 		EOF
-	}
-	how_to_use_micro_editor_en() {
-		cat <<-EOF
+    }
+    how_to_use_micro_editor_en() {
+        cat <<-EOF
 			${GREEN}Ctrl + ${YELLOW}S  ${BLUE}Save
 			${GREEN}Ctrl + ${YELLOW}Q  ${BLUE}Quit
 			${GREEN}Ctrl + ${YELLOW}C  ${BLUE}Copy
@@ -138,20 +138,20 @@ how_to_use_micro_editor() {
 			${GREEN}Ctrl + ${YELLOW}N  ${BLUE}FindNext
 			${GREEN}Ctrl + ${YELLOW}P  ${BLUE}FindPrevious${RESET}
 		EOF
-	}
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) how_to_use_micro_editor_zh ;;
-	*) how_to_use_micro_editor_en ;;
-	esac
-	if [ ! $(command -v micro) ]; then
-		printf "%s\n" "Do you want to install ${BLUE}micro${RESET} editor?[Y/n]"
-		printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}micro${RESET}"
-		do_you_want_to_continue
-		${TMOE_INSTALLATION_COMMAND} micro
-	fi
+    }
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) how_to_use_micro_editor_zh ;;
+    *) how_to_use_micro_editor_en ;;
+    esac
+    if [ ! $(command -v micro) ]; then
+        printf "%s\n" "Do you want to install ${BLUE}micro${RESET} editor?[Y/n]"
+        printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}micro${RESET}"
+        do_you_want_to_continue
+        ${TMOE_INSTALLATION_COMMAND} micro
+    fi
 }
 can_not_remove_the_container() {
-	cat <<-ENDOFFAQ
+    cat <<-ENDOFFAQ
 		01：
 			If you can not remove the container, then install e2fsprogs.
 				${GREEN}apt update;
@@ -164,7 +164,7 @@ can_not_remove_the_container() {
 	ENDOFFAQ
 }
 how_to_customize_the_container_dir() {
-	cat <<-ENDOFFAQ
+    cat <<-ENDOFFAQ
 		    Q:${YELLOW}How to customize the container dir?${RESET}
 
 			A:You can create a symbolic link.
@@ -190,7 +190,7 @@ how_to_customize_the_container_dir() {
 	ENDOFFAQ
 }
 questions_about_tmoe_automatic_configuration() {
-	cat <<-ENDOFFAQ
+    cat <<-ENDOFFAQ
 		    Q:${YELLOW}为什么会自动修改termux的配色、字体和小键盘布局${RESET}
 			Why the color, font and keyboard layout of termux will be automatically modified during installation.
 		    

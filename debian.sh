@@ -2,10 +2,10 @@
 # POSIX sh
 #-----------------
 show_package_info() {
-	get_uname
-	set_extra_deps
-	# Architecture: amd64, i386, arm64, armhf, mipsel, riscv64, ppc64el, s390x
-	cat <<-EndOfShow
+    get_uname
+    set_extra_deps
+    # Architecture: amd64, i386, arm64, armhf, mipsel, riscv64, ppc64el, s390x
+    cat <<-EndOfShow
 		Package: tmoe-linux-manager
 		Version: 1.4989.23
 		Priority: optional
@@ -21,178 +21,178 @@ show_package_info() {
 }
 #-----------------
 get_uname_o() {
-	case "$(uname -o)" in
-	Android) OS=android ;;
-	illumos) OS=illum ;;
-	esac
+    case "$(uname -o)" in
+    Android) OS=android ;;
+    illumos) OS=illum ;;
+    esac
 }
 
 get_uname() {
-	# todo: pub const OS :&'static str = "redox";
-	case "$(uname -s)" in
-	Darwin) OS=mac ;;
-	*Linux | *linux)
-		OS=linux
-		get_uname_o
-		;;
-	SunOS)
-		OS=sun
-		get_uname_o
-		;;
-	FreeBSD) OS=freebsd ;;
-	NetBSD) OS=netbsd ;;
-	DragonFly) OS=dragonfly ;;
-	MINGW* | MSYS* | CYGWIN*) OS=win ;;
-	esac
+    # todo: pub const OS :&'static str = "redox";
+    case "$(uname -s)" in
+    Darwin) OS=mac ;;
+    *Linux | *linux)
+        OS=linux
+        get_uname_o
+        ;;
+    SunOS)
+        OS=sun
+        get_uname_o
+        ;;
+    FreeBSD) OS=freebsd ;;
+    NetBSD) OS=netbsd ;;
+    DragonFly) OS=dragonfly ;;
+    MINGW* | MSYS* | CYGWIN*) OS=win ;;
+    esac
 }
 
 set_extra_deps() {
-	case $OS in
-	android) EXTRA_DEPS=", dialog, termux-api, termux-tools" ;;
-	esac
+    case $OS in
+    android) EXTRA_DEPS=", dialog, termux-api, termux-tools" ;;
+    esac
 }
 #-----------------
 pln() {
-	printf "%s\n" "$@"
+    printf "%s\n" "$@"
 }
 #-----------------
 set_colour() {
-	RED="$(printf '\033[31m')"
-	GREEN="$(printf '\033[32m')"
-	YELLOW="$(printf '\033[33m')"
-	BLUE="$(printf '\033[34m')"
-	PURPLE="$(printf '\033[35m')"
-	CYAN="$(printf '\033[36m')"
-	RESET="$(printf '\033[m')"
-	BOLD="$(printf '\033[1m')"
+    RED="$(printf '\033[31m')"
+    GREEN="$(printf '\033[32m')"
+    YELLOW="$(printf '\033[33m')"
+    BLUE="$(printf '\033[34m')"
+    PURPLE="$(printf '\033[35m')"
+    CYAN="$(printf '\033[36m')"
+    RESET="$(printf '\033[m')"
+    BOLD="$(printf '\033[1m')"
 }
 
 set_path_and_url() {
-	TMOE_MANAGER="share/old-version/share/app/manager"
-	TMOE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/${TMOE_MANAGER}"
-	TMOE_URL_02="https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/${TMOE_MANAGER}"
-	TMOE_GIT_DIR="${HOME}/.local/share/tmoe-linux/git"
-	TMOE_GIT_DIR_02="/usr/local/etc/tmoe-linux/git"
-	TEMP_FILE=".tmoe-linux.sh"
+    TMOE_MANAGER="share/old-version/share/app/manager"
+    TMOE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/${TMOE_MANAGER}"
+    TMOE_URL_02="https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/${TMOE_MANAGER}"
+    TMOE_GIT_DIR="${HOME}/.local/share/tmoe-linux/git"
+    TMOE_GIT_DIR_02="/usr/local/etc/tmoe-linux/git"
+    TEMP_FILE=".tmoe-linux.sh"
 }
 
 set_tmp_dir() {
-	if [ -z "${TMPDIR}" ]; then
-		for i in /tmp "${HOME}"; do
-			if [ -e "${i}" ]; then
-				TMPDIR="${i}/.cache"
-				mkdir -p "${TMPDIR}"
-				break
-			fi
-		done
-	fi
+    if [ -z "${TMPDIR}" ]; then
+        for i in /tmp "${HOME}"; do
+            if [ -e "${i}" ]; then
+                TMPDIR="${i}/.cache"
+                mkdir -p "${TMPDIR}"
+                break
+            fi
+        done
+    fi
 }
 
 set_env() {
-	set_colour
-	set_path_and_url
-	set_tmp_dir
-	unset EXTRA_DEPS MANAGER_FILE
+    set_colour
+    set_path_and_url
+    set_tmp_dir
+    unset EXTRA_DEPS MANAGER_FILE
 }
 #-----------------
 do_you_want_to_continue() {
-	pln \
-		"${YELLOW}Do you want to ${BLUE}continue?${PURPLE}[Y/n]${RESET}" \
-		"Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET}, type ${YELLOW}n${RESET} to ${PURPLE}exit${RESET}." \
-		"按${GREEN}回车键${BLUE}继续${RESET}，输${YELLOW}n${PURPLE}退出${RESET}"
+    pln \
+        "${YELLOW}Do you want to ${BLUE}continue?${PURPLE}[Y/n]${RESET}" \
+        "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET}, type ${YELLOW}n${RESET} to ${PURPLE}exit${RESET}." \
+        "按${GREEN}回车键${BLUE}继续${RESET}，输${YELLOW}n${PURPLE}退出${RESET}"
 
-	case "$OS" in
-	linux | android) ;;
-	*)
-		pln \
-			"${RED}Unfortunately, ${GREEN}tmoe ${PURPLE}does not support ${CYAN}your ${BLUE}${OS} OS${YELLOW} at this time${RESET}." \
-			"Please press ${GREEN}Ctrl + C${RESET} to ${RED}abort${RESET}"
-		;;
-	esac
+    case "$OS" in
+    linux | android) ;;
+    *)
+        pln \
+            "${RED}Unfortunately, ${GREEN}tmoe ${PURPLE}does not support ${CYAN}your ${BLUE}${OS} OS${YELLOW} at this time${RESET}." \
+            "Please press ${GREEN}Ctrl + C${RESET} to ${RED}abort${RESET}"
+        ;;
+    esac
 
-	read -r opt
-	case "$opt" in
-	n* | N*)
-		pln "${PURPLE}skipped${RESET}."
-		exit 1
-		;;
-	*) ;;
-	esac
+    read -r opt
+    case "$opt" in
+    n* | N*)
+        pln "${PURPLE}skipped${RESET}."
+        exit 1
+        ;;
+    *) ;;
+    esac
 }
 #-----------
 # fn check_command(cmd_name: &str, sleep_time: u8, exit_code: u8)
 check_command() {
-	cmd_name=$1
-	sleep_time=$2
-	exit_code=$3
-	if [ -z "$(command -v "$cmd_name")" ]; then
-		pln \
-			"${RED}${BOLD}ERROR" \
-			"${CYAN}Please install ${GREEN}""$cmd_name""${RESET} first"
+    cmd_name=$1
+    sleep_time=$2
+    exit_code=$3
+    if [ -z "$(command -v "$cmd_name")" ]; then
+        pln \
+            "${RED}${BOLD}ERROR" \
+            "${CYAN}Please install ${GREEN}""$cmd_name""${RESET} first"
 
-		sleep "$sleep_time"
-		exit "$exit_code"
-	fi
+        sleep "$sleep_time"
+        exit "$exit_code"
+    fi
 }
 
 # fn curl_file(timeout: u8, url: &str) -> bool
 curl_file() {
-	timeout_u8=$1
-	url_str=$2
+    timeout_u8=$1
+    url_str=$2
 
-	curl \
-		--connect-timeout "$timeout_u8" \
-		-Lvo \
-		"${TEMP_FILE}" \
-		"$url_str" ||
-		false
+    curl \
+        --connect-timeout "$timeout_u8" \
+        -Lvo \
+        "${TEMP_FILE}" \
+        "$url_str" ||
+        false
 }
 
 download_temp_file() {
-	check_command curl 2 127
-	cd "${TMPDIR}" || exit 1
+    check_command curl 2 127
+    cd "${TMPDIR}" || exit 1
 
-	# todo: Allows different architectures & systems to obtain different URLs.
-	if (! curl_file 7 "${TMOE_URL}"); then
-		pln \
-			"${BLUE}Connection ${RED}timeout" \
-			"${GREEN}Retrying${RESET} ..."
+    # todo: Allows different architectures & systems to obtain different URLs.
+    if (! curl_file 7 "${TMOE_URL}"); then
+        pln \
+            "${BLUE}Connection ${RED}timeout" \
+            "${GREEN}Retrying${RESET} ..."
 
-		curl_file 20 "${TMOE_URL_02}" ||
-			pln \
-				"${PURPLE}Unfortunately, ${CYAN}download ${RED}failed${RESET}." \
-				"Please ${YELLOW}press ${GREEN}Ctrl+C ${PURPLE}to abort${RESET}"
-	fi
+        curl_file 20 "${TMOE_URL_02}" ||
+            pln \
+                "${PURPLE}Unfortunately, ${CYAN}download ${RED}failed${RESET}." \
+                "Please ${YELLOW}press ${GREEN}Ctrl+C ${PURPLE}to abort${RESET}"
+    fi
 }
 
 exec_temp_file() {
-	check_command bash 3 127
-	[ ! -s .tmoe-linux.sh ] || bash .tmoe-linux.sh
+    check_command bash 3 127
+    [ ! -s .tmoe-linux.sh ] || bash .tmoe-linux.sh
 }
 #-----------
 show_info_and_run_the_temp_file() {
-	show_package_info
-	do_you_want_to_continue
-	download_temp_file
-	exec_temp_file
+    show_package_info
+    do_you_want_to_continue
+    download_temp_file
+    exec_temp_file
 }
 check_manager_file() {
-	unset MANAGER_FILE
-	for i in "${TMOE_GIT_DIR}/${TMOE_MANAGER}" "${TMOE_GIT_DIR_02}/${TMOE_MANAGER}"; do
-		if [ -s "${i}" ]; then
-			MANAGER_FILE="${i}"
-			break
-		fi
-	done
-	case "${MANAGER_FILE}" in
-	"") show_info_and_run_the_temp_file ;;
-	*) bash "${MANAGER_FILE}" ;;
-	esac
+    unset MANAGER_FILE
+    for i in "${TMOE_GIT_DIR}/${TMOE_MANAGER}" "${TMOE_GIT_DIR_02}/${TMOE_MANAGER}"; do
+        if [ -s "${i}" ]; then
+            MANAGER_FILE="${i}"
+            break
+        fi
+    done
+    case "${MANAGER_FILE}" in
+    "") show_info_and_run_the_temp_file ;;
+    *) bash "${MANAGER_FILE}" ;;
+    esac
 }
 #----------------
 main() {
-	set_env
-	check_manager_file
+    set_env
+    check_manager_file
 }
 #----------------
 main "${@}"

@@ -1,227 +1,227 @@
 #!/usr/bin/env bash
 #######################################
 restore_main() {
-	#check_zstd
-	case "$1" in
-	--menu) restore_gnu_linux_container ;;
-	esac
-	#此处不包含*
+    #check_zstd
+    case "$1" in
+    --menu) restore_gnu_linux_container ;;
+    esac
+    #此处不包含*
 }
 ###############
 uncompress_other_format_file() {
-	pwd
-	printf "%s\n" "即将为您解压..."
-	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ] || [ "${TMOE_CHROOT}" = 'true' ]; then
-		printf "%s\n" "${GREEN} tar -Ppxvf ${RESTORE} ${RESET}"
-		${TMOE_PREFIX} tar -Ppxvf ${RESTORE}
-	else
-		printf "%s\n" "${GREEN} pv ${RESTORE} | tar -Ppx ${RESET}"
-		pv ${RESTORE} | tar -Ppx
-	fi
+    pwd
+    printf "%s\n" "即将为您解压..."
+    if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ] || [ "${TMOE_CHROOT}" = 'true' ]; then
+        printf "%s\n" "${GREEN} tar -Ppxvf ${RESTORE} ${RESET}"
+        ${TMOE_PREFIX} tar -Ppxvf ${RESTORE}
+    else
+        printf "%s\n" "${GREEN} pv ${RESTORE} | tar -Ppx ${RESET}"
+        pv ${RESTORE} | tar -Ppx
+    fi
 }
 ##############
 uncompress_tar_xz_file() {
-	pwd
-	printf '%s\n' 'tar.xz'
-	printf "%s\n" "即将为您解压..."
-	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ] || [ "${TMOE_CHROOT}" = 'true' ]; then
-		printf "%s\n" "${GREEN} tar -PpJxvf ${RESTORE} ${RESET}"
-		${TMOE_PREFIX} tar -PpJxvf ${RESTORE}
-	else
-		printf "%s\n" "${GREEN} pv ${RESTORE} | tar -PpJx${RESET}"
-		pv ${RESTORE} | tar -PpJx
-	fi
+    pwd
+    printf '%s\n' 'tar.xz'
+    printf "%s\n" "即将为您解压..."
+    if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ] || [ "${TMOE_CHROOT}" = 'true' ]; then
+        printf "%s\n" "${GREEN} tar -PpJxvf ${RESTORE} ${RESET}"
+        ${TMOE_PREFIX} tar -PpJxvf ${RESTORE}
+    else
+        printf "%s\n" "${GREEN} pv ${RESTORE} | tar -PpJx${RESET}"
+        pv ${RESTORE} | tar -PpJx
+    fi
 }
 ######################
 uncompress_tar_zst_file() {
-	pwd
-	printf '%s\n' 'tar.zst'
-	printf "%s\n" "即将为您解压..."
-	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ] || [ "${TMOE_CHROOT}" = 'true' ]; then
-		printf "%s\n" "${GREEN}tar -I zstd -Ppxvf ${RESTORE} ${RESET}"
-		${TMOE_PREFIX} tar -I zstd -Ppxvf ${RESTORE}
-	else
-		printf "%s\n" "${GREEN}pv ${RESTORE} | tar -I zstd -Ppx${RESET}"
-		pv ${RESTORE} | tar -I zstd -Ppx
-	fi
+    pwd
+    printf '%s\n' 'tar.zst'
+    printf "%s\n" "即将为您解压..."
+    if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ] || [ "${TMOE_CHROOT}" = 'true' ]; then
+        printf "%s\n" "${GREEN}tar -I zstd -Ppxvf ${RESTORE} ${RESET}"
+        ${TMOE_PREFIX} tar -I zstd -Ppxvf ${RESTORE}
+    else
+        printf "%s\n" "${GREEN}pv ${RESTORE} | tar -I zstd -Ppx${RESET}"
+        pv ${RESTORE} | tar -I zstd -Ppx
+    fi
 }
 ######################
 uncompress_tar_gz_file() {
-	pwd
-	printf '%s\n' 'tar.gz'
-	printf "%s\n" "即将为您解压..."
-	if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ] || [ "${TMOE_CHROOT}" = 'true' ]; then
-		printf "%s\n" "${GREEN} tar -Ppzxvf ${RESTORE} ${RESET}"
-		${TMOE_PREFIX} tar -Ppzxvf ${RESTORE}
-	else
-		printf "%s\n" "${GREEN} pv ${RESTORE} | tar -Ppzx${RESET}"
-		pv ${RESTORE} | tar -Ppzx
-	fi
+    pwd
+    printf '%s\n' 'tar.gz'
+    printf "%s\n" "即将为您解压..."
+    if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ] || [ "${TMOE_CHROOT}" = 'true' ]; then
+        printf "%s\n" "${GREEN} tar -Ppzxvf ${RESTORE} ${RESET}"
+        ${TMOE_PREFIX} tar -Ppzxvf ${RESTORE}
+    else
+        printf "%s\n" "${GREEN} pv ${RESTORE} | tar -Ppzx${RESET}"
+        pv ${RESTORE} | tar -Ppzx
+    fi
 }
 #####################
 uncompress_tar_file() {
-	#if [ ! -e "${DEBIAN_CHROOT}" ]; then
-	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
-		rm -fv ${CONFIG_FOLDER}/chroot_container
-	fi
-	#fi
+    #if [ ! -e "${DEBIAN_CHROOT}" ]; then
+    if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
+        rm -fv ${CONFIG_FOLDER}/chroot_container
+    fi
+    #fi
 
-	case ${RESTORE} in
-	*chroot-rootfs_bak.*)
-		TMOE_CHROOT=true
-		check_sudo
-		;;
-	*) TMOE_PREFIX='' ;;
-	esac
-	case "${RESTORE:0-6:6}" in
-	tar.xz) uncompress_tar_xz_file ;;
-	tar.gz) uncompress_tar_gz_file ;;
-	ar.zst) uncompress_tar_zst_file ;;
-	*) uncompress_other_format_file ;;
-	esac
-	# case ${TMOE_CHROOT} in
-	# true) ;;
-	# *) [[ ! -e "${PREFIX}/bin/tmoe" ]] || check_proot_proc_permissions ;;
-	# esac
-	check_tmoe_container_chroot
+    case ${RESTORE} in
+    *chroot-rootfs_bak.*)
+        TMOE_CHROOT=true
+        check_sudo
+        ;;
+    *) TMOE_PREFIX='' ;;
+    esac
+    case "${RESTORE:0-6:6}" in
+    tar.xz) uncompress_tar_xz_file ;;
+    tar.gz) uncompress_tar_gz_file ;;
+    ar.zst) uncompress_tar_zst_file ;;
+    *) uncompress_other_format_file ;;
+    esac
+    # case ${TMOE_CHROOT} in
+    # true) ;;
+    # *) [[ ! -e "${PREFIX}/bin/tmoe" ]] || check_proot_proc_permissions ;;
+    # esac
+    check_tmoe_container_chroot
 }
 #######################
 select_file_manually() {
-	count=0
-	printf '%s\n' '您可以在此列表中选择需要恢复的压缩包'
-	for restore_file in ${START_DIR}/${BACKUP_FILE_NAME}; do
-		restore_file_name[count]=$(printf '%s\n' "${restore_file}" | awk -F'/' '{print $NF}')
-		echo -e "($count) ${restore_file_name[count]}"
-		count=$((count + 1))
-	done
-	count=$((count - 1))
+    count=0
+    printf '%s\n' '您可以在此列表中选择需要恢复的压缩包'
+    for restore_file in ${START_DIR}/${BACKUP_FILE_NAME}; do
+        restore_file_name[count]=$(printf '%s\n' "${restore_file}" | awk -F'/' '{print $NF}')
+        echo -e "($count) ${restore_file_name[count]}"
+        count=$((count + 1))
+    done
+    count=$((count - 1))
 
-	while true; do
-		read -p '请输入选项数字,并按回车键。Please type the option number and press Enter:' number
-		if [[ -z "$number" ]]; then
-			break
-		elif ! [[ $number =~ ^[0-9]+$ ]]; then
-			printf "%s\n" "Please enter the right number!"
-			printf '%s\n' '请输入正确的数字编号！'
-		elif ((number >= 0 && number <= count)); then
-			eval RESTORE="${restore_file_name[number]}"
-			# cp -fr "${START_DIR}/$choice" "$DIR/restore_file.properties"
-			RETURN_TO_WHERE='restore_gnu_linux_container'
-			ls -lh "${RESTORE}"
-			do_you_want_to_continue
-			uncompress_tar_file
-			break
-		else
-			printf "%s\n" "Please enter the right number!"
-			printf '%s\n' '请输入正确的数字编号！'
-		fi
-	done
+    while true; do
+        read -p '请输入选项数字,并按回车键。Please type the option number and press Enter:' number
+        if [[ -z "$number" ]]; then
+            break
+        elif ! [[ $number =~ ^[0-9]+$ ]]; then
+            printf "%s\n" "Please enter the right number!"
+            printf '%s\n' '请输入正确的数字编号！'
+        elif ((number >= 0 && number <= count)); then
+            eval RESTORE="${restore_file_name[number]}"
+            # cp -fr "${START_DIR}/$choice" "$DIR/restore_file.properties"
+            RETURN_TO_WHERE='restore_gnu_linux_container'
+            ls -lh "${RESTORE}"
+            do_you_want_to_continue
+            uncompress_tar_file
+            break
+        else
+            printf "%s\n" "Please enter the right number!"
+            printf '%s\n' '请输入正确的数字编号！'
+        fi
+    done
 }
 ################
 restore_the_latest_backup_file() {
-	#printf '%s\n' '目前仅支持还原最新的备份，如需还原旧版，请手动输以下命令'
-	#printf '%s\n' 'cd /sdcard/Download/backup ;ls ; tar -JPxvf 文件名.tar.xz 或 tar -Pzxvf 文件名.tar.gz'
-	#printf '%s\n' '请注意大小写，并把文件名改成具体名称'
-	if [ -z "${RESTORE}" ]; then
-		printf "%s\n" "${RED}未检测${RESTORE}到${BLUE}备份文件${RESTORE},请${GREEN}手动选择${RESTORE}"
-		press_enter_to_continue
-		BACKUP_FILE_NAME=*
-		manually_select_the_file_directory
-		select_file_manually
-		# tmoe_file_manager
-	else
-		ls -lh ${RESTORE}
-		RETURN_TO_WHERE='restore_gnu_linux_container'
-		do_you_want_to_continue
-		uncompress_tar_file
-	fi
+    #printf '%s\n' '目前仅支持还原最新的备份，如需还原旧版，请手动输以下命令'
+    #printf '%s\n' 'cd /sdcard/Download/backup ;ls ; tar -JPxvf 文件名.tar.xz 或 tar -Pzxvf 文件名.tar.gz'
+    #printf '%s\n' '请注意大小写，并把文件名改成具体名称'
+    if [ -z "${RESTORE}" ]; then
+        printf "%s\n" "${RED}未检测${RESTORE}到${BLUE}备份文件${RESTORE},请${GREEN}手动选择${RESTORE}"
+        press_enter_to_continue
+        BACKUP_FILE_NAME=*
+        manually_select_the_file_directory
+        select_file_manually
+        # tmoe_file_manager
+    else
+        ls -lh ${RESTORE}
+        RETURN_TO_WHERE='restore_gnu_linux_container'
+        do_you_want_to_continue
+        uncompress_tar_file
+    fi
 }
 #########################
 file_directory_selection() {
-	#	if (whiptail --title "FILE PATH" --yes-button '自动auto' --no-button '手动manually' --yesno "您想要手动指定文件目录还是自动选择?\nDo you want to automatically select the file d#		select_file_manually
-	manually_select_the_file_directory
-	select_file_manually
+    #	if (whiptail --title "FILE PATH" --yes-button '自动auto' --no-button '手动manually' --yesno "您想要手动指定文件目录还是自动选择?\nDo you want to automatically select the file d#		select_file_manually
+    manually_select_the_file_directory
+    select_file_manually
 }
 ###################
 manually_select_the_file_directory() {
-	TARGET_BACKUP_FILE_PATH=$(whiptail --inputbox "请输入文件路径(精确到目录名称)，默认为${CONTAINER_BACKUP_PATH}\nPlease type the file path." 10 50 --title "FILEPATH" 3>&1 1>&2 2>&3)
-	START_DIR="$(printf '%s\n' "${TARGET_BACKUP_FILE_PATH}" | head -n 1 | cut -d ' ' -f 1)"
-	printf "%s\n" "${START_DIR}"
-	if [ -z ${START_DIR} ]; then
-		printf "%s\n" "文件目录不能为空"
-		printf "%s\n" "The file path is empty."
-		press_enter_to_return
-		restore_gnu_linux_container
-	else
-		cd ${START_DIR}
-	fi
+    TARGET_BACKUP_FILE_PATH=$(whiptail --inputbox "请输入文件路径(精确到目录名称)，默认为${CONTAINER_BACKUP_PATH}\nPlease type the file path." 10 50 --title "FILEPATH" 3>&1 1>&2 2>&3)
+    START_DIR="$(printf '%s\n' "${TARGET_BACKUP_FILE_PATH}" | head -n 1 | cut -d ' ' -f 1)"
+    printf "%s\n" "${START_DIR}"
+    if [ -z ${START_DIR} ]; then
+        printf "%s\n" "文件目录不能为空"
+        printf "%s\n" "The file path is empty."
+        press_enter_to_return
+        restore_gnu_linux_container
+    else
+        cd ${START_DIR}
+    fi
 }
 ###############
 normally_restore_tmoe_container() {
-	if (whiptail --title "RESTORE FILE" --yes-button '最新latest' --no-button 'select manually' --yesno "您是想要还原最新文件，还是手动选择备份文件\nDo you want to restore the latest file or select the file manually?" 9 50); then
-		#RESTORE=$(ls -lth ./*debian*tar* | grep ^- | head -n 1 | cut -d '/' -f 2)
-		RESTORE=$(ls -lth ./*-rootfs_bak.tar* | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')
-		restore_the_latest_backup_file
-	else
-		BACKUP_FILE_NAME="*-rootfs_bak.tar*"
-		select_file_manually
-	fi
+    if (whiptail --title "RESTORE FILE" --yes-button '最新latest' --no-button 'select manually' --yesno "您是想要还原最新文件，还是手动选择备份文件\nDo you want to restore the latest file or select the file manually?" 9 50); then
+        #RESTORE=$(ls -lth ./*debian*tar* | grep ^- | head -n 1 | cut -d '/' -f 2)
+        RESTORE=$(ls -lth ./*-rootfs_bak.tar* | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')
+        restore_the_latest_backup_file
+    else
+        BACKUP_FILE_NAME="*-rootfs_bak.tar*"
+        select_file_manually
+    fi
 }
 #########
 restore_gnu_linux_container() {
-	#source ${TMOE_SHARE_DIR}/removal/umount
-	COMPATIBILITY_MODE='fasle'
-	RETURN_TO_WHERE='restore_gnu_linux_container'
-	check_container_external_backup_path
-	START_DIR=${CONTAINER_BACKUP_PATH}
-	#13 55 5
-	TMOE_OPTION=$(whiptail --title "Restore ${CONTAINER_TYPE} container" --menu "你想要恢复哪个小可爱到之前的备份状态\nDo you want to restore the container?" 0 0 0 \
-		"1" "Normal mode 常规模式" \
-		"2" "Restore from sd/tf 从外置tf中恢复" \
-		"3" "Select path manually手动选择路径" \
-		"4" "Restore from /sdcard/Download/backup" \
-		"5" "Compatibility mode 兼容模式" \
-		"0" "🌚 Back to the main menu 返回主菜单" \
-		3>&1 1>&2 2>&3)
-	###########################################################################
-	case ${TMOE_OPTION} in
-	1)
-		check_container_backup_path
-		START_DIR=${CONTAINER_BACKUP_PATH}
-		cd ${CONTAINER_BACKUP_PATH}
-		normally_restore_tmoe_container
-		;;
-	2)
-		cd ${CONTAINER_BACKUP_PATH}
-		normally_restore_tmoe_container
-		;;
-	3)
-		BACKUP_FILE_NAME="*tar*"
-		file_directory_selection
-		;;
-	4)
-		BACKUP_FILE_NAME="*tar*"
-		BACKUP_PATH="/sdcard/Download/backup"
-		START_DIR=${BACKUP_PATH}
-		cd ${BACKUP_PATH}
-		select_file_manually
-		;;
-	5)
-		check_container_backup_path
-		cd ${CONTAINER_BACKUP_PATH}
-		BACKUP_FILE_NAME="*tar*"
-		COMPATIBILITY_MODE=true
-		#file_directory_selection
-		select_file_manually
-		;;
-	0 | "")
-		tmoe_manager_main_menu
-		;;
-	esac
-	##########################
-	press_enter_to_return
-	restore_gnu_linux_container
-	#tmoe_manager_main_menu
+    #source ${TMOE_SHARE_DIR}/removal/umount
+    COMPATIBILITY_MODE='fasle'
+    RETURN_TO_WHERE='restore_gnu_linux_container'
+    check_container_external_backup_path
+    START_DIR=${CONTAINER_BACKUP_PATH}
+    #13 55 5
+    TMOE_OPTION=$(whiptail --title "Restore ${CONTAINER_TYPE} container" --menu "你想要恢复哪个小可爱到之前的备份状态\nDo you want to restore the container?" 0 0 0 \
+        "1" "Normal mode 常规模式" \
+        "2" "Restore from sd/tf 从外置tf中恢复" \
+        "3" "Select path manually手动选择路径" \
+        "4" "Restore from /sdcard/Download/backup" \
+        "5" "Compatibility mode 兼容模式" \
+        "0" "🌚 Back to the main menu 返回主菜单" \
+        3>&1 1>&2 2>&3)
+    ###########################################################################
+    case ${TMOE_OPTION} in
+    1)
+        check_container_backup_path
+        START_DIR=${CONTAINER_BACKUP_PATH}
+        cd ${CONTAINER_BACKUP_PATH}
+        normally_restore_tmoe_container
+        ;;
+    2)
+        cd ${CONTAINER_BACKUP_PATH}
+        normally_restore_tmoe_container
+        ;;
+    3)
+        BACKUP_FILE_NAME="*tar*"
+        file_directory_selection
+        ;;
+    4)
+        BACKUP_FILE_NAME="*tar*"
+        BACKUP_PATH="/sdcard/Download/backup"
+        START_DIR=${BACKUP_PATH}
+        cd ${BACKUP_PATH}
+        select_file_manually
+        ;;
+    5)
+        check_container_backup_path
+        cd ${CONTAINER_BACKUP_PATH}
+        BACKUP_FILE_NAME="*tar*"
+        COMPATIBILITY_MODE=true
+        #file_directory_selection
+        select_file_manually
+        ;;
+    0 | "")
+        tmoe_manager_main_menu
+        ;;
+    esac
+    ##########################
+    press_enter_to_return
+    restore_gnu_linux_container
+    #tmoe_manager_main_menu
 }
 ############################
 restore_main

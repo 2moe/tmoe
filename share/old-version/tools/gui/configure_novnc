@@ -1,67 +1,67 @@
 #######################
 configure_novnc() {
-	if [[ ! -s "${TMOE_LINUX_DIR}/achievement01" || ! -s /usr/local/bin/novnc ]]; then
-		printf "%s\n" "${PURPLE}尚未解锁${RESET}，您需要在获得成就“${BLUE}vnc大师${RESET}”后，才能对此选项进行配置。"
-		press_enter_to_return
-		modify_remote_desktop_config
-	fi
-	NOVNC_MAIN_DIR="${TMOE_LINUX_DIR}/novnc"
-	RETURN_TO_WHERE='configure_novnc'
-	TMOE_OPTION=$(
-		whiptail --title "CONFIGURE NOVNC" --menu "Type novnc to start novnc.输novnc启动novnc" 0 0 0 \
-			"1" "port端口" \
-			"2" "修改startnovnc启动脚本" \
-			"3" "remove 卸载/移除" \
-			"0" "🌚 Return to previous menu 返回上级菜单" \
-			3>&1 1>&2 2>&3
-	)
-	##############################
-	case "${TMOE_OPTION}" in
-	0 | "") modify_remote_desktop_config ;;
-	1) modify_novnc_port ;;
-	2)
-		check_editor
-		[[ -n ${EDITOR} ]] || EDITOR=nano
-		${EDITOR} /usr/local/bin/novnc
-		;;
-	3) remove_novnc ;;
-	esac
-	########################################
-	press_enter_to_return
-	configure_novnc
-	####################
+    if [[ ! -s "${TMOE_LINUX_DIR}/achievement01" || ! -s /usr/local/bin/novnc ]]; then
+        printf "%s\n" "${PURPLE}尚未解锁${RESET}，您需要在获得成就“${BLUE}vnc大师${RESET}”后，才能对此选项进行配置。"
+        press_enter_to_return
+        modify_remote_desktop_config
+    fi
+    NOVNC_MAIN_DIR="${TMOE_LINUX_DIR}/novnc"
+    RETURN_TO_WHERE='configure_novnc'
+    TMOE_OPTION=$(
+        whiptail --title "CONFIGURE NOVNC" --menu "Type novnc to start novnc.输novnc启动novnc" 0 0 0 \
+            "1" "port端口" \
+            "2" "修改startnovnc启动脚本" \
+            "3" "remove 卸载/移除" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    ##############################
+    case "${TMOE_OPTION}" in
+    0 | "") modify_remote_desktop_config ;;
+    1) modify_novnc_port ;;
+    2)
+        check_editor
+        [[ -n ${EDITOR} ]] || EDITOR=nano
+        ${EDITOR} /usr/local/bin/novnc
+        ;;
+    3) remove_novnc ;;
+    esac
+    ########################################
+    press_enter_to_return
+    configure_novnc
+    ####################
 }
 ############
 remove_novnc() {
-	printf "%s\n" "${RED}pip3 uninstall ${BLUE}numpy websockify${RESET}"
-	printf "%s\n" "${RED}rm -rfv ${BLUE}${NOVNC_MAIN_DIR}${RESET}"
-	do_you_want_to_continue
-	pip3 uninstall numpy || sudo -H pip3 uninstall numpy
-	pip3 uninstall websockify || sudo -H pip3 uninstall websockify
-	rm -rfv ${NOVNC_MAIN_DIR} /usr/local/bin/novnc
+    printf "%s\n" "${RED}pip3 uninstall ${BLUE}numpy websockify${RESET}"
+    printf "%s\n" "${RED}rm -rfv ${BLUE}${NOVNC_MAIN_DIR}${RESET}"
+    do_you_want_to_continue
+    pip3 uninstall numpy || sudo -H pip3 uninstall numpy
+    pip3 uninstall websockify || sudo -H pip3 uninstall websockify
+    rm -rfv ${NOVNC_MAIN_DIR} /usr/local/bin/novnc
 }
 check_novnc_port() {
-	CURRENT_VALUE=$(grep '^NOVNC_PORT=' $(command -v novnc) | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
+    CURRENT_VALUE=$(grep '^NOVNC_PORT=' $(command -v novnc) | head -n 1 | awk -F '=' '{print $2}' | cut -d '"' -f 2)
 }
 #############
 modify_novnc_port() {
-	check_novnc_port
-	TARGET=$(whiptail --inputbox "Please type the novnc port,the default is 36080,the current port is ${CURRENT_VALUE}" 10 50 --title "请输入端口" 3>&1 1>&2 2>&3)
-	if [ "$?" != "0" ]; then
-		configure_novnc
-	elif [ -z "${TARGET}" ]; then
-		printf "%s\n" "请输入有效的数值"
-		printf "%s\n" "Please enter a valid value"
-		check_novnc_port
-		printf "%s\n" "Current port is ${BLUE}${CURRENT_VALUE}${RESET}"
-	else
-		sed -i -E "s@^(NOVNC_PORT)=.*@\1=${TARGET}@" "$(command -v novnc)"
-		printf '%s\n' 'Your current port has been modified.'
-		#printf "%s\n" "您当前的分辨率已经修改为$(sed -n p $(command -v startnovnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)"
-		check_novnc_port
-		printf "%s\n" "The current port is ${BLUE}${CURRENT_VALUE}${RESET}"
-		printf "%s\n" "You can type ${GREEN}novnc${RESET} to restart it."
-	fi
+    check_novnc_port
+    TARGET=$(whiptail --inputbox "Please type the novnc port,the default is 36080,the current port is ${CURRENT_VALUE}" 10 50 --title "请输入端口" 3>&1 1>&2 2>&3)
+    if [ "$?" != "0" ]; then
+        configure_novnc
+    elif [ -z "${TARGET}" ]; then
+        printf "%s\n" "请输入有效的数值"
+        printf "%s\n" "Please enter a valid value"
+        check_novnc_port
+        printf "%s\n" "Current port is ${BLUE}${CURRENT_VALUE}${RESET}"
+    else
+        sed -i -E "s@^(NOVNC_PORT)=.*@\1=${TARGET}@" "$(command -v novnc)"
+        printf '%s\n' 'Your current port has been modified.'
+        #printf "%s\n" "您当前的分辨率已经修改为$(sed -n p $(command -v startnovnc) | grep 'TMOE_X11_RESOLUTION=' | head -n 1 | cut -d '=' -f 2)"
+        check_novnc_port
+        printf "%s\n" "The current port is ${BLUE}${CURRENT_VALUE}${RESET}"
+        printf "%s\n" "You can type ${GREEN}novnc${RESET} to restart it."
+    fi
 }
 #################
 configure_novnc $@

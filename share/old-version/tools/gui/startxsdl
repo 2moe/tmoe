@@ -27,64 +27,64 @@ printf "%s\n" "The display is ${BLUE}${DISPLAY}${RESET}"
 #stopvnc -no-stop-dbus 2>/dev/null
 ###############
 check_tmoe_locale() {
-	if [ -e "${TMOE_LOCALE_FILE}" ]; then
-		TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
-	else
-		TMOE_LANG="en_US.UTF-8"
-	fi
-	export LANG="${TMOE_LANG}"
+    if [ -e "${TMOE_LOCALE_FILE}" ]; then
+        TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
+    else
+        TMOE_LANG="en_US.UTF-8"
+    fi
+    export LANG="${TMOE_LANG}"
 }
 ###########
 notes_of_xserver() {
-	case ${TMOE_LANG} in
-	zh_*UTF-8)
-		printf '%s\n' "正在为您启动${YELLOW}x11${RESET}..."
-		printf "%s\n" "当前显示器为 ${BLUE}${DISPLAY}${RESET}"
-		;;
-		#*)
-		#	printf '%s\n' 'Starting x11...'
-		#	;;
-	esac
+    case ${TMOE_LANG} in
+    zh_*UTF-8)
+        printf '%s\n' "正在为您启动${YELLOW}x11${RESET}..."
+        printf "%s\n" "当前显示器为 ${BLUE}${DISPLAY}${RESET}"
+        ;;
+        #*)
+        #	printf '%s\n' 'Starting x11...'
+        #	;;
+    esac
 }
 ####################
 start_windows_xserver() {
-	VCXSRV_DISPLAY_PORT=37985
-	. ${TMOE_LINUX_DIR}/wsl_pulse_audio
-	cd "/mnt/c/Users/Public/Downloads/VcXsrv/" || exit
-	#/mnt/c/WINDOWS/system32/cmd.exe /c "start .\config.xlaunch"
-	/mnt/c/WINDOWS/system32/taskkill.exe /f /im vcxsrv.exe 2>/dev/null
-	/mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :${VCXSRV_DISPLAY_PORT} -multiwindow -clipboard -wgl -ac" &
-	printf "%s\n" "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
-	#if grep -q '172..*1' "/etc/resolv.conf"; then
-	if [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-		printf "%s\n" "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
-		#WSL2IP=$(sed -n p /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
-		WSL2IP=$(ip route list table 0 | head -n 1 | awk -F 'default via ' '{print $2}' | awk '{print $1}')
-		export DISPLAY=${WSL2IP}:${VCXSRV_DISPLAY_PORT}
-		printf "%s\n" "已将您的显示和音频服务ip修改为${WSL2IP}"
-	else
-		export DISPLAY="$(printf '%s\n' "${DISPLAY}" | cut -d ':' -f 1):${VCXSRV_DISPLAY_PORT}"
-	fi
-	sleep 2
+    VCXSRV_DISPLAY_PORT=37985
+    . ${TMOE_LINUX_DIR}/wsl_pulse_audio
+    cd "/mnt/c/Users/Public/Downloads/VcXsrv/" || exit
+    #/mnt/c/WINDOWS/system32/cmd.exe /c "start .\config.xlaunch"
+    /mnt/c/WINDOWS/system32/taskkill.exe /f /im vcxsrv.exe 2>/dev/null
+    /mnt/c/WINDOWS/system32/cmd.exe /c "start .\vcxsrv.exe :${VCXSRV_DISPLAY_PORT} -multiwindow -clipboard -wgl -ac" &
+    printf "%s\n" "若无法自动打开X服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\VcXsrv\vcxsrv.exe"
+    #if grep -q '172..*1' "/etc/resolv.conf"; then
+    if [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+        printf "%s\n" "检测到您当前使用的可能是WSL2，如需手动启动，请在xlaunch.exe中勾选Disable access control"
+        #WSL2IP=$(sed -n p /etc/resolv.conf | grep nameserver | awk '{print $2}' | head -n 1)
+        WSL2IP=$(ip route list table 0 | head -n 1 | awk -F 'default via ' '{print $2}' | awk '{print $1}')
+        export DISPLAY=${WSL2IP}:${VCXSRV_DISPLAY_PORT}
+        printf "%s\n" "已将您的显示和音频服务ip修改为${WSL2IP}"
+    else
+        export DISPLAY="$(printf '%s\n' "${DISPLAY}" | cut -d ':' -f 1):${VCXSRV_DISPLAY_PORT}"
+    fi
+    sleep 2
 }
 ###############
 check_wsl() {
-	if [[ -r /proc/version ]]; then
-		UNAME="$(head -n 1 /proc/version)"
-		case "${UNAME}" in
-		*Microsoft* | *microsoft*)
-			# export TMOE_WSL=true
-			export TMOE_CHROOT=true
-			start_windows_xserver
-			;;
-		esac
-	fi
+    if [[ -r /proc/version ]]; then
+        UNAME="$(head -n 1 /proc/version)"
+        case "${UNAME}" in
+        *Microsoft* | *microsoft*)
+            # export TMOE_WSL=true
+            export TMOE_CHROOT=true
+            start_windows_xserver
+            ;;
+        esac
+    fi
 }
 ###############
 source_tmoe_dbus_daemon() {
-	if [[ ${AUTO_START_DBUS} = true ]]; then
-		source ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
-	fi
+    if [[ ${AUTO_START_DBUS} = true ]]; then
+        source ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
+    fi
 }
 ############
 check_tmoe_locale

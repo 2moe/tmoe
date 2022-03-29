@@ -1,31 +1,31 @@
 #!/usr/bin/env bash
 ##############
 if [[ $(command -v dpkg) && $(command -v apt-get) ]]; then
-	DPKG_ARCH=$(dpkg --print-architecture)
-	case ${DPKG_ARCH} in
-	armel) ARCH_TYPE="armel" ;;
-	armv7* | armv8l | armhf | arm) ARCH_TYPE="armhf" ;;
-	aarch64 | arm64* | armv8* | arm*) ARCH_TYPE="arm64" ;;
-	i*86 | x86) ARCH_TYPE="i386" ;;
-	x86_64 | amd64) ARCH_TYPE="amd64" ;;
-	*) ARCH_TYPE=${DPKG_ARCH} ;;
-	esac
+    DPKG_ARCH=$(dpkg --print-architecture)
+    case ${DPKG_ARCH} in
+    armel) ARCH_TYPE="armel" ;;
+    armv7* | armv8l | armhf | arm) ARCH_TYPE="armhf" ;;
+    aarch64 | arm64* | armv8* | arm*) ARCH_TYPE="arm64" ;;
+    i*86 | x86) ARCH_TYPE="i386" ;;
+    x86_64 | amd64) ARCH_TYPE="amd64" ;;
+    *) ARCH_TYPE=${DPKG_ARCH} ;;
+    esac
 else
-	#ARM7：ARMv4，ARM9：ARMv5，ARM11：ARMv6，ARM-Cortex：ARMv7
-	UNAME_ARCH=$(uname -m)
-	case ${UNAME_ARCH} in
-	armv7* | armv8l) ARCH_TYPE="armhf" ;;
-	armv[1-6]*) ARCH_TYPE="armel" ;;
-	aarch64 | armv8* | arm64 | arm*) ARCH_TYPE="arm64" ;;
-	x86_64 | amd64) ARCH_TYPE="amd64" ;;
-	i*86 | x86) ARCH_TYPE="i386" ;;
-	s390*) ARCH_TYPE="s390x" ;;    #经测试uname -m输出的结果为s390x
-	ppc64*) ARCH_TYPE="ppc64el" ;; #经测试uname -m输出的结果为ppc64le，而不是ppc64el
-	mips64*) ARCH_TYPE="mips64el" ;;
-	mips*) ARCH_TYPE="mipsel" ;; #经测试uname -m输出的结果为mips，而不是mipsel
-	riscv64*) ARCH_TYPE="riscv64" ;;
-	*) printf "${RED}%s${RESET} %s ${RED}%s${RESET}\n" "未知的架构" "${UNAME_ARCH}" "unknown architecture" ;;
-	esac
+    #ARM7：ARMv4，ARM9：ARMv5，ARM11：ARMv6，ARM-Cortex：ARMv7
+    UNAME_ARCH=$(uname -m)
+    case ${UNAME_ARCH} in
+    armv7* | armv8l) ARCH_TYPE="armhf" ;;
+    armv[1-6]*) ARCH_TYPE="armel" ;;
+    aarch64 | armv8* | arm64 | arm*) ARCH_TYPE="arm64" ;;
+    x86_64 | amd64) ARCH_TYPE="amd64" ;;
+    i*86 | x86) ARCH_TYPE="i386" ;;
+    s390*) ARCH_TYPE="s390x" ;;    #经测试uname -m输出的结果为s390x
+    ppc64*) ARCH_TYPE="ppc64el" ;; #经测试uname -m输出的结果为ppc64le，而不是ppc64el
+    mips64*) ARCH_TYPE="mips64el" ;;
+    mips*) ARCH_TYPE="mipsel" ;; #经测试uname -m输出的结果为mips，而不是mipsel
+    riscv64*) ARCH_TYPE="riscv64" ;;
+    *) printf "${RED}%s${RESET} %s ${RED}%s${RESET}\n" "未知的架构" "${UNAME_ARCH}" "unknown architecture" ;;
+    esac
 fi
 TRUE_ARCH_TYPE=${ARCH_TYPE}
 GNU_TAR_BIN="$(command -v tar)"
@@ -34,32 +34,32 @@ QEMU_ARCH=''
 CONFIG_FOLDER="${HOME}/.config/tmoe-linux"
 ACROSS_ARCH_FILE="${CONFIG_FOLDER}/across_architecture_container.txt"
 if [ -e "${ACROSS_ARCH_FILE}" ]; then
-	ARCH_TYPE="$(head -n 1 ${ACROSS_ARCH_FILE})"
-	QEMU_ARCH="$(sed -n 2p ${ACROSS_ARCH_FILE})"
+    ARCH_TYPE="$(head -n 1 ${ACROSS_ARCH_FILE})"
+    QEMU_ARCH="$(sed -n 2p ${ACROSS_ARCH_FILE})"
 fi
 LINUX_CONTAINER_DISTRO_FILE="${CONFIG_FOLDER}/linux_container_distro.txt"
 LINUX_CONTAINER_DISTRO_FILE_02="${CONFIG_FOLDER}/linux_container_distro_02.txt"
 DEBIAN_FOLDER=debian_${ARCH_TYPE}
 if [ -e "${LINUX_CONTAINER_DISTRO_FILE}" ]; then
-	LINUX_CONTAINER_DISTRO=$(head -n 1 "${LINUX_CONTAINER_DISTRO_FILE}")
-	[[ -z "${LINUX_CONTAINER_DISTRO}" ]] || DEBIAN_FOLDER="${LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}"
+    LINUX_CONTAINER_DISTRO=$(head -n 1 "${LINUX_CONTAINER_DISTRO_FILE}")
+    [[ -z "${LINUX_CONTAINER_DISTRO}" ]] || DEBIAN_FOLDER="${LINUX_CONTAINER_DISTRO}_${ARCH_TYPE}"
 fi
 if [ -e "${LINUX_CONTAINER_DISTRO_FILE_02}" ]; then
-	LINUX_CONTAINER_DISTRO_02=$(head -n 1 "${LINUX_CONTAINER_DISTRO_FILE_02}")
+    LINUX_CONTAINER_DISTRO_02=$(head -n 1 "${LINUX_CONTAINER_DISTRO_FILE_02}")
 fi
 if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
-	TMOE_CHROOT=true
-	CONTAINER_TYPE='chroot'
-	if [ $(command -v sudo) ]; then
-		TMOE_CHROOT_PREFIX=sudo
-	elif [ $(command -v tsudo) ]; then
-		TMOE_CHROOT_PREFIX=tsudo
-	fi
-	SYSTEMD_NSPAWN=$(grep -E '^[^#]*SYSTEMD_NSPAWN=' "${CONFIG_FOLDER}"/chroot.conf | awk -F '=' '{print $2}')
+    TMOE_CHROOT=true
+    CONTAINER_TYPE='chroot'
+    if [ $(command -v sudo) ]; then
+        TMOE_CHROOT_PREFIX=sudo
+    elif [ $(command -v tsudo) ]; then
+        TMOE_CHROOT_PREFIX=tsudo
+    fi
+    SYSTEMD_NSPAWN=$(grep -E '^[^#]*SYSTEMD_NSPAWN=' "${CONFIG_FOLDER}"/chroot.conf | awk -F '=' '{print $2}')
 else
-	CONTAINER_TYPE='proot'
-	TMOE_CHROOT=false
-	TMOE_CHROOT_PREFIX=''
+    CONTAINER_TYPE='proot'
+    TMOE_CHROOT=false
+    TMOE_CHROOT_PREFIX=''
 fi
 CONTAINER_DISTRO="$(printf "%s\n" "${DEBIAN_FOLDER}" | awk -F '_' '{print $1}' | cut -d '-' -f 1)"
 #DEBIAN_FOLDER=debian_arm64
@@ -75,48 +75,48 @@ RESET=$(printf '\033[m')
 BOLD=$(printf '\033[1m')
 
 tmoe_manager_env() {
-	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
-	TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
-	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
-	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
-	mkdir -pv "${TMOE_CONTAINER_DIR}"
-	case ${TMOE_CHROOT} in
-	true) DEBIAN_CHROOT=${TMOE_CONTAINER_DIR}/chroot/${DEBIAN_FOLDER} ;;
-	*) DEBIAN_CHROOT=${TMOE_CONTAINER_DIR}/proot/${DEBIAN_FOLDER} ;;
-	esac
-	TMOE_STARTUP_DIR="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container"
-	TMOE_STARTUP_SCRIPT="${TMOE_STARTUP_DIR}/tmoe-linux-container"
-	TMOE_NSPAWN_SCRIPT="${TMOE_STARTUP_DIR}/nspawn"
-	#${TMOE_CHROOT_PREFIX}
-	mkdir -pv "${DEBIAN_CHROOT}" || ${TMOE_CHROOT_PREFIX} mkdir -pv "${DEBIAN_CHROOT}"
-	${TMOE_CHROOT_PREFIX} chmod 755 -v "${DEBIAN_CHROOT}"
-	#mkdir -pv ${TMOE_CONTAINER_DIR}
-	[[ -n ${TMPDIR} ]] || TMPDIR=/tmp
+    TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+    TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
+    TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
+    TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
+    mkdir -pv "${TMOE_CONTAINER_DIR}"
+    case ${TMOE_CHROOT} in
+    true) DEBIAN_CHROOT=${TMOE_CONTAINER_DIR}/chroot/${DEBIAN_FOLDER} ;;
+    *) DEBIAN_CHROOT=${TMOE_CONTAINER_DIR}/proot/${DEBIAN_FOLDER} ;;
+    esac
+    TMOE_STARTUP_DIR="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/container"
+    TMOE_STARTUP_SCRIPT="${TMOE_STARTUP_DIR}/tmoe-linux-container"
+    TMOE_NSPAWN_SCRIPT="${TMOE_STARTUP_DIR}/nspawn"
+    #${TMOE_CHROOT_PREFIX}
+    mkdir -pv "${DEBIAN_CHROOT}" || ${TMOE_CHROOT_PREFIX} mkdir -pv "${DEBIAN_CHROOT}"
+    ${TMOE_CHROOT_PREFIX} chmod 755 -v "${DEBIAN_CHROOT}"
+    #mkdir -pv ${TMOE_CONTAINER_DIR}
+    [[ -n ${TMPDIR} ]] || TMPDIR=/tmp
 }
 #############
 if [ "$(uname -o)" = "Android" ]; then
-	LINUX_DISTRO='Android'
-	TMOE_LINUX_DIR="${HOME}/.local/share/tmoe-linux"
-	tmoe_manager_env
-	[[ -L "/data/data/com.termux/files/home/storage/shared" ]] || termux-setup-storage
-	TF_CARD_PATH="${HOME}/storage/external-1"
-	[ ! -h "${TF_CARD_PATH}" ] || printf "%s\n" "$(readlink ${TF_CARD_PATH})" >"${TF_CARD_PATH}"/path.txt
+    LINUX_DISTRO='Android'
+    TMOE_LINUX_DIR="${HOME}/.local/share/tmoe-linux"
+    tmoe_manager_env
+    [[ -L "/data/data/com.termux/files/home/storage/shared" ]] || termux-setup-storage
+    TF_CARD_PATH="${HOME}/storage/external-1"
+    [ ! -h "${TF_CARD_PATH}" ] || printf "%s\n" "$(readlink ${TF_CARD_PATH})" >"${TF_CARD_PATH}"/path.txt
 else
-	TMOE_LINUX_DIR="/usr/local/etc/tmoe-linux"
-	tmoe_manager_env
-	LINUX_DISTRO='linux'
-	if grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
-		LINUX_DISTRO='openwrt'
-		if [ -d "/opt/bin" ]; then
-			PREFIX="/opt"
-		else
-			PREFIX=${HOME}
-		fi
-	else
-		PREFIX='/usr/local'
-		[[ -d ${PREFIX} ]] || PREFIX='/usr'
-	fi
-	mkdir -pv ${PREFIX}/bin
+    TMOE_LINUX_DIR="/usr/local/etc/tmoe-linux"
+    tmoe_manager_env
+    LINUX_DISTRO='linux'
+    if grep -Eq "opkg|entware" '/opt/etc/opkg.conf' 2>/dev/null || grep -q 'openwrt' "/etc/os-release"; then
+        LINUX_DISTRO='openwrt'
+        if [ -d "/opt/bin" ]; then
+            PREFIX="/opt"
+        else
+            PREFIX=${HOME}
+        fi
+    else
+        PREFIX='/usr/local'
+        [[ -d ${PREFIX} ]] || PREFIX='/usr'
+    fi
+    mkdir -pv ${PREFIX}/bin
 fi
 ####################
 printf "${YELLOW}"
@@ -154,7 +154,7 @@ TMOE_PROOT_PROC_GIT="https://gitee.com/ak2/proot_proc"
 TMOE_PROOT_PROC_GIT_02="https://github.com/cu233/proot_proc"
 ###########
 tmoe_tips_1_zh() {
-	cat <<-EOF
+    cat <<-EOF
 		少女祈禱中...
 		現在可公開的情報:
 		${BOLD}Tmoe-linux 小提示${RESET}:
@@ -177,7 +177,7 @@ tmoe_tips_1_zh() {
 	EOF
 }
 tmoe_tips_1_en() {
-	cat <<-EOF
+    cat <<-EOF
 		${BOLD}Tmoe-linux TIPS${RESET}:
 				01:Different remote desktops may have different experiences.ヽ(✿ﾟ▽ﾟ)ノ
 				-------------------
@@ -197,56 +197,56 @@ zh_*UTF-8) tmoe_tips_1_zh ;;
 esac
 ##################
 check_rootfs_dir() {
-	unset ROOTFS_DIR
-	for i in /sdcard ${HOME}/sd; do
-		if [ -d "${i}" ]; then
-			ROOTFS_DIR="${i}/Download/backup/rootfs"
-			mkdir -pv ${ROOTFS_DIR}
-		fi
-		break
-	done
+    unset ROOTFS_DIR
+    for i in /sdcard ${HOME}/sd; do
+        if [ -d "${i}" ]; then
+            ROOTFS_DIR="${i}/Download/backup/rootfs"
+            mkdir -pv ${ROOTFS_DIR}
+        fi
+        break
+    done
 }
 if [ -h "${HOME}/storage/external-1" ]; then
-	ROOTFS_DIR=${HOME}/storage/external-1/Download/backup/rootfs
-	mkdir -pv ${ROOTFS_DIR}
-	if [[ ! -e ${ROOTFS_DIR} ]]; then
-		check_rootfs_dir
-	fi
+    ROOTFS_DIR=${HOME}/storage/external-1/Download/backup/rootfs
+    mkdir -pv ${ROOTFS_DIR}
+    if [[ ! -e ${ROOTFS_DIR} ]]; then
+        check_rootfs_dir
+    fi
 else
-	check_rootfs_dir
+    check_rootfs_dir
 fi
 
 [[ -n ${ROOTFS_DIR} ]] || ROOTFS_DIR="${HOME}/sd/Download/backup/rootfs"
 
 if [[ ! -e ${ROOTFS_DIR} ]]; then
-	ROOTFS_DIR="${HOME}/sd/Download/backup/rootfs"
-	mkdir -pv ${ROOTFS_DIR}
+    ROOTFS_DIR="${HOME}/sd/Download/backup/rootfs"
+    mkdir -pv ${ROOTFS_DIR}
 fi
 cd ${ROOTFS_DIR}
 CURRENT_TMOE_DIR=$(pwd)
 download_rootfs_file() {
-	printf "${PURPLE}${BOLD}%s${RESET} ${YELLOW}%s${RESET}\n" "ROOTFS_FILE:" "${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ}"
-	if [ ! -f ${TMOE_ROOTFS_TAR_XZ} ]; then
-		printf "%s\n" "Downloading ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET} from BFSU Open Source Mirror Station."
-		case ${WEEKLY_BUILD_CONTAINER} in
-		true)
-			ROOTFS_URL="${NODE_URL}/${ROOTFS_VERSION}/${ARCH_TYPE}/${LINUX_CONTAINER_DISTRO_02}/${DESKTOP}/${LINUX_CONTAINER_DISTRO_02}_${ARCH_TYPE}-rootfs.tar.zst"
-			case ${NODE_NAME} in
-			"node02-tmoe") aria2c --console-log-level=error --no-conf -x7 -s7 -k1M --http-user="${NODE02_USER}" --http-passwd="${NODE02_PW}" -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" || aria2c --console-log-level=debug --max-tries=0 --no-conf --allow-overwrite=true -x3 -s3 -k1M --http-user="${NODE02_USER}" --http-passwd="${NODE02_PW}" -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" ;;
-			*) aria2c --console-log-level=error --no-conf -x6 -s6 -k1M -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" || aria2c --console-log-level=debug --max-tries=0 --no-conf --allow-overwrite=true -x4 -s4 -k1M -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" ;;
-			esac
-			#若下载失败，则重复尝试。
-			;;
-		*)
-			#printf "%s\n" "正在从${YELLOW}北京外国语大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
-			unset TTIME
-			TTIME=$(curl --connect-timeout 10 -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)
-			[[ -n ${TTIME} ]] || TTIME=$(curl -Lv "${TUNA_LXC_IMAGE_MIRROR_REPO_02}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)
-			#printf "${YELLOW}%s${RESET}\n" "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
-			aria2c --console-log-level=warn --connect-timeout=10 --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz" || aria2c --console-log-level=debug --max-tries=0 --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO_02}/${TTIME}rootfs.tar.xz"
-			;;
-		esac
-	fi
+    printf "${PURPLE}${BOLD}%s${RESET} ${YELLOW}%s${RESET}\n" "ROOTFS_FILE:" "${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ}"
+    if [ ! -f ${TMOE_ROOTFS_TAR_XZ} ]; then
+        printf "%s\n" "Downloading ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET} from BFSU Open Source Mirror Station."
+        case ${WEEKLY_BUILD_CONTAINER} in
+        true)
+            ROOTFS_URL="${NODE_URL}/${ROOTFS_VERSION}/${ARCH_TYPE}/${LINUX_CONTAINER_DISTRO_02}/${DESKTOP}/${LINUX_CONTAINER_DISTRO_02}_${ARCH_TYPE}-rootfs.tar.zst"
+            case ${NODE_NAME} in
+            "node02-tmoe") aria2c --console-log-level=error --no-conf -x7 -s7 -k1M --http-user="${NODE02_USER}" --http-passwd="${NODE02_PW}" -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" || aria2c --console-log-level=debug --max-tries=0 --no-conf --allow-overwrite=true -x3 -s3 -k1M --http-user="${NODE02_USER}" --http-passwd="${NODE02_PW}" -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" ;;
+            *) aria2c --console-log-level=error --no-conf -x6 -s6 -k1M -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" || aria2c --console-log-level=debug --max-tries=0 --no-conf --allow-overwrite=true -x4 -s4 -k1M -o ${TMOE_ROOTFS_TAR_XZ} "${ROOTFS_URL}" ;;
+            esac
+            #若下载失败，则重复尝试。
+            ;;
+        *)
+            #printf "%s\n" "正在从${YELLOW}北京外国语大学开源镜像站${RESET}${GREEN}下载${RESET}容器镜像..."
+            unset TTIME
+            TTIME=$(curl --connect-timeout 10 -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)
+            [[ -n ${TTIME} ]] || TTIME=$(curl -Lv "${TUNA_LXC_IMAGE_MIRROR_REPO_02}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)
+            #printf "${YELLOW}%s${RESET}\n" "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz"
+            aria2c --console-log-level=warn --connect-timeout=10 --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}rootfs.tar.xz" || aria2c --console-log-level=debug --max-tries=0 --no-conf -x 5 -k 1M --split 5 -o ${TMOE_ROOTFS_TAR_XZ} "${TUNA_LXC_IMAGE_MIRROR_REPO_02}/${TTIME}rootfs.tar.xz"
+            ;;
+        esac
+    fi
 }
 DEBOOTSTRAP_DIR=''
 [[ ! -e ${CONFIG_FOLDER}/debootstrap_dir.txt ]] || source ${CONFIG_FOLDER}/debootstrap_dir.txt
@@ -256,28 +256,28 @@ ${DEBIAN_CHROOT}) ;;
 esac
 ##################
 if [ ! -e "${CONFIG_FOLDER}/chroot_container" ]; then
-	cd ${CONFIG_FOLDER}
-	if [ ! -s "proot_proc/proc.tar.xz" ]; then
-		[[ ! -e proot_proc ]] || rm -rfv proot_proc
-		git clone \
-			--depth=1 \
-			${TMOE_PROOT_PROC_GIT} \
-			proot_proc ||
-			git clone \
-				--depth=1 \
-				${TMOE_PROOT_PROC_GIT_02} \
-				proot_proc
-	fi
-	if [ ! -s "proot_proc/proc.tar.xz" ]; then
-		mkdir -pv proot_proc
-		aria2c --console-log-level=warn --no-conf -d proot_proc -o proc.tar.xz --allow-overwrite=true "${TMOE_PROOT_PROC_FILE_URL}"
-	fi
-	cd ${DEBIAN_CHROOT}
-	if [ -e "${CONFIG_FOLDER}/proot_proc/proc.tar.xz" ]; then
-		${GNU_TAR_BIN} -Jxf ${CONFIG_FOLDER}/proot_proc/proc.tar.xz 2>/dev/null
-	fi
+    cd ${CONFIG_FOLDER}
+    if [ ! -s "proot_proc/proc.tar.xz" ]; then
+        [[ ! -e proot_proc ]] || rm -rfv proot_proc
+        git clone \
+            --depth=1 \
+            ${TMOE_PROOT_PROC_GIT} \
+            proot_proc ||
+            git clone \
+                --depth=1 \
+                ${TMOE_PROOT_PROC_GIT_02} \
+                proot_proc
+    fi
+    if [ ! -s "proot_proc/proc.tar.xz" ]; then
+        mkdir -pv proot_proc
+        aria2c --console-log-level=warn --no-conf -d proot_proc -o proc.tar.xz --allow-overwrite=true "${TMOE_PROOT_PROC_FILE_URL}"
+    fi
+    cd ${DEBIAN_CHROOT}
+    if [ -e "${CONFIG_FOLDER}/proot_proc/proc.tar.xz" ]; then
+        ${GNU_TAR_BIN} -Jxf ${CONFIG_FOLDER}/proot_proc/proc.tar.xz 2>/dev/null
+    fi
 else
-	cd ${DEBIAN_CHROOT}
+    cd ${DEBIAN_CHROOT}
 fi
 ####################
 printf "$BLUE"
@@ -313,7 +313,7 @@ LONG_DISTRO_CODE=$(printf '%s\n' "${LINUX_CONTAINER_DISTRO}" | awk -F '-' '{prin
 [[ ! $(printf '%s\n' "${LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $3}') = Stream ]] || LONG_DISTRO_CODE=$(printf '%s\n' "${LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $2"-"$3}')
 LONG_DISTRO_ARCH=${ARCH_TYPE}
 tmoe_tips_2_zh() {
-	cat <<-EOF
+    cat <<-EOF
 		現在可公開的情報:
 		${BOLD}Tmoe-linux 小提示05${RESET}(仅适用于GUI安装完成后):
 				输${GREEN}startx11vnc${RESET}启动${BLUE}x11vnc服务${RESET},x11vnc能运行tightvnc无法打开的某些应用哦！
@@ -347,7 +347,7 @@ tmoe_tips_2_zh() {
 	EOF
 }
 tmoe_tips_2_en() {
-	cat <<-EOF
+    cat <<-EOF
 		${BOLD}少女祈禱中...${RESET}
 		${YELLOW}o( =•ω•= )m${RESET}
 				You can type ${GREEN}startx11vnc${RESET} to ${YELLOW}start ${BLUE}x11vnc server.${RESET}
@@ -372,155 +372,155 @@ zh_*UTF-8) tmoe_tips_2_zh ;;
 esac
 ################
 uncompress_other_format_file() {
-	if [ "${TMOE_CHROOT}" = "true" ]; then
-		${TMOE_CHROOT_PREFIX} ${GNU_TAR_BIN} -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-	elif [ "${LINUX_DISTRO}" = "Android" ]; then
-		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -px
-	else
-		if [ $(command -v pv) ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | ${GNU_TAR_BIN} -px
-		else
-			${GNU_TAR_BIN} -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-		fi
-	fi
+    if [ "${TMOE_CHROOT}" = "true" ]; then
+        ${TMOE_CHROOT_PREFIX} ${GNU_TAR_BIN} -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+    elif [ "${LINUX_DISTRO}" = "Android" ]; then
+        pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -px
+    else
+        if [ $(command -v pv) ]; then
+            pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | ${GNU_TAR_BIN} -px
+        else
+            ${GNU_TAR_BIN} -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+        fi
+    fi
 
-	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
-		if [ "${LINUX_DISTRO}" = "Android" ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -px
-		else
-			${GNU_TAR_BIN} -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-		fi
-		${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
-	fi
+    if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
+        if [ "${LINUX_DISTRO}" = "Android" ]; then
+            pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -px
+        else
+            ${GNU_TAR_BIN} -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+        fi
+        ${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
+    fi
 }
 ##############
 uncompress_tar_lz4_file() {
-	if [ "${TMOE_CHROOT}" = "true" ]; then
-		${TMOE_CHROOT_PREFIX} ${GNU_TAR_BIN} -I lz4 -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-	elif [ "${LINUX_DISTRO}" = "Android" ]; then
-		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -I lz4 -px
-	else
-		if [ $(command -v pv) ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | ${GNU_TAR_BIN} -I lz4 -px
-		else
-			${GNU_TAR_BIN} -I lz4 -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-		fi
-	fi
+    if [ "${TMOE_CHROOT}" = "true" ]; then
+        ${TMOE_CHROOT_PREFIX} ${GNU_TAR_BIN} -I lz4 -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+    elif [ "${LINUX_DISTRO}" = "Android" ]; then
+        pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -I lz4 -px
+    else
+        if [ $(command -v pv) ]; then
+            pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | ${GNU_TAR_BIN} -I lz4 -px
+        else
+            ${GNU_TAR_BIN} -I lz4 -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+        fi
+    fi
 
-	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
-		if [ "${LINUX_DISTRO}" = "Android" ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -I lz4 -px
-		else
-			${GNU_TAR_BIN} -I lz4 -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-		fi
-		${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
-	fi
-	# TRUE_TMOE_ROOTFS_TAR_XZ=${TMOE_ROOTFS_TAR_XZ}
-	# TMOE_ROOTFS_TAR=$(printf '%s\n' "${TMOE_ROOTFS_TAR_XZ}" | sed 's@.tar.lz4@.tar@')
-	# cd ${CURRENT_TMOE_DIR}
-	# rm -fv ${TMOE_ROOTFS_TAR} 2>/dev/null
-	# lz4 -d ${TMOE_ROOTFS_TAR_XZ}
-	# cd ${DEBIAN_CHROOT}
+    if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
+        if [ "${LINUX_DISTRO}" = "Android" ]; then
+            pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -I lz4 -px
+        else
+            ${GNU_TAR_BIN} -I lz4 -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+        fi
+        ${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
+    fi
+    # TRUE_TMOE_ROOTFS_TAR_XZ=${TMOE_ROOTFS_TAR_XZ}
+    # TMOE_ROOTFS_TAR=$(printf '%s\n' "${TMOE_ROOTFS_TAR_XZ}" | sed 's@.tar.lz4@.tar@')
+    # cd ${CURRENT_TMOE_DIR}
+    # rm -fv ${TMOE_ROOTFS_TAR} 2>/dev/null
+    # lz4 -d ${TMOE_ROOTFS_TAR_XZ}
+    # cd ${DEBIAN_CHROOT}
 
-	# TMOE_ROOTFS_TAR_XZ=${TMOE_ROOTFS_TAR}
-	# uncompress_other_format_file
-	# TMOE_ROOTFS_TAR_XZ=${TRUE_TMOE_ROOTFS_TAR_XZ}
-	# rm -fv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR}
+    # TMOE_ROOTFS_TAR_XZ=${TMOE_ROOTFS_TAR}
+    # uncompress_other_format_file
+    # TMOE_ROOTFS_TAR_XZ=${TRUE_TMOE_ROOTFS_TAR_XZ}
+    # rm -fv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR}
 }
 ###########
 uncompress_tar_gz_file() {
-	if [ "${TMOE_CHROOT}" = "true" ]; then
-		${TMOE_CHROOT_PREFIX} ${GNU_TAR_BIN} -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-	elif [ "${LINUX_DISTRO}" = "Android" ]; then
-		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -pzx
-	else
-		if [ $(command -v pv) ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | ${GNU_TAR_BIN} -pzx
-		else
-			${GNU_TAR_BIN} -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-		fi
-	fi
+    if [ "${TMOE_CHROOT}" = "true" ]; then
+        ${TMOE_CHROOT_PREFIX} ${GNU_TAR_BIN} -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+    elif [ "${LINUX_DISTRO}" = "Android" ]; then
+        pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -pzx
+    else
+        if [ $(command -v pv) ]; then
+            pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | ${GNU_TAR_BIN} -pzx
+        else
+            ${GNU_TAR_BIN} -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+        fi
+    fi
 
-	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
-		if [ "${LINUX_DISTRO}" = "Android" ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -pzx
-		else
-			${GNU_TAR_BIN} -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-		fi
-		${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
-	fi
+    if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
+        if [ "${LINUX_DISTRO}" = "Android" ]; then
+            pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -pzx
+        else
+            ${GNU_TAR_BIN} -pzxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+        fi
+        ${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
+    fi
 }
 #####################
 check_tar_xz_pv() {
-	if [ $(command -v pv) ]; then
-		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | ${GNU_TAR_BIN} -pJx
-	else
-		${GNU_TAR_BIN} -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-	fi
+    if [ $(command -v pv) ]; then
+        pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | ${GNU_TAR_BIN} -pJx
+    else
+        ${GNU_TAR_BIN} -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+    fi
 }
 #############
 uncompress_tar_xz_file() {
-	case ${TMOE_LANG} in
-	zh_*UTF-8) printf "%s\n" "正在${GREEN}解压${BLUE}${TMOE_ROOTFS_TAR_XZ}...${RESET}" ;;
-	esac
-	printf "%s\n" "${GREEN}Extracting ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET}, please ${YELLOW}wait${RESET}."
-	if [ "${TMOE_CHROOT}" = "true" ]; then
-		${TMOE_CHROOT_PREFIX} ${GNU_TAR_BIN} -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-	elif [ "${LINUX_DISTRO}" = "Android" ]; then
-		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -pJx
-	else
-		check_tar_xz_pv
-	fi
+    case ${TMOE_LANG} in
+    zh_*UTF-8) printf "%s\n" "正在${GREEN}解压${BLUE}${TMOE_ROOTFS_TAR_XZ}...${RESET}" ;;
+    esac
+    printf "%s\n" "${GREEN}Extracting ${BLUE}${TMOE_ROOTFS_TAR_XZ}${RESET}, please ${YELLOW}wait${RESET}."
+    if [ "${TMOE_CHROOT}" = "true" ]; then
+        ${TMOE_CHROOT_PREFIX} ${GNU_TAR_BIN} -pJxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+    elif [ "${LINUX_DISTRO}" = "Android" ]; then
+        pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -pJx
+    else
+        check_tar_xz_pv
+    fi
 
-	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
-		if [ "${LINUX_DISTRO}" = "Android" ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -pJx
-		else
-			${GNU_TAR_BIN} -Jpxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-		fi
-		${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
-	fi
+    if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
+        if [ "${LINUX_DISTRO}" = "Android" ]; then
+            pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -pJx
+        else
+            ${GNU_TAR_BIN} -Jpxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+        fi
+        ${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
+    fi
 }
 #############
 uncompress_tar_zst_file() {
-	if [ "${TMOE_CHROOT}" = "true" ]; then
-		${TMOE_CHROOT_PREFIX} ${GNU_TAR_BIN} -I zstd -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-	elif [ "${LINUX_DISTRO}" = "Android" ]; then
-		pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -I zstd -px
-	else
-		if [ $(command -v pv) ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | ${GNU_TAR_BIN} -I zstd -px
-		else
-			${GNU_TAR_BIN} -I zstd -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-		fi
-	fi
+    if [ "${TMOE_CHROOT}" = "true" ]; then
+        ${TMOE_CHROOT_PREFIX} ${GNU_TAR_BIN} -I zstd -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+    elif [ "${LINUX_DISTRO}" = "Android" ]; then
+        pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -I zstd -px
+    else
+        if [ $(command -v pv) ]; then
+            pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | ${GNU_TAR_BIN} -I zstd -px
+        else
+            ${GNU_TAR_BIN} -I zstd -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+        fi
+    fi
 
-	if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
-		if [ "${LINUX_DISTRO}" = "Android" ]; then
-			pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -I zstd -px
-		else
-			${GNU_TAR_BIN} -I zstd -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
-		fi
-		${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
-	fi
+    if [[ ! -e "${DEBIAN_CHROOT}/usr/bin/env" && ! -e "${DEBIAN_CHROOT}/bin/busybox" ]]; then
+        if [ "${LINUX_DISTRO}" = "Android" ]; then
+            pv ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ} | proot --link2symlink ${GNU_TAR_BIN} -I zstd -px
+        else
+            ${GNU_TAR_BIN} -I zstd -pxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}
+        fi
+        ${TMOE_CHROOT_PREFIX} chown -Rv 0:0 ${DEBIAN_CHROOT}
+    fi
 }
 #####################
 #解压前已进入$DEBIAN_CHROOT目录
 uncompress_tar_file() {
-	case "${TMOE_ROOTFS_TAR_XZ:0-6:6}" in
-	tar.xz) uncompress_tar_xz_file ;;
-	tar.gz) uncompress_tar_gz_file ;;
-	ar.zst | r.zstd) uncompress_tar_zst_file ;;
-	ar.lz4)
-		#此处不为tar.lz4
-		uncompress_tar_lz4_file
-		;;
-	*) uncompress_other_format_file ;;
-	esac
-	case ${TMOE_CHROOT} in
-	true) ${TMOE_CHROOT_PREFIX} chown -v 0:0 ${DEBIAN_CHROOT} ;;
-	esac
-	${TMOE_CHROOT_PREFIX} chmod 755 ${DEBIAN_CHROOT}
+    case "${TMOE_ROOTFS_TAR_XZ:0-6:6}" in
+    tar.xz) uncompress_tar_xz_file ;;
+    tar.gz) uncompress_tar_gz_file ;;
+    ar.zst | r.zstd) uncompress_tar_zst_file ;;
+    ar.lz4)
+        #此处不为tar.lz4
+        uncompress_tar_lz4_file
+        ;;
+    *) uncompress_other_format_file ;;
+    esac
+    case ${TMOE_CHROOT} in
+    true) ${TMOE_CHROOT_PREFIX} chown -v 0:0 ${DEBIAN_CHROOT} ;;
+    esac
+    ${TMOE_CHROOT_PREFIX} chmod 755 ${DEBIAN_CHROOT}
 }
 #######################
 case ${DEBOOTSTRAP_DIR} in
@@ -541,19 +541,19 @@ mkdir -pv ${DEBIAN_CHROOT}/tmp
 case ${LOCALFONT} in
 ${REMOTEP10KFONT} | ${IOSEVKA_FONT} | ${MESLO_FONT} | ${MESLO_BOLD_FONT} | ${IOSEVKA_FONT_02} | ${INVONSOLATA_FONT} | ${FIRA_CODE_FONT} | ${IOSEVKA_FONT_03}) cp -f ~/.termux/font.ttf ${DEBIAN_CHROOT}/tmp 2>/dev/null ;;
 *)
-	MESLO_FONT_DIR="${HOME}/.config/tmoe-zsh/fonts/fonts/Iosevka"
-	if [ -e "${MESLO_FONT_DIR}" ]; then
-		cd ${MESLO_FONT_DIR}
-		${TMOE_CHROOT_PREFIX} cp -f 'Iosevka Term Bold Italic Nerd Font Complete Mono Windows Compatible.ttf' ${DEBIAN_CHROOT}/tmp/font.ttf
-	fi
-	;;
+    MESLO_FONT_DIR="${HOME}/.config/tmoe-zsh/fonts/fonts/Iosevka"
+    if [ -e "${MESLO_FONT_DIR}" ]; then
+        cd ${MESLO_FONT_DIR}
+        ${TMOE_CHROOT_PREFIX} cp -f 'Iosevka Term Bold Italic Nerd Font Complete Mono Windows Compatible.ttf' ${DEBIAN_CHROOT}/tmp/font.ttf
+    fi
+    ;;
 esac
 TMOE_TMP_DIR="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/tmp"
 ${TMOE_CHROOT_PREFIX} mkdir -pv ${TMOE_TMP_DIR}
 
 if [[ -s "${CONFIG_FOLDER}/default-dns.conf" ]]; then
-	cp ${CONFIG_FOLDER}/default-dns.conf ${DEBIAN_CHROOT}/tmp/resolv.conf
-	${TMOE_CHROOT_PREFIX} cp ${CONFIG_FOLDER}/default-dns.conf ${TMOE_TMP_DIR}/resolv.conf
+    cp ${CONFIG_FOLDER}/default-dns.conf ${DEBIAN_CHROOT}/tmp/resolv.conf
+    ${TMOE_CHROOT_PREFIX} cp ${CONFIG_FOLDER}/default-dns.conf ${TMOE_TMP_DIR}/resolv.conf
 fi
 #proot --link2symlink ${GNU_TAR_BIN} -Jxvf ${CURRENT_TMOE_DIR}/${TMOE_ROOTFS_TAR_XZ}||:
 cd "${CURRENT_TMOE_DIR}"
@@ -587,105 +587,105 @@ EndOFneko
 printf "${RESET}"
 ####################
 cat_tmoe_chroot_script() {
-	source "${TMOE_SHARE_DIR}"/container/chroot/startup
+    source "${TMOE_SHARE_DIR}"/container/chroot/startup
 }
 cat_tmoe_nspawn_script() {
-	source "${TMOE_SHARE_DIR}"/container/nspawn/startup
+    source "${TMOE_SHARE_DIR}"/container/nspawn/startup
 }
 ##############
 get_android_host_name() {
-	ANDROID_HOST_NAME=$(getprop ro.product.model | sed \
-		-e 's@ @-@g' \
-		-e 's@ @@g' \
-		-e 's/[^0-9a-zA-Z.-]\+//g' \
-		-e 's/^ \+\| \+$//g')
+    ANDROID_HOST_NAME=$(getprop ro.product.model | sed \
+        -e 's@ @-@g' \
+        -e 's@ @@g' \
+        -e 's/[^0-9a-zA-Z.-]\+//g' \
+        -e 's/^ \+\| \+$//g')
 }
 create_chroot_startup_script() {
-	case ${LINUX_DISTRO} in
-	Android)
-		ANDROID_EMULATED_DIR='/storage/emulated'
-		if [ ! -e "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}" ]; then
-			${TMOE_CHROOT_PREFIX} mkdir -pv "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
+    case ${LINUX_DISTRO} in
+    Android)
+        ANDROID_EMULATED_DIR='/storage/emulated'
+        if [ ! -e "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}" ]; then
+            ${TMOE_CHROOT_PREFIX} mkdir -pv "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}"
 
-			${TMOE_CHROOT_PREFIX} ln -s ../../media/sd "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}/0"
-		fi
-		;;
-	esac
-	cd "${CONFIG_FOLDER}"
-	if [ -e "/system/bin/wm" ]; then
-		TMOE_CHROOT_ETC="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
-		${TMOE_CHROOT_PREFIX} mkdir -pv "${TMOE_CHROOT_ETC}"
-		WM_SIZE=$(su -c "/system/bin/wm size" | awk '{print $3}' | head -n 1)
-		printf "%s\n" "${WM_SIZE}" >wm_size.txt
-		chmod -v 666 wm_size.txt
-		${TMOE_CHROOT_PREFIX} mv wm_size.txt "${TMOE_CHROOT_ETC}"
-	fi
-	if [[ $(command -v getprop) && $(command -v am) ]]; then
-		get_android_host_name
-		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
-		case $(hostname) in
-		localhost | "") ${TMOE_CHROOT_PREFIX} hostname "${ANDROID_HOST_NAME}" 2>/dev/null ;;
-		esac
-	else
-		[[ ! $(command -v hostname) ]] || printf "%s\n" "$(hostname)" >hostname
-	fi
-	if [[ -s hostname ]]; then
-		${TMOE_CHROOT_PREFIX} cp hostname "${DEBIAN_CHROOT}"/tmp
-		${TMOE_CHROOT_PREFIX} mv hostname "${DEBIAN_CHROOT}"/etc
-	fi
-	printf "%s\n" "Creating chroot startup script"
-	printf "%s\n" "正在创建chroot容器启动脚本"
-	#mkdir -pv /sdcard
-	${TMOE_CHROOT_PREFIX} mkdir -pv "${DEBIAN_CHROOT}"/media/sd
-	${TMOE_CHROOT_PREFIX} ln -sf ../media/sd "${DEBIAN_CHROOT}"/root/
-	[[ -e ${DEBIAN_CHROOT}/sd ]] || ${TMOE_CHROOT_PREFIX} ln -sf media/sd "${DEBIAN_CHROOT}"/sd
-	#fi
-	if [ -d "/data/data/com.termux/files/home" ]; then
-		${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/media/termux
-		${TMOE_CHROOT_PREFIX} ln -sf ../media/termux ${DEBIAN_CHROOT}/root/
-		if [ -h "${HOME}/storage/external-1" ]; then
-			${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/media/tf
-			${TMOE_CHROOT_PREFIX} ln -sf ../media/tf ${DEBIAN_CHROOT}/root/
-			[[ -e ${DEBIAN_CHROOT}/tf ]] || ${TMOE_CHROOT_PREFIX} ln -sf media/tf ${DEBIAN_CHROOT}/tf
-		fi
-	fi
-	if [[ -e ${DEBIAN_CHROOT}/etc/environment ]]; then
-		cp ${DEBIAN_CHROOT}/etc/environment ${TMPDIR} 2>/dev/null || sudo cp ${DEBIAN_CHROOT}/etc/environment ${TMPDIR}
-		sudo chmod 666 -v ${TMPDIR}/environment
-	fi
-	printf '%s\n' 'export TMOE_CHROOT=true' >>${TMPDIR}/environment
-	sudo chmod a+r ${TMPDIR}/environment
-	sudo mv ${TMPDIR}/environment ${DEBIAN_CHROOT}/etc/
-	##################
-	#此处若不创建，将有可能导致chromium无法启动。
-	${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/run/shm ${DEBIAN_CHROOT}/etc/gitstatus ${TMOE_STARTUP_DIR}
-	#${TMOE_CHROOT_PREFIX} ln -sf ../../etc/gitstatus ${DEBIAN_CHROOT}/root/.cache
-	#chmod 1777 ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
-	cat_tmoe_chroot_script
-	if [[ $(command -v getprop) && $(command -v am) ]]; then
-		ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null | cut -d '.' -f 1)
-		case ${ANDROID_VERSION} in
-		5 | 6 | 7) sudo sed -i -E 's@^(OLD_ANDROID_VERSION_COMPATIBILITY_MODE=).*@\1true@' ${TMOE_STARTUP_SCRIPT} ;;
-		"") ;;
-		*) sudo sed -i -E "s@^(UNSHARE_ENABLED=).*@\1true@" "${TMOE_STARTUP_SCRIPT}" ;;
-		esac
-		printf "%s\n" "ANDROID_VERSION=${ANDROID_VERSION}" >${TMPDIR}/.ANDROID_VERSION.txt
-		sudo mv -vf ${TMPDIR}/.ANDROID_VERSION.txt ${DEBIAN_CHROOT}/tmp/
-	else
-		sudo sed -E -e "s@^(MOUNT_BIN=).*@\1default@g" \
-			-i "${TMOE_STARTUP_SCRIPT}"
-	fi
-	if [[ ${SYSTEMD_NSPAWN} = true ]]; then
-		cat_tmoe_nspawn_script
-	fi
+            ${TMOE_CHROOT_PREFIX} ln -s ../../media/sd "${DEBIAN_CHROOT}${ANDROID_EMULATED_DIR}/0"
+        fi
+        ;;
+    esac
+    cd "${CONFIG_FOLDER}"
+    if [ -e "/system/bin/wm" ]; then
+        TMOE_CHROOT_ETC="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
+        ${TMOE_CHROOT_PREFIX} mkdir -pv "${TMOE_CHROOT_ETC}"
+        WM_SIZE=$(su -c "/system/bin/wm size" | awk '{print $3}' | head -n 1)
+        printf "%s\n" "${WM_SIZE}" >wm_size.txt
+        chmod -v 666 wm_size.txt
+        ${TMOE_CHROOT_PREFIX} mv wm_size.txt "${TMOE_CHROOT_ETC}"
+    fi
+    if [[ $(command -v getprop) && $(command -v am) ]]; then
+        get_android_host_name
+        printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
+        case $(hostname) in
+        localhost | "") ${TMOE_CHROOT_PREFIX} hostname "${ANDROID_HOST_NAME}" 2>/dev/null ;;
+        esac
+    else
+        [[ ! $(command -v hostname) ]] || printf "%s\n" "$(hostname)" >hostname
+    fi
+    if [[ -s hostname ]]; then
+        ${TMOE_CHROOT_PREFIX} cp hostname "${DEBIAN_CHROOT}"/tmp
+        ${TMOE_CHROOT_PREFIX} mv hostname "${DEBIAN_CHROOT}"/etc
+    fi
+    printf "%s\n" "Creating chroot startup script"
+    printf "%s\n" "正在创建chroot容器启动脚本"
+    #mkdir -pv /sdcard
+    ${TMOE_CHROOT_PREFIX} mkdir -pv "${DEBIAN_CHROOT}"/media/sd
+    ${TMOE_CHROOT_PREFIX} ln -sf ../media/sd "${DEBIAN_CHROOT}"/root/
+    [[ -e ${DEBIAN_CHROOT}/sd ]] || ${TMOE_CHROOT_PREFIX} ln -sf media/sd "${DEBIAN_CHROOT}"/sd
+    #fi
+    if [ -d "/data/data/com.termux/files/home" ]; then
+        ${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/media/termux
+        ${TMOE_CHROOT_PREFIX} ln -sf ../media/termux ${DEBIAN_CHROOT}/root/
+        if [ -h "${HOME}/storage/external-1" ]; then
+            ${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/media/tf
+            ${TMOE_CHROOT_PREFIX} ln -sf ../media/tf ${DEBIAN_CHROOT}/root/
+            [[ -e ${DEBIAN_CHROOT}/tf ]] || ${TMOE_CHROOT_PREFIX} ln -sf media/tf ${DEBIAN_CHROOT}/tf
+        fi
+    fi
+    if [[ -e ${DEBIAN_CHROOT}/etc/environment ]]; then
+        cp ${DEBIAN_CHROOT}/etc/environment ${TMPDIR} 2>/dev/null || sudo cp ${DEBIAN_CHROOT}/etc/environment ${TMPDIR}
+        sudo chmod 666 -v ${TMPDIR}/environment
+    fi
+    printf '%s\n' 'export TMOE_CHROOT=true' >>${TMPDIR}/environment
+    sudo chmod a+r ${TMPDIR}/environment
+    sudo mv ${TMPDIR}/environment ${DEBIAN_CHROOT}/etc/
+    ##################
+    #此处若不创建，将有可能导致chromium无法启动。
+    ${TMOE_CHROOT_PREFIX} mkdir -pv ${DEBIAN_CHROOT}/run/shm ${DEBIAN_CHROOT}/etc/gitstatus ${TMOE_STARTUP_DIR}
+    #${TMOE_CHROOT_PREFIX} ln -sf ../../etc/gitstatus ${DEBIAN_CHROOT}/root/.cache
+    #chmod 1777 ${DEBIAN_CHROOT}/dev/shm 2>/dev/null
+    cat_tmoe_chroot_script
+    if [[ $(command -v getprop) && $(command -v am) ]]; then
+        ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null | cut -d '.' -f 1)
+        case ${ANDROID_VERSION} in
+        5 | 6 | 7) sudo sed -i -E 's@^(OLD_ANDROID_VERSION_COMPATIBILITY_MODE=).*@\1true@' ${TMOE_STARTUP_SCRIPT} ;;
+        "") ;;
+        *) sudo sed -i -E "s@^(UNSHARE_ENABLED=).*@\1true@" "${TMOE_STARTUP_SCRIPT}" ;;
+        esac
+        printf "%s\n" "ANDROID_VERSION=${ANDROID_VERSION}" >${TMPDIR}/.ANDROID_VERSION.txt
+        sudo mv -vf ${TMPDIR}/.ANDROID_VERSION.txt ${DEBIAN_CHROOT}/tmp/
+    else
+        sudo sed -E -e "s@^(MOUNT_BIN=).*@\1default@g" \
+            -i "${TMOE_STARTUP_SCRIPT}"
+    fi
+    if [[ ${SYSTEMD_NSPAWN} = true ]]; then
+        cat_tmoe_nspawn_script
+    fi
 
-	case "$DISTRO_NAME" in
-	dotnet*) ln_local_dotnet_to_share ;;
-	esac
+    case "$DISTRO_NAME" in
+    dotnet*) ln_local_dotnet_to_share ;;
+    esac
 }
 ###################
 create_tmoe_proot_stat_file() {
-	cat >${TMOE_PROC_PREFIX}.${FILE_02} <<-'ENDOFSTAT'
+    cat >${TMOE_PROC_PREFIX}.${FILE_02} <<-'ENDOFSTAT'
 		cpu  13543674 2263150 11590764 15571271 210309 1343827 851885 0 0 0
 		cpu0 3629787 489276 3129188 15571051 210302 802654 516635 0 0 0
 		cpu1 3221514 563397 2565534 19 0 168835 110203 0 0 0
@@ -706,175 +706,175 @@ create_tmoe_proot_stat_file() {
 }
 ###############
 check_tmoe_proot_container_proc() {
-	if [ ! -e "${TMOE_PROC_PATH}" ]; then
-		mkdir -pv "${TMOE_PROC_PATH}"
-	fi
-	#######
-	FILE_02=stat
-	TMOE_PROC_FILE=$(sed -n p /proc/${FILE_02} 2>/dev/null)
-	if [ -z "${TMOE_PROC_FILE}" ]; then
-		create_tmoe_proot_stat_file
-		sed -i "s@##test02#@@" "${TMOE_STARTUP_SCRIPT}"
-	fi
-	#######
-	FILE_03='/proc/bus/pci/devices'
-	TMOE_PROC_FILE=$(sed -n p ${FILE_03} 2>/dev/null)
-	[[ -n "${TMOE_PROC_FILE}" ]] || sed -i "s@##test04#@@" "${TMOE_STARTUP_SCRIPT}"
-	######
-	#不要读取kmsg
-	for i in buddyinfo cgroups consoles crypto devices diskstats execdomains fb filesystems interrupts iomem ioports kallsyms keys key-users kpageflags loadavg locks misc modules pagetypeinfo partitions sched_debug softirqs timer_list uptime vmallocinfo vmstat zoneinfo; do
-		TMOE_PROC_FILE=$(sed -n p /proc/${i} 2>/dev/null)
-		if [ -z "${TMOE_PROC_FILE}" ]; then
-			printf "%s\n" "检测到您无权读取${BLUE}/proc/${i}${RESET},修复中..."
-			printf "%s\n" "${GREEN}Fixing${RESET} ${YELLOW}/proc/${i}${RESET}..."
-			sed -i "s@##${i}#@@" "${TMOE_STARTUP_SCRIPT}"
-		fi
-	done
-	unset i
-	#######
-	FILE_01=version
-	TMOE_PROC_FILE=$(sed -n p /proc/${FILE_01} 2>/dev/null)
-	if [ -z "${TMOE_PROC_FILE}" ]; then
-		printf "%s\n" "检测到您无权读取${BLUE}/proc/${FILE_01}${RESET},正在自动伪造新文件..."
-		printf "%s\n" "你的version文件内容将被伪造成${YELLOW}$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )${RESET}"
-		printf "%s\n" "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
-		sed -i "s@##test01#@@" "${TMOE_STARTUP_SCRIPT}"
-	fi
+    if [ ! -e "${TMOE_PROC_PATH}" ]; then
+        mkdir -pv "${TMOE_PROC_PATH}"
+    fi
+    #######
+    FILE_02=stat
+    TMOE_PROC_FILE=$(sed -n p /proc/${FILE_02} 2>/dev/null)
+    if [ -z "${TMOE_PROC_FILE}" ]; then
+        create_tmoe_proot_stat_file
+        sed -i "s@##test02#@@" "${TMOE_STARTUP_SCRIPT}"
+    fi
+    #######
+    FILE_03='/proc/bus/pci/devices'
+    TMOE_PROC_FILE=$(sed -n p ${FILE_03} 2>/dev/null)
+    [[ -n "${TMOE_PROC_FILE}" ]] || sed -i "s@##test04#@@" "${TMOE_STARTUP_SCRIPT}"
+    ######
+    #不要读取kmsg
+    for i in buddyinfo cgroups consoles crypto devices diskstats execdomains fb filesystems interrupts iomem ioports kallsyms keys key-users kpageflags loadavg locks misc modules pagetypeinfo partitions sched_debug softirqs timer_list uptime vmallocinfo vmstat zoneinfo; do
+        TMOE_PROC_FILE=$(sed -n p /proc/${i} 2>/dev/null)
+        if [ -z "${TMOE_PROC_FILE}" ]; then
+            printf "%s\n" "检测到您无权读取${BLUE}/proc/${i}${RESET},修复中..."
+            printf "%s\n" "${GREEN}Fixing${RESET} ${YELLOW}/proc/${i}${RESET}..."
+            sed -i "s@##${i}#@@" "${TMOE_STARTUP_SCRIPT}"
+        fi
+    done
+    unset i
+    #######
+    FILE_01=version
+    TMOE_PROC_FILE=$(sed -n p /proc/${FILE_01} 2>/dev/null)
+    if [ -z "${TMOE_PROC_FILE}" ]; then
+        printf "%s\n" "检测到您无权读取${BLUE}/proc/${FILE_01}${RESET},正在自动伪造新文件..."
+        printf "%s\n" "你的version文件内容将被伪造成${YELLOW}$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )${RESET}"
+        printf "%s\n" "$(uname -a) (gcc version 10.1.0 20200630 (prerelease) (GCC) )" >"${TMOE_PROC_PREFIX}.${FILE_01}"
+        sed -i "s@##test01#@@" "${TMOE_STARTUP_SCRIPT}"
+    fi
 }
 ###########
 set_proot_container_env() {
-	touch "${DEBIAN_CHROOT}"/etc/environment
-	printf "%s\n" \
-		"export TMOE_PROOT=true" \
-		"export MOZ_FAKE_NO_SANDBOX=1" \
-		>>"${DEBIAN_CHROOT}"/etc/environment
+    touch "${DEBIAN_CHROOT}"/etc/environment
+    printf "%s\n" \
+        "export TMOE_PROOT=true" \
+        "export MOZ_FAKE_NO_SANDBOX=1" \
+        >>"${DEBIAN_CHROOT}"/etc/environment
 }
 create_dotnet_symlink() {
-	# double DEBIAN_CHROOT
-	DOUBLE_PATH="${DEBIAN_CHROOT}/${DEBIAN_CHROOT}/usr/local"
-	mkdir -pv "${DOUBLE_PATH}/dotnet"
-	rm -rfv "${DOUBLE_PATH}/dotnet"
-	ln -svf /usr/local/dotnet "${DOUBLE_PATH}"
+    # double DEBIAN_CHROOT
+    DOUBLE_PATH="${DEBIAN_CHROOT}/${DEBIAN_CHROOT}/usr/local"
+    mkdir -pv "${DOUBLE_PATH}/dotnet"
+    rm -rfv "${DOUBLE_PATH}/dotnet"
+    ln -svf /usr/local/dotnet "${DOUBLE_PATH}"
 }
 enable_dotnet_comp_mode() {
-	case ${TRUE_ARCH_TYPE} in
-	arm64)
-		case ${ARCH_TYPE} in
-		arm64)
-			sed -E \
-				-e "s@^(DOT_NET_6_COMPATIBLE_MODE=).*@\1true@g" \
-				-e "s@^(PROOT_BIN=).*@\1\"compatibility\"@g" \
-				-e "s@^(SHARE_PROOT_LOADER=).*@\1true@g" \
-				-i "${TMOE_STARTUP_SCRIPT}"
-			;;
-		esac
-		;;
-	esac
+    case ${TRUE_ARCH_TYPE} in
+    arm64)
+        case ${ARCH_TYPE} in
+        arm64)
+            sed -E \
+                -e "s@^(DOT_NET_6_COMPATIBLE_MODE=).*@\1true@g" \
+                -e "s@^(PROOT_BIN=).*@\1\"compatibility\"@g" \
+                -e "s@^(SHARE_PROOT_LOADER=).*@\1true@g" \
+                -i "${TMOE_STARTUP_SCRIPT}"
+            ;;
+        esac
+        ;;
+    esac
 }
 ln_local_dotnet_to_share() {
-	mkdir -p "${DEBIAN_CHROOT}"/usr/share
-	ln -svf /usr/local/dotnet "${DEBIAN_CHROOT}"/usr/share
+    mkdir -p "${DEBIAN_CHROOT}"/usr/share
+    ln -svf /usr/local/dotnet "${DEBIAN_CHROOT}"/usr/share
 }
 create_proot_startup_script() {
-	printf "%s\n" "Creating proot startup script"
-	printf "%s\n" "正在创建proot容器启动脚本 ${TMOE_STARTUP_SCRIPT}"
-	TMOE_PROC_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/proot_proc"
-	TMOE_PROC_PREFIX="${TMOE_PROC_PATH}/.tmoe-container"
-	mkdir -pv "${TMOE_STARTUP_DIR}"
-	source ${TMOE_SHARE_DIR}/container/proot/startup
-	if [ -e "${DEBIAN_CHROOT}/etc/environment" ]; then
-		if ! grep -Eq '^[^#]*export.*MOZ_FAKE_NO_SANDBOX=' ${DEBIAN_CHROOT}/etc/environment; then
-			set_proot_container_env
-		fi
-	else
-		set_proot_container_env
-	fi
-	case "$DISTRO_NAME" in
-	dotnet*)
-		create_dotnet_symlink
-		ln_local_dotnet_to_share
-		enable_dotnet_comp_mode
-		;;
-	esac
-	cd ${CONFIG_FOLDER}
-	if [[ $(command -v getprop) && $(command -v am) ]]; then
-		get_android_host_name
-		printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
-		ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null | cut -d '.' -f 1)
-		case ${ANDROID_VERSION} in
-		5 | 6) sed -i -E 's@^(OLD_ANDROID_VERSION_COMPATIBILITY_MODE=).*@\1true@' ${TMOE_STARTUP_SCRIPT} ;;
-		esac
-		printf "%s\n" \
-			'#!/usr/bin/env sh' \
-			'PATH=$PATH:/system/bin exec /system/bin/getprop "$@"' \
-			>${TMPDIR}/getprop
-		chmod -v a+rx ${TMPDIR}/getprop
-		mv -vf ${TMPDIR}/getprop "${DEBIAN_CHROOT}"/tmp/
-	else
-		[[ ! $(command -v hostname) ]] || printf "%s\n" "$(hostname)" >hostname
-	fi
-	case ${CONTAINER_DISTRO} in
-	arch | archlinux | manjaro | solus)
-		sed -E -e "s@^(PROOT_H=).*@\1true@g" \
-			-i "${TMOE_STARTUP_SCRIPT}"
-		;;
-	esac
+    printf "%s\n" "Creating proot startup script"
+    printf "%s\n" "正在创建proot容器启动脚本 ${TMOE_STARTUP_SCRIPT}"
+    TMOE_PROC_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/proot_proc"
+    TMOE_PROC_PREFIX="${TMOE_PROC_PATH}/.tmoe-container"
+    mkdir -pv "${TMOE_STARTUP_DIR}"
+    source ${TMOE_SHARE_DIR}/container/proot/startup
+    if [ -e "${DEBIAN_CHROOT}/etc/environment" ]; then
+        if ! grep -Eq '^[^#]*export.*MOZ_FAKE_NO_SANDBOX=' ${DEBIAN_CHROOT}/etc/environment; then
+            set_proot_container_env
+        fi
+    else
+        set_proot_container_env
+    fi
+    case "$DISTRO_NAME" in
+    dotnet*)
+        create_dotnet_symlink
+        ln_local_dotnet_to_share
+        enable_dotnet_comp_mode
+        ;;
+    esac
+    cd ${CONFIG_FOLDER}
+    if [[ $(command -v getprop) && $(command -v am) ]]; then
+        get_android_host_name
+        printf "%s\n" "${ANDROID_HOST_NAME}" >hostname
+        ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null | cut -d '.' -f 1)
+        case ${ANDROID_VERSION} in
+        5 | 6) sed -i -E 's@^(OLD_ANDROID_VERSION_COMPATIBILITY_MODE=).*@\1true@' ${TMOE_STARTUP_SCRIPT} ;;
+        esac
+        printf "%s\n" \
+            '#!/usr/bin/env sh' \
+            'PATH=$PATH:/system/bin exec /system/bin/getprop "$@"' \
+            >${TMPDIR}/getprop
+        chmod -v a+rx ${TMPDIR}/getprop
+        mv -vf ${TMPDIR}/getprop "${DEBIAN_CHROOT}"/tmp/
+    else
+        [[ ! $(command -v hostname) ]] || printf "%s\n" "$(hostname)" >hostname
+    fi
+    case ${CONTAINER_DISTRO} in
+    arch | archlinux | manjaro | solus)
+        sed -E -e "s@^(PROOT_H=).*@\1true@g" \
+            -i "${TMOE_STARTUP_SCRIPT}"
+        ;;
+    esac
 
-	case ${TRUE_ARCH_TYPE} in
-	arm64 | amd64)
-		case ${ARCH_TYPE} in
-		armhf | i386 | mipsel)
-			sed -E -e "s@^(QEMU_32_ENABLED=).*@\1true@g" \
-				-e "s@^(PROOT_BIN=).*@\1\"32\"@g" \
-				-e "s@^(MOUNT_SYSTEM=).*@\1false@g" \
-				-e "s@^(MOUNT_APEX=).*@\1false@g" \
-				-i "${TMOE_STARTUP_SCRIPT}"
-			;;
-		esac
-		;;
-	esac
-	case ${TRUE_ARCH_TYPE} in
-	arm64 | armhf) [[ ${ARCH_TYPE} != i386 ]] || sed -E -e "s@^(MOUNT_TERMUX=).*@\1false@g" -i "${TMOE_STARTUP_SCRIPT}" ;;
-	esac
-	############
-	case ${TRUE_ARCH_TYPE} in
-	"${ARCH_TYPE}") ;;
-	*)
-		sed -E -e "s@^(MOUNT_SYSTEM=).*@\1false@g" \
-			-e "s@^(MOUNT_APEX=).*@\1false@g" \
-			-i "${TMOE_STARTUP_SCRIPT}"
-		if grep -q '^QEMU_USER_STATIC=.*false' "${TMOE_STARTUP_SCRIPT}"; then
-			sed -E -e "s@^(MOUNT_SYSTEM=).*@\1true@g" \
-				-e "s@^(MOUNT_APEX=).*@\1true@g" \
-				-i "${TMOE_STARTUP_SCRIPT}"
-		fi
-		;;
-	esac
-	[[ -z ${QEMU_ARCH} ]] || sed -i -E "s@^(QEMU_ARCH=).*@\1\"${QEMU_ARCH}\"@" "${TMOE_STARTUP_SCRIPT}"
+    case ${TRUE_ARCH_TYPE} in
+    arm64 | amd64)
+        case ${ARCH_TYPE} in
+        armhf | i386 | mipsel)
+            sed -E -e "s@^(QEMU_32_ENABLED=).*@\1true@g" \
+                -e "s@^(PROOT_BIN=).*@\1\"32\"@g" \
+                -e "s@^(MOUNT_SYSTEM=).*@\1false@g" \
+                -e "s@^(MOUNT_APEX=).*@\1false@g" \
+                -i "${TMOE_STARTUP_SCRIPT}"
+            ;;
+        esac
+        ;;
+    esac
+    case ${TRUE_ARCH_TYPE} in
+    arm64 | armhf) [[ ${ARCH_TYPE} != i386 ]] || sed -E -e "s@^(MOUNT_TERMUX=).*@\1false@g" -i "${TMOE_STARTUP_SCRIPT}" ;;
+    esac
+    ############
+    case ${TRUE_ARCH_TYPE} in
+    "${ARCH_TYPE}") ;;
+    *)
+        sed -E -e "s@^(MOUNT_SYSTEM=).*@\1false@g" \
+            -e "s@^(MOUNT_APEX=).*@\1false@g" \
+            -i "${TMOE_STARTUP_SCRIPT}"
+        if grep -q '^QEMU_USER_STATIC=.*false' "${TMOE_STARTUP_SCRIPT}"; then
+            sed -E -e "s@^(MOUNT_SYSTEM=).*@\1true@g" \
+                -e "s@^(MOUNT_APEX=).*@\1true@g" \
+                -i "${TMOE_STARTUP_SCRIPT}"
+        fi
+        ;;
+    esac
+    [[ -z ${QEMU_ARCH} ]] || sed -i -E "s@^(QEMU_ARCH=).*@\1\"${QEMU_ARCH}\"@" "${TMOE_STARTUP_SCRIPT}"
 
-	if [[ -s hostname ]]; then
-		${TMOE_CHROOT_PREFIX} cp hostname "${DEBIAN_CHROOT}"/tmp
-		${TMOE_CHROOT_PREFIX} mv hostname "${DEBIAN_CHROOT}"/etc
-	fi
+    if [[ -s hostname ]]; then
+        ${TMOE_CHROOT_PREFIX} cp hostname "${DEBIAN_CHROOT}"/tmp
+        ${TMOE_CHROOT_PREFIX} mv hostname "${DEBIAN_CHROOT}"/etc
+    fi
 }
 #########
 if [ ! -e "${CONFIG_FOLDER}/gitstatus" ]; then
-	mkdir -pv "${CONFIG_FOLDER}"/gitstatus
+    mkdir -pv "${CONFIG_FOLDER}"/gitstatus
 else
-	${TMOE_CHROOT_PREFIX} chmod 777 -Rv "${CONFIG_FOLDER}"/gitstatus
+    ${TMOE_CHROOT_PREFIX} chmod 777 -Rv "${CONFIG_FOLDER}"/gitstatus
 fi
 if [ -e "${DEBIAN_CHROOT}"/etc/os-release ]; then
-	if grep -q 'Ubuntu' "${DEBIAN_CHROOT}"/etc/os-release 2>/dev/null; then
-		${TMOE_CHROOT_PREFIX} touch "${DEBIAN_CHROOT}"/root/.hushlogin
-		${TMOE_CHROOT_PREFIX} touch "${DEBIAN_CHROOT}"/home/ubuntu/.hushlogin 2>/dev/null
-	fi
+    if grep -q 'Ubuntu' "${DEBIAN_CHROOT}"/etc/os-release 2>/dev/null; then
+        ${TMOE_CHROOT_PREFIX} touch "${DEBIAN_CHROOT}"/root/.hushlogin
+        ${TMOE_CHROOT_PREFIX} touch "${DEBIAN_CHROOT}"/home/ubuntu/.hushlogin 2>/dev/null
+    fi
 fi
 case ${TMOE_CHROOT} in
 true) create_chroot_startup_script ;;
 *)
-	create_proot_startup_script
-	check_tmoe_proot_container_proc
-	;;
+    create_proot_startup_script
+    check_tmoe_proot_container_proc
+    ;;
 esac
 ${TMOE_CHROOT_PREFIX} chmod -R a+rx "${TMOE_STARTUP_DIR}"
 #######################################################
@@ -956,11 +956,11 @@ cd ${PREFIX}/bin
 ln -sf "${TMOE_SHARE_DIR}"/app/tmoe ./
 ln -svf tmoe tome
 if [ ! $(command -v debian-i) ]; then
-	ln -sf "${TMOE_SHARE_DIR}"/app/manager ./debian-i
+    ln -sf "${TMOE_SHARE_DIR}"/app/manager ./debian-i
 fi
 for i in debian startvnc stopvnc debian-i startxsdl startx11vnc tmoe novnc; do
-	chmod -v a+rx ${i}
-	[[ ! $(command -v termux-fix-shebang) ]] || termux-fix-shebang ${i}
+    chmod -v a+rx ${i}
+    [[ ! $(command -v termux-fix-shebang) ]] || termux-fix-shebang ${i}
 done
 ################
 printf "%s\n" "You can type rm ${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ} to delete the image file"
@@ -968,26 +968,26 @@ printf "%s\n" "您可以输${RED}rm ${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ}${RESET}�
 ls -lh "${ROOTFS_DIR}/${TMOE_ROOTFS_TAR_XZ}"
 ########################
 if [ ! -d "${DEBIAN_CHROOT}/usr/local/bin" ]; then
-	${TMOE_CHROOT_PREFIX} mkdir -pv "${DEBIAN_CHROOT}"/usr/local/bin
+    ${TMOE_CHROOT_PREFIX} mkdir -pv "${DEBIAN_CHROOT}"/usr/local/bin
 fi
 #cd ${DEBIAN_CHROOT}/usr/local/bin
 cd "${CONFIG_FOLDER}"
 CURRENT_MONTH=$(date -u +%Y%m)
 case ${CURRENT_MONTH} in
 2021* | 202201)
-	if [[ -e neofetch ]]; then
-		if [[ $(sha256sum neofetch | awk '{print $1}') = bd3564aa793309792687c241808f31907c0294652c50a7459b54dd0359383c20 ]]; then
-			rm -fv neofetch
-		fi
-	fi
-	[[ -e "neofetch" ]] || curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/2b559cb8c62088dcbe997f6bb5a27002a9c22e27/neofetch'
-	;;
+    if [[ -e neofetch ]]; then
+        if [[ $(sha256sum neofetch | awk '{print $1}') = bd3564aa793309792687c241808f31907c0294652c50a7459b54dd0359383c20 ]]; then
+            rm -fv neofetch
+        fi
+    fi
+    [[ -e "neofetch" ]] || curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/2b559cb8c62088dcbe997f6bb5a27002a9c22e27/neofetch'
+    ;;
 *) [[ -e "neofetch" ]] || curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' ;;
 esac
 
 if [[ -e "debian-i" ]]; then
-	chmod 666 debian-i
-	rm -f debian-i
+    chmod 666 debian-i
+    rm -f debian-i
 fi
 #curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
 cp -f "${TMOE_GIT_DIR}"/share/old-version/tools/app/tool ./debian-i
@@ -997,7 +997,7 @@ ${TMOE_CHROOT_PREFIX} cp neofetch debian-i "${DEBIAN_CHROOT}"/usr/local/bin
 
 ${TMOE_CHROOT_PREFIX} chmod u+w -v "${DEBIAN_CHROOT}/root"
 if [ ! -s "zsh-i.sh" ]; then
-	curl -Lo zsh-i.sh 'https://raw.githubusercontent.com/2cd/zsh/2/2'
+    curl -Lo zsh-i.sh 'https://raw.githubusercontent.com/2cd/zsh/2/2'
 fi
 #sed -i 's:#!/usr/bin/env bash:#!/usr/bin/env bash:' zsh-i.sh
 cp -f "${TMOE_SHARE_DIR}"/container/profile/configure_zsh ./zsh.sh
@@ -1012,10 +1012,10 @@ MANJARO_LINUX=false
 [[ ${MANJARO_LINUX} = false ]] || ${TMOE_CHROOT_PREFIX} sed -i 's@^#SigLevel.*@SigLevel = Never@' "${DEBIAN_CHROOT}/etc/pacman.conf"
 ########
 if [ -f "${TMOE_LOCALE_FILE}" ]; then
-	TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
-	${TMOE_CHROOT_PREFIX} mkdir -pv "${TMOE_LOCALE_NEW_PATH}"
-	${TMOE_CHROOT_PREFIX} cp -f "${TMOE_LOCALE_FILE}" "${TMOE_LOCALE_NEW_PATH}"
-	${TMOE_CHROOT_PREFIX} chmod a+rw "${TMOE_LOCALE_NEW_PATH}"/locale.txt
+    TMOE_LOCALE_NEW_PATH="${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux"
+    ${TMOE_CHROOT_PREFIX} mkdir -pv "${TMOE_LOCALE_NEW_PATH}"
+    ${TMOE_CHROOT_PREFIX} cp -f "${TMOE_LOCALE_FILE}" "${TMOE_LOCALE_NEW_PATH}"
+    ${TMOE_CHROOT_PREFIX} chmod a+rw "${TMOE_LOCALE_NEW_PATH}"/locale.txt
 fi
 case ${TMOE_LANG} in
 zh_*UTF-8) LNK_MENU_FILE="${HOME}/容器选择菜单.sh" ;;
@@ -1029,19 +1029,19 @@ ln -sf "${TMOE_SHARE_DIR}"/container/debian/lnk-menu "${LNK_MENU_FILE}"
 #无权限进入chroot容器的root目录
 case ${TMOE_CHROOT} in
 true)
-	cd "${CONFIG_FOLDER}"
-	;;
+    cd "${CONFIG_FOLDER}"
+    ;;
 *)
-	cd "${DEBIAN_CHROOT}"/root
-	############
-	[[ ! -e .bash_profile ]] || mv -f .bash_profile .bash_profile.bak 2>/dev/null
-	[[ ! -e .bash_login ]] || mv -f .bash_login .bash_login.bak 2>/dev/null
-	if [ ! -f ".profile" ]; then
-		printf "\n" >>.profile
-	else
-		mv -f .profile .profile.bak
-	fi
-	;;
+    cd "${DEBIAN_CHROOT}"/root
+    ############
+    [[ ! -e .bash_profile ]] || mv -f .bash_profile .bash_profile.bak 2>/dev/null
+    [[ ! -e .bash_login ]] || mv -f .bash_login .bash_login.bak 2>/dev/null
+    if [ ! -f ".profile" ]; then
+        printf "\n" >>.profile
+    else
+        mv -f .profile .profile.bak
+    fi
+    ;;
 esac
 ##################
 #case ${TMOE_CHROOT} in
@@ -2311,19 +2311,19 @@ printf "%s\n" "bash ~/.profile" >.zlogin
 #####################
 case ${TMOE_CHROOT} in
 true)
-	${TMOE_CHROOT_PREFIX} rm -f "${DEBIAN_CHROOT}"/root/.bash_profile "${DEBIAN_CHROOT}"/root/.bash_login
-	${TMOE_CHROOT_PREFIX} mv "${DEBIAN_CHROOT}"/root/.profile "${DEBIAN_CHROOT}"/root/.profile.bak 2>/dev/null
-	${TMOE_CHROOT_PREFIX} cp .profile .zlogin "${DEBIAN_CHROOT}"/root
-	;;
+    ${TMOE_CHROOT_PREFIX} rm -f "${DEBIAN_CHROOT}"/root/.bash_profile "${DEBIAN_CHROOT}"/root/.bash_login
+    ${TMOE_CHROOT_PREFIX} mv "${DEBIAN_CHROOT}"/root/.profile "${DEBIAN_CHROOT}"/root/.profile.bak 2>/dev/null
+    ${TMOE_CHROOT_PREFIX} cp .profile .zlogin "${DEBIAN_CHROOT}"/root
+    ;;
 esac
 #sed -i '1 r vnc-autostartup' ./.bash_login
 #####################
 check_current_user_name_and_group() {
-	CURRENT_USER_NAME=$(grep "${HOME}" /etc/passwd | awk -F ':' '{print $1}')
-	CURRENT_USER_GROUP=$(grep "${HOME}" /etc/passwd | awk -F ':' '{print $4}' | cut -d ',' -f 1 | head -n 1)
-	if [ -z "${CURRENT_USER_GROUP}" ]; then
-		CURRENT_USER_GROUP=${CURRENT_USER_NAME}
-	fi
+    CURRENT_USER_NAME=$(grep "${HOME}" /etc/passwd | awk -F ':' '{print $1}')
+    CURRENT_USER_GROUP=$(grep "${HOME}" /etc/passwd | awk -F ':' '{print $4}' | cut -d ',' -f 1 | head -n 1)
+    if [ -z "${CURRENT_USER_GROUP}" ]; then
+        CURRENT_USER_GROUP=${CURRENT_USER_NAME}
+    fi
 }
 #################
 #if [ "${LINUX_DISTRO}" != 'Android' ]; then
@@ -2334,21 +2334,21 @@ case ${TMOE_CHROOT} in
 true) ;;
 #su -c "chown -Rv 0:0 ${DEBIAN_CHROOT}"
 *)
-	case ${LINUX_DISTRO} in
-	Android) ;;
-	*)
-		check_current_user_name_and_group
-		case ${HOME} in
-		/root) ;;
-		*)
-			chown -Rv "${CURRENT_USER_NAME}:${CURRENT_USER_GROUP}" "${DEBIAN_CHROOT}"
-			su - "${CURRENT_USER_NAME}" -c "bash ${PREFIX}/bin/debian"
-			exit 0
-			;;
-		esac
-		;;
-	esac
-	;;
+    case ${LINUX_DISTRO} in
+    Android) ;;
+    *)
+        check_current_user_name_and_group
+        case ${HOME} in
+        /root) ;;
+        *)
+            chown -Rv "${CURRENT_USER_NAME}:${CURRENT_USER_GROUP}" "${DEBIAN_CHROOT}"
+            su - "${CURRENT_USER_NAME}" -c "bash ${PREFIX}/bin/debian"
+            exit 0
+            ;;
+        esac
+        ;;
+    esac
+    ;;
 esac
 bash ${PREFIX}/bin/debian #此处不应以sudo权限执行
 

@@ -1,429 +1,429 @@
 #!/usr/bin/env bash
 ###################
 tmoe_container_zsh_main() {
-	case "$1" in
-	*)
-		set_terminal_color
-		set_tmoe_zsh_env
-		check_tmoe_locale_file
-		export_tmoe_env
-		[[ ! $(command -v chpasswd) ]] || do_you_want_to_create_a_new_user
-		[[ ${AUTO_CONFIGURE} = false ]] || do_you_want_to_configure_tmoe_zsh #
-		check_tmoe_linux_tool
-		copy_git_status
-		if [[ ${AUTO_CONFIGURE} != false ]]; then
-			auto_configure_tmoe_tools #
-			lnk_startvnc              #
-		fi
-		create_zlogin_file
-		fix_sudo
-		if [[ ${AUTO_CONFIGURE} = false ]]; then
-			[[ ! -r ${ENV_DIR}/container.env ]] || source ${ENV_DIR}/container.env
-			[[ ! -x ${ENV_DIR}/entrypoint ]] || ${ENV_DIR}/entrypoint
-			exec bash
-			exit 0
-		fi
-		[[ ${AUTO_CONFIGURE} = false ]] || auto_configure_tmoe_tool_02 #
-		;;
-	esac
+    case "$1" in
+    *)
+        set_terminal_color
+        set_tmoe_zsh_env
+        check_tmoe_locale_file
+        export_tmoe_env
+        [[ ! $(command -v chpasswd) ]] || do_you_want_to_create_a_new_user
+        [[ ${AUTO_CONFIGURE} = false ]] || do_you_want_to_configure_tmoe_zsh #
+        check_tmoe_linux_tool
+        copy_git_status
+        if [[ ${AUTO_CONFIGURE} != false ]]; then
+            auto_configure_tmoe_tools #
+            lnk_startvnc              #
+        fi
+        create_zlogin_file
+        fix_sudo
+        if [[ ${AUTO_CONFIGURE} = false ]]; then
+            [[ ! -r ${ENV_DIR}/container.env ]] || source ${ENV_DIR}/container.env
+            [[ ! -x ${ENV_DIR}/entrypoint ]] || ${ENV_DIR}/entrypoint
+            exec bash
+            exit 0
+        fi
+        [[ ${AUTO_CONFIGURE} = false ]] || auto_configure_tmoe_tool_02 #
+        ;;
+    esac
 }
 ############
 lnk_startvnc() {
-	if [[ ! -L ~/startvnc ]]; then
-		if [[ $(command -v startvnc) ]]; then
-			ln -svf /usr/local/bin/startvnc ~/startvnc
-		else
-			ln -svf $(command -v debian-i) ~/startvnc
-		fi
-	fi
+    if [[ ! -L ~/startvnc ]]; then
+        if [[ $(command -v startvnc) ]]; then
+            ln -svf /usr/local/bin/startvnc ~/startvnc
+        else
+            ln -svf $(command -v debian-i) ~/startvnc
+        fi
+    fi
 }
 ##########
 auto_remove_proot_xfce4_power_manager() {
-	if [ $(command -v pacman) ]; then
-		XFCE_PANEL_CONFIG="${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml"
-		if [[ -e ${XFCE_PANEL_CONFIG} ]]; then
-			mv -vf ${XFCE_PANEL_CONFIG} ${XFCE_PANEL_CONFIG}.bak
-		fi
-	fi
-	case ${TMOE_PROOT} in
-	true)
-		#此处不能是commmand -v kali-undercover
-		local BIN="xfce4-power-manager"
-		local BIN_2="xfce4-screensaver"
-		if [[ ! -e /usr/bin/kali-undercover && $(command -v apt-get) ]]; then
-			printf "%s\n" "${GREEN}apt ${PURPLE}autopurge ${YELLOW}-y ${BLUE}^${BIN} ${BIN_2}${RESET}"
-			apt autoremove --purge -y ^"${BIN}"
-			apt purge -y "${BIN_2}"
-		elif [[ $(command -v pacman) ]]; then
-			for i in "${BIN}" "${BIN_2}"; do
-				pacman -Rsc --noconfirm "$i"
-			done
-		elif [[ $(command -v dnf) ]]; then
-			for i in "${BIN}" "${BIN_2}"; do
-				dnf remove -y "$i"
-			done
-		elif [[ $(command -v apk) ]]; then
-			for i in "${BIN}" "${BIN_2}"; do
-				apk del "$i"
-			done
-		fi
-		if [[ -e /usr/bin/$BIN ]]; then
-			rm -fv /usr/bin/"${BIN}"*
-		fi
-		;;
-	esac
+    if [ $(command -v pacman) ]; then
+        XFCE_PANEL_CONFIG="${HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml"
+        if [[ -e ${XFCE_PANEL_CONFIG} ]]; then
+            mv -vf ${XFCE_PANEL_CONFIG} ${XFCE_PANEL_CONFIG}.bak
+        fi
+    fi
+    case ${TMOE_PROOT} in
+    true)
+        #此处不能是commmand -v kali-undercover
+        local BIN="xfce4-power-manager"
+        local BIN_2="xfce4-screensaver"
+        if [[ ! -e /usr/bin/kali-undercover && $(command -v apt-get) ]]; then
+            printf "%s\n" "${GREEN}apt ${PURPLE}autopurge ${YELLOW}-y ${BLUE}^${BIN} ${BIN_2}${RESET}"
+            apt autoremove --purge -y ^"${BIN}"
+            apt purge -y "${BIN_2}"
+        elif [[ $(command -v pacman) ]]; then
+            for i in "${BIN}" "${BIN_2}"; do
+                pacman -Rsc --noconfirm "$i"
+            done
+        elif [[ $(command -v dnf) ]]; then
+            for i in "${BIN}" "${BIN_2}"; do
+                dnf remove -y "$i"
+            done
+        elif [[ $(command -v apk) ]]; then
+            for i in "${BIN}" "${BIN_2}"; do
+                apk del "$i"
+            done
+        fi
+        if [[ -e /usr/bin/$BIN ]]; then
+            rm -fv /usr/bin/"${BIN}"*
+        fi
+        ;;
+    esac
 }
 set_tmoe_zsh_env() {
-	TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
-	TMOE_TMP_DIR="${TMOE_LINUX_DIR}/tmp"
-	TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
-	TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
-	TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
-	CONTAINER_TXT="${TMOE_LINUX_DIR}/container.txt"
-	STARTUP_FILE="${TMOE_LINUX_DIR}/container/tmoe-linux-container"
-	ENV_DIR="${TMOE_LINUX_DIR}/environment"
-	if [[ -e /usr/lib/os-release && ! -e /etc/os-release ]]; then
-		ln -svf ../usr/lib/os-release /etc/os-release
-	fi
+    TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+    TMOE_TMP_DIR="${TMOE_LINUX_DIR}/tmp"
+    TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+    TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
+    TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
+    CONTAINER_TXT="${TMOE_LINUX_DIR}/container.txt"
+    STARTUP_FILE="${TMOE_LINUX_DIR}/container/tmoe-linux-container"
+    ENV_DIR="${TMOE_LINUX_DIR}/environment"
+    if [[ -e /usr/lib/os-release && ! -e /etc/os-release ]]; then
+        ln -svf ../usr/lib/os-release /etc/os-release
+    fi
 }
 do_you_want_to_set_pwsh_as_your_default_shell() {
-	local PWSH="/usr/local/powershell/pwsh"
-	# --yes  -button "YES" --no   -button "NO"
-	if [[ -r $PWSH && -w ${STARTUP_FILE} ]]; then
-		if (whiptail --title "$PWSH" --yesno 'Do you set powershell as your default shell?' 0 0); then
-			sed -E \
-				-e "s@^(DEFAULT_LOGIN_SHELL_0=).*@\1\"$PWSH\"@g" \
-				-i "${STARTUP_FILE}"
-			grep -E --color=auto "^[^#]*DEFAULT_LOGIN_SHELL_0=" ${STARTUP_FILE}
-		fi
-	fi
+    local PWSH="/usr/local/powershell/pwsh"
+    # --yes  -button "YES" --no   -button "NO"
+    if [[ -r $PWSH && -w ${STARTUP_FILE} ]]; then
+        if (whiptail --title "$PWSH" --yesno 'Do you set powershell as your default shell?' 0 0); then
+            sed -E \
+                -e "s@^(DEFAULT_LOGIN_SHELL_0=).*@\1\"$PWSH\"@g" \
+                -i "${STARTUP_FILE}"
+            grep -E --color=auto "^[^#]*DEFAULT_LOGIN_SHELL_0=" ${STARTUP_FILE}
+        fi
+    fi
 }
 check_container_name() {
-	CONTAINER_NAME=$(grep CONTAINER_NAME ${CONTAINER_TXT} | awk -F '=' '{print $2}')
-	case ${CONTAINER_NAME} in
-	*dotnet*)
-		# dotnet-nogui_arm64
-		AUTO_CONFIGURE=false
-		do_you_want_to_set_pwsh_as_your_default_shell
-		;;
-	*nogui*zsh) AUTO_CONFIGURE=true ;;
-	*nogui* | code_web-*) AUTO_CONFIGURE=false ;;
-	*) AUTO_CONFIGURE=true ;;
-	esac
+    CONTAINER_NAME=$(grep CONTAINER_NAME ${CONTAINER_TXT} | awk -F '=' '{print $2}')
+    case ${CONTAINER_NAME} in
+    *dotnet*)
+        # dotnet-nogui_arm64
+        AUTO_CONFIGURE=false
+        do_you_want_to_set_pwsh_as_your_default_shell
+        ;;
+    *nogui*zsh) AUTO_CONFIGURE=true ;;
+    *nogui* | code_web-*) AUTO_CONFIGURE=false ;;
+    *) AUTO_CONFIGURE=true ;;
+    esac
 }
 export_tmoe_env() {
-	mkdir -p ${ENV_DIR}
-	if [[ -e ${TMOE_TMP_DIR}/profile ]]; then
-		cp -rf ${TMOE_TMP_DIR}/profile /tmp
-		rm -r ${TMOE_TMP_DIR}/profile
-	fi
-	if [ -d /tmp/profile ]; then
-		chmod a+r -R /tmp/profile
-		mv /tmp/profile/login ${ENV_DIR}
-		source /tmp/profile/export_env
-		if [[ -e ${ENV_DIR}/entrypoint ]]; then
-			if ! grep -q 'cd ~' ${ENV_DIR}/entrypoint; then
-				printf "%s\n" 'cd ~' >>${ENV_DIR}/entrypoint
-			fi
-		else
-			printf "%s\n" 'cd ~' >>${ENV_DIR}/entrypoint
-		fi
-		chmod a+rx -R ${ENV_DIR}
-		rm -rfv /tmp/profile
-	fi
+    mkdir -p ${ENV_DIR}
+    if [[ -e ${TMOE_TMP_DIR}/profile ]]; then
+        cp -rf ${TMOE_TMP_DIR}/profile /tmp
+        rm -r ${TMOE_TMP_DIR}/profile
+    fi
+    if [ -d /tmp/profile ]; then
+        chmod a+r -R /tmp/profile
+        mv /tmp/profile/login ${ENV_DIR}
+        source /tmp/profile/export_env
+        if [[ -e ${ENV_DIR}/entrypoint ]]; then
+            if ! grep -q 'cd ~' ${ENV_DIR}/entrypoint; then
+                printf "%s\n" 'cd ~' >>${ENV_DIR}/entrypoint
+            fi
+        else
+            printf "%s\n" 'cd ~' >>${ENV_DIR}/entrypoint
+        fi
+        chmod a+rx -R ${ENV_DIR}
+        rm -rfv /tmp/profile
+    fi
 
-	if [ "$(ls /root/README.* 2>/dev/null)" ]; then
-		for i in /root/README.*; do
-			mkdir -p ${TMOE_LINUX_DIR}/docs
-			cp -vf ${i} ${TMOE_LINUX_DIR}/docs
-			chmod a+rx -R ${TMOE_LINUX_DIR}/docs
-			break
-		done
-	fi
+    if [ "$(ls /root/README.* 2>/dev/null)" ]; then
+        for i in /root/README.*; do
+            mkdir -p ${TMOE_LINUX_DIR}/docs
+            cp -vf ${i} ${TMOE_LINUX_DIR}/docs
+            chmod a+rx -R ${TMOE_LINUX_DIR}/docs
+            break
+        done
+    fi
 }
 #####################
 set_terminal_color() {
-	RED=$(printf '\033[31m')
-	GREEN=$(printf '\033[32m')
-	YELLOW=$(printf '\033[33m')
-	BLUE=$(printf '\033[34m')
-	PURPLE=$(printf '\033[35m')
-	CYAN=$(printf '\033[36m')
-	RESET=$(printf '\033[m')
-	BOLD=$(printf '\033[1m')
+    RED=$(printf '\033[31m')
+    GREEN=$(printf '\033[32m')
+    YELLOW=$(printf '\033[33m')
+    BLUE=$(printf '\033[34m')
+    PURPLE=$(printf '\033[35m')
+    CYAN=$(printf '\033[36m')
+    RESET=$(printf '\033[m')
+    BOLD=$(printf '\033[1m')
 }
 #######
 check_tmoe_locale_file() {
-	TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
-	if [ -e "${TMOE_LOCALE_FILE}" ]; then
-		TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
-	else
-		TMOE_LANG=${LANG}
-	fi
-	if [[ $(command -v debian-i) && ! $(command -v tmoe) ]]; then
-		cp -pf $(command -v debian-i) /usr/local/bin/tmoe
-	fi
-	if [ -s ${CONTAINER_TXT} ]; then
-		#.dockerenv
-		change_shell_to_bin_zsh
-		check_container_name
-		if [[ $(command -v startxfce4) ]]; then
-			auto_remove_proot_xfce4_power_manager
-		fi
-	fi
+    TMOE_LOCALE_FILE=/usr/local/etc/tmoe-linux/locale.txt
+    if [ -e "${TMOE_LOCALE_FILE}" ]; then
+        TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
+    else
+        TMOE_LANG=${LANG}
+    fi
+    if [[ $(command -v debian-i) && ! $(command -v tmoe) ]]; then
+        cp -pf $(command -v debian-i) /usr/local/bin/tmoe
+    fi
+    if [ -s ${CONTAINER_TXT} ]; then
+        #.dockerenv
+        change_shell_to_bin_zsh
+        check_container_name
+        if [[ $(command -v startxfce4) ]]; then
+            auto_remove_proot_xfce4_power_manager
+        fi
+    fi
 }
 #######
 do_you_want_to_delete_the_zsh_script_file() {
-	if [[ -e ~/zsh.sh || -e ~/zsh-i.sh ]]; then
-		if (whiptail --title "zsh.sh & zsh-i.sh" --yesno 'Do you want to delete ~/zsh.sh & ~/zsh-i.sh after configruation.' 0 0); then
-			DELETE_ZSH_SCRIPT=true
-		fi
-	fi
+    if [[ -e ~/zsh.sh || -e ~/zsh-i.sh ]]; then
+        if (whiptail --title "zsh.sh & zsh-i.sh" --yesno 'Do you want to delete ~/zsh.sh & ~/zsh-i.sh after configruation.' 0 0); then
+            DELETE_ZSH_SCRIPT=true
+        fi
+    fi
 }
 git_pull_rebase_tmoe() {
-	printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
-	git reset --hard origin/master
-	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
+    printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
+    git reset --hard origin/master
+    git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
 }
 set_your_vnc_passwd() {
-	# auto-update: false
+    # auto-update: false
 
-	cd ${TMOE_GIT_DIR}
+    cd ${TMOE_GIT_DIR}
 
-	if (whiptail --title "Update" --yesno "Do you want to update tmoe?" 0 0); then
-		case ${LANG} in
-		zh_*)
-			if (whiptail --title "$LANG" --yesno "Do you live in China?\nIf so, then tmoe will change the github repo to gitee." 0 0); then
-				cd ..
-				printf "%s\n" "${RED}rm ${BLUE}-rfv ${YELLOW}git/${RESET}"
-				chmod 777 -R git
-				rm -rfv git/
-				URL="$(base64 -d <<<'aHR0cHM6Ly9naXRlZS5jb20vbW8yL2xpbnV4Cg==')"
-				git clone --depth=1 -b master "$URL" git
-			else
-				git_pull_rebase_tmoe
-			fi
-			;;
-		*) git_pull_rebase_tmoe ;;
-		esac
-	fi
+    if (whiptail --title "Update" --yesno "Do you want to update tmoe?" 0 0); then
+        case ${LANG} in
+        zh_*)
+            if (whiptail --title "$LANG" --yesno "Do you live in China?\nIf so, then tmoe will change the github repo to gitee." 0 0); then
+                cd ..
+                printf "%s\n" "${RED}rm ${BLUE}-rfv ${YELLOW}git/${RESET}"
+                chmod 777 -R git
+                rm -rfv git/
+                URL="$(base64 -d <<<'aHR0cHM6Ly9naXRlZS5jb20vbW8yL2xpbnV4Cg==')"
+                git clone --depth=1 -b master "$URL" git
+            else
+                git_pull_rebase_tmoe
+            fi
+            ;;
+        *) git_pull_rebase_tmoe ;;
+        esac
+    fi
 
-	mkdir -pv /usr/local/bin
-	cp -fv ${TMOE_TOOL_DIR}/gui/startvnc ${TMOE_TOOL_DIR}/gui/stopvnc ${TMOE_TOOL_DIR}/gui/startx11vnc ${TMOE_TOOL_DIR}/gui/startxsdl ${TMOE_TOOL_DIR}/gui/tigervnc ${TMOE_TOOL_DIR}/gui/tightvnc /usr/local/bin
-	chmod a+rx /usr/local/bin/start*
-	${TMOE_TOOL_DIR}/app/tool -passwd
-	${TMOE_TOOL_DIR}/app/tool --choose-vnc-port
-	if [[ $(command -v apt-get) ]]; then
-		whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: \nstartvnc,tightvnc,tigervnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 12 55
-	else
-		whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: \nstartvnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 11 56
-	fi
+    mkdir -pv /usr/local/bin
+    cp -fv ${TMOE_TOOL_DIR}/gui/startvnc ${TMOE_TOOL_DIR}/gui/stopvnc ${TMOE_TOOL_DIR}/gui/startx11vnc ${TMOE_TOOL_DIR}/gui/startxsdl ${TMOE_TOOL_DIR}/gui/tigervnc ${TMOE_TOOL_DIR}/gui/tightvnc /usr/local/bin
+    chmod a+rx /usr/local/bin/start*
+    ${TMOE_TOOL_DIR}/app/tool -passwd
+    ${TMOE_TOOL_DIR}/app/tool --choose-vnc-port
+    if [[ $(command -v apt-get) ]]; then
+        whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: \nstartvnc,tightvnc,tigervnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 12 55
+    else
+        whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: \nstartvnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 11 56
+    fi
 }
 do_you_want_to_configure_tmoe_zsh() {
-	cd ${HOME}
-	unset CONFIGURE_ZSH CONFIGURE_FACE_ICON CONFIGURE_TMOE_LINUX_TOOL DEFAULT_FACE_ICON DELETE_ZSH_SCRIPT FACE_ICON_DIR
-	for i in "/media/sd/Android/data/com.tencent.mobileqq/Tencent/MobileQQ/head/_SSOhd" "/media/sd/DCIM/Camera" "/media/sd/DCIM/100ANDRO" "/media/sd/Pictures/Screenshots" "/media/sd/Pictures" "/media/sd" "/media/sd/0/DCIM/.thumbnails"; do
-		if [[ -e ${i} ]]; then
-			if [[ -n $(ls -l ${i} | grep '^-' | grep -E -i '\.png|\.jpg') ]]; then
-				FACE_ICON_DIR="${i}"
-				break
-			fi
-		fi
-	done
-	case ${TMOE_LANG} in
-	zh_*UTF-8)
-		if [ ! -s ~/.config/tmoe-zsh/git/.git/config ]; then
-			#.dockerenv
-			case $(id -u) in
-			0)
-				if (whiptail --title "zsh" --yesno "是否需要为root用户配置zsh? 注意:当前为root用户,而非普通用户\nDo you need to configure zsh for the $(whoami)?" 0 0); then
-					CONFIGURE_ZSH=true
-				fi
-				;;
-			*)
-				if (whiptail --title "zsh" --yesno "是否需要为$(whoami)用户配置zsh?\nDo you need to configure zsh for the $(whoami)?" 0 0); then
-					CONFIGURE_ZSH=true
-				fi
-				;;
-			esac
-		fi
-		do_you_want_to_delete_the_zsh_script_file
-		# if [ -n "${FACE_ICON_DIR}" ]; then
-		# 	if (whiptail --title "FACE ICON" --yesno "是否需要读取${FACE_ICON_DIR}目录下的jpg/png文件,并自动生成头像?\n本操作仅在本机内执行。\n若选NO,则将不会读取该目录,并使用tmoe-linux的默认头像" 0 0); then
-		# 		CONFIGURE_FACE_ICON=true
-		# 	else
-		# 		CONFIGURE_FACE_ICON=false
-		# 	fi
-		# fi
-		if (whiptail --title "TMOE-LINUX-TOOL" --yesno '是否需要启动tmoe tools?\nDo you need to start tmoe tools?' 0 0); then
-			CONFIGURE_TMOE_LINUX_TOOL=true
-		fi
-		;;
-	*)
-		if [ ! -s ~/.config/tmoe-zsh/git/.git/config ]; then
-			#.dockerenv
-			case $(id -u) in
-			0)
-				if (whiptail --title "zsh" --yesno "Do you want to configure zsh for root?\nNote: Currently root, if you want to configure zsh for non-root users,\nyou should switch to the corresponding user" 0 0); then
-					CONFIGURE_ZSH=true
-				fi
-				;;
-			*)
-				if (whiptail --title "zsh" --yesno "Do you need to configure zsh for $(whoami)?" 0 0); then
-					CONFIGURE_ZSH=true
-				fi
-				;;
-			esac
-		fi
-		do_you_want_to_delete_the_zsh_script_file
-		# if [ -n "${FACE_ICON_DIR}" ]; then
-		# 	if (whiptail --title "FACE ICON" --yesno "Do you want to read the jpg/png files in the ${FACE_ICON_DIR} directory and auto generate an avatar?\nThis operation is only performed locally." 0 0); then
-		# 		CONFIGURE_FACE_ICON=true
-		# 	fi
-		# fi
-		if (whiptail --title "TMOE-LINUX-TOOL" --yesno 'Do you want to start tmoe tools?' 0 0); then
-			CONFIGURE_TMOE_LINUX_TOOL=true
-		fi
-		;;
-	esac
-	# if [[ -z ${CONFIGURE_FACE_ICON} && ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
-	# 	if (whiptail --title "\${HOME}/.face.icon" --yesno 'Do you want to use the default face.icon?' 0 0); then
-	# 		DEFAULT_FACE_ICON=true
-	# 	fi
-	# fi
+    cd ${HOME}
+    unset CONFIGURE_ZSH CONFIGURE_FACE_ICON CONFIGURE_TMOE_LINUX_TOOL DEFAULT_FACE_ICON DELETE_ZSH_SCRIPT FACE_ICON_DIR
+    for i in "/media/sd/Android/data/com.tencent.mobileqq/Tencent/MobileQQ/head/_SSOhd" "/media/sd/DCIM/Camera" "/media/sd/DCIM/100ANDRO" "/media/sd/Pictures/Screenshots" "/media/sd/Pictures" "/media/sd" "/media/sd/0/DCIM/.thumbnails"; do
+        if [[ -e ${i} ]]; then
+            if [[ -n $(ls -l ${i} | grep '^-' | grep -E -i '\.png|\.jpg') ]]; then
+                FACE_ICON_DIR="${i}"
+                break
+            fi
+        fi
+    done
+    case ${TMOE_LANG} in
+    zh_*UTF-8)
+        if [ ! -s ~/.config/tmoe-zsh/git/.git/config ]; then
+            #.dockerenv
+            case $(id -u) in
+            0)
+                if (whiptail --title "zsh" --yesno "是否需要为root用户配置zsh? 注意:当前为root用户,而非普通用户\nDo you need to configure zsh for the $(whoami)?" 0 0); then
+                    CONFIGURE_ZSH=true
+                fi
+                ;;
+            *)
+                if (whiptail --title "zsh" --yesno "是否需要为$(whoami)用户配置zsh?\nDo you need to configure zsh for the $(whoami)?" 0 0); then
+                    CONFIGURE_ZSH=true
+                fi
+                ;;
+            esac
+        fi
+        do_you_want_to_delete_the_zsh_script_file
+        # if [ -n "${FACE_ICON_DIR}" ]; then
+        # 	if (whiptail --title "FACE ICON" --yesno "是否需要读取${FACE_ICON_DIR}目录下的jpg/png文件,并自动生成头像?\n本操作仅在本机内执行。\n若选NO,则将不会读取该目录,并使用tmoe-linux的默认头像" 0 0); then
+        # 		CONFIGURE_FACE_ICON=true
+        # 	else
+        # 		CONFIGURE_FACE_ICON=false
+        # 	fi
+        # fi
+        if (whiptail --title "TMOE-LINUX-TOOL" --yesno '是否需要启动tmoe tools?\nDo you need to start tmoe tools?' 0 0); then
+            CONFIGURE_TMOE_LINUX_TOOL=true
+        fi
+        ;;
+    *)
+        if [ ! -s ~/.config/tmoe-zsh/git/.git/config ]; then
+            #.dockerenv
+            case $(id -u) in
+            0)
+                if (whiptail --title "zsh" --yesno "Do you want to configure zsh for root?\nNote: Currently root, if you want to configure zsh for non-root users,\nyou should switch to the corresponding user" 0 0); then
+                    CONFIGURE_ZSH=true
+                fi
+                ;;
+            *)
+                if (whiptail --title "zsh" --yesno "Do you need to configure zsh for $(whoami)?" 0 0); then
+                    CONFIGURE_ZSH=true
+                fi
+                ;;
+            esac
+        fi
+        do_you_want_to_delete_the_zsh_script_file
+        # if [ -n "${FACE_ICON_DIR}" ]; then
+        # 	if (whiptail --title "FACE ICON" --yesno "Do you want to read the jpg/png files in the ${FACE_ICON_DIR} directory and auto generate an avatar?\nThis operation is only performed locally." 0 0); then
+        # 		CONFIGURE_FACE_ICON=true
+        # 	fi
+        # fi
+        if (whiptail --title "TMOE-LINUX-TOOL" --yesno 'Do you want to start tmoe tools?' 0 0); then
+            CONFIGURE_TMOE_LINUX_TOOL=true
+        fi
+        ;;
+    esac
+    # if [[ -z ${CONFIGURE_FACE_ICON} && ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
+    # 	if (whiptail --title "\${HOME}/.face.icon" --yesno 'Do you want to use the default face.icon?' 0 0); then
+    # 		DEFAULT_FACE_ICON=true
+    # 	fi
+    # fi
 }
 ##################
 auto_configure_tmoe_tools() {
-	# [[ ${CONFIGURE_FACE_ICON} != true ]] || auto_check_face_icon
-	[[ ${CONFIGURE_ZSH} != true ]] || configure_tmoe_zsh
-	[[ ${DELETE_ZSH_SCRIPT} != true ]] || rm -fv ~/zsh.sh ~/zsh-i.sh
-	if [ $(command -v startx11vnc) ]; then
-		#.dockerenv
-		if grep -E -qi 'debian|arch|ubuntu|manjaro|fedora' /etc/os-release; then
-			for i in /opt/electron/electron /opt/electron-v8/electron; do
-				[[ -e ${i} ]] || printf "%s\n" "${BLUE}${i}${RESET}文件${RED}丢失${RESET},请前往tmoe tools重新安装electron"
-				sleep 2
-			done
-		fi
-		FCITX_DESKTOP=/etc/xdg/autostart/fcitx.desktop
-		if [ -e ${FCITX_DESKTOP} ]; then
-			rm -fv ${FCITX_DESKTOP}
-		fi
-		if [[ ! $(command -v Xvnc) ]]; then
-			if [[ $(command -v apt-get) ]]; then
-				printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}tigervnc-standalone-server${RESET}"
-				eatmydata apt install -y tigervnc-standalone-server || apt install -y tigervnc-standalone-server
-			elif [[ $(command -v pacman) ]]; then
-				pacman -Syu --noconfirm --needed tigervnc
-			elif [[ $(command -v dnf) ]]; then
-				dnf install -y tigervnc-server
-			elif [[ $(command -v zypper) ]]; then
-				zypper in -y tigervnc-x11vnc
-			fi
-		fi
-		if [[ $(cut -c 1-4 /etc/issue) = Kali ]]; then
-			if [[ ! $(command -v xhydra) ]]; then
-				printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}hydra-gtk${RESET}"
-				eatmydata apt install -y hydra-gtk || apt install -y hydra-gtk || apt install -y xhydra
-			fi
-		fi
+    # [[ ${CONFIGURE_FACE_ICON} != true ]] || auto_check_face_icon
+    [[ ${CONFIGURE_ZSH} != true ]] || configure_tmoe_zsh
+    [[ ${DELETE_ZSH_SCRIPT} != true ]] || rm -fv ~/zsh.sh ~/zsh-i.sh
+    if [ $(command -v startx11vnc) ]; then
+        #.dockerenv
+        if grep -E -qi 'debian|arch|ubuntu|manjaro|fedora' /etc/os-release; then
+            for i in /opt/electron/electron /opt/electron-v8/electron; do
+                [[ -e ${i} ]] || printf "%s\n" "${BLUE}${i}${RESET}文件${RED}丢失${RESET},请前往tmoe tools重新安装electron"
+                sleep 2
+            done
+        fi
+        FCITX_DESKTOP=/etc/xdg/autostart/fcitx.desktop
+        if [ -e ${FCITX_DESKTOP} ]; then
+            rm -fv ${FCITX_DESKTOP}
+        fi
+        if [[ ! $(command -v Xvnc) ]]; then
+            if [[ $(command -v apt-get) ]]; then
+                printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}tigervnc-standalone-server${RESET}"
+                eatmydata apt install -y tigervnc-standalone-server || apt install -y tigervnc-standalone-server
+            elif [[ $(command -v pacman) ]]; then
+                pacman -Syu --noconfirm --needed tigervnc
+            elif [[ $(command -v dnf) ]]; then
+                dnf install -y tigervnc-server
+            elif [[ $(command -v zypper) ]]; then
+                zypper in -y tigervnc-x11vnc
+            fi
+        fi
+        if [[ $(cut -c 1-4 /etc/issue) = Kali ]]; then
+            if [[ ! $(command -v xhydra) ]]; then
+                printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}hydra-gtk${RESET}"
+                eatmydata apt install -y hydra-gtk || apt install -y hydra-gtk || apt install -y xhydra
+            fi
+        fi
 
-		if [[ $(command -v chromium) || $(command -v chromium-browser) ]]; then
-			if [[ $(command -v update-alternatives) && -x /usr/local/bin/chromium--no-sandbox ]]; then
-				printf "%s\n" "${GREEN}update-alternatives ${YELLOW}--set x-www-browser ${BLUE}/usr/local/bin/chromium--no-sandbox${RESET}"
-				update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/chromium--no-sandbox 100
-				update-alternatives --auto x-www-browser
-				update-alternatives --set x-www-browser /usr/local/bin/chromium--no-sandbox
-			fi
-			if [[ -r /usr/share/applications/chromium-browser-no-sandbox.desktop && -x /usr/local/bin/chromium--no-sandbox && $(command -v xdg-settings) ]]; then
-				printf "%s\n" "${GREEN}xdg-settings ${YELLOW}get ${BLUE}default-web-browser${RESET}"
-				xdg-settings get default-web-browser
-				printf "%s\n" "${GREEN}xdg-settings ${YELLOW}set default-web-browser ${BLUE}chromium-browser-no-sandbox.desktop${RESET}"
-				# xdg-settings set default-web-browser chromium-browser-no-sandbox.desktop
-			fi
-		fi
+        if [[ $(command -v chromium) || $(command -v chromium-browser) ]]; then
+            if [[ $(command -v update-alternatives) && -x /usr/local/bin/chromium--no-sandbox ]]; then
+                printf "%s\n" "${GREEN}update-alternatives ${YELLOW}--set x-www-browser ${BLUE}/usr/local/bin/chromium--no-sandbox${RESET}"
+                update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/chromium--no-sandbox 100
+                update-alternatives --auto x-www-browser
+                update-alternatives --set x-www-browser /usr/local/bin/chromium--no-sandbox
+            fi
+            if [[ -r /usr/share/applications/chromium-browser-no-sandbox.desktop && -x /usr/local/bin/chromium--no-sandbox && $(command -v xdg-settings) ]]; then
+                printf "%s\n" "${GREEN}xdg-settings ${YELLOW}get ${BLUE}default-web-browser${RESET}"
+                xdg-settings get default-web-browser
+                printf "%s\n" "${GREEN}xdg-settings ${YELLOW}set default-web-browser ${BLUE}chromium-browser-no-sandbox.desktop${RESET}"
+                # xdg-settings set default-web-browser chromium-browser-no-sandbox.desktop
+            fi
+        fi
 
-		if [[ $(command -v pacman) ]]; then
-			unset DEPENDENCY_03
-			if [ ! -e "/usr/share/fonts/noto-cjk" ]; then
-				DEPENDENCY_03="noto-fonts-cjk ${DEPENDENCY_03}"
-			fi
-			if [ ! -e "/usr/share/fonts/noto/NotoColorEmoji.ttf" ]; then
-				DEPENDENCY_03="noto-fonts-emoji ${DEPENDENCY_03}"
-			fi
-			if [[ -n ${DEPENDENCY_03} ]]; then
-				printf "%s\n" "${GREEN}pacman ${YELLOW}-Syu --noconfirm --needed ${BLUE}${DEPENDENCY_03}${RESET}"
-				pacman -Syu --noconfirm --needed ${DEPENDENCY_03} || paru -Syu --noconfirm ${DEPENDENCY_03}
-			fi
-		fi
-		set_your_vnc_passwd
-	else
-		if [ ! -s ${CONTAINER_TXT} ]; then
-			if [[ ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
-				install_lolcat
-			fi
-			if [[ ${CONFIGURE_ZSH} = true || ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
-				install_neofetch
-			fi
-		fi
-	fi
+        if [[ $(command -v pacman) ]]; then
+            unset DEPENDENCY_03
+            if [ ! -e "/usr/share/fonts/noto-cjk" ]; then
+                DEPENDENCY_03="noto-fonts-cjk ${DEPENDENCY_03}"
+            fi
+            if [ ! -e "/usr/share/fonts/noto/NotoColorEmoji.ttf" ]; then
+                DEPENDENCY_03="noto-fonts-emoji ${DEPENDENCY_03}"
+            fi
+            if [[ -n ${DEPENDENCY_03} ]]; then
+                printf "%s\n" "${GREEN}pacman ${YELLOW}-Syu --noconfirm --needed ${BLUE}${DEPENDENCY_03}${RESET}"
+                pacman -Syu --noconfirm --needed ${DEPENDENCY_03} || paru -Syu --noconfirm ${DEPENDENCY_03}
+            fi
+        fi
+        set_your_vnc_passwd
+    else
+        if [ ! -s ${CONTAINER_TXT} ]; then
+            if [[ ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
+                install_lolcat
+            fi
+            if [[ ${CONFIGURE_ZSH} = true || ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
+                install_neofetch
+            fi
+        fi
+    fi
 }
 ################
 install_lolcat() {
-	# i=lolcat
-	# if [[ $(command -v apt) ]]; then
-	# 	printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}${i}${RESET}"
-	# 	eatmydata apt install -y --no-install-recommends ${i} || apt install -y --no-install-recommends ${i}
-	# elif [[ $(command -v pacman) ]]; then
-	# 	printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm --needed ${BLUE}${i}${RESET}"
-	# 	pacman -Sy --noconfirm --needed ${i} || pacman -Syu --noconfirm ${i}
-	# fi
+    # i=lolcat
+    # if [[ $(command -v apt) ]]; then
+    # 	printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}${i}${RESET}"
+    # 	eatmydata apt install -y --no-install-recommends ${i} || apt install -y --no-install-recommends ${i}
+    # elif [[ $(command -v pacman) ]]; then
+    # 	printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm --needed ${BLUE}${i}${RESET}"
+    # 	pacman -Sy --noconfirm --needed ${i} || pacman -Syu --noconfirm ${i}
+    # fi
 
-	if [[ $(command -v dnf) && ! $(command -v lolcat) ]]; then
-		printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}lolcat${RESET}"
-		dnf install -y --skip-broken lolcat
-	fi
-	if [[ $(command -v zypper) ]]; then
-		printf "%s\n" "${GREEN}zypper ${YELLOW}in -y ${BLUE}ruby2.7-rubygem-lolcat${RESET}"
-		zypper in -y ruby2.7-rubygem-lolcat
-	fi
+    if [[ $(command -v dnf) && ! $(command -v lolcat) ]]; then
+        printf "%s\n" "${GREEN}dnf ${YELLOW}install -y --skip-broken ${BLUE}lolcat${RESET}"
+        dnf install -y --skip-broken lolcat
+    fi
+    if [[ $(command -v zypper) ]]; then
+        printf "%s\n" "${GREEN}zypper ${YELLOW}in -y ${BLUE}ruby2.7-rubygem-lolcat${RESET}"
+        zypper in -y ruby2.7-rubygem-lolcat
+    fi
 }
 install_neofetch() {
-	for i in neofetch unzip; do
-		if [[ $(command -v apt) ]]; then
-			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}${i}${RESET}"
-			eatmydata apt install -y --no-install-recommends ${i} || apt install -y --no-install-recommends ${i}
-		elif [[ $(command -v pacman) ]]; then
-			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm --needed ${BLUE}${i}${RESET}"
-			pacman -Sy --noconfirm --needed ${i} || pacman -Syu --noconfirm ${i}
-		fi
-	done
-	if [[ $(command -v zypper) ]]; then
-		printf "%s\n" "${GREEN}zypper ${YELLOW}in -y ${BLUE}neofetch${RESET}"
-		zypper in -y neofetch
-	fi
-	i=neofetch
-	[[ ! -e /usr/bin/${i} ]] || rm -fv /usr/local/bin/${i}
-	printf "%s\n" "${GREEN}neofetch${RESET}"
-	if [ -e /usr/games/lolcat ]; then
-		neofetch | /usr/games/lolcat
-	elif [ "$(command -v lolcat)" ]; then
-		neofetch | lolcat
-	else
-		neofetch
-	fi
+    for i in neofetch unzip; do
+        if [[ $(command -v apt) ]]; then
+            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y --no-install-recommends ${BLUE}${i}${RESET}"
+            eatmydata apt install -y --no-install-recommends ${i} || apt install -y --no-install-recommends ${i}
+        elif [[ $(command -v pacman) ]]; then
+            printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm --needed ${BLUE}${i}${RESET}"
+            pacman -Sy --noconfirm --needed ${i} || pacman -Syu --noconfirm ${i}
+        fi
+    done
+    if [[ $(command -v zypper) ]]; then
+        printf "%s\n" "${GREEN}zypper ${YELLOW}in -y ${BLUE}neofetch${RESET}"
+        zypper in -y neofetch
+    fi
+    i=neofetch
+    [[ ! -e /usr/bin/${i} ]] || rm -fv /usr/local/bin/${i}
+    printf "%s\n" "${GREEN}neofetch${RESET}"
+    if [ -e /usr/games/lolcat ]; then
+        neofetch | /usr/games/lolcat
+    elif [ "$(command -v lolcat)" ]; then
+        neofetch | lolcat
+    else
+        neofetch
+    fi
 }
 auto_configure_tmoe_tool_02() {
-	if [[ ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
-		git_clone_tmoe_linux
-	else
-		for i in zsh bash ash; do
-			if [ $(command -v ${i}) ]; then
-				exec ${i}
-				break
-			fi
-		done
-	fi
+    if [[ ${CONFIGURE_TMOE_LINUX_TOOL} = true ]]; then
+        git_clone_tmoe_linux
+    else
+        for i in zsh bash ash; do
+            if [ $(command -v ${i}) ]; then
+                exec ${i}
+                break
+            fi
+        done
+    fi
 }
 # auto_check_face_icon() {
 # 	FACE_ICON_FILE_NAME=$(ls -t ${FACE_ICON_DIR} | grep -E -i '\.jpg|\.png' | head -n 1)
@@ -440,44 +440,44 @@ auto_configure_tmoe_tool_02() {
 # }
 ################
 check_tmoe_linux_tool() {
-	if [ ! $(command -v debian-i) ]; then
-		if [ -e "/usr/bin/curl" ]; then
-			curl -Lo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
-		else
-			wget -qO /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
-		fi
-	fi
-	chmod 777 /usr/local/bin/debian-i
-	if [[ ! -e /var/run/dbus ]]; then
-		mkdir -pv /run/dbus
-		ln -svf /run /var/
-	fi
+    if [ ! $(command -v debian-i) ]; then
+        if [ -e "/usr/bin/curl" ]; then
+            curl -Lo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
+        else
+            wget -qO /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
+        fi
+    fi
+    chmod 777 /usr/local/bin/debian-i
+    if [[ ! -e /var/run/dbus ]]; then
+        mkdir -pv /run/dbus
+        ln -svf /run /var/
+    fi
 }
 ##############
 copy_git_status() {
-	if [ -e "/etc/gitstatus" ]; then
-		mkdir -pv ${HOME}/.cache
-		cp -rf /etc/gitstatus ${HOME}/.cache
-	fi
+    if [ -e "/etc/gitstatus" ]; then
+        mkdir -pv ${HOME}/.cache
+        cp -rf /etc/gitstatus ${HOME}/.cache
+    fi
 }
 ################
 curl_tmoe_zsh() {
-	if [[ $(command -v curl) ]]; then
-		curl -Lo ${TMOE_ZSH_TOOL_BIN} ${TMOE_ZSH_SCRIPT_URL}
-	elif [[ $(command -v wget) ]]; then
-		wget -O ${TMOE_ZSH_TOOL_BIN} ${TMOE_ZSH_SCRIPT_URL}
-	fi
-	chmod 777 ${TMOE_ZSH_TOOL_BIN}
-	bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_auto_configure
+    if [[ $(command -v curl) ]]; then
+        curl -Lo ${TMOE_ZSH_TOOL_BIN} ${TMOE_ZSH_SCRIPT_URL}
+    elif [[ $(command -v wget) ]]; then
+        wget -O ${TMOE_ZSH_TOOL_BIN} ${TMOE_ZSH_SCRIPT_URL}
+    fi
+    chmod 777 ${TMOE_ZSH_TOOL_BIN}
+    bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_auto_configure
 }
 change_shell_to_bin_zsh() {
-	if grep -E -qi 'fedora|redhat|Alpine|centos' /etc/os-release; then
-		[[ ! -e /bin/zsh ]] || sed -E -i '1s@(root:x:0:0:root:/root:/bin/)(ash|bash)@\1zsh@' /etc/passwd
-	fi
+    if grep -E -qi 'fedora|redhat|Alpine|centos' /etc/os-release; then
+        [[ ! -e /bin/zsh ]] || sed -E -i '1s@(root:x:0:0:root:/root:/bin/)(ash|bash)@\1zsh@' /etc/passwd
+    fi
 }
 show_tmoe_zsh_package_info() {
-	unset EXTRA_DEPS
-	cat <<-EndOfShow
+    unset EXTRA_DEPS
+    cat <<-EndOfShow
 		Package: tmoe-zsh
 		Version: 1.288
 		Priority: optional
@@ -492,43 +492,43 @@ show_tmoe_zsh_package_info() {
 	EndOfShow
 }
 press_enter_to_continue() {
-	printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET}"
-	case ${TMOE_LANG} in
-	zh_*UTF-8) printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}" ;;
-	esac
-	read
+    printf "%s\n" "Press ${GREEN}enter${RESET} to ${BLUE}continue.${RESET}"
+    case ${TMOE_LANG} in
+    zh_*UTF-8) printf "%s\n" "按${GREEN}回车键${RESET}${BLUE}继续${RESET}" ;;
+    esac
+    read
 }
 configure_tmoe_zsh() {
-	#此处不要source脚本
-	show_tmoe_zsh_package_info
-	press_enter_to_continue
-	TMOE_ZSH_TOOL_BIN=/usr/local/bin/zsh-i
-	TMOE_ZSH_SCRIPT_URL='https://raw.githubusercontent.com/2cd/zsh/master/zsh.sh'
-	if [[ -e "${TMOE_ZSH_TOOL_BIN}" ]]; then
-		chmod a+rx -v ${TMOE_ZSH_TOOL_BIN}
-		bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_auto_configure
-	else
-		curl_tmoe_zsh
-	fi
-	if [[ ! $(command -v zsh) ]]; then
-		curl_tmoe_zsh
-	fi
-	change_shell_to_bin_zsh
+    #此处不要source脚本
+    show_tmoe_zsh_package_info
+    press_enter_to_continue
+    TMOE_ZSH_TOOL_BIN=/usr/local/bin/zsh-i
+    TMOE_ZSH_SCRIPT_URL='https://raw.githubusercontent.com/2cd/zsh/master/zsh.sh'
+    if [[ -e "${TMOE_ZSH_TOOL_BIN}" ]]; then
+        chmod a+rx -v ${TMOE_ZSH_TOOL_BIN}
+        bash ${TMOE_ZSH_TOOL_BIN} --tmoe_container_auto_configure
+    else
+        curl_tmoe_zsh
+    fi
+    if [[ ! $(command -v zsh) ]]; then
+        curl_tmoe_zsh
+    fi
+    change_shell_to_bin_zsh
 }
 ############
 create_zlogin_file() {
-	cd ${HOME}
-	if [ -e .bash_login ]; then
-		cp .bash_login .zlogin
-		sed -i '/source ~\/\.profile/d' .zlogin
-	fi
+    cd ${HOME}
+    if [ -e .bash_login ]; then
+        cp .bash_login .zlogin
+        sed -i '/source ~\/\.profile/d' .zlogin
+    fi
 }
 #########################
 # 			运行于termux${YELLOW}原系统${RESET}的Tmoe-linux manager支持使用${BLUE}触摸屏${RESET}进行点击，还支持使用${GREEN}数字键${RESET}进行快速跳转,但${RED}不支持${RESET}使用触摸屏上下滑动。
 # 			-------------------
 # 			You can use the ${BLUE}touch screen${RESET} on ${YELLOW}Android-termux${RESET} to swipe the menu options of the tmoe tools.
 tmoe_tips_6_zh() {
-	cat <<-EOF
+    cat <<-EOF
 		少女祈禱中...
 			現在可公開的情報:
 			${BOLD}Tmoe-linux 小提示06${RESET}:
@@ -543,7 +543,7 @@ tmoe_tips_6_zh() {
 	EOF
 }
 tmoe_tips_6_en() {
-	cat <<-EOF
+    cat <<-EOF
 		${YELLOW}o( =•ω•= )m${RESET}
 		You can type ${GREEN}debian${RESET} to start the ${BLUE}container${RESET}.
 		-------------------
@@ -551,281 +551,281 @@ tmoe_tips_6_en() {
 	EOF
 }
 fix_sudo() {
-	case ${TMOE_LANG} in
-	zh_*UTF-8) tmoe_tips_6_zh ;;
-	*) tmoe_tips_6_en ;;
-	esac
-	##################
-	if [ -e "/usr/bin/sudo" ]; then
-		chmod 4755 -v /usr/bin/sudo
-	elif [ -e "/bin/sudo" ]; then
-		chmod 4755 -v /bin/sudo
-	fi
-	chmod 0440 -v /etc/sudoers 2>/dev/null
-	##################
-	if grep -q 'SUSE' /etc/os-release; then
-		printf "%s\n" "zypper in -y yast2 yast2-packager"
-		zypper in -y yast2 yast2-packager
-	fi
+    case ${TMOE_LANG} in
+    zh_*UTF-8) tmoe_tips_6_zh ;;
+    *) tmoe_tips_6_en ;;
+    esac
+    ##################
+    if [ -e "/usr/bin/sudo" ]; then
+        chmod 4755 -v /usr/bin/sudo
+    elif [ -e "/bin/sudo" ]; then
+        chmod 4755 -v /bin/sudo
+    fi
+    chmod 0440 -v /etc/sudoers 2>/dev/null
+    ##################
+    if grep -q 'SUSE' /etc/os-release; then
+        printf "%s\n" "zypper in -y yast2 yast2-packager"
+        zypper in -y yast2 yast2-packager
+    fi
 }
 ########################
 sed_a_debian_testing_source() {
-	#sed -i "$ r ${TMOE_MIRROR_DIR}/debian/sources.list;s@testing@${BACKPORTCODE}@g" ${SOURCE_LIST}
-	cp -f ${TMOE_MIRROR_DIR}/debian/sources.list /tmp
-	sed -i "s@testing@${BACKPORTCODE}@g" /tmp/sources.list
-	sed -i '$ r /tmp/sources.list' ${SOURCE_LIST}
+    #sed -i "$ r ${TMOE_MIRROR_DIR}/debian/sources.list;s@testing@${BACKPORTCODE}@g" ${SOURCE_LIST}
+    cp -f ${TMOE_MIRROR_DIR}/debian/sources.list /tmp
+    sed -i "s@testing@${BACKPORTCODE}@g" /tmp/sources.list
+    sed -i '$ r /tmp/sources.list' ${SOURCE_LIST}
 }
 #########
 sed_a_source_list() {
-	SOURCE_LIST='/etc/apt/sources.list'
-	MIRROR_LIST='/etc/pacman.d/mirrorlist'
-	SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
-	if grep -Eq 'debian|ubuntu' /etc/os-release; then
-		SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
-		BACKPORTCODE=$(grep PRETTY_NAME /etc/os-release | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1 | cut -d '(' -f 2 | cut -d ')' -f 1)
-		if grep -q 'Debian' /etc/issue 2>/dev/null; then
-			if ! grep -q '#Official' ${SOURCE_LIST}; then
-				if [ $(command -v lsb_release) ]; then
-					if [ "$(lsb_release -r | awk '{print $2}' | awk -F '/' '{print $1}')" = 'unstable' ]; then
-						sed -i "$ r ${TMOE_MIRROR_DIR}/debian/sid.list" ${SOURCE_LIST}
-					else
-						sed_a_debian_testing_source
-					fi
-				else
-					sed_a_debian_testing_source
-				fi
-			elif grep -q "ubuntu" /etc/os-release; then
-				case $(uname -m) in
-				i*86 | x86_64)
-					#sed -i "$ r ${TMOE_MIRROR_DIR}/ubuntu/amd64/sources.list;s@focal@${SOURCELISTCODE}@g" ${SOURCE_LIST}
-					cp -f ${TMOE_MIRROR_DIR}/ubuntu/amd64/sources.list /tmp
-					sed -i "s@focal@${SOURCELISTCODE}@g" /tmp/sources.list
-					sed -i '$ r /tmp/sources.list' ${SOURCE_LIST}
-					;;
-				esac
-			fi
-		fi
-	elif grep -q 'Arch' /etc/issue 2>/dev/null; then
-		if ! grep -q '## Worldwide' ${MIRROR_LIST}; then
-			case $(uname -m) in
-			i*86 | x86_64) sed -i "$ r ${TMOE_MIRROR_DIR}/arch/x86_64/mirrorlist" ${MIRROR_LIST} ;;
-			*) sed -i "$ r ${TMOE_MIRROR_DIR}/arch/aarch64/mirrorlist" ${MIRROR_LIST} ;;
-			esac
-		fi
-	fi
+    SOURCE_LIST='/etc/apt/sources.list'
+    MIRROR_LIST='/etc/pacman.d/mirrorlist'
+    SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
+    if grep -Eq 'debian|ubuntu' /etc/os-release; then
+        SOURCELISTCODE=$(grep VERSION_CODENAME /etc/os-release | cut -d '=' -f 2 | head -n 1)
+        BACKPORTCODE=$(grep PRETTY_NAME /etc/os-release | head -n 1 | cut -d '=' -f 2 | cut -d '"' -f 2 | awk -F ' ' '$0=$NF' | cut -d '/' -f 1 | cut -d '(' -f 2 | cut -d ')' -f 1)
+        if grep -q 'Debian' /etc/issue 2>/dev/null; then
+            if ! grep -q '#Official' ${SOURCE_LIST}; then
+                if [ $(command -v lsb_release) ]; then
+                    if [ "$(lsb_release -r | awk '{print $2}' | awk -F '/' '{print $1}')" = 'unstable' ]; then
+                        sed -i "$ r ${TMOE_MIRROR_DIR}/debian/sid.list" ${SOURCE_LIST}
+                    else
+                        sed_a_debian_testing_source
+                    fi
+                else
+                    sed_a_debian_testing_source
+                fi
+            elif grep -q "ubuntu" /etc/os-release; then
+                case $(uname -m) in
+                i*86 | x86_64)
+                    #sed -i "$ r ${TMOE_MIRROR_DIR}/ubuntu/amd64/sources.list;s@focal@${SOURCELISTCODE}@g" ${SOURCE_LIST}
+                    cp -f ${TMOE_MIRROR_DIR}/ubuntu/amd64/sources.list /tmp
+                    sed -i "s@focal@${SOURCELISTCODE}@g" /tmp/sources.list
+                    sed -i '$ r /tmp/sources.list' ${SOURCE_LIST}
+                    ;;
+                esac
+            fi
+        fi
+    elif grep -q 'Arch' /etc/issue 2>/dev/null; then
+        if ! grep -q '## Worldwide' ${MIRROR_LIST}; then
+            case $(uname -m) in
+            i*86 | x86_64) sed -i "$ r ${TMOE_MIRROR_DIR}/arch/x86_64/mirrorlist" ${MIRROR_LIST} ;;
+            *) sed -i "$ r ${TMOE_MIRROR_DIR}/arch/aarch64/mirrorlist" ${MIRROR_LIST} ;;
+            esac
+        fi
+    fi
 }
 ###############
 git_clone_tmoe_linux() {
-	if [[ ! $(command -v git) ]]; then
-		if [[ $(command -v apt-get) ]]; then
-			printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}git${RESET}"
-			eatmydata apt install -y git || apt install -y git
-		elif [[ $(command -v pacman) ]]; then
-			printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}git${RESET}"
-			pacman -Sy --noconfirm git
-		elif [[ $(command -v yum) ]]; then
-			printf "%s\n" "${GREEN}dnf ${YELLOW}install -y ${BLUE}git${RESET}"
-			dnf install -y git || yum install -y git
-		elif [[ $(command -v zypper) ]]; then
-			printf "%s\n" "${GREEN}zypper ${YELLOW}in -y ${BLUE}git${RESET}"
-			zypper in -y git
-		elif [[ $(command -v apk) ]]; then
-			printf "%s\n" "${GREEN}apk ${YELLOW}add ${BLUE}git${RESET}"
-			apk add git
-		fi
-	fi
-	TMOE_MIRROR_DIR="${TMOE_SHARE_DIR}/configuration/mirror-list"
-	mkdir -pv ${TMOE_LINUX_DIR}
-	TMOE_GIT_URL='https://github.com/2moe/tmoe-linux.git'
-	printf "%s\n" "github.com/2moe/tmoe-linux"
-	if [ ! -e "${TMOE_GIT_DIR}/.git" ]; then
-		rm -rvf ${TMOE_GIT_DIR} 2>/dev/null
-		git clone --depth=1 ${TMOE_GIT_URL} ${TMOE_GIT_DIR}
-	fi
-	######################
-	#TMOE_LANG=$(head -n 1 ${TMOE_LINUX_DIR}/locale.txt)
-	if [ -e "/etc/os-release" ]; then
-		sed_a_source_list
-	fi
-	# if [[ ! -e "${HOME}/.face" && ${DEFAULT_FACE_ICON} = true ]]; then
-	# 	cp -v ${TMOE_GIT_DIR}/share/icons/icon.png ${HOME}/.face
-	# 	ln -svf ${HOME}/.face ${HOME}/.face.icon
-	# 	copy_face_icon_to_home
-	# 	printf "%s\n" "You can type cp /xxx/xxx/FACE_ICON.png ${HOME}/.face to set your face.icon"
-	# fi
-	mkdir -pv /usr/share/applications
-	cp -v ${TMOE_TOOL_DIR}/app/lnk/tmoe-linux.desktop /usr/share/applications
-	#exec zsh &
-	if [ -e ${TMOE_SHARE_DIR}/app/tmoe ]; then
-		rm -vf /usr/local/bin/tmoe 2>/dev/null
-		ln -svf ${TMOE_SHARE_DIR}/app/tmoe /usr/local/bin
-		ln -svf tmoe /usr/local/bin/tome
-	fi
-	if [ ! $(command -v startvnc) ]; then
-		printf "%s\n" "${TMOE_TOOL_DIR}/app/tool --install-gui" >/usr/local/bin/startvnc
-		chmod a+rx -v /usr/local/bin/startvnc
-		ln -svf /usr/local/bin/startvnc ~/startvnc
-	fi
-	case ${TMOE_LANG} in
-	zh_*UTF-8)
-		cat <<-ENDOFTTMOEZSH
+    if [[ ! $(command -v git) ]]; then
+        if [[ $(command -v apt-get) ]]; then
+            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}git${RESET}"
+            eatmydata apt install -y git || apt install -y git
+        elif [[ $(command -v pacman) ]]; then
+            printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}git${RESET}"
+            pacman -Sy --noconfirm git
+        elif [[ $(command -v yum) ]]; then
+            printf "%s\n" "${GREEN}dnf ${YELLOW}install -y ${BLUE}git${RESET}"
+            dnf install -y git || yum install -y git
+        elif [[ $(command -v zypper) ]]; then
+            printf "%s\n" "${GREEN}zypper ${YELLOW}in -y ${BLUE}git${RESET}"
+            zypper in -y git
+        elif [[ $(command -v apk) ]]; then
+            printf "%s\n" "${GREEN}apk ${YELLOW}add ${BLUE}git${RESET}"
+            apk add git
+        fi
+    fi
+    TMOE_MIRROR_DIR="${TMOE_SHARE_DIR}/configuration/mirror-list"
+    mkdir -pv ${TMOE_LINUX_DIR}
+    TMOE_GIT_URL='https://github.com/2moe/tmoe-linux.git'
+    printf "%s\n" "github.com/2moe/tmoe-linux"
+    if [ ! -e "${TMOE_GIT_DIR}/.git" ]; then
+        rm -rvf ${TMOE_GIT_DIR} 2>/dev/null
+        git clone --depth=1 ${TMOE_GIT_URL} ${TMOE_GIT_DIR}
+    fi
+    ######################
+    #TMOE_LANG=$(head -n 1 ${TMOE_LINUX_DIR}/locale.txt)
+    if [ -e "/etc/os-release" ]; then
+        sed_a_source_list
+    fi
+    # if [[ ! -e "${HOME}/.face" && ${DEFAULT_FACE_ICON} = true ]]; then
+    # 	cp -v ${TMOE_GIT_DIR}/share/icons/icon.png ${HOME}/.face
+    # 	ln -svf ${HOME}/.face ${HOME}/.face.icon
+    # 	copy_face_icon_to_home
+    # 	printf "%s\n" "You can type cp /xxx/xxx/FACE_ICON.png ${HOME}/.face to set your face.icon"
+    # fi
+    mkdir -pv /usr/share/applications
+    cp -v ${TMOE_TOOL_DIR}/app/lnk/tmoe-linux.desktop /usr/share/applications
+    #exec zsh &
+    if [ -e ${TMOE_SHARE_DIR}/app/tmoe ]; then
+        rm -vf /usr/local/bin/tmoe 2>/dev/null
+        ln -svf ${TMOE_SHARE_DIR}/app/tmoe /usr/local/bin
+        ln -svf tmoe /usr/local/bin/tome
+    fi
+    if [ ! $(command -v startvnc) ]; then
+        printf "%s\n" "${TMOE_TOOL_DIR}/app/tool --install-gui" >/usr/local/bin/startvnc
+        chmod a+rx -v /usr/local/bin/startvnc
+        ln -svf /usr/local/bin/startvnc ~/startvnc
+    fi
+    case ${TMOE_LANG} in
+    zh_*UTF-8)
+        cat <<-ENDOFTTMOEZSH
 			All optimization steps have been completed, enjoy it!
 			zsh配置完成，即将为您启动Tmoe-linux工具
 			您也可以手动输${YELLOW}tmoe t${RESET}进入
 			Tmoe-linux tool will be launched.
 			You can also type ${GREEN}tmoe t${RESET} to start it.
 		ENDOFTTMOEZSH
-		;;
-	*)
-		cat <<-ENDOFTTMOEZSH
+        ;;
+    *)
+        cat <<-ENDOFTTMOEZSH
 			All optimization steps have been completed, enjoy it!
 			Tmoe-linux tool will be launched.
 			You can also type ${GREEN}tmoe t${RESET} to start it.
 		ENDOFTTMOEZSH
-		;;
-	esac
-	bash /usr/local/bin/debian-i
-	for i in zsh bash ash; do
-		if [ $(command -v ${i}) ]; then
-			exec ${i} -l
-			break
-		fi
-	done
+        ;;
+    esac
+    bash /usr/local/bin/debian-i
+    for i in zsh bash ash; do
+        if [ $(command -v ${i}) ]; then
+            exec ${i} -l
+            break
+        fi
+    done
 }
 ###################
 do_you_want_to_create_a_new_user() {
-	case ${TMOE_LANG} in
-	zh_*UTF-8)
-		if (whiptail --title "NEW USER" --yesno 'Do you want to create a new sudo user?\n请问您是否想要新建一个sudo用户呢?' 0 0); then
-			TIPS_01="请输入用户名(可以为英文或数字,不能为特殊字符)\n please type the user name."
-			please_type_the_user_name
-		fi
-		;;
-	*)
-		if (whiptail --title "NEW USER" --yesno 'Do you want to create a new sudo user?' 0 0); then
-			TIPS_01="Please type the user name."
-			please_type_the_user_name
-		fi
-		;;
-	esac
+    case ${TMOE_LANG} in
+    zh_*UTF-8)
+        if (whiptail --title "NEW USER" --yesno 'Do you want to create a new sudo user?\n请问您是否想要新建一个sudo用户呢?' 0 0); then
+            TIPS_01="请输入用户名(可以为英文或数字,不能为特殊字符)\n please type the user name."
+            please_type_the_user_name
+        fi
+        ;;
+    *)
+        if (whiptail --title "NEW USER" --yesno 'Do you want to create a new sudo user?' 0 0); then
+            TIPS_01="Please type the user name."
+            please_type_the_user_name
+        fi
+        ;;
+    esac
 }
 please_type_the_user_name() {
-	unset USER_NAME
-	USER_NAME=$(whiptail --inputbox "${TIPS_01}" 0 0 --title "USER NAME" 3>&1 1>&2 2>&3)
-	if [[ "$?" != "0" || -z "${USER_NAME}" ]]; then
-		printf "%s\n" "The value is empty,please re-enter.Press enter to return."
-		read
-		do_you_want_to_create_a_new_user
-	elif [[ ${USER_NAME} = root ]]; then
-		printf "%s\n" "Sorry,please re-enter.Press enter to return."
-		read
-		do_you_want_to_create_a_new_user
-	elif [[ ! ${USER_NAME} =~ ^[0-9A-Za-z]+$ ]]; then
-		printf "%s\n" "检测到特殊字符,请输入英文或数字,请勿输入特殊字符。"
-		printf "%s\n" "Please re-enter.Press enter to return"
-		read
-		please_type_the_user_name
-	else
-		if [ $(command -v useradd) ]; then
-			useradd -m "${USER_NAME}"
-		else
-			adduser -D "${USER_NAME}"
-		fi
+    unset USER_NAME
+    USER_NAME=$(whiptail --inputbox "${TIPS_01}" 0 0 --title "USER NAME" 3>&1 1>&2 2>&3)
+    if [[ "$?" != "0" || -z "${USER_NAME}" ]]; then
+        printf "%s\n" "The value is empty,please re-enter.Press enter to return."
+        read
+        do_you_want_to_create_a_new_user
+    elif [[ ${USER_NAME} = root ]]; then
+        printf "%s\n" "Sorry,please re-enter.Press enter to return."
+        read
+        do_you_want_to_create_a_new_user
+    elif [[ ! ${USER_NAME} =~ ^[0-9A-Za-z]+$ ]]; then
+        printf "%s\n" "检测到特殊字符,请输入英文或数字,请勿输入特殊字符。"
+        printf "%s\n" "Please re-enter.Press enter to return"
+        read
+        please_type_the_user_name
+    else
+        if [ $(command -v useradd) ]; then
+            useradd -m "${USER_NAME}"
+        else
+            adduser -D "${USER_NAME}"
+        fi
 
-		please_type_the_passwd
-	fi
+        please_type_the_passwd
+    fi
 }
 ###################
 please_type_the_passwd() {
-	PASSWORD_01=$(whiptail --inputbox "Please type the password" 9 40 --title "PASSWORD/密鑰/密码/Пароль/암호" 3>&1 1>&2 2>&3)
-	if [[ "$?" != "0" || -z "${PASSWORD_01}" ]]; then
-		printf "%s\n" "The value is empty,please re-enter.Press enter to return."
-		read
-		please_type_the_passwd
-	else
-		change_the_password
-	fi
+    PASSWORD_01=$(whiptail --inputbox "Please type the password" 9 40 --title "PASSWORD/密鑰/密码/Пароль/암호" 3>&1 1>&2 2>&3)
+    if [[ "$?" != "0" || -z "${PASSWORD_01}" ]]; then
+        printf "%s\n" "The value is empty,please re-enter.Press enter to return."
+        read
+        please_type_the_passwd
+    else
+        change_the_password
+    fi
 }
 change_the_password() {
-	# PASSWORD_02=$(whiptail --passwordbox "Please retype the password" 9 40 --title "PASSWORD" 3>&1 1>&2 2>&3)
-	# if [[ "$?" != "0" || -z "${PASSWORD_02}" ]]; then
-	# 	printf "%s\n" "The value is empty,please re-enter.Press enter to return."
-	# 	read
-	# 	change_the_password
-	# elif [[ ${PASSWORD_01} != ${PASSWORD_02} ]]; then
-	# 	printf "%s\n" "${RED}Sorry${RESET}, the two passwords are ${PURPLE}inconsistent${RESET}"
-	# 	printf "%s\n" "Please re-enter.Press enter to return"
-	# 	read
-	# 	do_you_want_to_create_a_new_user
-	# else
-	printf "%s\n" "${USER_NAME}:${PASSWORD_01}" | chpasswd
-	printf "%s\n" "root:${PASSWORD_01}" | chpasswd
-	unset PASSWORD_01 PASSWORD_02
-	TMOE_ROOT_SUDO_LINE=$(grep 'root.*ALL' -n /etc/sudoers | tail -n 1 | cut -d ':' -f 1)
-	#TMOE_USER_SUDO_LINE=$((TMOE_ROOT_SUDO_LINE + 1))
-	if [ -z "${TMOE_ROOT_SUDO_LINE}" ]; then
-		sed -i "$ a ${USER_NAME}    ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers
-	else
-		sed -i "${TMOE_ROOT_SUDO_LINE}a ${USER_NAME}    ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers
-	fi
-	case ${TMOE_CHROOT} in
-	true)
-		#usermod -a -G aid_bt,aid_bt_net,aid_inet,aid_net_raw,aid_admin ${TMOE_USER_NAME} 2>/dev/null
-		usermod -a -G aid_system,aid_radio,aid_bluetooth,aid_graphics,aid_input,aid_audio,aid_camera,aid_log,aid_compass,aid_mount,aid_wifi,aid_adb,aid_install,aid_media,aid_dhcp,aid_sdcard_rw,aid_vpn,aid_keystore,aid_usb,aid_drm,aid_mdnsr,aid_gps,aid_media_rw,aid_mtp,aid_drmrpc,aid_nfc,aid_sdcard_r,aid_clat,aid_loop_radio,aid_media_drm,aid_package_info,aid_sdcard_pics,aid_sdcard_av,aid_sdcard_all,aid_logd,aid_shared_relro,aid_dbus,aid_tlsdate,aid_media_ex,aid_audioserver,aid_metrics_coll,aid_metricsd,aid_webserv,aid_debuggerd,aid_media_codec,aid_cameraserver,aid_firewall,aid_trunks,aid_nvram,aid_dns,aid_dns_tether,aid_webview_zygote,aid_vehicle_network,aid_media_audio,aid_media_video,aid_media_image,aid_tombstoned,aid_media_obb,aid_ese,aid_ota_update,aid_automotive_evs,aid_lowpan,aid_hsm,aid_reserved_disk,aid_statsd,aid_incidentd,aid_secure_element,aid_lmkd,aid_llkd,aid_iorapd,aid_gpu_service,aid_network_stack,aid_shell,aid_cache,aid_diag,aid_oem_reserved_start,aid_oem_reserved_end,aid_net_bt_admin,aid_net_bt,aid_inet,aid_net_raw,aid_net_admin,aid_net_bw_stats,aid_net_bw_acct,aid_readproc,aid_wakelock,aid_uhid,aid_everybody,aid_misc,aid_nobody,aid_app_start,aid_app_end,aid_cache_gid_start,aid_cache_gid_end,aid_ext_gid_start,aid_ext_gid_end,aid_ext_cache_gid_start,aid_ext_cache_gid_end,aid_shared_gid_start,aid_shared_gid_end,aid_isolated_start,aid_isolated_end,aid_user_offset ${USER_NAME} 2>/dev/null
-		;;
-	esac
-	sed -n p /etc/sudoers
-	for i in /media/sd /storage/self/primary /storage/emulated/0 /sd; do
-		if [[ -e ${i} ]]; then
-			ln -svf ${i} /home/${USER_NAME}/sd
-			break
-		fi
-	done
-	for i in /media/termux /root/termux; do
-		if [[ -e ${i} ]]; then
-			ln -svf ${i} /home/${USER_NAME}/termux
-			break
-		fi
-	done
-	for i in /media/tf /root/tf; do
-		if [[ -e ${i} ]]; then
-			ln -svf ${i} /home/${USER_NAME}/tf
-			break
-		fi
-	done
-	if [[ -e /usr/local/bin/startvnc ]]; then
-		ln -svf /usr/local/bin/startvnc /home/${USER_NAME}/startvnc
-	fi
-	touch /home/${USER_NAME}/.hushlogin
-	chmod 666 /home/${USER_NAME}/.hushlogin
-	chown -v "${USER_NAME}":"${USER_NAME}" /home/${USER_NAME}/.hushlogin
-	do_you_want_to_set_it_as_the_default_user
-	# fi
+    # PASSWORD_02=$(whiptail --passwordbox "Please retype the password" 9 40 --title "PASSWORD" 3>&1 1>&2 2>&3)
+    # if [[ "$?" != "0" || -z "${PASSWORD_02}" ]]; then
+    # 	printf "%s\n" "The value is empty,please re-enter.Press enter to return."
+    # 	read
+    # 	change_the_password
+    # elif [[ ${PASSWORD_01} != ${PASSWORD_02} ]]; then
+    # 	printf "%s\n" "${RED}Sorry${RESET}, the two passwords are ${PURPLE}inconsistent${RESET}"
+    # 	printf "%s\n" "Please re-enter.Press enter to return"
+    # 	read
+    # 	do_you_want_to_create_a_new_user
+    # else
+    printf "%s\n" "${USER_NAME}:${PASSWORD_01}" | chpasswd
+    printf "%s\n" "root:${PASSWORD_01}" | chpasswd
+    unset PASSWORD_01 PASSWORD_02
+    TMOE_ROOT_SUDO_LINE=$(grep 'root.*ALL' -n /etc/sudoers | tail -n 1 | cut -d ':' -f 1)
+    #TMOE_USER_SUDO_LINE=$((TMOE_ROOT_SUDO_LINE + 1))
+    if [ -z "${TMOE_ROOT_SUDO_LINE}" ]; then
+        sed -i "$ a ${USER_NAME}    ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers
+    else
+        sed -i "${TMOE_ROOT_SUDO_LINE}a ${USER_NAME}    ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers
+    fi
+    case ${TMOE_CHROOT} in
+    true)
+        #usermod -a -G aid_bt,aid_bt_net,aid_inet,aid_net_raw,aid_admin ${TMOE_USER_NAME} 2>/dev/null
+        usermod -a -G aid_system,aid_radio,aid_bluetooth,aid_graphics,aid_input,aid_audio,aid_camera,aid_log,aid_compass,aid_mount,aid_wifi,aid_adb,aid_install,aid_media,aid_dhcp,aid_sdcard_rw,aid_vpn,aid_keystore,aid_usb,aid_drm,aid_mdnsr,aid_gps,aid_media_rw,aid_mtp,aid_drmrpc,aid_nfc,aid_sdcard_r,aid_clat,aid_loop_radio,aid_media_drm,aid_package_info,aid_sdcard_pics,aid_sdcard_av,aid_sdcard_all,aid_logd,aid_shared_relro,aid_dbus,aid_tlsdate,aid_media_ex,aid_audioserver,aid_metrics_coll,aid_metricsd,aid_webserv,aid_debuggerd,aid_media_codec,aid_cameraserver,aid_firewall,aid_trunks,aid_nvram,aid_dns,aid_dns_tether,aid_webview_zygote,aid_vehicle_network,aid_media_audio,aid_media_video,aid_media_image,aid_tombstoned,aid_media_obb,aid_ese,aid_ota_update,aid_automotive_evs,aid_lowpan,aid_hsm,aid_reserved_disk,aid_statsd,aid_incidentd,aid_secure_element,aid_lmkd,aid_llkd,aid_iorapd,aid_gpu_service,aid_network_stack,aid_shell,aid_cache,aid_diag,aid_oem_reserved_start,aid_oem_reserved_end,aid_net_bt_admin,aid_net_bt,aid_inet,aid_net_raw,aid_net_admin,aid_net_bw_stats,aid_net_bw_acct,aid_readproc,aid_wakelock,aid_uhid,aid_everybody,aid_misc,aid_nobody,aid_app_start,aid_app_end,aid_cache_gid_start,aid_cache_gid_end,aid_ext_gid_start,aid_ext_gid_end,aid_ext_cache_gid_start,aid_ext_cache_gid_end,aid_shared_gid_start,aid_shared_gid_end,aid_isolated_start,aid_isolated_end,aid_user_offset ${USER_NAME} 2>/dev/null
+        ;;
+    esac
+    sed -n p /etc/sudoers
+    for i in /media/sd /storage/self/primary /storage/emulated/0 /sd; do
+        if [[ -e ${i} ]]; then
+            ln -svf ${i} /home/${USER_NAME}/sd
+            break
+        fi
+    done
+    for i in /media/termux /root/termux; do
+        if [[ -e ${i} ]]; then
+            ln -svf ${i} /home/${USER_NAME}/termux
+            break
+        fi
+    done
+    for i in /media/tf /root/tf; do
+        if [[ -e ${i} ]]; then
+            ln -svf ${i} /home/${USER_NAME}/tf
+            break
+        fi
+    done
+    if [[ -e /usr/local/bin/startvnc ]]; then
+        ln -svf /usr/local/bin/startvnc /home/${USER_NAME}/startvnc
+    fi
+    touch /home/${USER_NAME}/.hushlogin
+    chmod 666 /home/${USER_NAME}/.hushlogin
+    chown -v "${USER_NAME}":"${USER_NAME}" /home/${USER_NAME}/.hushlogin
+    do_you_want_to_set_it_as_the_default_user
+    # fi
 }
 # Do you want to set it as the default user
 do_you_want_to_set_it_as_the_default_user() {
-	case ${TMOE_LANG} in
-	zh_*UTF-8)
-		if (whiptail --title "DEFAULT USER" --yes-button "否" --no-button "是" --yesno "Do you want to set ${USER_NAME} as the default user?\n请问您是否想要将${USER_NAME}设置为默认用户?\n重启容器后生效" 0 0); then
-			printf ""
-		else
-			set_it_as_the_default_user
-		fi
-		;;
-	*)
-		if (whiptail --title "DEFAULT USER" --yes-button "NO" --no-button "YES" --yesno "Do you want to set ${USER_NAME} as the default user?\nIt will take effect after restarting the container" 0 0); then
-			printf ""
-		else
-			set_it_as_the_default_user
-		fi
-		;;
-	esac
+    case ${TMOE_LANG} in
+    zh_*UTF-8)
+        if (whiptail --title "DEFAULT USER" --yes-button "否" --no-button "是" --yesno "Do you want to set ${USER_NAME} as the default user?\n请问您是否想要将${USER_NAME}设置为默认用户?\n重启容器后生效" 0 0); then
+            printf ""
+        else
+            set_it_as_the_default_user
+        fi
+        ;;
+    *)
+        if (whiptail --title "DEFAULT USER" --yes-button "NO" --no-button "YES" --yesno "Do you want to set ${USER_NAME} as the default user?\nIt will take effect after restarting the container" 0 0); then
+            printf ""
+        else
+            set_it_as_the_default_user
+        fi
+        ;;
+    esac
 }
 set_it_as_the_default_user() {
-	sed -E -e "s@^(PROOT_USER)=.*@\1=${USER_NAME}@" \
-		-e "s@^(CHROOT_USER)=.*@\1=${USER_NAME}@" \
-		-i /usr/local/etc/tmoe-linux/container/tmoe-linux-container
-	grep -E --color=auto "^PROOT_USER=|^CHROOT_USER=" /usr/local/etc/tmoe-linux/container/tmoe-linux-container
+    sed -E -e "s@^(PROOT_USER)=.*@\1=${USER_NAME}@" \
+        -e "s@^(CHROOT_USER)=.*@\1=${USER_NAME}@" \
+        -i /usr/local/etc/tmoe-linux/container/tmoe-linux-container
+    grep -E --color=auto "^PROOT_USER=|^CHROOT_USER=" /usr/local/etc/tmoe-linux/container/tmoe-linux-container
 }
 ###########################
 tmoe_container_zsh_main "$@"

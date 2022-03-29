@@ -1,89 +1,89 @@
 #!/usr/bin/env bash
 ##########################
 startvnc_or_enter_the_container() {
-	if [ -e "${DEBIAN_CHROOT}/usr/local/bin/startvnc" ]; then
-		cat <<-EOFVNC
+    if [ -e "${DEBIAN_CHROOT}/usr/local/bin/startvnc" ]; then
+        cat <<-EOFVNC
 			You can type ${GREEN}startvnc${RESET} to start ${BLUE}tight/tigervnc server${RESET},type ${RED}stopvnc${RESET} to stop it.
 			You can also type ${GREEN}debian-i${RESET} to start ${BLUE}Tmoe-linux tool.${RESET}
 		EOFVNC
-		[[ "${LINUX_DISTRO}" != 'Android' ]] || printf "%s\n" "在Android宿主机的Termux原系统下输${GREEN}startvnc${RESET}将同时启动Android版Realvnc viewer和${DEBIAN_FOLDER}容器内的tight或tiger vnc服务，输${GREEN}debian${RESET}仅支持进入${BLUE}${DEBIAN_FOLDER}容器${RESET}。"
-		startx11vnc
-	else
-		cat <<-EOFDEB
+        [[ "${LINUX_DISTRO}" != 'Android' ]] || printf "%s\n" "在Android宿主机的Termux原系统下输${GREEN}startvnc${RESET}将同时启动Android版Realvnc viewer和${DEBIAN_FOLDER}容器内的tight或tiger vnc服务，输${GREEN}debian${RESET}仅支持进入${BLUE}${DEBIAN_FOLDER}容器${RESET}。"
+        startx11vnc
+    else
+        cat <<-EOFDEB
 			You can type ${GREEN}debian${RESET} to enter the ${BLUE}${DEBIAN_FOLDER} container${RESET}.
 			You can also type ${GREEN}debian-i${RESET} to start ${BLUE}Tmoe-linux tool${RESET}.
 		EOFDEB
-		debian
-	fi
+        debian
+    fi
 }
 #######################
 install_gnu_linux_container() {
-	#此处不能用变量debian_chroot
-	if [ -d ${HOME}/${DEBIAN_FOLDER} ] && [ ! -e ${TMOE_CONTAINER_DIR} ]; then
-		source ${TMOE_SHARE_DIR}/deprecated/remove
-		if (whiptail --title "检测到您已安装${ROOTFS_NAME}容器,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "${ROOTFS_NAME} has been installed, please choose what you need to do" 0 0); then
-			#debian
-			startvnc_or_enter_the_container
-		else
-			printf "%s\n" "${YELLOW}检测到您已安装${ROOTFS_NAME}容器,是否重新安装？[Y/n]${RESET} "
-			printf "%s\n" "${YELLOW}您可以无需输"y"，直接按回车键确认。${RESET} "
-			printf "%s\n" "Detected that you have ${ROOTFS_NAME} container installed, do you want to reinstall it?${PURPLE}[Y/n]${RESET}"
-			read -r opt
-			case $opt in
-			y* | Y* | "")
-				remove_old_version_gnu_linux_container
-				if [ "$?" != '0' ]; then
-					printf "%s\n" "${ROOTFS_NAME}容器没有被移除"
-					press_enter_to_return
-					tmoe_manager_main_menu
-				else
-					if [ -d "${HOME}/debian_arm64" ]; then
-						printf '%s\n' '正在强制删除'
-						remove_old_version_gnu_linux_container
-					fi
-					check_and_view_the_eula
-				fi
-				;;
-			n* | N*)
-				printf "%s\n" "skipped."
-				press_enter_to_return
-				tmoe_manager_main_menu
-				;;
-			*)
-				printf "%s\n" "Invalid choice. skipped."
-				press_enter_to_return
-				tmoe_manager_main_menu
-				;;
-			esac
-		fi
+    #此处不能用变量debian_chroot
+    if [ -d ${HOME}/${DEBIAN_FOLDER} ] && [ ! -e ${TMOE_CONTAINER_DIR} ]; then
+        source ${TMOE_SHARE_DIR}/deprecated/remove
+        if (whiptail --title "检测到您已安装${ROOTFS_NAME}容器,请选择您需要执行的操作！" --yes-button 'Start启动o(*￣▽￣*)o' --no-button 'Reinstall重装(っ °Д °)' --yesno "${ROOTFS_NAME} has been installed, please choose what you need to do" 0 0); then
+            #debian
+            startvnc_or_enter_the_container
+        else
+            printf "%s\n" "${YELLOW}检测到您已安装${ROOTFS_NAME}容器,是否重新安装？[Y/n]${RESET} "
+            printf "%s\n" "${YELLOW}您可以无需输"y"，直接按回车键确认。${RESET} "
+            printf "%s\n" "Detected that you have ${ROOTFS_NAME} container installed, do you want to reinstall it?${PURPLE}[Y/n]${RESET}"
+            read -r opt
+            case $opt in
+            y* | Y* | "")
+                remove_old_version_gnu_linux_container
+                if [ "$?" != '0' ]; then
+                    printf "%s\n" "${ROOTFS_NAME}容器没有被移除"
+                    press_enter_to_return
+                    tmoe_manager_main_menu
+                else
+                    if [ -d "${HOME}/debian_arm64" ]; then
+                        printf '%s\n' '正在强制删除'
+                        remove_old_version_gnu_linux_container
+                    fi
+                    check_and_view_the_eula
+                fi
+                ;;
+            n* | N*)
+                printf "%s\n" "skipped."
+                press_enter_to_return
+                tmoe_manager_main_menu
+                ;;
+            *)
+                printf "%s\n" "Invalid choice. skipped."
+                press_enter_to_return
+                tmoe_manager_main_menu
+                ;;
+            esac
+        fi
 
-	else
-		check_and_view_the_eula
-	fi
+    else
+        check_and_view_the_eula
+    fi
 }
 ################################################
 check_and_view_the_eula() {
-	case ${TMOE_CHROOT} in
-	false) rm -f ${CONFIG_FOLDER}/chroot_container 2>/dev/null ;;
-	true) touch ${CONFIG_FOLDER}/chroot_container ;;
-	esac
+    case ${TMOE_CHROOT} in
+    false) rm -f ${CONFIG_FOLDER}/chroot_container 2>/dev/null ;;
+    true) touch ${CONFIG_FOLDER}/chroot_container ;;
+    esac
 
-	[[ -e "${CONFIG_FOLDER}/eula-v1.2.txt" ]] || tmoe_linux_container_eula
-	source ${TMOE_SHARE_DIR}/container/menu
+    [[ -e "${CONFIG_FOLDER}/eula-v1.2.txt" ]] || tmoe_linux_container_eula
+    source ${TMOE_SHARE_DIR}/container/menu
 }
 ########################
 tmoe_linux_container_eula() {
-	if [ ! -d "${DEBIAN_CHROOT}" ]; then
-		#less -meQ
-		sed -n p ${TMOE_GIT_DIR}/License
-		cat <<-EOF
+    if [ ! -d "${DEBIAN_CHROOT}" ]; then
+        #less -meQ
+        sed -n p ${TMOE_GIT_DIR}/License
+        cat <<-EOF
 			You must agree to the EULA to continue.
 			Press ${GREEN}Enter${RESET} to agree ${BLUE}the EULA${RESET}, otherwise press ${YELLOW}Ctrl + C${RESET} or ${RED}close${RESET} the terminal directly.
 			按${GREEN}回车键${RESET}同意${BLUE}《最终用户许可协议》${RESET} ，否则请按${YELLOW}Ctrl+C${RESET} 或直接${RED}关闭${RESET}终端。 
 		EOF
-		read -r
-		echo "You have agreed to this Agreement and its additional agreements." >${CONFIG_FOLDER}/eula-v1.2.txt
-	fi
+        read -r
+        echo "You have agreed to this Agreement and its additional agreements." >${CONFIG_FOLDER}/eula-v1.2.txt
+    fi
 }
 #############
 install_gnu_linux_container

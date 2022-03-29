@@ -1,98 +1,98 @@
 #!/usr/bin/env bash
 #######################
 qemu_main() {
-	case "$1" in
-	-x64qemu)
-		start_tmoe_qemu_tool
-		;;
-	-arm64qemu)
-		start_tmoe_qemu_aarch64_manager
-		;;
-	-m | *)
-		install_container_and_virtual_machine
-		;;
-	esac
+    case "$1" in
+    -x64qemu)
+        start_tmoe_qemu_tool
+        ;;
+    -arm64qemu)
+        start_tmoe_qemu_aarch64_manager
+        ;;
+    -m | *)
+        install_container_and_virtual_machine
+        ;;
+    esac
 }
 ############
 qemu_system_menu() {
-	RETURN_TO_WHERE='qemu_system_menu'
-	DEPENDENCY_01=''
-	VIRTUAL_TECH=$(
-		whiptail --title "qemu-system" --menu "您想要选择哪一项呢？" 0 0 0 \
-			"1" "tmoe-qemu:x86_64/i386虚拟机管理" \
-			"2" "virt-manager(GUI虚拟机管理器)" \
-			"3" "aqemu(QEMU和KVM的Qt5前端)" \
-			"4" "gnome-boxes(简单地管理远程和本地虚拟系统)" \
-			"0" "🌚 Return to previous menu 返回上级菜单" \
-			3>&1 1>&2 2>&3
-	)
-	#############
-	case ${VIRTUAL_TECH} in
-	0 | "") install_container_and_virtual_machine ;;
-	1) start_tmoe_qemu_tool ;;
-	2) DEPENDENCY_02='virt-manager' ;;
-	3) DEPENDENCY_02='aqemu' ;;
-	4) DEPENDENCY_02='gnome-boxes' ;;
-	esac
-	#未安装额外软件包,qemu-block-extra
-	case ${VIRTUAL_TECH} in
-	1) ;;
-	*) beta_features_quick_install ;;
-	esac
-	###############
-	press_enter_to_return
-	qemu_system_menu
+    RETURN_TO_WHERE='qemu_system_menu'
+    DEPENDENCY_01=''
+    VIRTUAL_TECH=$(
+        whiptail --title "qemu-system" --menu "您想要选择哪一项呢？" 0 0 0 \
+            "1" "tmoe-qemu:x86_64/i386虚拟机管理" \
+            "2" "virt-manager(GUI虚拟机管理器)" \
+            "3" "aqemu(QEMU和KVM的Qt5前端)" \
+            "4" "gnome-boxes(简单地管理远程和本地虚拟系统)" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    #############
+    case ${VIRTUAL_TECH} in
+    0 | "") install_container_and_virtual_machine ;;
+    1) start_tmoe_qemu_tool ;;
+    2) DEPENDENCY_02='virt-manager' ;;
+    3) DEPENDENCY_02='aqemu' ;;
+    4) DEPENDENCY_02='gnome-boxes' ;;
+    esac
+    #未安装额外软件包,qemu-block-extra
+    case ${VIRTUAL_TECH} in
+    1) ;;
+    *) beta_features_quick_install ;;
+    esac
+    ###############
+    press_enter_to_return
+    qemu_system_menu
 }
 #############
 start_tmoe_qemu_tool() {
-	source ${TMOE_TOOL_DIR}/virtualization/qemu/tmoe-qemu
+    source ${TMOE_TOOL_DIR}/virtualization/qemu/tmoe-qemu
 }
 virtual_machine_iso_file() {
-	source ${TMOE_TOOL_DIR}/virtualization/iso.sh
+    source ${TMOE_TOOL_DIR}/virtualization/iso.sh
 }
 install_container_and_virtual_machine() {
-	RETURN_TO_WHERE='install_container_and_virtual_machine'
-	VIRTUAL_TECH=$(
-		whiptail --title "虚拟化与api的转换" --menu "Which option do you want to choose?" 0 0 0 \
-			"1" "💻 qemu:开源、跨平台的虚拟机" \
-			"2" "📀 iso/qcow2:下载镜像(linux,win11)" \
-			"3" "🐳 docker:开源的应用容器引擎" \
-			"4" "🖥️ VirtualBox(甲骨文开源虚拟机x64)" \
-			"5" "🍷 wine:调用win api并即时转换" \
-			"6" "genymotion(专为Android开发者打造的模拟器)" \
-			"7" "🥡 anbox(Android in a box)" \
-			"0" "🌚 Return to previous menu 返回上级菜单" \
-			"00" "Back to the main menu 返回主菜单" \
-			3>&1 1>&2 2>&3
-	)
-	#############
-	case ${VIRTUAL_TECH} in
-	0 | "") beta_features ;;
-	00) tmoe_linux_tool_menu ;;
-	1) qemu_system_menu ;;
-	2) virtual_machine_iso_file ;;
-	3) tmoe_docker_menu ;;
-	4) install_virtual_box ;;
-	5) wine_menu ;;
-	6) install_genymotion ;;
-	7) install_anbox ;;
-	esac
-	###############
-	press_enter_to_return
-	install_container_and_virtual_machine
+    RETURN_TO_WHERE='install_container_and_virtual_machine'
+    VIRTUAL_TECH=$(
+        whiptail --title "虚拟化与api的转换" --menu "Which option do you want to choose?" 0 0 0 \
+            "1" "💻 qemu:开源、跨平台的虚拟机" \
+            "2" "📀 iso/qcow2:下载镜像(linux,win11)" \
+            "3" "🐳 docker:开源的应用容器引擎" \
+            "4" "🖥️ VirtualBox(甲骨文开源虚拟机x64)" \
+            "5" "🍷 wine:调用win api并即时转换" \
+            "6" "genymotion(专为Android开发者打造的模拟器)" \
+            "7" "🥡 anbox(Android in a box)" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            "00" "Back to the main menu 返回主菜单" \
+            3>&1 1>&2 2>&3
+    )
+    #############
+    case ${VIRTUAL_TECH} in
+    0 | "") beta_features ;;
+    00) tmoe_linux_tool_menu ;;
+    1) qemu_system_menu ;;
+    2) virtual_machine_iso_file ;;
+    3) tmoe_docker_menu ;;
+    4) install_virtual_box ;;
+    5) wine_menu ;;
+    6) install_genymotion ;;
+    7) install_anbox ;;
+    esac
+    ###############
+    press_enter_to_return
+    install_container_and_virtual_machine
 }
 #"4" "OpenMediaVault(基于debian的NAS网络连接存储解决方案)" \
 #4) install_open_media_vault ;;
 install_genymotion() {
-	cat <<-EOF
+    cat <<-EOF
 		首先，安裝virtual box, 然後前往官網下載genymotion。
 		${YELLOW}https://www.genymotion.com/download/${RESET}
 		示例：用curl下載，並指定文件名稱爲${YELLOW}genymotion.bin${RESET}
 		注意：請把藍色高亮文本替換爲最新版url
 		${GREEN}curl -Lo ${YELLOW}genymotion.bin ${BLUE}"https://dl.genymotion.com/releases/genymotion-3.2.1/genymotion-3.2.1-linux_x64.bin"${RESET}
 	EOF
-	URL=$(curl -L https://www.genymotion.com/download/ | grep linux_x64.bin | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
-	cat <<-EOF
+    URL=$(curl -L https://www.genymotion.com/download/ | grep linux_x64.bin | awk -F '<a href=' '{print $2}' | cut -d '"' -f 2)
+    cat <<-EOF
 		檢測到最新版url爲${BLUE}${URL}${RESET}
 		您可以將上述指令替換爲
 		${GREEN}curl -Lo ${YELLOW}genymotion.bin ${BLUE}"${URL}"${RESET}

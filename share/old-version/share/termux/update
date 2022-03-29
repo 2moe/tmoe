@@ -1,39 +1,39 @@
 #!/usr/bin/env bash
 ###############
 if [ $(command -v fortune) ]; then
-	fortune 2>/dev/null
+    fortune 2>/dev/null
 elif [ -e /usr/games/fortune ]; then
-	/usr/games/fortune 2>/dev/null
+    /usr/games/fortune 2>/dev/null
 fi
 get_hitokito_cn 2>/dev/null
 check_tmoe_completion_version
 check_tmoe_completion
 #aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager" || curl -Lo ${PREFIX}/bin/debian-i "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager" || sudo -E aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager"
 if [ ! -h "${PREFIX}/bin/debian-i" ]; then
-	rm -fv /usr/local/bin/debian-i 2>/dev/null
-	ln -sfv ${TMOE_GIT_DIR}/share/old-version/share/app/manager ${PREFIX}/bin/debian-i
+    rm -fv /usr/local/bin/debian-i 2>/dev/null
+    ln -sfv ${TMOE_GIT_DIR}/share/old-version/share/app/manager ${PREFIX}/bin/debian-i
 else
-	ln -sf ${TMOE_GIT_DIR}/share/old-version/share/app/manager ${PREFIX}/bin/debian-i
+    ln -sf ${TMOE_GIT_DIR}/share/old-version/share/app/manager ${PREFIX}/bin/debian-i
 fi
 #if [ "${LINUX_DISTRO}" != "Android" ]; then
 #	sed -i '1 c\#!/usr/bin/env bash' ${PREFIX}/bin/debian-i
 #fi
 chmod a+rx ${PREFIX}/bin/debian-i
 if [ -e "${TMOE_GIT_DIR}/.git" ]; then
-	printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
-	cd ${TMOE_GIT_DIR}
-	git reset --hard origin/master
-	git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
-	if [ "$?" != '0' ]; then
-		git fetch --all
-		git reset --hard origin/master
-		git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
-	fi
+    printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
+    cd ${TMOE_GIT_DIR}
+    git reset --hard origin/master
+    git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
+    if [ "$?" != '0' ]; then
+        git fetch --all
+        git reset --hard origin/master
+        git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
+    fi
 fi
 [[ $(command -v tmoe) ]] || ln -sf ${TMOE_SHARE_DIR}/app/tmoe ${PREFIX}/bin
 ln -sf tmoe ${PREFIX}/bin/tome
 for i in ${PREFIX}/bin/tmoe ${PREFIX}/bin/debian-i ${TMOE_SHARE_DIR}/container/debian/lnk-menu ${TMOE_SHARE_DIR}/container/debian/debian; do
-	[[ ! $(command -v termux-fix-shebang) ]] || termux-fix-shebang ${i} 2>/dev/null
+    [[ ! $(command -v termux-fix-shebang) ]] || termux-fix-shebang ${i} 2>/dev/null
 done
 printf "%s\n" '(o゜▽゜)o☆  Thank you for using Tmoe-linux manager.'
 case ${TMOE_MENU_LANG} in
