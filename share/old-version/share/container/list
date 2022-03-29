@@ -2,249 +2,249 @@
 # set -x
 ############################################
 choose_which_gnu_linux_distro() {
-	source ${TMOE_SHARE_DIR}/container/qemu/qemu-user
-	RETURN_TO_WHERE='choose_which_gnu_linux_distro'
-	RETURN_TO_MENU='choose_which_gnu_linux_distro'
-	CLOUD_ROOTFS=false
-	DEB_BOOT_STRAP=false
-	TMOE_LINUX_CONTAINER_DISTRO=''
-	check_rootfs_dir
-	[[ ! -e ${CONFIG_FOLDER}/debootstrap_dir.txt ]] || rm -fv ${CONFIG_FOLDER}/debootstrap_dir.txt
-	unset NODE01_ENABLED WEEKLY_BUILD_CONTAINER
-	TITLE="CONTAINERS"
-	choose_which_gnu_linux_distro_ja() {
-		MENU="容器をお選びください"
-		OPT_0="🌚 戻る"
-		OPT_1="🍭 毎週のGUIビルド(cutefish,kde,mate,xfce & lxqt)"
-		OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
-		OPT_3="🍥 Debian は オペレーティングシステムのフリーなディストリビューションです"
-		OPT_4="🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである"
-		OPT_5="🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている"
-		OPT_6="🍱 CentOS,alpine,mint,rocky & puppy"
-		OPT_7="🐉 Kali rolling:ペネトレーションテストを主な目的としている"
-		OPT_8="🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです"
-		OPT_9="👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro"
-		OPT_10="🦎 Chroot専属する:opensuse"
-		OPT_11="🍓 体験版,サポートされなくなりました:RaspiOS,Gentoo"
-	}
-	choose_which_gnu_linux_distro_zh() {
-		MENU="您想要安装哪个容器?"
-		OPT_0="🌚 Return to previous menu 返回上级菜单"
-		OPT_1="🍭 每周构建cutefish,kde,xfce,mate & lxqt"
-		OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
-		OPT_3="🍥 Debian:致力于自由"
-		OPT_4="🍛 Ubuntu:我的存在是因為大家的存在"
-		OPT_5="🌉 Arch:系统设计以KISS为总体指导原则"
-		OPT_6="🍱 CentOS,alpine,mint,rocky & puppy"
-		OPT_7="🐉 Kali rolling:设计用于数字取证和渗透测试"
-		OPT_8="🍊 Armbian:香蕉派,香橙派(预装xfce/cinnamon/budgie)"
-		OPT_9="👒 Fedora:红帽社区版,新技术试验场"
-		OPT_10="🦎 Chroot专属:opensuse"
-		OPT_11="🍓 Experimental(体验版):archcraft,树莓派"
-	}
-	choose_which_gnu_linux_distro_en() {
-		MENU="Which container do you want to install?"
-		OPT_0="🌚 Return to previous menu"
-		OPT_1="🍭 Weekly builds(cutefish,xfce,kde,mate & lxqt)"
-		OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
-		OPT_3="🍥 Debian is a distro composed of free and open-source software"
-		OPT_4="🍛 Ubuntu is the modern, open source OS."
-		OPT_5="🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility"
-		OPT_6="🍱 CentOS,alpine,mint,rocky & puppy"
-		OPT_7="🐉 Kali:designed for digital forensics and penetration testing"
-		OPT_8="🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)"
-		OPT_9="👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
-		OPT_10="🦎 Chroot exclusive:opensuse"
-		OPT_11="🍓 Experimental,no longer maintained:RaspiOS,Gentoo"
-	}
-	choose_which_gnu_linux_distro_menu() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${TITLE}" --menu "${MENU}" 0 50 0 \
-			"1" "$OPT_1" \
-			"2" "$OPT_2" \
-			"3" "$OPT_3" \
-			"4" "$OPT_4" \
-			"5" "$OPT_5" \
-			"6" "$OPT_6" \
-			"7" "$OPT_7" \
-			"8" "$OPT_8" \
-			"9" "$OPT_9" \
-			"10" "$OPT_10" \
-			"11" "$OPT_11" \
-			"0" "$OPT_0" \
-			3>&1 1>&2 2>&3)
-	}
-	##############################
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) choose_which_gnu_linux_distro_zh ;;
-	ja_JP.UTF-8) choose_which_gnu_linux_distro_ja ;;
-	*) choose_which_gnu_linux_distro_en ;;
-	esac
-	choose_which_gnu_linux_distro_menu
+    source ${TMOE_SHARE_DIR}/container/qemu/qemu-user
+    RETURN_TO_WHERE='choose_which_gnu_linux_distro'
+    RETURN_TO_MENU='choose_which_gnu_linux_distro'
+    CLOUD_ROOTFS=false
+    DEB_BOOT_STRAP=false
+    TMOE_LINUX_CONTAINER_DISTRO=''
+    check_rootfs_dir
+    [[ ! -e ${CONFIG_FOLDER}/debootstrap_dir.txt ]] || rm -fv ${CONFIG_FOLDER}/debootstrap_dir.txt
+    unset NODE01_ENABLED WEEKLY_BUILD_CONTAINER
+    TITLE="CONTAINERS"
+    choose_which_gnu_linux_distro_ja() {
+        MENU="容器をお選びください"
+        OPT_0="🌚 戻る"
+        OPT_1="🍭 毎週のGUIビルド(cutefish,kde,mate,xfce & lxqt)"
+        OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
+        OPT_3="🍥 Debian は オペレーティングシステムのフリーなディストリビューションです"
+        OPT_4="🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである"
+        OPT_5="🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている"
+        OPT_6="🍱 CentOS,alpine,mint,rocky & puppy"
+        OPT_7="🐉 Kali rolling:ペネトレーションテストを主な目的としている"
+        OPT_8="🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです"
+        OPT_9="👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro"
+        OPT_10="🦎 Chroot専属する:opensuse"
+        OPT_11="🍓 体験版,サポートされなくなりました:RaspiOS,Gentoo"
+    }
+    choose_which_gnu_linux_distro_zh() {
+        MENU="您想要安装哪个容器?"
+        OPT_0="🌚 Return to previous menu 返回上级菜单"
+        OPT_1="🍭 每周构建cutefish,kde,xfce,mate & lxqt"
+        OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
+        OPT_3="🍥 Debian:致力于自由"
+        OPT_4="🍛 Ubuntu:我的存在是因為大家的存在"
+        OPT_5="🌉 Arch:系统设计以KISS为总体指导原则"
+        OPT_6="🍱 CentOS,alpine,mint,rocky & puppy"
+        OPT_7="🐉 Kali rolling:设计用于数字取证和渗透测试"
+        OPT_8="🍊 Armbian:香蕉派,香橙派(预装xfce/cinnamon/budgie)"
+        OPT_9="👒 Fedora:红帽社区版,新技术试验场"
+        OPT_10="🦎 Chroot专属:opensuse"
+        OPT_11="🍓 Experimental(体验版):archcraft,树莓派"
+    }
+    choose_which_gnu_linux_distro_en() {
+        MENU="Which container do you want to install?"
+        OPT_0="🌚 Return to previous menu"
+        OPT_1="🍭 Weekly builds(cutefish,xfce,kde,mate & lxqt)"
+        OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
+        OPT_3="🍥 Debian is a distro composed of free and open-source software"
+        OPT_4="🍛 Ubuntu is the modern, open source OS."
+        OPT_5="🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility"
+        OPT_6="🍱 CentOS,alpine,mint,rocky & puppy"
+        OPT_7="🐉 Kali:designed for digital forensics and penetration testing"
+        OPT_8="🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)"
+        OPT_9="👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
+        OPT_10="🦎 Chroot exclusive:opensuse"
+        OPT_11="🍓 Experimental,no longer maintained:RaspiOS,Gentoo"
+    }
+    choose_which_gnu_linux_distro_menu() {
+        SELECTED_GNU_LINUX=$(whiptail --title "${TITLE}" --menu "${MENU}" 0 50 0 \
+            "1" "$OPT_1" \
+            "2" "$OPT_2" \
+            "3" "$OPT_3" \
+            "4" "$OPT_4" \
+            "5" "$OPT_5" \
+            "6" "$OPT_6" \
+            "7" "$OPT_7" \
+            "8" "$OPT_8" \
+            "9" "$OPT_9" \
+            "10" "$OPT_10" \
+            "11" "$OPT_11" \
+            "0" "$OPT_0" \
+            3>&1 1>&2 2>&3)
+    }
+    ##############################
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) choose_which_gnu_linux_distro_zh ;;
+    ja_JP.UTF-8) choose_which_gnu_linux_distro_ja ;;
+    *) choose_which_gnu_linux_distro_en ;;
+    esac
+    choose_which_gnu_linux_distro_menu
 
-	case "${SELECTED_GNU_LINUX}" in
-	0 | "") proot_container_menu ;;
-	1) install_tmoe_weekly_build_edition ;;
-	2) install_tmoe_moonthly_build_edition ;;
-	3) install_debian_gnu_linux_distro ;;
-	4) install_ubuntu_gnu_linux_distro ;;
-	5)
-		DISTRO_NAME='arch'
-		TMOE_LINUX_CONTAINER_DISTRO='arch'
-		create_container_edition_txt
-		go_to_proot_management
-		;;
-	6) install_beta_containers ;;
-	7)
-		DISTRO_NAME='kali'
-		DISTRO_CODE='rolling'
-		TMOE_LINUX_CONTAINER_DISTRO='kali-rolling'
-		create_container_edition_txt
-		go_to_proot_management
-		;;
-	8) install_armbian_linux_distro ;;
-	9) install_fedora_gnu_linux_distro ;;
-	10) install_chroot_exclusive_containers ;;
-	11) install_alpha_containers ;;
-	esac
-	####################
-	exit 0
+    case "${SELECTED_GNU_LINUX}" in
+    0 | "") proot_container_menu ;;
+    1) install_tmoe_weekly_build_edition ;;
+    2) install_tmoe_moonthly_build_edition ;;
+    3) install_debian_gnu_linux_distro ;;
+    4) install_ubuntu_gnu_linux_distro ;;
+    5)
+        DISTRO_NAME='arch'
+        TMOE_LINUX_CONTAINER_DISTRO='arch'
+        create_container_edition_txt
+        go_to_proot_management
+        ;;
+    6) install_beta_containers ;;
+    7)
+        DISTRO_NAME='kali'
+        DISTRO_CODE='rolling'
+        TMOE_LINUX_CONTAINER_DISTRO='kali-rolling'
+        create_container_edition_txt
+        go_to_proot_management
+        ;;
+    8) install_armbian_linux_distro ;;
+    9) install_fedora_gnu_linux_distro ;;
+    10) install_chroot_exclusive_containers ;;
+    11) install_alpha_containers ;;
+    esac
+    ####################
+    exit 0
 }
 ##############################
 set_service_container_env_01() {
-	DISTRO_CODE="${DESKTOP}"
-	DISTRO_NAME_02="${DISTRO_NAME}"
-	NODE01_ENABLED=false
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}"
-	create_container_edition_txt
-	create_container_edition_txt_02
-	go_to_proot_management
+    DISTRO_CODE="${DESKTOP}"
+    DISTRO_NAME_02="${DISTRO_NAME}"
+    NODE01_ENABLED=false
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}"
+    create_container_edition_txt
+    create_container_edition_txt_02
+    go_to_proot_management
 }
 set_service_container_env_02() {
-	DISTRO_CODE="${DESKTOP}"
-	DISTRO_NAME_02="${DISTRO_NAME}"
-	NODE01_ENABLED=false
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	create_container_edition_txt
-	create_container_edition_txt_02
-	go_to_proot_management
+    DISTRO_CODE="${DESKTOP}"
+    DISTRO_NAME_02="${DISTRO_NAME}"
+    NODE01_ENABLED=false
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+    create_container_edition_txt
+    create_container_edition_txt_02
+    go_to_proot_management
 }
 set_service_container_env() {
-	case ${DESKTOP} in
-	alpine) set_service_container_env_02 ;;
-	latest | *) set_service_container_env_01 ;;
-	esac
+    case ${DESKTOP} in
+    alpine) set_service_container_env_02 ;;
+    latest | *) set_service_container_env_01 ;;
+    esac
 }
 #####################
 choose_latest_or_alpine() {
-	if (whiptail --title "TAGS" --yes-button "latest" --no-button "alpine" --yesno "In general, alpine is more streamlined" 8 50); then
-		DESKTOP="latest"
-	else
-		DESKTOP="alpine"
-	fi
+    if (whiptail --title "TAGS" --yes-button "latest" --no-button "alpine" --yesno "In general, alpine is more streamlined" 8 50); then
+        DESKTOP="latest"
+    else
+        DESKTOP="alpine"
+    fi
 }
 install_tmoe_moonthly_build_edition() {
-	choose_service_en() {
-		INSTALLDESKTOP=$(whiptail --title "CONTAINERS" --menu \
-			"Except docker, tmoe/azure server will automatically build and release the latest container every 2 weeks" 0 0 0 \
-			"1" "🦀 Rust(Blazingly fast and memory-efficient)" \
-			"2" "🐹 Go (Makes it easy to build simple&reliable app)" \
-			"3" "Visual Studio Code web server" \
-			"4" "Microsoft .NET-SDK(amd64, amr64)" \
-			"5" "Swift(Mainly used for Apple iOS and MacOS app development)" \
-			"6" "OpenJDK(An open-source Java Platform)" \
-			"7" "🐳 Docker(Run docker with qemu)" \
-			"8" "Node.js(A back-end JavaScript runtime environment)" \
-			"9" "Nginx(A high-performance HTTP server)" \
-			"10" "PHP(A general-purpose scripting language)" \
-			"11" "MongoDB(Classified as a NoSQL database program)" \
-			"12" "Ruby(An interpreted,general-purpose lang)" \
-			"0" "🌚 back =￣ω￣=" \
-			3>&1 1>&2 2>&3)
-	}
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) choose_service_en ;;
-	*) choose_service_en ;;
-	esac
-	case "${INSTALLDESKTOP}" in
-	0 | "") choose_which_gnu_linux_distro ;;
-	1)
-		DISTRO_NAME="rust"
-		choose_latest_or_alpine
-		;;
-	2)
-		DISTRO_NAME="go"
-		choose_latest_or_alpine
-		;;
-	3)
-		DISTRO_NAME="code"
-		DESKTOP="latest"
-		;;
-	4)
-		DISTRO_NAME="dotnet"
-		DESKTOP="latest"
-		;;
-	5)
-		DISTRO_NAME="swift"
-		DESKTOP="latest"
-		;;
-	6)
-		DISTRO_NAME="jdk"
-		DESKTOP="latest"
-		;;
-	7)
-		DISTRO_NAME="docker"
-		DESKTOP="qemu"
-		;;
-	8)
-		DISTRO_NAME="node"
-		choose_latest_or_alpine
-		;;
-	9)
-		DISTRO_NAME="nginx"
-		choose_latest_or_alpine
-		;;
-	10)
-		DISTRO_NAME="php"
-		choose_latest_or_alpine
-		;;
-	11)
-		DISTRO_NAME="mongo"
-		DESKTOP="latest"
-		;;
-	12)
-		DISTRO_NAME="ruby"
-		choose_latest_or_alpine
-		;;
-	esac
+    choose_service_en() {
+        INSTALLDESKTOP=$(whiptail --title "CONTAINERS" --menu \
+            "Except docker, tmoe/azure server will automatically build and release the latest container every 2 weeks" 0 0 0 \
+            "1" "🦀 Rust(Blazingly fast and memory-efficient)" \
+            "2" "🐹 Go (Makes it easy to build simple&reliable app)" \
+            "3" "Visual Studio Code web server" \
+            "4" "Microsoft .NET SDK(amd64, arm64)" \
+            "5" "Swift(Mainly used for Apple iOS and MacOS app development)" \
+            "6" "OpenJDK(An open-source Java Platform)" \
+            "7" "🐳 Docker(Run docker with qemu)" \
+            "8" "Node.js(A back-end JavaScript runtime environment)" \
+            "9" "Nginx(A high-performance HTTP server)" \
+            "10" "PHP(A general-purpose scripting language)" \
+            "11" "MongoDB(Classified as a NoSQL database program)" \
+            "12" "Ruby(An interpreted,general-purpose lang)" \
+            "0" "🌚 back =￣ω￣=" \
+            3>&1 1>&2 2>&3)
+    }
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) choose_service_en ;;
+    *) choose_service_en ;;
+    esac
+    case "${INSTALLDESKTOP}" in
+    0 | "") choose_which_gnu_linux_distro ;;
+    1)
+        DISTRO_NAME="rust"
+        choose_latest_or_alpine
+        ;;
+    2)
+        DISTRO_NAME="go"
+        choose_latest_or_alpine
+        ;;
+    3)
+        DISTRO_NAME="code"
+        DESKTOP="latest"
+        ;;
+    4)
+        DISTRO_NAME="dotnet"
+        DESKTOP="latest"
+        ;;
+    5)
+        DISTRO_NAME="swift"
+        DESKTOP="latest"
+        ;;
+    6)
+        DISTRO_NAME="jdk"
+        DESKTOP="latest"
+        ;;
+    7)
+        DISTRO_NAME="docker"
+        DESKTOP="qemu"
+        ;;
+    8)
+        DISTRO_NAME="node"
+        choose_latest_or_alpine
+        ;;
+    9)
+        DISTRO_NAME="nginx"
+        choose_latest_or_alpine
+        ;;
+    10)
+        DISTRO_NAME="php"
+        choose_latest_or_alpine
+        ;;
+    11)
+        DISTRO_NAME="mongo"
+        DESKTOP="latest"
+        ;;
+    12)
+        DISTRO_NAME="ruby"
+        choose_latest_or_alpine
+        ;;
+    esac
 
-	case "${DISTRO_NAME}" in
-	rust)
-		case ${ARCH_TYPE} in
-		arm64 | armhf | amd64 | riscv64 | ppc64el | s390x | mips64el) WEEKLY_BUILD_CONTAINER=true ;;
-		*) distro_does_not_support ;;
-		esac
-		;;
-	dotnet | swift)
-		case ${ARCH_TYPE} in
-		arm64 | amd64) WEEKLY_BUILD_CONTAINER=true ;;
-		*) distro_does_not_support ;;
-		esac
-		;;
-	*)
-		case ${ARCH_TYPE} in
-		arm64 | armhf | amd64) WEEKLY_BUILD_CONTAINER=true ;;
-		*)
-			printf "%s\n" "Sorry,this feature only supports arm64, amd64 & armhf"
-			distro_does_not_support
-			;;
-		esac
-		;;
-	esac
+    case "${DISTRO_NAME}" in
+    rust)
+        case ${ARCH_TYPE} in
+        arm64 | armhf | amd64 | riscv64 | ppc64el | s390x | mips64el) WEEKLY_BUILD_CONTAINER=true ;;
+        *) distro_does_not_support ;;
+        esac
+        ;;
+    dotnet | swift)
+        case ${ARCH_TYPE} in
+        arm64 | amd64) WEEKLY_BUILD_CONTAINER=true ;;
+        *) distro_does_not_support ;;
+        esac
+        ;;
+    *)
+        case ${ARCH_TYPE} in
+        arm64 | armhf | amd64) WEEKLY_BUILD_CONTAINER=true ;;
+        *)
+            printf "%s\n" "Sorry,this feature only supports arm64, amd64 & armhf"
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    esac
 
-	set_service_container_env
-	press_enter_to_return
-	install_tmoe_moonthly_build_edition
-	: <<\EOF
+    set_service_container_env
+    press_enter_to_return
+    install_tmoe_moonthly_build_edition
+    : <<\EOF
 	printf "%s\n" "${YELLOW}PREVIEW:${RESET}"
 	printf "%s\n" "This category of containers will not automatically configure unnecessary steps."
 	printf "%s\n" "A service or an environment is a container."
@@ -258,577 +258,577 @@ EOF
 }
 ##################################
 install_tmoe_weekly_build_edition() {
-	case ${ARCH_TYPE} in
-	amd64 | i386 | arm64 | armhf) WEEKLY_BUILD_CONTAINER=true ;;
-	*) distro_does_not_support ;;
-	esac
-	# TMOE/Azure Server will automatically build and release the latest DE container every week/month
-	choose_de_en() {
-		# MENU="Sorry, this feature will not be updated for a long time to come."
-		MENU="TMOE/Azure Server will automatically build and release the latest DE container every week/month"
-		INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
-			"${MENU}" 0 0 0 \
-			"1" "🐭 xfce(elegant, high compatibility)" \
-			"2" "🦖 kde plasma5(beautiful and modern)" \
-			"3" "🐟 cutefish" \
-			"4" "🌿 mate(the continuation of GNOME 2)" \
-			"5" "🐦 lxqt" \
-			"6" "🕊️ lxde(lightweight)" \
-			"7" "zsh(nogui)" \
-			"8" "Weekly schedule" \
-			"0" "🌚 back =￣ω￣=" \
-			3>&1 1>&2 2>&3)
-	}
-	choose_de_zh() {
-		# MENU="抱歉，由于某些原因, 此功能将在接下来很长一段时间停更"
-		MENU="tmoe/azure服务器每周都会自动构建并发布最新版,少部分发行版为每月更新"
-		INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
-			"${MENU}" 0 0 0 \
-			"1" "🐭 xfce(elegant, high compatibility)" \
-			"2" "🦖 kde plasma5(风格华丽的桌面环境)" \
-			"3" "🐟 cutefish 可爱鱼(arm64, x64, armhf)" \
-			"4" "🌿 mate(the continuation of GNOME 2)" \
-			"5" "🐦 lxqt(arm64, x64)" \
-			"6" "🕊️ lxde(轻量级, armhf, i386)" \
-			"7" "zsh(nogui)" \
-			"8" "schedule 自动构建计划日程表" \
-			"0" "🌚 back =￣ω￣=" \
-			3>&1 1>&2 2>&3)
-	}
-	# "4" "dde 深度桌面环境(arm64, x64)" \
-	# "5" "ukui 优麒麟ui(arm64, x64, armhf)" \
-	#"7" "Request specific version" \"7" "request 请求更新/增加版本" \
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) choose_de_zh ;;
-	*) choose_de_en ;;
-	esac
-	case "${INSTALLDESKTOP}" in
-	0 | "") choose_which_gnu_linux_distro ;;
-	1)
-		DESKTOP="xfce"
-		choose_xfce_distro
-		;;
-	2)
-		DESKTOP="kde"
-		choose_kde_distro
-		;;
-	3)
-		DESKTOP="cutefish"
-		choose_cutefish_distro
-		;;
-	# 4)
-	# 	DESKTOP="dde"
-	# 	choose_dde_distro
-	# 	;;
-	# 5)
-	# 	DESKTOP="ukui"
-	# 	choose_ukui_distro
-	# 	;;
-	4)
-		DESKTOP="mate"
-		choose_mate_distro
-		;;
-	5)
-		DESKTOP="lxqt"
-		choose_lxqt_distro
-		;;
-	6)
-		DESKTOP="lxde"
-		choose_lxde_distro
-		;;
-	7)
-		#printf "%s\n" "This feature may be available on 2020-02-17."
-		DESKTOP="zsh"
-		choose_zsh_distro
-		;;
-	8) view_the_schedule ;;
-	999) request_weekly_build_version ;;
-	esac
-	press_enter_to_return
-	install_tmoe_weekly_build_edition
+    case ${ARCH_TYPE} in
+    amd64 | i386 | arm64 | armhf) WEEKLY_BUILD_CONTAINER=true ;;
+    *) distro_does_not_support ;;
+    esac
+    # TMOE/Azure Server will automatically build and release the latest DE container every week/month
+    choose_de_en() {
+        # MENU="Sorry, this feature will not be updated for a long time to come."
+        MENU="TMOE/Azure Server will automatically build and release the latest DE container every week/month"
+        INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
+            "${MENU}" 0 0 0 \
+            "1" "🐭 xfce(elegant, high compatibility)" \
+            "2" "🦖 kde plasma5(beautiful and modern)" \
+            "3" "🐟 cutefish" \
+            "4" "🌿 mate(the continuation of GNOME 2)" \
+            "5" "🐦 lxqt" \
+            "6" "🕊️ lxde(lightweight)" \
+            "7" "zsh(nogui)" \
+            "8" "Weekly schedule" \
+            "0" "🌚 back =￣ω￣=" \
+            3>&1 1>&2 2>&3)
+    }
+    choose_de_zh() {
+        # MENU="抱歉，由于某些原因, 此功能将在接下来很长一段时间停更"
+        MENU="tmoe/azure服务器每周都会自动构建并发布最新版,少部分发行版为每月更新"
+        INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
+            "${MENU}" 0 0 0 \
+            "1" "🐭 xfce(elegant, high compatibility)" \
+            "2" "🦖 kde plasma5(风格华丽的桌面环境)" \
+            "3" "🐟 cutefish 可爱鱼(arm64, x64, armhf)" \
+            "4" "🌿 mate(the continuation of GNOME 2)" \
+            "5" "🐦 lxqt(arm64, x64)" \
+            "6" "🕊️ lxde(轻量级, armhf, i386)" \
+            "7" "zsh(nogui)" \
+            "8" "schedule 自动构建计划日程表" \
+            "0" "🌚 back =￣ω￣=" \
+            3>&1 1>&2 2>&3)
+    }
+    # "4" "dde 深度桌面环境(arm64, x64)" \
+    # "5" "ukui 优麒麟ui(arm64, x64, armhf)" \
+    #"7" "Request specific version" \"7" "request 请求更新/增加版本" \
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) choose_de_zh ;;
+    *) choose_de_en ;;
+    esac
+    case "${INSTALLDESKTOP}" in
+    0 | "") choose_which_gnu_linux_distro ;;
+    1)
+        DESKTOP="xfce"
+        choose_xfce_distro
+        ;;
+    2)
+        DESKTOP="kde"
+        choose_kde_distro
+        ;;
+    3)
+        DESKTOP="cutefish"
+        choose_cutefish_distro
+        ;;
+    # 4)
+    # 	DESKTOP="dde"
+    # 	choose_dde_distro
+    # 	;;
+    # 5)
+    # 	DESKTOP="ukui"
+    # 	choose_ukui_distro
+    # 	;;
+    4)
+        DESKTOP="mate"
+        choose_mate_distro
+        ;;
+    5)
+        DESKTOP="lxqt"
+        choose_lxqt_distro
+        ;;
+    6)
+        DESKTOP="lxde"
+        choose_lxde_distro
+        ;;
+    7)
+        #printf "%s\n" "This feature may be available on 2020-02-17."
+        DESKTOP="zsh"
+        choose_zsh_distro
+        ;;
+    8) view_the_schedule ;;
+    999) request_weekly_build_version ;;
+    esac
+    press_enter_to_return
+    install_tmoe_weekly_build_edition
 }
 set_debian_sid_env() {
-	DISTRO_NAME='debian'
-	DISTRO_CODE="sid-${DESKTOP}"
-	DISTRO_NAME_02=debian-sid
-	NODE01_ENABLED=false
-	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	create_container_edition_txt
-	create_container_edition_txt_02
-	go_to_proot_management
+    DISTRO_NAME='debian'
+    DISTRO_CODE="sid-${DESKTOP}"
+    DISTRO_NAME_02=debian-sid
+    NODE01_ENABLED=false
+    #TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+    create_container_edition_txt
+    create_container_edition_txt_02
+    go_to_proot_management
 }
 set_kali_rolling_env() {
-	DISTRO_NAME='kali'
-	DISTRO_CODE="rolling-${DESKTOP}"
-	DISTRO_NAME_02=kali-rolling
-	NODE01_ENABLED=false
-	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	create_container_edition_txt
-	create_container_edition_txt_02
-	go_to_proot_management
+    DISTRO_NAME='kali'
+    DISTRO_CODE="rolling-${DESKTOP}"
+    DISTRO_NAME_02=kali-rolling
+    NODE01_ENABLED=false
+    #TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+    create_container_edition_txt
+    create_container_edition_txt_02
+    go_to_proot_management
 }
 set_ubuntu_dev_env() {
-	DISTRO_NAME='ubuntu'
-	DISTRO_CODE="dev-${DESKTOP}"
-	DISTRO_NAME_02=ubuntu-dev
-	NODE01_ENABLED=false
-	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	create_container_edition_txt
-	create_container_edition_txt_02
-	go_to_proot_management
+    DISTRO_NAME='ubuntu'
+    DISTRO_CODE="dev-${DESKTOP}"
+    DISTRO_NAME_02=ubuntu-dev
+    NODE01_ENABLED=false
+    #TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+    create_container_edition_txt
+    create_container_edition_txt_02
+    go_to_proot_management
 }
 set_ubuntu_dde_env() {
-	DISTRO_NAME='ubuntu'
-	DISTRO_CODE="${DESKTOP}"
-	DISTRO_NAME_02=ubuntu
-	NODE01_ENABLED=false
-	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	create_container_edition_txt
-	create_container_edition_txt_02
-	go_to_proot_management
+    DISTRO_NAME='ubuntu'
+    DISTRO_CODE="${DESKTOP}"
+    DISTRO_NAME_02=ubuntu
+    NODE01_ENABLED=false
+    #TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+    create_container_edition_txt
+    create_container_edition_txt_02
+    go_to_proot_management
 }
 set_mint_tricia_env() {
-	DISTRO_NAME='mint'
-	DISTRO_CODE="tricia-${DESKTOP}"
-	DISTRO_NAME_02=mint-tricia
-	NODE01_ENABLED=false
-	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	create_container_edition_txt
-	create_container_edition_txt_02
-	go_to_proot_management
+    DISTRO_NAME='mint'
+    DISTRO_CODE="tricia-${DESKTOP}"
+    DISTRO_NAME_02=mint-tricia
+    NODE01_ENABLED=false
+    #TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+    create_container_edition_txt
+    create_container_edition_txt_02
+    go_to_proot_management
 }
 set_mint_ulyssa_env() {
-	DISTRO_NAME='mint'
-	DISTRO_CODE="ulyssa-${DESKTOP}"
-	DISTRO_NAME_02=mint-ulyssa
-	NODE01_ENABLED=false
-	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	create_container_edition_txt
-	create_container_edition_txt_02
-	go_to_proot_management
+    DISTRO_NAME='mint'
+    DISTRO_CODE="ulyssa-${DESKTOP}"
+    DISTRO_NAME_02=mint-ulyssa
+    NODE01_ENABLED=false
+    #TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+    create_container_edition_txt
+    create_container_edition_txt_02
+    go_to_proot_management
 }
 set_alpine_edge_env() {
-	DISTRO_NAME='alpine'
-	DISTRO_CODE="edge-${DESKTOP}"
-	DISTRO_NAME_02=alpine-edge
-	NODE01_ENABLED=false
-	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	create_container_edition_txt
-	create_container_edition_txt_02
-	go_to_proot_management
+    DISTRO_NAME='alpine'
+    DISTRO_CODE="edge-${DESKTOP}"
+    DISTRO_NAME_02=alpine-edge
+    NODE01_ENABLED=false
+    #TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+    create_container_edition_txt
+    create_container_edition_txt_02
+    go_to_proot_management
 }
 set_fedora_rawhide_env() {
-	DISTRO_NAME='fedora'
-	DISTRO_CODE="rawhide-${DESKTOP}"
-	DISTRO_NAME_02=fedora-rawhide
-	NODE01_ENABLED=false
-	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	create_container_edition_txt
-	create_container_edition_txt_02
-	go_to_proot_management
+    DISTRO_NAME='fedora'
+    DISTRO_CODE="rawhide-${DESKTOP}"
+    DISTRO_NAME_02=fedora-rawhide
+    NODE01_ENABLED=false
+    #TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+    create_container_edition_txt
+    create_container_edition_txt_02
+    go_to_proot_management
 }
 set_ubuntu_bionic_env() {
-	DISTRO_NAME='ubuntu'
-	DISTRO_CODE="bionic-${DESKTOP}"
-	DISTRO_NAME_02=ubuntu-bionic
-	NODE01_ENABLED=false
-	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	create_container_edition_txt
-	create_container_edition_txt_02
-	go_to_proot_management
+    DISTRO_NAME='ubuntu'
+    DISTRO_CODE="bionic-${DESKTOP}"
+    DISTRO_NAME_02=ubuntu-bionic
+    NODE01_ENABLED=false
+    #TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+    create_container_edition_txt
+    create_container_edition_txt_02
+    go_to_proot_management
 }
 set_arch_latest_env() {
-	DISTRO_NAME='arch'
-	DISTRO_CODE="${DESKTOP}"
-	DISTRO_NAME_02=arch
-	NODE01_ENABLED=false
-	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}"
-	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	create_container_edition_txt
-	create_container_edition_txt_02
-	go_to_proot_management
+    DISTRO_NAME='arch'
+    DISTRO_CODE="${DESKTOP}"
+    DISTRO_NAME_02=arch
+    NODE01_ENABLED=false
+    #TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}"
+    #TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+    create_container_edition_txt
+    create_container_edition_txt_02
+    go_to_proot_management
 }
 
 set_manjaro_stable_env() {
-	DISTRO_NAME='manjaro'
-	DISTRO_CODE="stable-${DESKTOP}"
-	DISTRO_NAME_02=manjaro-stable
-	NODE01_ENABLED=false
-	#TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
-	create_container_edition_txt
-	create_container_edition_txt_02
-	go_to_proot_management
+    DISTRO_NAME='manjaro'
+    DISTRO_CODE="stable-${DESKTOP}"
+    DISTRO_NAME_02=manjaro-stable
+    NODE01_ENABLED=false
+    #TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+    create_container_edition_txt
+    create_container_edition_txt_02
+    go_to_proot_management
 }
 desktop_does_not_support() {
-	printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置${DESKTOP}的自动构建任务。"
+    printf "%s\n" "Sorry,tmoe-linux开发者未对当前架构（${ARCH_TYPE}）配置${DESKTOP}的自动构建任务。"
 }
 choose_mate_distro() {
-	MENU="Which distribution do you want to install?"
-	OPT_0="🌚 Return to previous menu"
-	OPT_1="🌉 Arch-latest(arm64, x64)"
-	OPT_2="🍥 Debian-sid(arm64, x64)"
-	OPT_3="👒 Fedora-rawhide(arm64, x64, armhf)"
-	OPT_4="🏔️ Alpine-edge(arm64, armhf, i386, x64)"
-	OPT_5="ubuntu-dev(arm64, x64)"
-	SELECTED_GNU_LINUX=$(whiptail --title "MATE DISTROS" --menu "${MENU}" 0 50 0 \
-		"1" "$OPT_1" \
-		"2" "$OPT_2" \
-		"3" "$OPT_3" \
-		"4" "$OPT_4" \
-		"5" "$OPT_5" \
-		"0" "$OPT_0" \
-		3>&1 1>&2 2>&3)
-	# "5" "🌿 Mint-tricia(amd64)" \
-	case "${SELECTED_GNU_LINUX}" in
-	0 | "") install_tmoe_weekly_build_edition ;;
-	1)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_arch_latest_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	2)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_debian_sid_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	3)
-		case ${ARCH_TYPE} in
-		amd64 | arm64 | armhf) set_fedora_rawhide_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	4) set_alpine_edge_env ;;
-	# 5)
-	# 	case ${ARCH_TYPE} in
-	# 	amd64) set_mint_tricia_env ;;
-	# 	*)
-	# 		desktop_does_not_support
-	# 		distro_does_not_support
-	# 		;;
-	# 	esac
-	# 	;;
-	5)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_ubuntu_dev_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	esac
+    MENU="Which distribution do you want to install?"
+    OPT_0="🌚 Return to previous menu"
+    OPT_1="🌉 Arch-latest(arm64, x64)"
+    OPT_2="🍥 Debian-sid(arm64, x64)"
+    OPT_3="👒 Fedora-rawhide(arm64, x64, armhf)"
+    OPT_4="🏔️ Alpine-edge(arm64, armhf, i386, x64)"
+    OPT_5="ubuntu-dev(arm64, x64)"
+    SELECTED_GNU_LINUX=$(whiptail --title "MATE DISTROS" --menu "${MENU}" 0 50 0 \
+        "1" "$OPT_1" \
+        "2" "$OPT_2" \
+        "3" "$OPT_3" \
+        "4" "$OPT_4" \
+        "5" "$OPT_5" \
+        "0" "$OPT_0" \
+        3>&1 1>&2 2>&3)
+    # "5" "🌿 Mint-tricia(amd64)" \
+    case "${SELECTED_GNU_LINUX}" in
+    0 | "") install_tmoe_weekly_build_edition ;;
+    1)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_arch_latest_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    2)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_debian_sid_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    3)
+        case ${ARCH_TYPE} in
+        amd64 | arm64 | armhf) set_fedora_rawhide_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    4) set_alpine_edge_env ;;
+    # 5)
+    # 	case ${ARCH_TYPE} in
+    # 	amd64) set_mint_tricia_env ;;
+    # 	*)
+    # 		desktop_does_not_support
+    # 		distro_does_not_support
+    # 		;;
+    # 	esac
+    # 	;;
+    5)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_ubuntu_dev_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    esac
 }
 choose_lxde_distro() {
-	SELECTED_GNU_LINUX=$(whiptail --title "LXDE DISTROS" --menu "对于LXDE桌面,开发者仅配置了i386和armhf的自动构建任务" 0 50 0 \
-		"1" "🍥 Debian-sid(i386,armhf)" \
-		"0" "🌚 Return to previous menu" \
-		3>&1 1>&2 2>&3)
-	case "${SELECTED_GNU_LINUX}" in
-	0 | "") install_tmoe_weekly_build_edition ;;
-	1)
-		case ${ARCH_TYPE} in
-		armhf | i386) set_debian_sid_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	esac
+    SELECTED_GNU_LINUX=$(whiptail --title "LXDE DISTROS" --menu "对于LXDE桌面,开发者仅配置了i386和armhf的自动构建任务" 0 50 0 \
+        "1" "🍥 Debian-sid(i386,armhf)" \
+        "0" "🌚 Return to previous menu" \
+        3>&1 1>&2 2>&3)
+    case "${SELECTED_GNU_LINUX}" in
+    0 | "") install_tmoe_weekly_build_edition ;;
+    1)
+        case ${ARCH_TYPE} in
+        armhf | i386) set_debian_sid_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    esac
 }
 choose_lxqt_distro() {
-	SELECTED_GNU_LINUX=$(whiptail --title "LXQT DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
-		"1" "🍛 Ubuntu-dev(arm64,x64)" \
-		"2" "👒 Fedora-rawhide(arm64,x64)" \
-		"0" "🌚 Return to previous menu" \
-		3>&1 1>&2 2>&3)
-	case "${SELECTED_GNU_LINUX}" in
-	0 | "") install_tmoe_weekly_build_edition ;;
-	1)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_ubuntu_dev_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	2)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_fedora_rawhide_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	esac
+    SELECTED_GNU_LINUX=$(whiptail --title "LXQT DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
+        "1" "🍛 Ubuntu-dev(arm64,x64)" \
+        "2" "👒 Fedora-rawhide(arm64,x64)" \
+        "0" "🌚 Return to previous menu" \
+        3>&1 1>&2 2>&3)
+    case "${SELECTED_GNU_LINUX}" in
+    0 | "") install_tmoe_weekly_build_edition ;;
+    1)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_ubuntu_dev_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    2)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_fedora_rawhide_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    esac
 }
 choose_xfce_distro() {
-	SELECTED_GNU_LINUX=$(whiptail --title "XFCE DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
-		"1" "🐉 Kali-rolling(arm64, armhf, x64)" \
-		"2" "🌉 Arch-latest(arm64, armhf, x64)" \
-		"3" "🍥 Debian-sid(arm64, x64)" \
-		"4" "👒 Fedora-rawhide(arm64, x64)" \
-		"5" "Manjaro-stable(arm64, x64)" \
-		"6" "🏔️ Alpine-edge(arm64, x64)" \
-		"7" "ubuntu-dev(arm64, x64)" \
-		"0" "🌚 Return to previous menu" \
-		3>&1 1>&2 2>&3)
-	case "${SELECTED_GNU_LINUX}" in
-	0 | "") install_tmoe_weekly_build_edition ;;
-	1)
-		case ${ARCH_TYPE} in
-		amd64 | arm64 | armhf) set_kali_rolling_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	2) set_arch_latest_env ;;
-	3)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_debian_sid_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	4)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_fedora_rawhide_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	5)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_manjaro_stable_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	6)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_alpine_edge_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	7)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_ubuntu_dev_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	esac
+    SELECTED_GNU_LINUX=$(whiptail --title "XFCE DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
+        "1" "🐉 Kali-rolling(arm64, armhf, x64)" \
+        "2" "🌉 Arch-latest(arm64, armhf, x64)" \
+        "3" "🍥 Debian-sid(arm64, x64)" \
+        "4" "👒 Fedora-rawhide(arm64, x64)" \
+        "5" "Manjaro-stable(arm64, x64)" \
+        "6" "🏔️ Alpine-edge(arm64, x64)" \
+        "7" "ubuntu-dev(arm64, x64)" \
+        "0" "🌚 Return to previous menu" \
+        3>&1 1>&2 2>&3)
+    case "${SELECTED_GNU_LINUX}" in
+    0 | "") install_tmoe_weekly_build_edition ;;
+    1)
+        case ${ARCH_TYPE} in
+        amd64 | arm64 | armhf) set_kali_rolling_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    2) set_arch_latest_env ;;
+    3)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_debian_sid_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    4)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_fedora_rawhide_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    5)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_manjaro_stable_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    6)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_alpine_edge_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    7)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_ubuntu_dev_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    esac
 }
 choose_cutefish_distro() {
-	case ${ARCH_TYPE} in
-	amd64 | arm64 | armhf) set_arch_latest_env ;;
-	*)
-		desktop_does_not_support
-		distro_does_not_support
-		;;
-	esac
+    case ${ARCH_TYPE} in
+    amd64 | arm64 | armhf) set_arch_latest_env ;;
+    *)
+        desktop_does_not_support
+        distro_does_not_support
+        ;;
+    esac
 }
 choose_dde_distro() {
-	case ${ARCH_TYPE} in
-	amd64 | arm64) set_ubuntu_dde_env ;;
-	*)
-		desktop_does_not_support
-		distro_does_not_support
-		;;
-	esac
+    case ${ARCH_TYPE} in
+    amd64 | arm64) set_ubuntu_dde_env ;;
+    *)
+        desktop_does_not_support
+        distro_does_not_support
+        ;;
+    esac
 }
 
 choose_ukui_distro() {
-	case ${ARCH_TYPE} in
-	amd64 | arm64 | armhf) set_ubuntu_dev_env ;;
-	*)
-		desktop_does_not_support
-		distro_does_not_support
-		;;
-	esac
+    case ${ARCH_TYPE} in
+    amd64 | arm64 | armhf) set_ubuntu_dev_env ;;
+    *)
+        desktop_does_not_support
+        distro_does_not_support
+        ;;
+    esac
 }
 choose_kde_distro() {
-	SELECTED_GNU_LINUX=$(whiptail --title "KDE PLASMA DISTROS" --menu "Plasma 5 is built using Qt 5 and KDE Frameworks 5, predominantly plasma-framework." 0 50 0 \
-		"1" "🍛 Ubuntu(arm64, x64, armhf)" \
-		"2" "🌉 Arch(arm64, x64)" \
-		"3" "🍥 Debian sid(arm64, x64)" \
-		"4" "👒 Fedora rawhide(arm64, x64)" \
-		"5" "🏔️ Alpine(arm64, x64)" \
-		"0" "🌚 Return to previous menu" \
-		3>&1 1>&2 2>&3)
-	case "${SELECTED_GNU_LINUX}" in
-	0 | "") install_tmoe_weekly_build_edition ;;
-	1)
-		case ${ARCH_TYPE} in
-		arm64 | armhf | amd64)
-			# set_ubuntu_bionic_env
-			set_ubuntu_dev_env
-			;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	2)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_arch_latest_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	3)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_debian_sid_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	4)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_fedora_rawhide_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	5)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_alpine_edge_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	esac
+    SELECTED_GNU_LINUX=$(whiptail --title "KDE PLASMA DISTROS" --menu "Plasma 5 is built using Qt 5 and KDE Frameworks 5, predominantly plasma-framework." 0 50 0 \
+        "1" "🍛 Ubuntu(arm64, x64, armhf)" \
+        "2" "🌉 Arch(arm64, x64)" \
+        "3" "🍥 Debian sid(arm64, x64)" \
+        "4" "👒 Fedora rawhide(arm64, x64)" \
+        "5" "🏔️ Alpine(arm64, x64)" \
+        "0" "🌚 Return to previous menu" \
+        3>&1 1>&2 2>&3)
+    case "${SELECTED_GNU_LINUX}" in
+    0 | "") install_tmoe_weekly_build_edition ;;
+    1)
+        case ${ARCH_TYPE} in
+        arm64 | armhf | amd64)
+            # set_ubuntu_bionic_env
+            set_ubuntu_dev_env
+            ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    2)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_arch_latest_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    3)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_debian_sid_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    4)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_fedora_rawhide_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    5)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_alpine_edge_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    esac
 }
 choose_zsh_distro() {
-	SELECTED_GNU_LINUX=$(whiptail --title "ZSH CONTAINERS" --menu "The following containers have built-in zsh" 0 50 0 \
-		"1" "🌉 Arch(arm64,armhf,x64)" \
-		"2" "🦛 Ubuntu devel(arm64,x64)" \
-		"3" "🍥 Debian sid(arm64,armhf,x64,i386)" \
-		"4" "👒 Fedora rawhide(arm64,armhf,x64)" \
-		"5" "🏔️ Alpine edge(arm64,armhf,x64,i386)" \
-		"6" "🐉 Kali-rolling(arm64,armhf,x64)" \
-		"7" "Manjaro(arm64,x64)" \
-		"0" "🌚 Return to previous menu" \
-		3>&1 1>&2 2>&3)
-	case "${SELECTED_GNU_LINUX}" in
-	0 | "") install_tmoe_weekly_build_edition ;;
-	1)
-		case ${ARCH_TYPE} in
-		amd64 | armhf | arm64) set_arch_latest_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	2)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_ubuntu_dev_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	3)
-		case ${ARCH_TYPE} in
-		amd64 | arm64 | armhf | i386) set_debian_sid_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	4)
-		case ${ARCH_TYPE} in
-		amd64 | arm64 | armhf) set_fedora_rawhide_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	5)
-		case ${ARCH_TYPE} in
-		amd64 | arm64 | armhf | i386) set_alpine_edge_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	6)
-		case ${ARCH_TYPE} in
-		amd64 | arm64 | armhf) set_kali_rolling_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	7)
-		case ${ARCH_TYPE} in
-		amd64 | arm64) set_manjaro_stable_env ;;
-		*)
-			desktop_does_not_support
-			distro_does_not_support
-			;;
-		esac
-		;;
-	esac
+    SELECTED_GNU_LINUX=$(whiptail --title "ZSH CONTAINERS" --menu "The following containers have built-in zsh" 0 50 0 \
+        "1" "🌉 Arch(arm64,armhf,x64)" \
+        "2" "🦛 Ubuntu devel(arm64,x64)" \
+        "3" "🍥 Debian sid(arm64,armhf,x64,i386)" \
+        "4" "👒 Fedora rawhide(arm64,armhf,x64)" \
+        "5" "🏔️ Alpine edge(arm64,armhf,x64,i386)" \
+        "6" "🐉 Kali-rolling(arm64,armhf,x64)" \
+        "7" "Manjaro(arm64,x64)" \
+        "0" "🌚 Return to previous menu" \
+        3>&1 1>&2 2>&3)
+    case "${SELECTED_GNU_LINUX}" in
+    0 | "") install_tmoe_weekly_build_edition ;;
+    1)
+        case ${ARCH_TYPE} in
+        amd64 | armhf | arm64) set_arch_latest_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    2)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_ubuntu_dev_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    3)
+        case ${ARCH_TYPE} in
+        amd64 | arm64 | armhf | i386) set_debian_sid_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    4)
+        case ${ARCH_TYPE} in
+        amd64 | arm64 | armhf) set_fedora_rawhide_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    5)
+        case ${ARCH_TYPE} in
+        amd64 | arm64 | armhf | i386) set_alpine_edge_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    6)
+        case ${ARCH_TYPE} in
+        amd64 | arm64 | armhf) set_kali_rolling_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    7)
+        case ${ARCH_TYPE} in
+        amd64 | arm64) set_manjaro_stable_env ;;
+        *)
+            desktop_does_not_support
+            distro_does_not_support
+            ;;
+        esac
+        ;;
+    esac
 }
 ##############################
 #fedora-rawhide armhf xfce+lxqt -> mate
 #debian-sid armhf xfce+lxde -> lxde
 #alpine xfce+mate -> mate
 view_the_schedule() {
-	cat <<-EOF
+    cat <<-EOF
 		${YELLOW}Some containers only support ${PURPLE}edition 2022${RESET}
 
 		${BOLD}${PURPLE}Semiweekly builds${RESET}：
@@ -903,12 +903,11 @@ view_the_schedule() {
 			${GREEN}PostgreSQL ${YELLOW}[amd64, arm64]
 			${GREEN}Redis ${YELLOW}[amd64, arm64]
 			${GREEN}Haskell ${YELLOW}amd64
-			${GREEN}Swift ${YELLOW}amd64
 
 		${CYAN}--------------------------${RESET}
 	EOF
 
-	<<-OLD
+    <<-OLD
 		TIME："UTC 00:01 / CST 08:01"
 		TIME："UTC 06:01 / CST 14:01"
 
@@ -923,220 +922,220 @@ view_the_schedule() {
 #删除ubuntu dev * kde+xfce+mate
 #mint 20
 install_debian_gnu_linux_distro() {
-	source ${TMOE_SHARE_DIR}/container/debian/menu
+    source ${TMOE_SHARE_DIR}/container/debian/menu
 }
 ###################
 install_chroot_exclusive_containers() {
-	RETURN_TO_WHERE='install_chroot_exclusive_containers'
-	CLOUD_ROOTFS=false
-	#\nThe developer only maintains the chroot container in the following list.
-	ALPHA_SYSTEM=$(
-		whiptail --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
-			"1" "opensuse tumbleweed(小蜥蜴风滚草)" \
-			"2" "deepin深度(arm64,x86,x64)" \
-			"0" "🌚 Return to previous menu 返回上级菜单" \
-			3>&1 1>&2 2>&3
-	)
-	##############################
-	case "${ALPHA_SYSTEM}" in
-	0 | "") choose_which_gnu_linux_distro ;;
-	1)
-		CLOUD_ROOTFS=true
-		install_opensuse_linux_distro
-		;;
-	2) install_deepin_linux_distro ;;
-	esac
-	###########################
-	exit 0
+    RETURN_TO_WHERE='install_chroot_exclusive_containers'
+    CLOUD_ROOTFS=false
+    #\nThe developer only maintains the chroot container in the following list.
+    ALPHA_SYSTEM=$(
+        whiptail --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
+            "1" "opensuse tumbleweed(小蜥蜴风滚草)" \
+            "2" "deepin深度(arm64,x86,x64)" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    ##############################
+    case "${ALPHA_SYSTEM}" in
+    0 | "") choose_which_gnu_linux_distro ;;
+    1)
+        CLOUD_ROOTFS=true
+        install_opensuse_linux_distro
+        ;;
+    2) install_deepin_linux_distro ;;
+    esac
+    ###########################
+    exit 0
 }
 ###############
 install_uos_eagle() {
-	case "${ARCH_TYPE}" in
-	amd64 | i386 | arm64) ;;
-	*) distro_does_not_support ;;
-	esac
-	DISTRO_CODE='eagle'
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	create_container_edition_txt
-	git_clone_deepin_distro
+    case "${ARCH_TYPE}" in
+    amd64 | i386 | arm64) ;;
+    *) distro_does_not_support ;;
+    esac
+    DISTRO_CODE='eagle'
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    create_container_edition_txt
+    git_clone_deepin_distro
 }
 ###########
 install_deepin_apricot_amd64_and_i386() {
-	case "${ARCH_TYPE}" in
-	amd64 | i386) ;;
-	*) distro_does_not_support ;;
-	esac
-	DISTRO_CODE='apricot'
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	create_container_edition_txt
-	git_clone_deepin_distro
+    case "${ARCH_TYPE}" in
+    amd64 | i386) ;;
+    *) distro_does_not_support ;;
+    esac
+    DISTRO_CODE='apricot'
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    create_container_edition_txt
+    git_clone_deepin_distro
 }
 ##############
 install_deepin_camel_arm64() {
-	case "${ARCH_TYPE}" in
-	arm64) ;;
-	*) distro_does_not_support ;;
-	esac
-	DISTRO_CODE='camel'
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	create_container_edition_txt
-	git_clone_deepin_distro
+    case "${ARCH_TYPE}" in
+    arm64) ;;
+    *) distro_does_not_support ;;
+    esac
+    DISTRO_CODE='camel'
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    create_container_edition_txt
+    git_clone_deepin_distro
 }
 ##########
 git_clone_deepin_distro() {
-	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
-	cd "${ROOTFS_DIR}"
-	case "${ARCH_TYPE}" in
-	amd64 | i386 | arm64)
-		go_to_proot_management
-		DEEPIN_ROOTFS_FILE_NAME="${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}-rootfs.tar.xz"
-		if [ ! -e "${DEEPIN_ROOTFS_FILE_NAME}" ]; then
-			TEMP_DIR=".DEEPIN_${ARCH_TYPE}-TEMP_FOLDER"
-			[[ ! -e ${TEMP_DIR} ]] || rm -rfv "${TEMP_DIR}"
+    [[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
+    cd "${ROOTFS_DIR}"
+    case "${ARCH_TYPE}" in
+    amd64 | i386 | arm64)
+        go_to_proot_management
+        DEEPIN_ROOTFS_FILE_NAME="${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}-rootfs.tar.xz"
+        if [ ! -e "${DEEPIN_ROOTFS_FILE_NAME}" ]; then
+            TEMP_DIR=".DEEPIN_${ARCH_TYPE}-TEMP_FOLDER"
+            [[ ! -e ${TEMP_DIR} ]] || rm -rfv "${TEMP_DIR}"
 
-			git clone \
-				--depth=1 \
-				"${AK2_GIT_URL}/${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}.git" \
-				"${TEMP_DIR}"
+            git clone \
+                --depth=1 \
+                "${AK2_GIT_URL}/${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}.git" \
+                "${TEMP_DIR}"
 
-			cd "${TEMP_DIR}"
-			cat .container_linux_* >"${DEEPIN_ROOTFS_FILE_NAME}"
-			mv -fv "${DEEPIN_ROOTFS_FILE_NAME}" ../
-			cd ..
-			rm -rvf "${TEMP_DIR}"
-		fi
-		bash -c "$(sed -n p \
-			${TMOE_SHARE_DIR}/container/install |
-			sed -E \
-				-e "s/debian (container)/${DISTRO_NAME} \1/g" \
-				-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-				-e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
-		;;
-	*) distro_does_not_support ;;
-	esac
+            cd "${TEMP_DIR}"
+            cat .container_linux_* >"${DEEPIN_ROOTFS_FILE_NAME}"
+            mv -fv "${DEEPIN_ROOTFS_FILE_NAME}" ../
+            cd ..
+            rm -rvf "${TEMP_DIR}"
+        fi
+        bash -c "$(sed -n p \
+            ${TMOE_SHARE_DIR}/container/install |
+            sed -E \
+                -e "s/debian (container)/${DISTRO_NAME} \1/g" \
+                -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+                -e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
+        ;;
+    *) distro_does_not_support ;;
+    esac
 }
 ###############
 install_deepin_linux_distro() {
-	RETURN_TO_WHERE='install_deepin_linux_distro'
-	ALPHA_SYSTEM=$(
-		whiptail --title "DEEPIN" --menu "deepin20正式版采取统一的设计风格,从桌面环境\n和应用进行重新设计,带来焕然一新的视觉感受" 0 50 0 \
-			"1" "deepin20 apricot(x64,i386) 大小40M" \
-			"2" "deepin15.5 camel(arm64) 大小78M" \
-			"0" "🌚 Back 返回" \
-			3>&1 1>&2 2>&3
-	)
-	#"999" "uos20 eagle(arm64,x64,i386) 大小38M" \
-	##############################
-	case "${ALPHA_SYSTEM}" in
-	0 | "") install_chroot_exclusive_containers ;;
-	1)
-		DISTRO_NAME='deepin'
-		install_deepin_apricot_amd64_and_i386
-		;;
-	999)
-		DISTRO_NAME='uos'
-		install_uos_eagle
-		;;
-	2)
-		DISTRO_NAME='deepin'
-		install_deepin_camel_arm64
-		;;
-	esac
-	###########################
-	exit 0
+    RETURN_TO_WHERE='install_deepin_linux_distro'
+    ALPHA_SYSTEM=$(
+        whiptail --title "DEEPIN" --menu "deepin20正式版采取统一的设计风格,从桌面环境\n和应用进行重新设计,带来焕然一新的视觉感受" 0 50 0 \
+            "1" "deepin20 apricot(x64,i386) 大小40M" \
+            "2" "deepin15.5 camel(arm64) 大小78M" \
+            "0" "🌚 Back 返回" \
+            3>&1 1>&2 2>&3
+    )
+    #"999" "uos20 eagle(arm64,x64,i386) 大小38M" \
+    ##############################
+    case "${ALPHA_SYSTEM}" in
+    0 | "") install_chroot_exclusive_containers ;;
+    1)
+        DISTRO_NAME='deepin'
+        install_deepin_apricot_amd64_and_i386
+        ;;
+    999)
+        DISTRO_NAME='uos'
+        install_uos_eagle
+        ;;
+    2)
+        DISTRO_NAME='deepin'
+        install_deepin_camel_arm64
+        ;;
+    esac
+    ###########################
+    exit 0
 }
 ##############
 install_alpha_containers() {
-	CLOUD_ROOTFS=false
-	RETURN_TO_WHERE='install_alpha_containers'
-	TITLE="Maintenance has ceased"
-	install_alpha_containers_ja() {
-		MENU="天萌マネージャーの開発者は、次のコンテナーを維持しなくなりました"
-		OPT_1="ラズベリーパイ OS buster"
-		OPT_2="Gentoo(arm64,armhf,x86,x64)"
-		OPT_3="DevuanはDebian から派生したLinuxディストリビューションである"
-		OPT_4="Amazon(arm64, x64)"
-		OPT_5="Oracle(arm64, x64)"
-		OPT_6="VMware photon OS(arm64,x64,optimized for cloud-native apps)"
-		OPT_7="Intel clear linux(x64)"
-		OPT_8="Slackware(armhf, x64)"
-		OPT_9="archcraft(x64)"
-		OPT_0="🌚 戻る"
-	}
-	install_alpha_containers_zh() {
-		MENU="虽然您仍可以安装基础容器,但Tmoe-linux开发者已不再对以下容器进行维护"
-		OPT_1="Raspberry Pi OS 樹莓派 buster"
-		OPT_2="Gentoo(arm64,armhf,x86,x64,追求极限配置和极高自由)"
-		OPT_3="Devuan(不使用systemd,基于debian)"
-		OPT_4="Amazon(arm64,x64,亚马逊云服务器系统)"
-		OPT_5="Oracle(arm64,x64,甲骨文云服务器系统)"
-		OPT_6="VMware photon OS(arm64,x64,为云原生应用优化)"
-		OPT_7="Intel clear linux(x64,专注于服务器的性能优化)"
-		OPT_8="Slackware(armhf, x64)"
-		OPT_9="archcraft(x64, 使用了轻量级的 bspwm & openbox)"
-		OPT_0="🌚 返回上级菜单"
-		#	"9" "SteamOS(x64,蒸汽平台开发商Valve发行的游戏系统,基于debian)" \
-		#"5" "Huawei euler OS(arm64,x64,华为欧拉,服务器系统)" \
-	}
-	install_alpha_containers_en() {
-		MENU="The developer of Tmoe-linux no longer maintain the following containers."
-		OPT_1="Raspberry Pi OS buster"
-		OPT_2="Gentoo(arm64,armhf,x86,x64)"
-		OPT_3="Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd"
-		OPT_4="Amazon(arm64, x64)"
-		OPT_5="Oracle(arm64, x64)"
-		OPT_6="VMware photon OS(arm64,x64,optimized for cloud-native apps)"
-		OPT_7="Intel clear linux(x64)"
-		OPT_8="Slackware(armhf, x64)"
-		OPT_9="archcraft(x64, it uses lightweight bspwm & openbox)"
-		OPT_0="🌚 Return to previous menu"
-	}
+    CLOUD_ROOTFS=false
+    RETURN_TO_WHERE='install_alpha_containers'
+    TITLE="Maintenance has ceased"
+    install_alpha_containers_ja() {
+        MENU="天萌マネージャーの開発者は、次のコンテナーを維持しなくなりました"
+        OPT_1="ラズベリーパイ OS buster"
+        OPT_2="Gentoo(arm64,armhf,x86,x64)"
+        OPT_3="DevuanはDebian から派生したLinuxディストリビューションである"
+        OPT_4="Amazon(arm64, x64)"
+        OPT_5="Oracle(arm64, x64)"
+        OPT_6="VMware photon OS(arm64,x64,optimized for cloud-native apps)"
+        OPT_7="Intel clear linux(x64)"
+        OPT_8="Slackware(armhf, x64)"
+        OPT_9="archcraft(x64)"
+        OPT_0="🌚 戻る"
+    }
+    install_alpha_containers_zh() {
+        MENU="虽然您仍可以安装基础容器,但Tmoe-linux开发者已不再对以下容器进行维护"
+        OPT_1="Raspberry Pi OS 樹莓派 buster"
+        OPT_2="Gentoo(arm64,armhf,x86,x64,追求极限配置和极高自由)"
+        OPT_3="Devuan(不使用systemd,基于debian)"
+        OPT_4="Amazon(arm64,x64,亚马逊云服务器系统)"
+        OPT_5="Oracle(arm64,x64,甲骨文云服务器系统)"
+        OPT_6="VMware photon OS(arm64,x64,为云原生应用优化)"
+        OPT_7="Intel clear linux(x64,专注于服务器的性能优化)"
+        OPT_8="Slackware(armhf, x64)"
+        OPT_9="archcraft(x64, 使用了轻量级的 bspwm & openbox)"
+        OPT_0="🌚 返回上级菜单"
+        #	"9" "SteamOS(x64,蒸汽平台开发商Valve发行的游戏系统,基于debian)" \
+        #"5" "Huawei euler OS(arm64,x64,华为欧拉,服务器系统)" \
+    }
+    install_alpha_containers_en() {
+        MENU="The developer of Tmoe-linux no longer maintain the following containers."
+        OPT_1="Raspberry Pi OS buster"
+        OPT_2="Gentoo(arm64,armhf,x86,x64)"
+        OPT_3="Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd"
+        OPT_4="Amazon(arm64, x64)"
+        OPT_5="Oracle(arm64, x64)"
+        OPT_6="VMware photon OS(arm64,x64,optimized for cloud-native apps)"
+        OPT_7="Intel clear linux(x64)"
+        OPT_8="Slackware(armhf, x64)"
+        OPT_9="archcraft(x64, it uses lightweight bspwm & openbox)"
+        OPT_0="🌚 Return to previous menu"
+    }
 
-	install_alpha_containers_menu() {
-		ALPHA_SYSTEM=$(
-			whiptail --title "${TITLE}" --menu "${MENU}" 0 55 0 \
-				"1" "${OPT_1}" \
-				"2" "${OPT_2}" \
-				"3" "${OPT_3}" \
-				"4" "${OPT_4}" \
-				"5" "${OPT_5}" \
-				"6" "${OPT_6}" \
-				"7" "${OPT_7}" \
-				"8" "${OPT_8}" \
-				"9" "${OPT_9}" \
-				"0" "${OPT_0}" \
-				3>&1 1>&2 2>&3
-		)
-	}
-	#"999" "Huawei euler OS(arm64,x64)"
-	#SteamOS(x64,Valve steam os,based on Debian GNU/Linux)
-	#"99" "Microsoft CBL-Mariner(x64,为azure优化,用于微软的云基础设施和边缘产品和服务)" \
-	##############################
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) install_alpha_containers_zh ;;
-	ja_JP.UTF-8) install_alpha_containers_ja ;;
-	*) install_alpha_containers_en ;;
-	esac
-	install_alpha_containers_menu
-	case "${ALPHA_SYSTEM}" in
-	0 | "") choose_which_gnu_linux_distro ;;
-	1) install_raspios_linux_distro ;;
-	2) install_gentoo_linux_distro ;;
-	3) install_devuan_linux_distro ;;
-	4) install_amazon_linux_distro ;;
-	5) install_oracle_linux_distro ;;
-	6) install_photon_linux_distro ;;
-	7) install_clear_linux_distro ;;
-	8) install_slackware_linux_distro ;;
-	9) install_archcraft_distro ;;
-	esac
-	#999) install_euler_linux_distro ;;
-	###########################
-	exit 0
+    install_alpha_containers_menu() {
+        ALPHA_SYSTEM=$(
+            whiptail --title "${TITLE}" --menu "${MENU}" 0 55 0 \
+                "1" "${OPT_1}" \
+                "2" "${OPT_2}" \
+                "3" "${OPT_3}" \
+                "4" "${OPT_4}" \
+                "5" "${OPT_5}" \
+                "6" "${OPT_6}" \
+                "7" "${OPT_7}" \
+                "8" "${OPT_8}" \
+                "9" "${OPT_9}" \
+                "0" "${OPT_0}" \
+                3>&1 1>&2 2>&3
+        )
+    }
+    #"999" "Huawei euler OS(arm64,x64)"
+    #SteamOS(x64,Valve steam os,based on Debian GNU/Linux)
+    #"99" "Microsoft CBL-Mariner(x64,为azure优化,用于微软的云基础设施和边缘产品和服务)" \
+    ##############################
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) install_alpha_containers_zh ;;
+    ja_JP.UTF-8) install_alpha_containers_ja ;;
+    *) install_alpha_containers_en ;;
+    esac
+    install_alpha_containers_menu
+    case "${ALPHA_SYSTEM}" in
+    0 | "") choose_which_gnu_linux_distro ;;
+    1) install_raspios_linux_distro ;;
+    2) install_gentoo_linux_distro ;;
+    3) install_devuan_linux_distro ;;
+    4) install_amazon_linux_distro ;;
+    5) install_oracle_linux_distro ;;
+    6) install_photon_linux_distro ;;
+    7) install_clear_linux_distro ;;
+    8) install_slackware_linux_distro ;;
+    9) install_archcraft_distro ;;
+    esac
+    #999) install_euler_linux_distro ;;
+    ###########################
+    exit 0
 }
 #########################
 install_archcraft_distro() {
-	cat <<-'EOF'
+    cat <<-'EOF'
 		COMPLETED=true
 		DISTRO_NAME="archcraft_amd64"
 		ROOTFS_FILE="archcraft_amd64+bspwm-2021_10-31-rootfs.tar.zst"
@@ -1148,37 +1147,37 @@ install_archcraft_distro() {
 		ZST_SIZE="1.2G"
 		TAR_SIZE="4.7G"
 	EOF
-	do_you_want_to_continue
+    do_you_want_to_continue
 
-	DISTRO_NAME='archcraft'
-	DISTRO_NAME_02="archcraft"
-	DESKTOP="openbox"
-	unset DISTRO_CODE
-	TMOE_LINUX_CONTAINER_DISTRO='archcraft'
-	ROOTFS_FILE="archcraft_amd64+bspwm-2021_10-31-rootfs.tar.zst"
-	case "${ARCH_TYPE}" in
-	'amd64')
-		create_container_edition_txt
-		create_container_edition_txt_02
-		go_to_proot_management
-		download_rootfs_from_node_03
-		;;
-	*) distro_does_not_support ;;
-	esac
-	# unset WEEKLY_BUILD_CONTAINER
+    DISTRO_NAME='archcraft'
+    DISTRO_NAME_02="archcraft"
+    DESKTOP="openbox"
+    unset DISTRO_CODE
+    TMOE_LINUX_CONTAINER_DISTRO='archcraft'
+    ROOTFS_FILE="archcraft_amd64+bspwm-2021_10-31-rootfs.tar.zst"
+    case "${ARCH_TYPE}" in
+    'amd64')
+        create_container_edition_txt
+        create_container_edition_txt_02
+        go_to_proot_management
+        download_rootfs_from_node_03
+        ;;
+    *) distro_does_not_support ;;
+    esac
+    # unset WEEKLY_BUILD_CONTAINER
 }
 install_clear_linux_distro() {
-	DISTRO_NAME='clear'
-	unset DISTRO_CODE
-	TMOE_LINUX_CONTAINER_DISTRO='clear'
-	case "${ARCH_TYPE}" in
-	'amd64')
-		create_container_edition_txt
-		go_to_proot_management
-		git_clone_linux_distro_rootfs_01
-		;;
-	*) distro_does_not_support ;;
-	esac
+    DISTRO_NAME='clear'
+    unset DISTRO_CODE
+    TMOE_LINUX_CONTAINER_DISTRO='clear'
+    case "${ARCH_TYPE}" in
+    'amd64')
+        create_container_edition_txt
+        go_to_proot_management
+        git_clone_linux_distro_rootfs_01
+        ;;
+    *) distro_does_not_support ;;
+    esac
 }
 # install_steam_linux_distro() {
 # 	DISTRO_NAME='steamos'
@@ -1186,726 +1185,726 @@ install_clear_linux_distro() {
 # 	git_clone_amd64_distro_from_gitee
 # }
 git_clone_amd64_distro_from_gitee() {
-	DISTRO_CODE_02="${DISTRO_CODE}"
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	case "${ARCH_TYPE}" in
-	'amd64')
-		create_container_edition_txt
-		go_to_proot_management
-		git_clone_linux_distro_rootfs_01
-		;;
-	*) distro_does_not_support ;;
-	esac
+    DISTRO_CODE_02="${DISTRO_CODE}"
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    case "${ARCH_TYPE}" in
+    'amd64')
+        create_container_edition_txt
+        go_to_proot_management
+        git_clone_linux_distro_rootfs_01
+        ;;
+    *) distro_does_not_support ;;
+    esac
 }
 install_puppy_linux_distro() {
-	DISTRO_NAME='puppy'
-	DISTRO_CODE='fossa'
-	git_clone_amd64_distro_from_gitee
+    DISTRO_NAME='puppy'
+    DISTRO_CODE='fossa'
+    git_clone_amd64_distro_from_gitee
 }
 install_pop_distro() {
-	DISTRO_NAME='pop'
-	DISTRO_CODE='focal'
-	git_clone_amd64_distro_from_gitee
+    DISTRO_NAME='pop'
+    DISTRO_CODE='focal'
+    git_clone_amd64_distro_from_gitee
 }
 install_solus_distro() {
-	DISTRO_NAME='solus'
-	DISTRO_CODE='4.2'
-	git_clone_amd64_distro_from_gitee
+    DISTRO_NAME='solus'
+    DISTRO_CODE='4.2'
+    git_clone_amd64_distro_from_gitee
 }
 install_euler_linux_distro() {
-	DISTRO_NAME='euler'
-	unset DISTRO_CODE
-	TMOE_LINUX_CONTAINER_DISTRO='euler'
-	case "${ARCH_TYPE}" in
-	'amd64' | 'arm64')
-		create_container_edition_txt
-		go_to_proot_management
-		git_clone_linux_distro_rootfs_01
-		;;
-	*) distro_does_not_support ;;
-	esac
+    DISTRO_NAME='euler'
+    unset DISTRO_CODE
+    TMOE_LINUX_CONTAINER_DISTRO='euler'
+    case "${ARCH_TYPE}" in
+    'amd64' | 'arm64')
+        create_container_edition_txt
+        go_to_proot_management
+        git_clone_linux_distro_rootfs_01
+        ;;
+    *) distro_does_not_support ;;
+    esac
 }
 install_photon_linux_distro() {
-	DISTRO_NAME='photon'
-	unset DISTRO_CODE
-	TMOE_LINUX_CONTAINER_DISTRO='photon'
-	case "${ARCH_TYPE}" in
-	'amd64' | 'arm64')
-		create_container_edition_txt
-		go_to_proot_management
-		git_clone_linux_distro_rootfs_01
-		;;
-	*) distro_does_not_support ;;
-	esac
+    DISTRO_NAME='photon'
+    unset DISTRO_CODE
+    TMOE_LINUX_CONTAINER_DISTRO='photon'
+    case "${ARCH_TYPE}" in
+    'amd64' | 'arm64')
+        create_container_edition_txt
+        go_to_proot_management
+        git_clone_linux_distro_rootfs_01
+        ;;
+    *) distro_does_not_support ;;
+    esac
 }
 install_amazon_linux_distro() {
-	DISTRO_NAME='amazon'
-	DISTRO_CODE='2'
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	case "${ARCH_TYPE}" in
-	'amd64' | 'arm64')
-		create_container_edition_txt
-		create_container_edition_txt_02
-		go_to_proot_management
-		git_clone_linux_distro_rootfs_01
-		;;
-	*) distro_does_not_support ;;
-	esac
+    DISTRO_NAME='amazon'
+    DISTRO_CODE='2'
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    case "${ARCH_TYPE}" in
+    'amd64' | 'arm64')
+        create_container_edition_txt
+        create_container_edition_txt_02
+        go_to_proot_management
+        git_clone_linux_distro_rootfs_01
+        ;;
+    *) distro_does_not_support ;;
+    esac
 }
 install_oracle_linux_distro() {
-	DISTRO_NAME='oracle'
-	DISTRO_CODE=8
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	case "${ARCH_TYPE}" in
-	'arm64')
-		create_container_edition_txt
-		go_to_proot_management
-		git_clone_linux_distro_rootfs_01
-		;;
-	amd64)
-		CLOUD_ROOTFS=true
-		DISTRO_CODE=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/oracle/ | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1 | cut -d '/' -f 1)
-		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-		create_container_edition_txt
-		go_to_proot_management
-		linux_distro_common_model_04
-		;;
-	*) distro_does_not_support ;;
-	esac
+    DISTRO_NAME='oracle'
+    DISTRO_CODE=8
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    case "${ARCH_TYPE}" in
+    'arm64')
+        create_container_edition_txt
+        go_to_proot_management
+        git_clone_linux_distro_rootfs_01
+        ;;
+    amd64)
+        CLOUD_ROOTFS=true
+        DISTRO_CODE=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/oracle/ | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1 | cut -d '/' -f 1)
+        TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+        create_container_edition_txt
+        go_to_proot_management
+        linux_distro_common_model_04
+        ;;
+    *) distro_does_not_support ;;
+    esac
 }
 ####################
 git_clone_linux_distro_rootfs_01() {
-	# set -x
-	mkdir -pv ${ROOTFS_DIR}
-	cd ${ROOTFS_DIR}
-	case ${DISTRO_CODE} in
-	"")
-		DISTRO_NAME_03="${DISTRO_NAME}"
-		GIT_REPO_NAME="${DISTRO_NAME}_${ARCH_TYPE}"
-		;;
-	*)
-		DISTRO_NAME_03="${DISTRO_NAME}-${DISTRO_CODE}"
-		GIT_REPO_NAME="${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}"
-		;;
-	esac
-	ROOTFS_FILE_NAME="${GIT_REPO_NAME}-rootfs.tar.xz"
-	echo "$ROOTFS_FILE_NAME"
-	if [ ! -e "${ROOTFS_FILE_NAME}" ]; then
-		TEMP_DIR=".${TMOE_LINUX_CONTAINER_DISTRO}-TEMP_FOLDER"
-		[[ ! -e ${TEMP_DIR} ]] || rm -rfv "${TEMP_DIR}"
-		pwd
+    # set -x
+    mkdir -pv ${ROOTFS_DIR}
+    cd ${ROOTFS_DIR}
+    case ${DISTRO_CODE} in
+    "")
+        DISTRO_NAME_03="${DISTRO_NAME}"
+        GIT_REPO_NAME="${DISTRO_NAME}_${ARCH_TYPE}"
+        ;;
+    *)
+        DISTRO_NAME_03="${DISTRO_NAME}-${DISTRO_CODE}"
+        GIT_REPO_NAME="${DISTRO_NAME}-${DISTRO_CODE}_${ARCH_TYPE}"
+        ;;
+    esac
+    ROOTFS_FILE_NAME="${GIT_REPO_NAME}-rootfs.tar.xz"
+    echo "$ROOTFS_FILE_NAME"
+    if [ ! -e "${ROOTFS_FILE_NAME}" ]; then
+        TEMP_DIR=".${TMOE_LINUX_CONTAINER_DISTRO}-TEMP_FOLDER"
+        [[ ! -e ${TEMP_DIR} ]] || rm -rfv "${TEMP_DIR}"
+        pwd
 
-		git clone \
-			--depth=1 \
-			"${AK2_GIT_URL}/${GIT_REPO_NAME}.git" \
-			"${TEMP_DIR}"
+        git clone \
+            --depth=1 \
+            "${AK2_GIT_URL}/${GIT_REPO_NAME}.git" \
+            "${TEMP_DIR}"
 
-		cd ${TEMP_DIR}
-		cat .container_linux_* >"${ROOTFS_FILE_NAME}"
-		mv -fv "${ROOTFS_FILE_NAME}" ../
-		cd ..
-		rm -rvf "${TEMP_DIR}"
-	fi
-	bash -c "$(sed -n p \
-		"${TMOE_SHARE_DIR}"/container/install |
-		sed -E \
-			-e "s@debian (container)@${DISTRO_NAME} \1@g" \
-			-e "s:debian-sid:${DISTRO_NAME_03}:g" \
-			-e "s@Debian (GNU/Linux)@${DISTRO_NAME} \1@g")"
+        cd ${TEMP_DIR}
+        cat .container_linux_* >"${ROOTFS_FILE_NAME}"
+        mv -fv "${ROOTFS_FILE_NAME}" ../
+        cd ..
+        rm -rvf "${TEMP_DIR}"
+    fi
+    bash -c "$(sed -n p \
+        "${TMOE_SHARE_DIR}"/container/install |
+        sed -E \
+            -e "s@debian (container)@${DISTRO_NAME} \1@g" \
+            -e "s:debian-sid:${DISTRO_NAME_03}:g" \
+            -e "s@Debian (GNU/Linux)@${DISTRO_NAME} \1@g")"
 }
 download_rootfs_from_node_03() {
-	ROOTFS_VERSION="latest02"
-	NODE_URL="${NODE03_URL}"
-	NODE_NAME="node03-azure"
-	DISTRO_CODE="${DESKTOP}"
-	DISTRO_NAME_02="${DISTRO_NAME}"
-	# NODE01_ENABLED=false
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
+    ROOTFS_VERSION="latest02"
+    NODE_URL="${NODE03_URL}"
+    NODE_NAME="node03-azure"
+    DISTRO_CODE="${DESKTOP}"
+    DISTRO_NAME_02="${DISTRO_NAME}"
+    # NODE01_ENABLED=false
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DESKTOP}"
 
-	bash -c "$(sed -n p \
-		"${TMOE_SHARE_DIR}"/container/install |
-		sed -E \
-			-e "1a\WEEKLY_BUILD_CONTAINER=true" \
-			-e "1a\DESKTOP=${DESKTOP}" \
-			-e "1a\NODE_URL=${NODE_URL}" \
-			-e "1a\NODE02_USER=${NODE02_USER}" \
-			-e "1a\NODE02_PW=${NODE02_PW}" \
-			-e "1a\ROOTFS_VERSION=${ROOTFS_VERSION}" \
-			-e "1a\NODE_NAME=${NODE_NAME}" \
-			-e "s@(TMOE_ROOTFS_TAR_XZ)=.*debian-sid_.*@\1=${ROOTFS_FILE}@" \
-			-e "s/debian (container)/${DISTRO_NAME} \1/g" \
-			-e "s@BFSU Open Source Mirror Station@${NODE_NAME}@" \
-			-e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
+    bash -c "$(sed -n p \
+        "${TMOE_SHARE_DIR}"/container/install |
+        sed -E \
+            -e "1a\WEEKLY_BUILD_CONTAINER=true" \
+            -e "1a\DESKTOP=${DESKTOP}" \
+            -e "1a\NODE_URL=${NODE_URL}" \
+            -e "1a\NODE02_USER=${NODE02_USER}" \
+            -e "1a\NODE02_PW=${NODE02_PW}" \
+            -e "1a\ROOTFS_VERSION=${ROOTFS_VERSION}" \
+            -e "1a\NODE_NAME=${NODE_NAME}" \
+            -e "s@(TMOE_ROOTFS_TAR_XZ)=.*debian-sid_.*@\1=${ROOTFS_FILE}@" \
+            -e "s/debian (container)/${DISTRO_NAME} \1/g" \
+            -e "s@BFSU Open Source Mirror Station@${NODE_NAME}@" \
+            -e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
 }
 #######################
 install_beta_containers() {
-	CLOUD_ROOTFS=false
-	install_beta_containers_zh() {
-		BETA_SYSTEM=$(
-			whiptail --title "Beta features" --menu "公测版容器将带给您别样的惊喜\nBeta container, endless fun." 0 55 0 \
-				"1" "🏔️ Alpine(基于musl libc和busybox,超精简系统)" \
-				"2" "CentOS(基于红帽的社区企业操作系统)" \
-				"3" "Rocky(arm64,x64,enterprise-grade, production-ready)" \
-				"4" "🐶 Puppy(x64,小巧且易用,速度快)" \
-				"5" "Void(基于xbps包管理器的独立发行版)" \
-				"6" "🌿 Mint(x86,x64,简单易用的系统)" \
-				"7" "Solus(x64,一个对新手友好的发行版)" \
-				"8" "Pop！_OS(x64,让桌面更具生产力,激发专业人员的创造力)" \
-				"0" "🌚 Return to previous menu 返回上级菜单" \
-				3>&1 1>&2 2>&3
-		)
-	}
-	install_beta_containers_ja() {
-		BETA_SYSTEM=$(
-			whiptail --title "Beta features" --menu "Beta container, endless fun." 0 55 0 \
-				"1" "🏔️ Alpine:セキュリティ・シンプルさ・リソース効率を重視するパワーユーザー向けに設計されている" \
-				"2" "CentOS:RHELと機能的に互換性があることを目指したフリーのLinuxディストリビューションである" \
-				"3" "Rocky(arm64,x64, enterprise-grade, production-ready)" \
-				"4" "🐶 Puppy(x64,extremely low minimum system requirements)" \
-				"5" "Void:ゼロから設計および実装されたX Binary Package System" \
-				"6" "🌿 Mint(x86,x64,洗練され、最新で快適なLinuxデスクトップを提供すること)" \
-				"7" "Solus(x64,以前はEvolve OSとして知られていた)" \
-				"8" "Pop！_OS(x64，based upon Ubuntu)" \
-				"0" "🌚 戻る" \
-				3>&1 1>&2 2>&3
-		)
-	}
-	install_beta_containers_en() {
-		BETA_SYSTEM=$(
-			whiptail --title "Beta features" --menu "Beta container, endless fun." 0 55 0 \
-				"1" "🏔️ Alpine:Small. Simple. Secure. Alpine Linux is a security-oriented, lightweight Linux distribution based on musl libc and busybox" \
-				"2" "CentOS is a community-driven free software effort focused on delivering a robust open source ecosystem around a Linux platform" \
-				"3" "Rocky(arm64,x64, enterprise-grade, production-ready)" \
-				"4" "🐶 Puppy(x64,extremely low minimum system requirements)" \
-				"5" "Void is a general purpose operating system, based on the monolithic Linux kernel" \
-				"6" "🌿 Mint(x86,x64,elegant, easy to use, up to date and comfortable GNU/Linux desktop distribution)" \
-				"7" "Solus(x64,designed for home computing)" \
-				"8" "Pop！_OS(x64,for STEM and creative professionals who use their computer as a tool to discover and create)" \
-				"0" "🌚 Return to previous menu" \
-				3>&1 1>&2 2>&3
-		)
-	}
-	##############################
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) install_beta_containers_zh ;;
-	ja_JP.UTF-8) install_beta_containers_ja ;;
-	*) install_beta_containers_en ;;
-	esac
+    CLOUD_ROOTFS=false
+    install_beta_containers_zh() {
+        BETA_SYSTEM=$(
+            whiptail --title "Beta features" --menu "公测版容器将带给您别样的惊喜\nBeta container, endless fun." 0 55 0 \
+                "1" "🏔️ Alpine(基于musl libc和busybox,超精简系统)" \
+                "2" "CentOS(基于红帽的社区企业操作系统)" \
+                "3" "Rocky(arm64,x64,enterprise-grade, production-ready)" \
+                "4" "🐶 Puppy(x64,小巧且易用,速度快)" \
+                "5" "Void(基于xbps包管理器的独立发行版)" \
+                "6" "🌿 Mint(x86,x64,简单易用的系统)" \
+                "7" "Solus(x64,一个对新手友好的发行版)" \
+                "8" "Pop！_OS(x64,让桌面更具生产力,激发专业人员的创造力)" \
+                "0" "🌚 Return to previous menu 返回上级菜单" \
+                3>&1 1>&2 2>&3
+        )
+    }
+    install_beta_containers_ja() {
+        BETA_SYSTEM=$(
+            whiptail --title "Beta features" --menu "Beta container, endless fun." 0 55 0 \
+                "1" "🏔️ Alpine:セキュリティ・シンプルさ・リソース効率を重視するパワーユーザー向けに設計されている" \
+                "2" "CentOS:RHELと機能的に互換性があることを目指したフリーのLinuxディストリビューションである" \
+                "3" "Rocky(arm64,x64, enterprise-grade, production-ready)" \
+                "4" "🐶 Puppy(x64,extremely low minimum system requirements)" \
+                "5" "Void:ゼロから設計および実装されたX Binary Package System" \
+                "6" "🌿 Mint(x86,x64,洗練され、最新で快適なLinuxデスクトップを提供すること)" \
+                "7" "Solus(x64,以前はEvolve OSとして知られていた)" \
+                "8" "Pop！_OS(x64，based upon Ubuntu)" \
+                "0" "🌚 戻る" \
+                3>&1 1>&2 2>&3
+        )
+    }
+    install_beta_containers_en() {
+        BETA_SYSTEM=$(
+            whiptail --title "Beta features" --menu "Beta container, endless fun." 0 55 0 \
+                "1" "🏔️ Alpine:Small. Simple. Secure. Alpine Linux is a security-oriented, lightweight Linux distribution based on musl libc and busybox" \
+                "2" "CentOS is a community-driven free software effort focused on delivering a robust open source ecosystem around a Linux platform" \
+                "3" "Rocky(arm64,x64, enterprise-grade, production-ready)" \
+                "4" "🐶 Puppy(x64,extremely low minimum system requirements)" \
+                "5" "Void is a general purpose operating system, based on the monolithic Linux kernel" \
+                "6" "🌿 Mint(x86,x64,elegant, easy to use, up to date and comfortable GNU/Linux desktop distribution)" \
+                "7" "Solus(x64,designed for home computing)" \
+                "8" "Pop！_OS(x64,for STEM and creative professionals who use their computer as a tool to discover and create)" \
+                "0" "🌚 Return to previous menu" \
+                3>&1 1>&2 2>&3
+        )
+    }
+    ##############################
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) install_beta_containers_zh ;;
+    ja_JP.UTF-8) install_beta_containers_ja ;;
+    *) install_beta_containers_en ;;
+    esac
 
-	case "${BETA_SYSTEM}" in
-	0 | "") choose_which_gnu_linux_distro ;;
-	1)
-		TMOE_LINUX_CONTAINER_DISTRO='alpine'
-		install_alpine_linux_distro
-		;;
-	2)
-		CLOUD_ROOTFS=true
-		install_centos_linux_distro
-		;;
-	3)
-		CLOUD_ROOTFS=true
-		install_rocky_linux_distro
-		;;
-	4) install_puppy_linux_distro ;;
-	5)
-		TMOE_LINUX_CONTAINER_DISTRO='void'
-		create_container_edition_txt
-		install_void_linux_distro
-		;;
-	6) install_mint_linux_distro ;;
-	7) install_solus_distro ;;
-	8) install_pop_distro ;;
-	esac
-	######################
-	exit 0
+    case "${BETA_SYSTEM}" in
+    0 | "") choose_which_gnu_linux_distro ;;
+    1)
+        TMOE_LINUX_CONTAINER_DISTRO='alpine'
+        install_alpine_linux_distro
+        ;;
+    2)
+        CLOUD_ROOTFS=true
+        install_centos_linux_distro
+        ;;
+    3)
+        CLOUD_ROOTFS=true
+        install_rocky_linux_distro
+        ;;
+    4) install_puppy_linux_distro ;;
+    5)
+        TMOE_LINUX_CONTAINER_DISTRO='void'
+        create_container_edition_txt
+        install_void_linux_distro
+        ;;
+    6) install_mint_linux_distro ;;
+    7) install_solus_distro ;;
+    8) install_pop_distro ;;
+    esac
+    ######################
+    exit 0
 }
 #####################
 install_ubuntu_gnu_linux_distro() {
-	DISTRO_NAME='ubuntu'
-	DISTRO_CODE='focal'
-	DEB_BOOT_STRAP=false
-	RETURN_TO_WHERE='install_ubuntu_gnu_linux_distro'
-	COMPATIBILITY_MODE=false
-	TITLE="Which version do you want to install?"
-	install_ubuntu_gnu_linux_distro_zh() {
-		MENU="2022至2027年的长期支持版为jammy 22.04(2022年4月正式发布)\n设x=当前年份,若x>=2023,则请手动输入版本代号"
-		OPT_1="22.04(LTS) 果酱水母 Jammy Jellyfish"
-		OPT_2="🐒 21.10 頑皮大狐猴 Impish Indri"
-		# OPT_3="🦛 21.04 多毛河馬 Hirsute Hippo"
-		OPT_3="🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa"
-		OPT_4="18.04(LTS)仿生海狸 Bionic Beaver"
-		OPT_5="Compatibility mode 兼容模式(仅安装)"
-		OPT_6="Custom code手动输入版本代号"
-		OPT_7="使用debootstrap手动构建"
-		OPT_8="Latest(自動檢測22.10)"
-		OPT_0="🌚 Return to previous menu 返回上级菜单"
+    DISTRO_NAME='ubuntu'
+    DISTRO_CODE='focal'
+    DEB_BOOT_STRAP=false
+    RETURN_TO_WHERE='install_ubuntu_gnu_linux_distro'
+    COMPATIBILITY_MODE=false
+    TITLE="Which version do you want to install?"
+    install_ubuntu_gnu_linux_distro_zh() {
+        MENU="2022至2027年的长期支持版为jammy 22.04(2022年4月正式发布)\n设x=当前年份,若x>=2023,则请手动输入版本代号"
+        OPT_1="22.04(LTS) 果酱水母 Jammy Jellyfish"
+        OPT_2="🐒 21.10 頑皮大狐猴 Impish Indri"
+        # OPT_3="🦛 21.04 多毛河馬 Hirsute Hippo"
+        OPT_3="🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa"
+        OPT_4="18.04(LTS)仿生海狸 Bionic Beaver"
+        OPT_5="Compatibility mode 兼容模式(仅安装)"
+        OPT_6="Custom code手动输入版本代号"
+        OPT_7="使用debootstrap手动构建"
+        OPT_8="Latest(自動檢測22.10)"
+        OPT_0="🌚 Return to previous menu 返回上级菜单"
 
-	}
-	#	"8" "🐿️ 16.04(LTS)Xenial Xerus 好客的非洲地松鼠" \
-	install_ubuntu_gnu_linux_distro_ja() {
-		MENU="x =現在の年とします、x> = 2023の場合は、コードをカスタマイズしてください"
-		OPT_1="22.04(LTS) Jammy Jellyfish"
-		OPT_2="🐒 21.10 Impish Indri"
-		# OPT_3="🦛 21.04 Hirsute Hippo"
-		OPT_3="🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ"
-		OPT_4="18.04(LTS)Bionic Beaver"
-		OPT_5="互換モード"
-		OPT_6="カスタムコード"
-		OPT_7="debootstrapを使用して手動でビルドする"
-		OPT_8="Latest(最新バージョンを自動的に検出)"
-		OPT_0="🌚 戻る"
-	}
-	install_ubuntu_gnu_linux_distro_en() {
-		MENU="The long-term support version between 2022 and 2027 is jammy(22.04).\nLet x = current year, if x>=2023,then customize the version code"
-		OPT_1="22.04(LTS) Jammy Jellyfish"
-		OPT_2="🐒 21.10 Impish Indri"
-		# OPT_3="🦛 21.04 Hirsute Hippo"
-		OPT_3="🐱 20.04(LTS)Focal Fossa"
-		OPT_4="18.04(LTS)Bionic Beaver"
-		OPT_5="Compatibility mode"
-		OPT_6="Custom code"
-		OPT_7="Manually build"
-		OPT_8="Latest"
-		OPT_0="🌚 Return to previous menu"
-	}
-	install_ubuntu_gnu_linux_distro_menu() {
-		BETA_SYSTEM=$(
-			whiptail \
-				--title "${TITLE}" \
-				--menu "${MENU}" 0 50 0 \
-				"1" "${OPT_1}" \
-				"2" "${OPT_2}" \
-				"3" "${OPT_3}" \
-				"4" "${OPT_4}" \
-				"5" "${OPT_5}" \
-				"6" "${OPT_6}" \
-				"7" "${OPT_7}" \
-				"8" "${OPT_8}" \
-				"0" "${OPT_0}" \
-				3>&1 1>&2 2>&3
-		)
-		# "9" "${OPT_9}" \
-	}
-	#🦦
-	case ${TMOE_MENU_LANG} in
-	zh_*UTF-8) install_ubuntu_gnu_linux_distro_zh ;;
-	ja_JP.UTF-8) install_ubuntu_gnu_linux_distro_ja ;;
-	*) install_ubuntu_gnu_linux_distro_en ;;
-	esac
-	install_ubuntu_gnu_linux_distro_menu
-	##############################
-	case "${BETA_SYSTEM}" in
-	0 | "") choose_which_gnu_linux_distro ;;
-	1) DISTRO_CODE='jammy' ;;
-	2) DISTRO_CODE='impish' ;;
-	# 3) DISTRO_CODE='hirsute' ;;
-	3) DISTRO_CODE='focal' ;;
-	4) DISTRO_CODE='bionic' ;;
-	5)
-		COMPATIBILITY_MODE=true
-		custom_ubuntu_version
-		;;
-	6) custom_ubuntu_version ;;
-	7) debootstrap_ubuntu_distro ;;
-	8) check_the_latest_ubuntu_version ;;
-	esac
-	######################
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	create_container_edition_txt
-	go_to_proot_management
-	####################
-	exit 0
+    }
+    #	"8" "🐿️ 16.04(LTS)Xenial Xerus 好客的非洲地松鼠" \
+    install_ubuntu_gnu_linux_distro_ja() {
+        MENU="x =現在の年とします、x> = 2023の場合は、コードをカスタマイズしてください"
+        OPT_1="22.04(LTS) Jammy Jellyfish"
+        OPT_2="🐒 21.10 Impish Indri"
+        # OPT_3="🦛 21.04 Hirsute Hippo"
+        OPT_3="🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ"
+        OPT_4="18.04(LTS)Bionic Beaver"
+        OPT_5="互換モード"
+        OPT_6="カスタムコード"
+        OPT_7="debootstrapを使用して手動でビルドする"
+        OPT_8="Latest(最新バージョンを自動的に検出)"
+        OPT_0="🌚 戻る"
+    }
+    install_ubuntu_gnu_linux_distro_en() {
+        MENU="The long-term support version between 2022 and 2027 is jammy(22.04).\nLet x = current year, if x>=2023,then customize the version code"
+        OPT_1="22.04(LTS) Jammy Jellyfish"
+        OPT_2="🐒 21.10 Impish Indri"
+        # OPT_3="🦛 21.04 Hirsute Hippo"
+        OPT_3="🐱 20.04(LTS)Focal Fossa"
+        OPT_4="18.04(LTS)Bionic Beaver"
+        OPT_5="Compatibility mode"
+        OPT_6="Custom code"
+        OPT_7="Manually build"
+        OPT_8="Latest"
+        OPT_0="🌚 Return to previous menu"
+    }
+    install_ubuntu_gnu_linux_distro_menu() {
+        BETA_SYSTEM=$(
+            whiptail \
+                --title "${TITLE}" \
+                --menu "${MENU}" 0 50 0 \
+                "1" "${OPT_1}" \
+                "2" "${OPT_2}" \
+                "3" "${OPT_3}" \
+                "4" "${OPT_4}" \
+                "5" "${OPT_5}" \
+                "6" "${OPT_6}" \
+                "7" "${OPT_7}" \
+                "8" "${OPT_8}" \
+                "0" "${OPT_0}" \
+                3>&1 1>&2 2>&3
+        )
+        # "9" "${OPT_9}" \
+    }
+    #🦦
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8) install_ubuntu_gnu_linux_distro_zh ;;
+    ja_JP.UTF-8) install_ubuntu_gnu_linux_distro_ja ;;
+    *) install_ubuntu_gnu_linux_distro_en ;;
+    esac
+    install_ubuntu_gnu_linux_distro_menu
+    ##############################
+    case "${BETA_SYSTEM}" in
+    0 | "") choose_which_gnu_linux_distro ;;
+    1) DISTRO_CODE='jammy' ;;
+    2) DISTRO_CODE='impish' ;;
+    # 3) DISTRO_CODE='hirsute' ;;
+    3) DISTRO_CODE='focal' ;;
+    4) DISTRO_CODE='bionic' ;;
+    5)
+        COMPATIBILITY_MODE=true
+        custom_ubuntu_version
+        ;;
+    6) custom_ubuntu_version ;;
+    7) debootstrap_ubuntu_distro ;;
+    8) check_the_latest_ubuntu_version ;;
+    esac
+    ######################
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    create_container_edition_txt
+    go_to_proot_management
+    ####################
+    exit 0
 }
 #########################
 check_ubuntu_distro_code() {
-	case ${DISTRO_CODE} in
-	bionic | xenial | eoan) ;;
-	*)
-		case "${ARCH_TYPE}" in
-		"i386")
-			printf "%s\n" "已不再提供${DISTRO_CODE}的i386镜像,将为您降级到18.04-bionic"
-			DISTRO_CODE='bionic'
-			;;
-		esac
-		;;
-	esac
-	printf "%s\n" "即将为您安装Ubuntu ${DISTRO_CODE} GNU/Linux container"
-	do_you_want_to_continue
-	install_different_ubuntu_gnu_linux_distros
+    case ${DISTRO_CODE} in
+    bionic | xenial | eoan) ;;
+    *)
+        case "${ARCH_TYPE}" in
+        "i386")
+            printf "%s\n" "已不再提供${DISTRO_CODE}的i386镜像,将为您降级到18.04-bionic"
+            DISTRO_CODE='bionic'
+            ;;
+        esac
+        ;;
+    esac
+    printf "%s\n" "即将为您安装Ubuntu ${DISTRO_CODE} GNU/Linux container"
+    do_you_want_to_continue
+    install_different_ubuntu_gnu_linux_distros
 }
 ##############
 custom_ubuntu_version() {
-	#12 50
-	TARGET=$(whiptail --inputbox "请输入ubuntu版本代号，例如focal(英文小写)\nPlease type the ubuntu version code." 9 50 --title "UBUNTU CODE" 3>&1 1>&2 2>&3)
-	#[[ "$?" = 0 ]] || ${RETURN_TO_WHERE} #此處不要判斷退出狀態
-	DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
-	if [ -z "${DISTRO_CODE}" ]; then
-		printf "%s\n" "检测到您取消了操作"
-		printf "%s\n" "已自动切换为ubuntu20.04(代号focal)"
-		DISTRO_CODE='focal'
-	fi
+    #12 50
+    TARGET=$(whiptail --inputbox "请输入ubuntu版本代号，例如focal(英文小写)\nPlease type the ubuntu version code." 9 50 --title "UBUNTU CODE" 3>&1 1>&2 2>&3)
+    #[[ "$?" = 0 ]] || ${RETURN_TO_WHERE} #此處不要判斷退出狀態
+    DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
+    if [ -z "${DISTRO_CODE}" ]; then
+        printf "%s\n" "检测到您取消了操作"
+        printf "%s\n" "已自动切换为ubuntu20.04(代号focal)"
+        DISTRO_CODE='focal'
+    fi
 }
 #################
 debootstrap_ubuntu_distro() {
-	case ${TMOE_CHROOT} in
-	true) ;;
-	*)
-		if [[ ${LINUX_DISTRO} = 'Android' ]]; then
-			printf "%s\n" "Sorry,暂不支持您的系统。"
-			printf "%s\n" "请换用chroot容器。"
-			press_enter_to_return
-			install_ubuntu_gnu_linux_distro
-		fi
-		;;
-	esac
-	[[ $(command -v debootstrap) ]] || ${TMOE_INSTALLATION_COMMAND} debootstrap
-	custom_ubuntu_version
-	printf "%s\n" "${DISTRO_CODE}"
-	do_you_want_to_continue
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	#此处重复创建并非多余
-	create_container_edition_txt
-	if [ ! -e "${DEBIAN_CHROOT}" ]; then
-		DEB_BOOT_STRAP=true
-		printf "%s\n" "${DEBIAN_CHROOT}"
-		link_debootstrap_script
-		if (whiptail --title "UBUNTU URL" --yes-button "BFSU MIRROR" --no-button "UBUNTU OFFICIAL" --yesno "Which url do you want to choose?" 8 50); then
-			case ${ARCH_TYPE} in
-			amd64 | i386) UBUNTU_MIRROR_URL="http://mirrors.bfsu.edu.cn/ubuntu" ;;
-			*) UBUNTU_MIRROR_URL="http://mirrors.bfsu.edu.cn/ubuntu-ports" ;;
-			esac
-		else
-			case ${ARCH_TYPE} in
-			amd64 | i386) UBUNTU_MIRROR_URL="http://archive.ubuntu.com/ubuntu" ;;
-			*) UBUNTU_MIRROR_URL="http://ports.ubuntu.com/ubuntu-ports" ;;
-			esac
-		fi
-		${TMOE_PREFIX} mkdir -pv "${DEBIAN_CHROOT}"
-		#--include=apt-utils,curl,ca-certificates,locales,locales-all,whiptail,apt-transport-https
-		${TMOE_PREFIX} debootstrap \
-			--no-check-gpg \
-			--arch "${ARCH_TYPE}" \
-			--components=main,restricted,universe,multiverse \
-			--variant=minbase \
-			--include=init,locales,ca-certificates,openssl \
-			${DISTRO_CODE} \
-			"${DEBIAN_CHROOT}" \
-			${UBUNTU_MIRROR_URL}
+    case ${TMOE_CHROOT} in
+    true) ;;
+    *)
+        if [[ ${LINUX_DISTRO} = 'Android' ]]; then
+            printf "%s\n" "Sorry,暂不支持您的系统。"
+            printf "%s\n" "请换用chroot容器。"
+            press_enter_to_return
+            install_ubuntu_gnu_linux_distro
+        fi
+        ;;
+    esac
+    [[ $(command -v debootstrap) ]] || ${TMOE_INSTALLATION_COMMAND} debootstrap
+    custom_ubuntu_version
+    printf "%s\n" "${DISTRO_CODE}"
+    do_you_want_to_continue
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    #此处重复创建并非多余
+    create_container_edition_txt
+    if [ ! -e "${DEBIAN_CHROOT}" ]; then
+        DEB_BOOT_STRAP=true
+        printf "%s\n" "${DEBIAN_CHROOT}"
+        link_debootstrap_script
+        if (whiptail --title "UBUNTU URL" --yes-button "BFSU MIRROR" --no-button "UBUNTU OFFICIAL" --yesno "Which url do you want to choose?" 8 50); then
+            case ${ARCH_TYPE} in
+            amd64 | i386) UBUNTU_MIRROR_URL="http://mirrors.bfsu.edu.cn/ubuntu" ;;
+            *) UBUNTU_MIRROR_URL="http://mirrors.bfsu.edu.cn/ubuntu-ports" ;;
+            esac
+        else
+            case ${ARCH_TYPE} in
+            amd64 | i386) UBUNTU_MIRROR_URL="http://archive.ubuntu.com/ubuntu" ;;
+            *) UBUNTU_MIRROR_URL="http://ports.ubuntu.com/ubuntu-ports" ;;
+            esac
+        fi
+        ${TMOE_PREFIX} mkdir -pv "${DEBIAN_CHROOT}"
+        #--include=apt-utils,curl,ca-certificates,locales,locales-all,whiptail,apt-transport-https
+        ${TMOE_PREFIX} debootstrap \
+            --no-check-gpg \
+            --arch "${ARCH_TYPE}" \
+            --components=main,restricted,universe,multiverse \
+            --variant=minbase \
+            --include=init,locales,ca-certificates,openssl \
+            ${DISTRO_CODE} \
+            "${DEBIAN_CHROOT}" \
+            ${UBUNTU_MIRROR_URL}
 
-		if [[ ${DEBIAN_CHROOT} != / && -n ${DEBIAN_CHROOT} ]]; then
-			${TMOE_PREFIX} rm \
-				-fv \
-				"${DEBIAN_CHROOT}"/dev/*
-		fi
-		printf "%s\n" \
-			"DEBOOTSTRAP_DIR=${DEBIAN_CHROOT}" \
-			>"${CONFIG_FOLDER}"/debootstrap_dir.txt
-	fi
-	#debootstrap --no-check-gpg --arch arm64 --include=gawk,libblkid1,libbz2-1.0,libc6,libcom-err2,libcrypt1,libdebconfclient0,libext2fs2,libgcc-s1,libgmp10,liblzma5,libnss-nis,libnss-nisplus,libpam-modules-bin,libpam0g,libpcre3,libselinux1,libss2,libtinfo6,libuuid1,tar,zlib1g --variant=minbase sid ./sid ${UBUNTU_MIRROR_URL}
-	#
+        if [[ ${DEBIAN_CHROOT} != / && -n ${DEBIAN_CHROOT} ]]; then
+            ${TMOE_PREFIX} rm \
+                -fv \
+                "${DEBIAN_CHROOT}"/dev/*
+        fi
+        printf "%s\n" \
+            "DEBOOTSTRAP_DIR=${DEBIAN_CHROOT}" \
+            >"${CONFIG_FOLDER}"/debootstrap_dir.txt
+    fi
+    #debootstrap --no-check-gpg --arch arm64 --include=gawk,libblkid1,libbz2-1.0,libc6,libcom-err2,libcrypt1,libdebconfclient0,libext2fs2,libgcc-s1,libgmp10,liblzma5,libnss-nis,libnss-nisplus,libpam-modules-bin,libpam0g,libpcre3,libselinux1,libss2,libtinfo6,libuuid1,tar,zlib1g --variant=minbase sid ./sid ${UBUNTU_MIRROR_URL}
+    #
 }
 #############
 ubuntu_distro_x64_model() {
-	bash -c "$(sed -n p \
-		${TMOE_SHARE_DIR}/container/install |
-		sed -E \
-			-e "s/focal/${DISTRO_CODE}/g" \
-			-e 's@(ARCH_TYPE)\}/default@\1\}/cloud@' \
-			-e "s/debian (container)/${DISTRO_NAME} \1/g" \
-			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
-			-e "s:/${DISTRO_NAME}-ports:/${DISTRO_NAME}:g" \
-			-e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
+    bash -c "$(sed -n p \
+        ${TMOE_SHARE_DIR}/container/install |
+        sed -E \
+            -e "s/focal/${DISTRO_CODE}/g" \
+            -e 's@(ARCH_TYPE)\}/default@\1\}/cloud@' \
+            -e "s/debian (container)/${DISTRO_NAME} \1/g" \
+            -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+            -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+            -e "s:/${DISTRO_NAME}-ports:/${DISTRO_NAME}:g" \
+            -e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
 }
 ############
 ubuntu_distro_arm_model() {
-	bash -c "$(sed -n p \
-		${TMOE_SHARE_DIR}/container/install |
-		sed -E \
-			-e "s/focal/${DISTRO_CODE}/g" \
-			-e 's@(ARCH_TYPE)\}/default@\1\}/cloud@' \
-			-e "s/debian (container)/${DISTRO_NAME} \1/g" \
-			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
-			-e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
+    bash -c "$(sed -n p \
+        ${TMOE_SHARE_DIR}/container/install |
+        sed -E \
+            -e "s/focal/${DISTRO_CODE}/g" \
+            -e 's@(ARCH_TYPE)\}/default@\1\}/cloud@' \
+            -e "s/debian (container)/${DISTRO_NAME} \1/g" \
+            -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+            -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+            -e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
 }
 ########
 ubuntu_distro_x64_model_02() {
-	bash -c "$(sed -n p \
-		${TMOE_SHARE_DIR}/container/install |
-		sed -E \
-			-e "s/focal/${DISTRO_CODE}/g" \
-			-e 's@(ARCH_TYPE)\}/default@\1\}/cloud@' \
-			-e "s/debian (container)/${DISTRO_NAME} \1/g" \
-			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
-			-e "s:/${DISTRO_NAME}-ports:/${DISTRO_NAME}:g" \
-			-e "/usermod -a/d" \
-			-e "/groupadd aid/d" \
-			-e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
+    bash -c "$(sed -n p \
+        ${TMOE_SHARE_DIR}/container/install |
+        sed -E \
+            -e "s/focal/${DISTRO_CODE}/g" \
+            -e 's@(ARCH_TYPE)\}/default@\1\}/cloud@' \
+            -e "s/debian (container)/${DISTRO_NAME} \1/g" \
+            -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+            -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+            -e "s:/${DISTRO_NAME}-ports:/${DISTRO_NAME}:g" \
+            -e "/usermod -a/d" \
+            -e "/groupadd aid/d" \
+            -e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
 }
 ############
 ubuntu_distro_arm_model_02() {
-	bash -c "$(sed -n p \
-		${TMOE_SHARE_DIR}/container/install |
-		sed -E \
-			-e "s/focal/${DISTRO_CODE}/g" \
-			-e 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' \
-			-e "s/debian container/${DISTRO_NAME} container/g" \
-			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
-			-e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
+    bash -c "$(sed -n p \
+        ${TMOE_SHARE_DIR}/container/install |
+        sed -E \
+            -e "s/focal/${DISTRO_CODE}/g" \
+            -e 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' \
+            -e "s/debian container/${DISTRO_NAME} container/g" \
+            -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+            -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+            -e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
 }
 ########
 linux_distro_common_model_01() {
-	bash -c "$(sed -n p \
-		${TMOE_SHARE_DIR}/container/install |
-		sed -E \
-			-e "s/debian container/${DISTRO_NAME} container/g" \
-			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
-			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
-	# -e "/usermod -a/d" \
-	# -e "/groupadd aid/d" \
+    bash -c "$(sed -n p \
+        ${TMOE_SHARE_DIR}/container/install |
+        sed -E \
+            -e "s/debian container/${DISTRO_NAME} container/g" \
+            -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+            -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+            -e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+    # -e "/usermod -a/d" \
+    # -e "/groupadd aid/d" \
 }
 ####################
 #02为kali-rolling
 linux_distro_common_model_02() {
-	bash -c "$(sed -n p \
-		${TMOE_SHARE_DIR}/container/install |
-		sed -E \
-			-e "s/debian container/${DISTRO_NAME} container/g" \
-			-e 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' \
-			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" \
-			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+    bash -c "$(sed -n p \
+        ${TMOE_SHARE_DIR}/container/install |
+        sed -E \
+            -e "s/debian container/${DISTRO_NAME} container/g" \
+            -e 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' \
+            -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+            -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" \
+            -e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 #########################
 #03为arch linux
 #############
 #04为fedora和centos
 linux_distro_common_model_04() {
-	bash -c "$(sed -n p \
-		${TMOE_SHARE_DIR}/container/install |
-		sed -E \
-			-e "s/debian container/${DISTRO_NAME} container/g" \
-			-e 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' \
-			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
-			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+    bash -c "$(sed -n p \
+        ${TMOE_SHARE_DIR}/container/install |
+        sed -E \
+            -e "s/debian container/${DISTRO_NAME} container/g" \
+            -e 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' \
+            -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+            -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+            -e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 
 ####################
 install_different_ubuntu_gnu_linux_distros() {
-	case ${COMPATIBILITY_MODE} in
-	true)
-		case "${ARCH_TYPE}" in
-		amd64 | i386) ubuntu_distro_x64_model_02 ;;
-		*) ubuntu_distro_arm_model_02 ;;
-		esac
-		;;
-	*)
-		case "${ARCH_TYPE}" in
-		amd64 | i386) ubuntu_distro_x64_model ;;
-		*) ubuntu_distro_arm_model ;;
-		esac
-		;;
-	esac
-	#UBUNTU ppc64el/s390x/arm架构需使用ports源
+    case ${COMPATIBILITY_MODE} in
+    true)
+        case "${ARCH_TYPE}" in
+        amd64 | i386) ubuntu_distro_x64_model_02 ;;
+        *) ubuntu_distro_arm_model_02 ;;
+        esac
+        ;;
+    *)
+        case "${ARCH_TYPE}" in
+        amd64 | i386) ubuntu_distro_x64_model ;;
+        *) ubuntu_distro_arm_model ;;
+        esac
+        ;;
+    esac
+    #UBUNTU ppc64el/s390x/arm架构需使用ports源
 }
 ############
 do_you_want_to_install_ubuntu_older_version() {
-	if [ -z ${DISTRO_CODE} ]; then
-		printf "%s\n" "${YELLOW}Sorry${RESET}, tmoe cannot install ubuntu ${PURPLE}${VERSION}${RESET} now"
-		printf "%s\n" "Do you want to install ubuntu ${GREEN}22.04(jammy)?${RESET}"
-		DISTRO_CODE='jammy'
-		do_you_want_to_continue
-	fi
+    if [ -z ${DISTRO_CODE} ]; then
+        printf "%s\n" "${YELLOW}Sorry${RESET}, tmoe cannot install ubuntu ${PURPLE}${VERSION}${RESET} now"
+        printf "%s\n" "Do you want to install ubuntu ${GREEN}22.04(jammy)?${RESET}"
+        DISTRO_CODE='jammy'
+        do_you_want_to_continue
+    fi
 }
 check_the_latest_ubuntu_version() {
-	LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
-	DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish|jammy' | tail -n 1)
-	VERSION="next version"
-	do_you_want_to_install_ubuntu_older_version
+    LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
+    DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish|jammy' | tail -n 1)
+    VERSION="next version"
+    do_you_want_to_install_ubuntu_older_version
 }
 ##########
 install_kali_rolling_gnu_linux_distro() {
-	DISTRO_NAME='kali'
-	DISTRO_CODE='rolling'
-	DISTRO_CODE_02='current'
-	linux_distro_common_model_02
+    DISTRO_NAME='kali'
+    DISTRO_CODE='rolling'
+    DISTRO_CODE_02='current'
+    linux_distro_common_model_02
 }
 #####################
 install_arch_linux_distro() {
-	DISTRO_NAME='archlinux'
-	DISTRO_CODE='latest'
-	DISTRO_CODE_02='current'
-	case ${ARCH_TYPE} in
-	amd64 | arm64 | armhf)
-		linux_distro_common_model_03
-		# armhf)
-		# bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		# 	sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.bfsu.edu.cn/archlinuxarm/os/ArchLinuxARM-armv7-latest.tar.gz@g' |
-		# 	sed "s/debian container/${DISTRO_NAME} container/g" |
-		# 	sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-		# 	sed 's:rootfs.tar.xz:rootfs.tar.gz:g' |
-		# 	sed "s:Debian GNU/Linux:${DISTRO_NAME}:g")"
-		# ;;
-		;;
-	*) distro_does_not_support ;;
-	esac
+    DISTRO_NAME='archlinux'
+    DISTRO_CODE='latest'
+    DISTRO_CODE_02='current'
+    case ${ARCH_TYPE} in
+    amd64 | arm64 | armhf)
+        linux_distro_common_model_03
+        # armhf)
+        # bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
+        # 	sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.bfsu.edu.cn/archlinuxarm/os/ArchLinuxARM-armv7-latest.tar.gz@g' |
+        # 	sed "s/debian container/${DISTRO_NAME} container/g" |
+        # 	sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
+        # 	sed 's:rootfs.tar.xz:rootfs.tar.gz:g' |
+        # 	sed "s:Debian GNU/Linux:${DISTRO_NAME}:g")"
+        # ;;
+        ;;
+    *) distro_does_not_support ;;
+    esac
 }
 ############
 check_the_latest_distro_version() {
-	LXC_IMAGES_REPO="https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/${DISTRO_NAME}/"
-	DISTRO_CODE=$(curl -sL ${LXC_IMAGES_REPO} | grep date | tail -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
-	which_version_do_you_want_to_install
+    LXC_IMAGES_REPO="https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/${DISTRO_NAME}/"
+    DISTRO_CODE=$(curl -sL ${LXC_IMAGES_REPO} | grep date | tail -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
+    which_version_do_you_want_to_install
 }
 #################
 case_cloud_rootfs_01_04() {
-	case ${CLOUD_ROOTFS} in
-	true) linux_distro_common_model_04 ;;
-	*) linux_distro_common_model_01 ;;
-	esac
+    case ${CLOUD_ROOTFS} in
+    true) linux_distro_common_model_04 ;;
+    *) linux_distro_common_model_01 ;;
+    esac
 }
 ###########
 before_going_to_proot_menu() {
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	create_container_edition_txt
-	go_to_proot_management
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    create_container_edition_txt
+    go_to_proot_management
 }
 which_version_do_you_want_to_install() {
-	if (whiptail --title "${DISTRO_NAME} VERSION" --yes-button "${DISTRO_CODE}" --no-button "${OLD_STABLE_VERSION}" --yesno "您想要安装哪个版本？Which version do you want to install?检测到当前的最新版本(latest version)为${DISTRO_CODE}" 9 50); then
-		before_going_to_proot_menu
-		case_cloud_rootfs_01_04
-	else
-		DISTRO_CODE="${OLD_STABLE_VERSION}"
-		before_going_to_proot_menu
-		case_cloud_rootfs_01_04
-	fi
+    if (whiptail --title "${DISTRO_NAME} VERSION" --yes-button "${DISTRO_CODE}" --no-button "${OLD_STABLE_VERSION}" --yesno "您想要安装哪个版本？Which version do you want to install?检测到当前的最新版本(latest version)为${DISTRO_CODE}" 9 50); then
+        before_going_to_proot_menu
+        case_cloud_rootfs_01_04
+    else
+        DISTRO_CODE="${OLD_STABLE_VERSION}"
+        before_going_to_proot_menu
+        case_cloud_rootfs_01_04
+    fi
 }
 ######################
 fedora_distro_menu() {
-	RETURN_TO_WHERE='fedora_distro_menu'
-	BETA_SYSTEM=$(
-		whiptail --title "Fedora" --menu "您想要安装哪个Fedora版本？\nWhich version do you want to install?" 0 0 0 \
-			"1" "latest" \
-			"2" "33" \
-			"3" "rawhide(For testing only)" \
-			"0" "🌚 Return to previous menu 返回上级菜单" \
-			3>&1 1>&2 2>&3
-		#			"2" "34" \
-	)
-	##############################
-	case "${BETA_SYSTEM}" in
-	0 | "") choose_which_gnu_linux_distro ;;
-	1)
-		OLD_STABLE_VERSION=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/fedora/ | grep date | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
-		check_the_latest_distro_version
-		;;
-		#2)
-		#	DISTRO_CODE=34
-		#case ${ARCH_TYPE} in
-		#amd64) CORRENT_SHA256SUM='4f8471bb8402d8b903fbe0a4944df5f935a6b32b0a3032e645ac6881a60ef4dc' ;;
-		#arm64) CORRENT_SHA256SUM='504be6ae28e26f3d94166e480fc8b59f1c7e469df0d7de510056c951f9ce50d5' ;;
-		#esac
-		#	git_clone_fedora_rootfs
-	#	;;
-	2)
-		DISTRO_CODE=33
-		before_going_to_proot_menu
-		case_cloud_rootfs_01_04
-		# linux_distro_common_model_04
-		;;
-	3)
-		DISTRO_CODE=35
-		git_clone_fedora_rootfs
-		;;
-	esac
-	######################
-	press_enter_to_return
-	tmoe_manager_main_menu
+    RETURN_TO_WHERE='fedora_distro_menu'
+    BETA_SYSTEM=$(
+        whiptail --title "Fedora" --menu "您想要安装哪个Fedora版本？\nWhich version do you want to install?" 0 0 0 \
+            "1" "latest" \
+            "2" "33" \
+            "3" "rawhide(For testing only)" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+        #			"2" "34" \
+    )
+    ##############################
+    case "${BETA_SYSTEM}" in
+    0 | "") choose_which_gnu_linux_distro ;;
+    1)
+        OLD_STABLE_VERSION=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/fedora/ | grep date | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
+        check_the_latest_distro_version
+        ;;
+        #2)
+        #	DISTRO_CODE=34
+        #case ${ARCH_TYPE} in
+        #amd64) CORRENT_SHA256SUM='4f8471bb8402d8b903fbe0a4944df5f935a6b32b0a3032e645ac6881a60ef4dc' ;;
+        #arm64) CORRENT_SHA256SUM='504be6ae28e26f3d94166e480fc8b59f1c7e469df0d7de510056c951f9ce50d5' ;;
+        #esac
+        #	git_clone_fedora_rootfs
+    #	;;
+    2)
+        DISTRO_CODE=33
+        before_going_to_proot_menu
+        case_cloud_rootfs_01_04
+        # linux_distro_common_model_04
+        ;;
+    3)
+        DISTRO_CODE=35
+        git_clone_fedora_rootfs
+        ;;
+    esac
+    ######################
+    press_enter_to_return
+    tmoe_manager_main_menu
 }
 #########################
 git_clone_fedora_rootfs() {
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	create_container_edition_txt
-	go_to_proot_management
-	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
-	cd ${ROOTFS_DIR}
-	FEDORA_ROOTFS_FILE="fedora-${DISTRO_CODE}_${ARCH_TYPE}-rootfs.tar.xz"
-	FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
-	if [[ ! -s "${FEDORA_ROOTFS_FILE}" ]]; then
-		rm -rvf \
-			"${FEDORA_TEMP_FOLDER}" \
-			2>/dev/null
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    create_container_edition_txt
+    go_to_proot_management
+    [[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
+    cd ${ROOTFS_DIR}
+    FEDORA_ROOTFS_FILE="fedora-${DISTRO_CODE}_${ARCH_TYPE}-rootfs.tar.xz"
+    FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
+    if [[ ! -s "${FEDORA_ROOTFS_FILE}" ]]; then
+        rm -rvf \
+            "${FEDORA_TEMP_FOLDER}" \
+            2>/dev/null
 
-		git clone \
-			--depth=1 \
-			"${AK2_GIT_URL}/fedora-${DISTRO_CODE}_${ARCH_TYPE}" \
-			"${FEDORA_TEMP_FOLDER}"
+        git clone \
+            --depth=1 \
+            "${AK2_GIT_URL}/fedora-${DISTRO_CODE}_${ARCH_TYPE}" \
+            "${FEDORA_TEMP_FOLDER}"
 
-		mv -f \
-			"${FEDORA_TEMP_FOLDER}/fedora-${DISTRO_CODE}_${ARCH_TYPE}.tar.xz" \
-			"${ROOTFS_DIR}/${FEDORA_ROOTFS_FILE}"
+        mv -f \
+            "${FEDORA_TEMP_FOLDER}/fedora-${DISTRO_CODE}_${ARCH_TYPE}.tar.xz" \
+            "${ROOTFS_DIR}/${FEDORA_ROOTFS_FILE}"
 
-		rm -rvf ${FEDORA_TEMP_FOLDER}
-	fi
+        rm -rvf ${FEDORA_TEMP_FOLDER}
+    fi
 
-	case ${DISTRO_CODE} in
-	33)
-		bash -c "$(sed -n p \
-			${TMOE_SHARE_DIR}/container/install |
-			sed -E \
-				-e "s/debian (container)/${DISTRO_NAME} \1/g" \
-				-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-				-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
-				-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
-		;;
-	*)
-		bash -c "$(sed -n p \
-			${TMOE_SHARE_DIR}/container/install |
-			sed -E \
-				-e "s/debian (container)/${DISTRO_NAME} \1/g" \
-				-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-				-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
-				-e "s@(FEDORA_VERSION)=.*@\1=29@g" \
-				-e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
-		#当版本低于30，或为rawhide时不会自动换源
-		;;
-	esac
+    case ${DISTRO_CODE} in
+    33)
+        bash -c "$(sed -n p \
+            ${TMOE_SHARE_DIR}/container/install |
+            sed -E \
+                -e "s/debian (container)/${DISTRO_NAME} \1/g" \
+                -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+                -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+                -e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+        ;;
+    *)
+        bash -c "$(sed -n p \
+            ${TMOE_SHARE_DIR}/container/install |
+            sed -E \
+                -e "s/debian (container)/${DISTRO_NAME} \1/g" \
+                -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+                -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
+                -e "s@(FEDORA_VERSION)=.*@\1=29@g" \
+                -e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
+        #当版本低于30，或为rawhide时不会自动换源
+        ;;
+    esac
 }
 ###################
 install_fedora_gnu_linux_distro() {
-	DISTRO_NAME='fedora'
-	TMOE_LINUX_CONTAINER_DISTRO='fedora'
-	CLOUD_ROOTFS=true
-	case "${ARCH_TYPE}" in
-	armel | i386) distro_does_not_support ;;
-	armhf)
-		DISTRO_CODE=33
-		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-		create_container_edition_txt
-		go_to_proot_management
-		[[ -e ${ROOTFS_DIR} ]] || mkdir -pv "${ROOTFS_DIR}"
-		cd "${ROOTFS_DIR}"
-		FEDORA_ROOTFS_FILE='fedora-33_armhf-rootfs.tar.xz'
-		FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
-		if [[ ! -s "${FEDORA_ROOTFS_FILE}" ]]; then
-			rm -rvf ${FEDORA_TEMP_FOLDER} 2>/dev/null
+    DISTRO_NAME='fedora'
+    TMOE_LINUX_CONTAINER_DISTRO='fedora'
+    CLOUD_ROOTFS=true
+    case "${ARCH_TYPE}" in
+    armel | i386) distro_does_not_support ;;
+    armhf)
+        DISTRO_CODE=33
+        TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+        create_container_edition_txt
+        go_to_proot_management
+        [[ -e ${ROOTFS_DIR} ]] || mkdir -pv "${ROOTFS_DIR}"
+        cd "${ROOTFS_DIR}"
+        FEDORA_ROOTFS_FILE='fedora-33_armhf-rootfs.tar.xz'
+        FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
+        if [[ ! -s "${FEDORA_ROOTFS_FILE}" ]]; then
+            rm -rvf ${FEDORA_TEMP_FOLDER} 2>/dev/null
 
-			git clone \
-				--depth=1 \
-				"${AK2_GIT_URL}/fedora-33_armhf" \
-				"${FEDORA_TEMP_FOLDER}"
+            git clone \
+                --depth=1 \
+                "${AK2_GIT_URL}/fedora-33_armhf" \
+                "${FEDORA_TEMP_FOLDER}"
 
-			mv -f \
-				"${FEDORA_TEMP_FOLDER}/${FEDORA_ROOTFS_FILE}" \
-				"${ROOTFS_DIR}"
+            mv -f \
+                "${FEDORA_TEMP_FOLDER}/${FEDORA_ROOTFS_FILE}" \
+                "${ROOTFS_DIR}"
 
-			rm -rvf ${FEDORA_TEMP_FOLDER}
-		fi
-		: <<\EOF
+            rm -rvf ${FEDORA_TEMP_FOLDER}
+        fi
+        : <<\EOF
 		#CORRENT_SHA256SUM='bec3047102e6edbb834735233713f45ef085f9b8e46f493f39732f53891d3a0e'
 		printf "%s\n" 'Verifying sha256hash...'
 		printf "%s\n" '正在校验sha256哈希值...'
@@ -1915,529 +1914,529 @@ install_fedora_gnu_linux_distro() {
 		"${CORRENT_SHA256SUM}") printf "%s\n" "Congratulations！检测到sha256哈希值与源文件一致。" ;;
 		esac
 EOF
-		linux_distro_common_model_01
-		;;
-	*)
-		#OLD_STABLE_VERSION='31'
-		fedora_distro_menu
-		;;
-	esac
+        linux_distro_common_model_01
+        ;;
+    *)
+        #OLD_STABLE_VERSION='31'
+        fedora_distro_menu
+        ;;
+    esac
 }
 #######################
 linux_distro_common_model_03() {
-	bash -c "$(sed -n p \
-		${TMOE_SHARE_DIR}/container/install |
-		sed -E \
-			-e "s/debian (container)/${DISTRO_NAME} \1/g" \
-			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" \
-			-e "s:Debian GNU/Linux:${DISTRO_NAME}:g")"
+    bash -c "$(sed -n p \
+        ${TMOE_SHARE_DIR}/container/install |
+        sed -E \
+            -e "s/debian (container)/${DISTRO_NAME} \1/g" \
+            -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+            -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" \
+            -e "s:Debian GNU/Linux:${DISTRO_NAME}:g")"
 }
 #################
 install_void_linux_distro() {
-	DISTRO_NAME='void'
-	TMOE_LINUX_CONTAINER_DISTRO='void'
-	create_container_edition_txt
-	go_to_proot_management
-	DISTRO_NAME='voidlinux'
-	DISTRO_CODE='default'
-	DISTRO_CODE_02='current'
-	linux_distro_common_model_03
+    DISTRO_NAME='void'
+    TMOE_LINUX_CONTAINER_DISTRO='void'
+    create_container_edition_txt
+    go_to_proot_management
+    DISTRO_NAME='voidlinux'
+    DISTRO_CODE='default'
+    DISTRO_CODE_02='current'
+    linux_distro_common_model_03
 }
 ##########################
 custom_rocky_version() {
-	TARGET=$(whiptail --inputbox "请输入rocky版本代号，例如8\nPlease type the rocky version code." 9 50 --title "ROCKY CODE" 3>&1 1>&2 2>&3)
-	DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
-	if [ -z "${DISTRO_CODE}" ]; then
-		printf "%s\n" "检测到您取消了操作"
-		printf "%s\n" "已自动切换为${PURPLE}8${RESET}"
-		DISTRO_CODE='8'
-	fi
+    TARGET=$(whiptail --inputbox "请输入rocky版本代号，例如8\nPlease type the rocky version code." 9 50 --title "ROCKY CODE" 3>&1 1>&2 2>&3)
+    DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
+    if [ -z "${DISTRO_CODE}" ]; then
+        printf "%s\n" "检测到您取消了操作"
+        printf "%s\n" "已自动切换为${PURPLE}8${RESET}"
+        DISTRO_CODE='8'
+    fi
 }
 install_rocky_linux_distro() {
-	DISTRO_NAME='rocky'
-	TMOE_LINUX_CONTAINER_DISTRO='rocky'
-	create_container_edition_txt
-	go_to_proot_management
-	DISTRO_NAME='rocky'
-	case "${ARCH_TYPE}" in
-	arm64 | amd64)
-		OLD_STABLE_VERSION='8'
-		DISTRO_NAME='rockylinux'
-		if (whiptail --title "ROCKY VERSION" --yes-button "${OLD_STABLE_VERSION}" --no-button "customize" --yesno "Which version do you want to install?" 9 50); then
-			DISTRO_CODE="${OLD_STABLE_VERSION}"
-		else
-			custom_rocky_version
-		fi
-		linux_distro_common_model_04
-		;;
-	"armhf" | "i386" | *) distro_does_not_support ;;
-	esac
+    DISTRO_NAME='rocky'
+    TMOE_LINUX_CONTAINER_DISTRO='rocky'
+    create_container_edition_txt
+    go_to_proot_management
+    DISTRO_NAME='rocky'
+    case "${ARCH_TYPE}" in
+    arm64 | amd64)
+        OLD_STABLE_VERSION='8'
+        DISTRO_NAME='rockylinux'
+        if (whiptail --title "ROCKY VERSION" --yes-button "${OLD_STABLE_VERSION}" --no-button "customize" --yesno "Which version do you want to install?" 9 50); then
+            DISTRO_CODE="${OLD_STABLE_VERSION}"
+        else
+            custom_rocky_version
+        fi
+        linux_distro_common_model_04
+        ;;
+    "armhf" | "i386" | *) distro_does_not_support ;;
+    esac
 }
 install_centos_linux_distro() {
-	DISTRO_NAME='centos'
-	case "${ARCH_TYPE}" in
-	"armhf" | "i386")
-		printf "%s\n" "检测到CentOS 9不支持您当前的架构，将为您降级至CentOS 7"
-		DISTRO_CODE='7'
-		TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-		create_container_edition_txt
-		go_to_proot_management
-		linux_distro_common_model_04
-		;;
-	*)
-		OLD_STABLE_VERSION='8-Stream'
-		check_the_latest_distro_version
-		#DISTRO_CODE='8'
-		#linux_distro_common_model_01
-		;;
-	esac
+    DISTRO_NAME='centos'
+    case "${ARCH_TYPE}" in
+    "armhf" | "i386")
+        printf "%s\n" "检测到CentOS 9不支持您当前的架构，将为您降级至CentOS 7"
+        DISTRO_CODE='7'
+        TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+        create_container_edition_txt
+        go_to_proot_management
+        linux_distro_common_model_04
+        ;;
+    *)
+        OLD_STABLE_VERSION='8-Stream'
+        check_the_latest_distro_version
+        #DISTRO_CODE='8'
+        #linux_distro_common_model_01
+        ;;
+    esac
 }
 ######################
 install_gentoo_linux_distro() {
-	DISTRO_NAME='gentoo'
-	TMOE_LINUX_CONTAINER_DISTRO='gentoo'
+    DISTRO_NAME='gentoo'
+    TMOE_LINUX_CONTAINER_DISTRO='gentoo'
 
-	if (whiptail --title "init" --yes-button "openrc" --no-button "systemd" --yesno "gentoo" 7 40); then
-		DISTRO_CODE='openrc'
-	else
-		DISTRO_CODE='systemd'
-	fi
+    if (whiptail --title "init" --yes-button "openrc" --no-button "systemd" --yesno "gentoo" 7 40); then
+        DISTRO_CODE='openrc'
+    else
+        DISTRO_CODE='systemd'
+    fi
 
-	# case "${ARCH_TYPE}" in
-	# 'arm64')
-	# 	create_container_edition_txt
-	# 	go_to_proot_management
-	# 	DISTRO_CODE='current'
-	# 	#sed '45 a\ARCH_TYPE="armhf"' |
-	# 	TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.bfsu.edu.cn/gentoo/releases/arm64/autobuilds/current-stage3-arm64"
-	# 	TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep -Ev 'systemd|DIGESTS|CONTENTS.gz' | grep 'tar' | tail -n 1)
-	# 	bash -c "$(sed -n p \
-	# 		${TMOE_SHARE_DIR}/container/install |
-	# 		sed -E \
-	# 			-e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}@g" \
-	# 			-e 's/debian (container)/Gentoo \1/g' \
-	# 			-e 's:debian-sid:gentoo-current:g' \
-	# 			-e 's:debian/sid:gentoo/current:g' \
-	# 			-e 's:Debian (GNU/Linux):Gentoo \1:g')"
-	# 	;;
-	# *)
-	# 		;;
-	# esac
-	create_container_edition_txt
-	go_to_proot_management
-	DISTRO_CODE_02='current'
+    # case "${ARCH_TYPE}" in
+    # 'arm64')
+    # 	create_container_edition_txt
+    # 	go_to_proot_management
+    # 	DISTRO_CODE='current'
+    # 	#sed '45 a\ARCH_TYPE="armhf"' |
+    # 	TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.bfsu.edu.cn/gentoo/releases/arm64/autobuilds/current-stage3-arm64"
+    # 	TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep -Ev 'systemd|DIGESTS|CONTENTS.gz' | grep 'tar' | tail -n 1)
+    # 	bash -c "$(sed -n p \
+    # 		${TMOE_SHARE_DIR}/container/install |
+    # 		sed -E \
+    # 			-e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}@g" \
+    # 			-e 's/debian (container)/Gentoo \1/g' \
+    # 			-e 's:debian-sid:gentoo-current:g' \
+    # 			-e 's:debian/sid:gentoo/current:g' \
+    # 			-e 's:Debian (GNU/Linux):Gentoo \1:g')"
+    # 	;;
+    # *)
+    # 		;;
+    # esac
+    create_container_edition_txt
+    go_to_proot_management
+    DISTRO_CODE_02='current'
 
-	bash -c "$(sed -n p \
-		${TMOE_SHARE_DIR}/container/install |
-		sed -E \
-			-e "s/debian container/${DISTRO_NAME} container/g" \
-			-e "s@ARCH_TYPE\}/default@ARCH_TYPE\}/${DISTRO_CODE}@" \
-			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-			-e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" \
-			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+    bash -c "$(sed -n p \
+        ${TMOE_SHARE_DIR}/container/install |
+        sed -E \
+            -e "s/debian container/${DISTRO_NAME} container/g" \
+            -e "s@ARCH_TYPE\}/default@ARCH_TYPE\}/${DISTRO_CODE}@" \
+            -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+            -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" \
+            -e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 ###########################
 install_alpine_linux_distro() {
-	DISTRO_NAME='alpine'
-	#DISTRO_CODE='3.11'
-	DISTRO_CODE=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/alpine/ | grep -Ev 'edge|3.7|3.8|3.9' | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed 's@/@@')
-	OLD_STABLE_VERSION='edge'
-	which_version_do_you_want_to_install
+    DISTRO_NAME='alpine'
+    #DISTRO_CODE='3.11'
+    DISTRO_CODE=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/alpine/ | grep -Ev 'edge|3.7|3.8|3.9' | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed 's@/@@')
+    OLD_STABLE_VERSION='edge'
+    which_version_do_you_want_to_install
 }
 #####################
 opensuse_warning() {
-	case "${LINUX_DISTRO}" in
-	Android)
-		case ${TMOE_CHROOT} in
-		true) ;;
-		*)
-			cat <<-EOF
+    case "${LINUX_DISTRO}" in
+    Android)
+        case ${TMOE_CHROOT} in
+        true) ;;
+        *)
+            cat <<-EOF
 				# ${RED}WARNING！${RESET} You are using ${BLUE}Android${RESET}, and your container is ${YELLOW}proot${RESET}.
 				In this environment, opensuse may have some bugs.
 			EOF
-			do_you_want_to_continue
-			;;
-		esac
-		;;
-	esac
+            do_you_want_to_continue
+            ;;
+        esac
+        ;;
+    esac
 }
 ########
 install_opensuse_linux_distro() {
-	opensuse_warning
-	DISTRO_NAME='opensuse'
-	DISTRO_CODE='tumbleweed'
-	TMOE_LINUX_CONTAINER_DISTRO='opensuse-tumbleweed'
-	create_container_edition_txt
-	go_to_proot_management
-	linux_distro_common_model_04
+    opensuse_warning
+    DISTRO_NAME='opensuse'
+    DISTRO_CODE='tumbleweed'
+    TMOE_LINUX_CONTAINER_DISTRO='opensuse-tumbleweed'
+    create_container_edition_txt
+    go_to_proot_management
+    linux_distro_common_model_04
 }
 ####################
 install_raspios_linux_distro() {
-	DISTRO_NAME='raspios'
-	DISTRO_CODE='buster'
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	case "${ARCH_TYPE}" in
-	arm64)
-		printf "%s\n" "检测到您选择的是树莓派系统"
-		printf "%s\n" "检测到您使用的是${PURPLE}arm64${RESET}架构，请回到跨架构（cross-arch）菜单，并选择${BLUE}armhf${RESET}"
-		# printf "%s\n" "已将您的架构临时识别为armhf"
-		printf "%s\n" "如需安装${YELLOW}arm64${RESET}版的树莓派系统，则请将arm64版的RaspiOS rootfs.tar.xz文件重命名为${GREEN}raspios-buster_armhf_lite-rootfs.tar.xz${RESET},并将其移动到${BLUE}${ROOTFS_DIR}${RESET}"
-		press_enter_to_continue
-		;;
-	esac
-	case "${ARCH_TYPE}" in
-	arm64 | armhf) NEW_TMOE_ARCH='armhf' ;;
-	*) distro_does_not_support ;;
-	esac
-	case "${TRUE_ARCH_TYPE}" in
-	arm64 | armhf)
-		TMOE_QEMU_ARCH=""
-		create_tmoe_arch_file
-		;;
-	esac
-	ARCH_TYPE="${NEW_TMOE_ARCH}"
-	create_container_edition_txt
-	go_to_proot_management
-	if (whiptail --title "RASPIOS" --yes-button "FULL" --no-button "LITE" --yesno "您想要安装哪个版本的raspios？Full版约1.9G,lite版约274M" 9 50); then
-		install_raspios_full_armhf_rootfs
-	else
-		install_raspios_lite_armhf_rootfs
-	fi
+    DISTRO_NAME='raspios'
+    DISTRO_CODE='buster'
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    case "${ARCH_TYPE}" in
+    arm64)
+        printf "%s\n" "检测到您选择的是树莓派系统"
+        printf "%s\n" "检测到您使用的是${PURPLE}arm64${RESET}架构，请回到跨架构（cross-arch）菜单，并选择${BLUE}armhf${RESET}"
+        # printf "%s\n" "已将您的架构临时识别为armhf"
+        printf "%s\n" "如需安装${YELLOW}arm64${RESET}版的树莓派系统，则请将arm64版的RaspiOS rootfs.tar.xz文件重命名为${GREEN}raspios-buster_armhf_lite-rootfs.tar.xz${RESET},并将其移动到${BLUE}${ROOTFS_DIR}${RESET}"
+        press_enter_to_continue
+        ;;
+    esac
+    case "${ARCH_TYPE}" in
+    arm64 | armhf) NEW_TMOE_ARCH='armhf' ;;
+    *) distro_does_not_support ;;
+    esac
+    case "${TRUE_ARCH_TYPE}" in
+    arm64 | armhf)
+        TMOE_QEMU_ARCH=""
+        create_tmoe_arch_file
+        ;;
+    esac
+    ARCH_TYPE="${NEW_TMOE_ARCH}"
+    create_container_edition_txt
+    go_to_proot_management
+    if (whiptail --title "RASPIOS" --yes-button "FULL" --no-button "LITE" --yesno "您想要安装哪个版本的raspios？Full版约1.9G,lite版约274M" 9 50); then
+        install_raspios_full_armhf_rootfs
+    else
+        install_raspios_lite_armhf_rootfs
+    fi
 }
 ###################
 install_raspios_lite_armhf_rootfs() {
-	bash -c "$(sed -n p \
-		${TMOE_SHARE_DIR}/container/install |
-		sed -E \
-			-e 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' \
-			-e 's@(TUNA_LXC_IMAGE_MIRROR_REPO_02=).*@\1https://mirrors.tuna.tsinghu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' \
-			-e 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' \
-			-e 's@#deb http@deb http@g' \
-			-e 's@-rootfs.tar.xz@_lite-rootfs.tar.xz@g' \
-			-e 's/.*sid main/#&/' \
-			-e 's/debian (container)/raspios \1/g' \
-			-e 's:debian-sid:raspios-buster:g' \
-			-e 's:Debian (GNU/Linux):Raspios \1:g')"
+    bash -c "$(sed -n p \
+        ${TMOE_SHARE_DIR}/container/install |
+        sed -E \
+            -e 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' \
+            -e 's@(TUNA_LXC_IMAGE_MIRROR_REPO_02=).*@\1https://mirrors.tuna.tsinghu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' \
+            -e 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' \
+            -e 's@#deb http@deb http@g' \
+            -e 's@-rootfs.tar.xz@_lite-rootfs.tar.xz@g' \
+            -e 's/.*sid main/#&/' \
+            -e 's/debian (container)/raspios \1/g' \
+            -e 's:debian-sid:raspios-buster:g' \
+            -e 's:Debian (GNU/Linux):Raspios \1:g')"
 }
 ##################
 install_raspios_full_armhf_rootfs() {
-	bash -c "$(sed -n p \
-		"${TMOE_SHARE_DIR}"/container/install |
-		sed -E \
-			-e 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' \
-			-e's@(TUNA_LXC_IMAGE_MIRROR_REPO_02=).*@\1https://mirrors.tuna.tsinghu.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' \
-			-e 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' \
-			-e 's@#deb http@deb http@g' \
-			-e 's@-rootfs.tar.xz@_full-rootfs.tar.xz@g' \
-			-e 's/.*sid main/#&/' \
-			-e 's/debian (container)/raspios \1/g' \
-			-e 's:debian-sid:raspios-buster:g' \
-			-e 's:Debian (GNU/Linux):Raspios \1:g')"
+    bash -c "$(sed -n p \
+        "${TMOE_SHARE_DIR}"/container/install |
+        sed -E \
+            -e 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' \
+            -e's@(TUNA_LXC_IMAGE_MIRROR_REPO_02=).*@\1https://mirrors.tuna.tsinghu.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' \
+            -e 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' \
+            -e 's@#deb http@deb http@g' \
+            -e 's@-rootfs.tar.xz@_full-rootfs.tar.xz@g' \
+            -e 's/.*sid main/#&/' \
+            -e 's/debian (container)/raspios \1/g' \
+            -e 's:debian-sid:raspios-buster:g' \
+            -e 's:Debian (GNU/Linux):Raspios \1:g')"
 }
 ############################
 install_devuan_linux_distro() {
-	CLOUD_ROOTFS=true
-	DISTRO_NAME='devuan'
-	#DISTRO_CODE='beowulf'
-	#OLD_STABLE_VERSION=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/devuan/ | grep date | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
-	OLD_STABLE_VERSION=ascii
-	check_the_latest_distro_version
+    CLOUD_ROOTFS=true
+    DISTRO_NAME='devuan'
+    #DISTRO_CODE='beowulf'
+    #OLD_STABLE_VERSION=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/devuan/ | grep date | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
+    OLD_STABLE_VERSION=ascii
+    check_the_latest_distro_version
 }
 ######################
 install_slackware_linux_distro() {
-	DISTRO_NAME='slackware'
-	TMOE_LINUX_CONTAINER_DISTRO='slackware'
-	create_container_edition_txt
-	[[ -e ${ROOTFS_DIR} ]] || mkdir -pv "${ROOTFS_DIR}"
-	cd ${ROOTFS_DIR}
-	case "${ARCH_TYPE}" in
-	amd64)
-		go_to_proot_management
-		if [ ! -e "slackware-current_amd64-rootfs.tar.xz" ]; then
-			git clone -b x64 --depth=1 "${AK2_GIT_URL}"/slackware_rootfs.git .SLACKWARE_AMD64_TEMP_FOLDER
-			#aria2c --console-log-level=warn --no-conf -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/slackware_amd64.tar.xz" || aria2c --console-log-level=warn --no-conf -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/slackware_amd64.tar.xz"
-			cd .SLACKWARE_AMD64_TEMP_FOLDER
-			mv -f slackware_amd64.tar.xz ../slackware-current_amd64-rootfs.tar.xz
-			cd ..
-			rm -rf .SLACKWARE_AMD64_TEMP_FOLDER
-		fi
-		bash -c "$(sed -n p \
-			"${TMOE_SHARE_DIR}"/container/install |
-			sed -E \
-				-e 's/debian container/slackware container/g' \
-				-e 's:debian-sid:slackware-current:g' \
-				-e 's:debian/sid:slackware/current:g' \
-				-e 's:Debian (GNU/Linux):Slackware \1:g')"
-		;;
-	arm64 | armhf)
-		NEW_TMOE_ARCH='armhf'
-		unset TMOE_QEMU_ARCH
-		create_tmoe_arch_file
-		ARCH_TYPE='armhf'
-		go_to_proot_management
-		#if [ ! -e "slackware-current_armhf-rootfs.tar.xz" ]; then
-		printf "%s\n" "检测到您当前使用的是${ARCH_TYPE}架构，将为您安装armhf版slackware容器"
-		SLACKWARE_ROOTFS_TUNA_REPO='https://mirrors.bfsu.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots'
-		LatestSlack="$(curl -L ${SLACKWARE_ROOTFS_TUNA_REPO}/ | grep 'tar.xz' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-		#aria2c --console-log-level=warn --no-conf -x 5 -s 5 -k 1M -o "slackware-current_armhf-rootfs.tar.xz" "${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
-		#fi
-		THE_LATEST_SLACKWARE_URL="${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
-		bash -c "$(sed -n p \
-			"${TMOE_SHARE_DIR}"/container/install |
-			sed -E \
-				-e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${THE_LATEST_SLACKWARE_URL}@g" \
-				-e 's/debian (container)/slackware \1/g' \
-				-e 's:debian-sid:slackware-current:g' \
-				-e 's:debian/sid:slackware/current:g' \
-				-e 's:Debian (GNU/Linux):Slackware \1:g')"
-		;;
-	*) distro_does_not_support ;;
-	esac
+    DISTRO_NAME='slackware'
+    TMOE_LINUX_CONTAINER_DISTRO='slackware'
+    create_container_edition_txt
+    [[ -e ${ROOTFS_DIR} ]] || mkdir -pv "${ROOTFS_DIR}"
+    cd ${ROOTFS_DIR}
+    case "${ARCH_TYPE}" in
+    amd64)
+        go_to_proot_management
+        if [ ! -e "slackware-current_amd64-rootfs.tar.xz" ]; then
+            git clone -b x64 --depth=1 "${AK2_GIT_URL}"/slackware_rootfs.git .SLACKWARE_AMD64_TEMP_FOLDER
+            #aria2c --console-log-level=warn --no-conf -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/slackware_amd64.tar.xz" || aria2c --console-log-level=warn --no-conf -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/slackware_amd64.tar.xz"
+            cd .SLACKWARE_AMD64_TEMP_FOLDER
+            mv -f slackware_amd64.tar.xz ../slackware-current_amd64-rootfs.tar.xz
+            cd ..
+            rm -rf .SLACKWARE_AMD64_TEMP_FOLDER
+        fi
+        bash -c "$(sed -n p \
+            "${TMOE_SHARE_DIR}"/container/install |
+            sed -E \
+                -e 's/debian container/slackware container/g' \
+                -e 's:debian-sid:slackware-current:g' \
+                -e 's:debian/sid:slackware/current:g' \
+                -e 's:Debian (GNU/Linux):Slackware \1:g')"
+        ;;
+    arm64 | armhf)
+        NEW_TMOE_ARCH='armhf'
+        unset TMOE_QEMU_ARCH
+        create_tmoe_arch_file
+        ARCH_TYPE='armhf'
+        go_to_proot_management
+        #if [ ! -e "slackware-current_armhf-rootfs.tar.xz" ]; then
+        printf "%s\n" "检测到您当前使用的是${ARCH_TYPE}架构，将为您安装armhf版slackware容器"
+        SLACKWARE_ROOTFS_TUNA_REPO='https://mirrors.bfsu.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots'
+        LatestSlack="$(curl -L ${SLACKWARE_ROOTFS_TUNA_REPO}/ | grep 'tar.xz' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
+        #aria2c --console-log-level=warn --no-conf -x 5 -s 5 -k 1M -o "slackware-current_armhf-rootfs.tar.xz" "${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
+        #fi
+        THE_LATEST_SLACKWARE_URL="${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
+        bash -c "$(sed -n p \
+            "${TMOE_SHARE_DIR}"/container/install |
+            sed -E \
+                -e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${THE_LATEST_SLACKWARE_URL}@g" \
+                -e 's/debian (container)/slackware \1/g' \
+                -e 's:debian-sid:slackware-current:g' \
+                -e 's:debian/sid:slackware/current:g' \
+                -e 's:Debian (GNU/Linux):Slackware \1:g')"
+        ;;
+    *) distro_does_not_support ;;
+    esac
 }
 #########################
 distro_does_not_support() {
-	printf "%s\n" "${PURPLE}Sorry${RESET},your architecture is ${BLUE}${ARCH_TYPE}${RESET}."
-	printf "%s\n" "Please try to use ${BLUE}cross-architecture${RESET}."
-	case ${TMOE_LANG} in
-	zh_*UTF-8) printf "%s\n" "检测到您使用的是${BLUE}${ARCH_TYPE}${RESET}架构,请尝试${YELLOW}跨架构${RESET}运行,或换用其他发行版" ;;
-	esac
-	press_enter_to_return
-	choose_which_gnu_linux_distro
+    printf "%s\n" "${PURPLE}Sorry${RESET},your architecture is ${BLUE}${ARCH_TYPE}${RESET}."
+    printf "%s\n" "Please try to use ${BLUE}cross-architecture${RESET}."
+    case ${TMOE_LANG} in
+    zh_*UTF-8) printf "%s\n" "检测到您使用的是${BLUE}${ARCH_TYPE}${RESET}架构,请尝试${YELLOW}跨架构${RESET}运行,或换用其他发行版" ;;
+    esac
+    press_enter_to_return
+    choose_which_gnu_linux_distro
 }
 ##############
 choose_ubuntu_budgie_or_cinnamon() {
-	DESKTOP_NAME=$(
-		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
-			"1" "🐭 xfce" \
-			"2" "👣 cinnamon" \
-			"3" "🦜 budgie" \
-			"4" "cli(nogui)" \
-			"5" "minimal(nogui)" \
-			"0" "🌚 Return to previous menu" \
-			3>&1 1>&2 2>&3
-	)
-	case "${DESKTOP_NAME}" in
-	0 | "") install_armbian_linux_distro ;;
-	1) DISTRO_CODE='xfce' ;;
-	2) DISTRO_CODE='cinnamon' ;;
-	3) DISTRO_CODE='budgie' ;;
-	4) DISTRO_CODE='cli' ;;
-	5) DISTRO_CODE='minimal' ;;
-	esac
+    DESKTOP_NAME=$(
+        whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
+            "1" "🐭 xfce" \
+            "2" "👣 cinnamon" \
+            "3" "🦜 budgie" \
+            "4" "cli(nogui)" \
+            "5" "minimal(nogui)" \
+            "0" "🌚 Return to previous menu" \
+            3>&1 1>&2 2>&3
+    )
+    case "${DESKTOP_NAME}" in
+    0 | "") install_armbian_linux_distro ;;
+    1) DISTRO_CODE='xfce' ;;
+    2) DISTRO_CODE='cinnamon' ;;
+    3) DISTRO_CODE='budgie' ;;
+    4) DISTRO_CODE='cli' ;;
+    5) DISTRO_CODE='minimal' ;;
+    esac
 }
 choose_ubuntu_xfce_or_cinnamon() {
-	DESKTOP_NAME=$(
-		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
-			"1" "🐭 xfce" \
-			"2" "👣 cinnamon" \
-			"3" "cli(nogui)" \
-			"4" "minimal(nogui)" \
-			"0" "🌚 Return to previous menu" \
-			3>&1 1>&2 2>&3
-	)
-	case "${DESKTOP_NAME}" in
-	0 | "") install_armbian_linux_distro ;;
-	1) DISTRO_CODE='xfce' ;;
-	2) DISTRO_CODE='cinnamon' ;;
-	3) DISTRO_CODE='cli' ;;
-	4) DISTRO_CODE='minimal' ;;
-	esac
+    DESKTOP_NAME=$(
+        whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
+            "1" "🐭 xfce" \
+            "2" "👣 cinnamon" \
+            "3" "cli(nogui)" \
+            "4" "minimal(nogui)" \
+            "0" "🌚 Return to previous menu" \
+            3>&1 1>&2 2>&3
+    )
+    case "${DESKTOP_NAME}" in
+    0 | "") install_armbian_linux_distro ;;
+    1) DISTRO_CODE='xfce' ;;
+    2) DISTRO_CODE='cinnamon' ;;
+    3) DISTRO_CODE='cli' ;;
+    4) DISTRO_CODE='minimal' ;;
+    esac
 }
 choose_debian_xfce_or_cinnamon() {
-	DESKTOP_NAME=$(
-		whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal,\nevery container has a built-in desktop environment" 0 50 0 \
-			"1" "🐭 xfce" \
-			"2" "cli(nogui)" \
-			"3" "minimal(nogui)" \
-			"0" "🌚 Return to previous menu" \
-			3>&1 1>&2 2>&3
-	)
-	case "${DESKTOP_NAME}" in
-	0 | "") install_armbian_linux_distro ;;
-	1) DISTRO_CODE='xfce' ;;
-	2) DISTRO_CODE='cli' ;;
-	3 | *) DISTRO_CODE='minimal' ;;
-	esac
+    DESKTOP_NAME=$(
+        whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal,\nevery container has a built-in desktop environment" 0 50 0 \
+            "1" "🐭 xfce" \
+            "2" "cli(nogui)" \
+            "3" "minimal(nogui)" \
+            "0" "🌚 Return to previous menu" \
+            3>&1 1>&2 2>&3
+    )
+    case "${DESKTOP_NAME}" in
+    0 | "") install_armbian_linux_distro ;;
+    1) DISTRO_CODE='xfce' ;;
+    2) DISTRO_CODE='cli' ;;
+    3 | *) DISTRO_CODE='minimal' ;;
+    esac
 }
 install_armbian_linux_distro() {
-	RETURN_TO_WHERE='install_armbian_linux_distro'
-	DISTRO_NAME='armbian'
-	BETA_SYSTEM=$(
-		whiptail --title "ARMBIAN" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统\nArmbian is a Debian & Ubuntu based computer OS for ARM development boards." 0 50 0 \
-			"1" "Jammy(ubuntu 22.04)" \
-			"2" "🐱 Focal(ubuntu 20.04)" \
-			"3" "🐎 Bullseye(debian 11)" \
-			"4" "🐶 Buster(debian 10)" \
-			"5" "Custom code手动输入版本代号" \
-			"0" "🌚 Return to previous menu" \
-			3>&1 1>&2 2>&3
-	)
-	#
-	##############################
-	case "${BETA_SYSTEM}" in
-	0 | "") choose_which_gnu_linux_distro ;;
-	1)
-		# impish
-		DISTRO_NAME='jammy'
-		choose_ubuntu_xfce_or_cinnamon
-		;;
-	2)
-		DISTRO_NAME='focal'
-		choose_ubuntu_budgie_or_cinnamon
-		;;
-	3)
-		DISTRO_NAME='bullseye'
-		choose_debian_xfce_or_cinnamon
-		;;
-	4)
-		DISTRO_NAME='buster'
-		choose_debian_xfce_or_cinnamon
-		;;
-	5 | *)
-		custom_armbian_version
-		choose_debian_xfce_or_cinnamon
-		;;
-	esac
-	######################
-	case "${ARCH_TYPE}" in
-	arm64 | armhf) ;;
-	*) distro_does_not_support ;;
-	esac
-	TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-	create_container_edition_txt
-	go_to_proot_management
-	printf "%s\n" "即将为您安装${TMOE_LINUX_CONTAINER_DISTRO} GNU/Linux container"
-	do_you_want_to_continue
-	install_different_armbian_gnu_linux_distros
-	####################
-	exit 0
+    RETURN_TO_WHERE='install_armbian_linux_distro'
+    DISTRO_NAME='armbian'
+    BETA_SYSTEM=$(
+        whiptail --title "ARMBIAN" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统\nArmbian is a Debian & Ubuntu based computer OS for ARM development boards." 0 50 0 \
+            "1" "Jammy(ubuntu 22.04)" \
+            "2" "🐱 Focal(ubuntu 20.04)" \
+            "3" "🐎 Bullseye(debian 11)" \
+            "4" "🐶 Buster(debian 10)" \
+            "5" "Custom code手动输入版本代号" \
+            "0" "🌚 Return to previous menu" \
+            3>&1 1>&2 2>&3
+    )
+    #
+    ##############################
+    case "${BETA_SYSTEM}" in
+    0 | "") choose_which_gnu_linux_distro ;;
+    1)
+        # impish
+        DISTRO_NAME='jammy'
+        choose_ubuntu_xfce_or_cinnamon
+        ;;
+    2)
+        DISTRO_NAME='focal'
+        choose_ubuntu_budgie_or_cinnamon
+        ;;
+    3)
+        DISTRO_NAME='bullseye'
+        choose_debian_xfce_or_cinnamon
+        ;;
+    4)
+        DISTRO_NAME='buster'
+        choose_debian_xfce_or_cinnamon
+        ;;
+    5 | *)
+        custom_armbian_version
+        choose_debian_xfce_or_cinnamon
+        ;;
+    esac
+    ######################
+    case "${ARCH_TYPE}" in
+    arm64 | armhf) ;;
+    *) distro_does_not_support ;;
+    esac
+    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+    create_container_edition_txt
+    go_to_proot_management
+    printf "%s\n" "即将为您安装${TMOE_LINUX_CONTAINER_DISTRO} GNU/Linux container"
+    do_you_want_to_continue
+    install_different_armbian_gnu_linux_distros
+    ####################
+    exit 0
 }
 #########################
 install_different_armbian_gnu_linux_distros() {
-	if [ ! $(command -v lz4) ]; then
-		printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}lz4${RESET}"
-		printf "%s\n" "Do you want to install ${BLUE}lz4?${PURPLE}[Y/n]${RESET}"
-		do_you_want_to_continue
-		${TMOE_INSTALLATION_COMMAND} lz4
-		# apt update 2>/dev/null
-		# apt install -y lz4 2>/dev/null || pacman -Syu --noconfirm lz4 2>/dev/null || zypper in -y lz4 2>/dev/null
-	fi
-	if [ ! $(command -v lz4) ]; then
-		printf "%s\n" "${RED}ERROR${RESET}, you did not install ${BLUE}lz4${RESET}"
-		press_enter_to_return
-		install_armbian_linux_distro
-	fi
-	ARMBIAN_TUNA_REPO='https://mirrors.bfsu.edu.cn/armbian-releases/_rootfs'
-	ARMBIAN_ROOTFS_FILE="$(curl -L ${ARMBIAN_TUNA_REPO}/ | grep "${DISTRO_NAME}-${DISTRO_CODE}" | grep -Ev '\.tar\.lz4\.asc|\.torrent|\.lz4\.list|\.current' | grep ${ARCH_TYPE} | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
-	ARMBIAN_ROOTFS_URL="${ARMBIAN_TUNA_REPO}/${ARMBIAN_ROOTFS_FILE}"
-	case "${DISTRO_NAME}" in
-	squeeze | wheezy | jessie | stretch | buster) install_armbian_buster_via_tuna ;;
-	*) install_armbian_testing_via_tuna ;;
-	esac
+    if [ ! $(command -v lz4) ]; then
+        printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}lz4${RESET}"
+        printf "%s\n" "Do you want to install ${BLUE}lz4?${PURPLE}[Y/n]${RESET}"
+        do_you_want_to_continue
+        ${TMOE_INSTALLATION_COMMAND} lz4
+        # apt update 2>/dev/null
+        # apt install -y lz4 2>/dev/null || pacman -Syu --noconfirm lz4 2>/dev/null || zypper in -y lz4 2>/dev/null
+    fi
+    if [ ! $(command -v lz4) ]; then
+        printf "%s\n" "${RED}ERROR${RESET}, you did not install ${BLUE}lz4${RESET}"
+        press_enter_to_return
+        install_armbian_linux_distro
+    fi
+    ARMBIAN_TUNA_REPO='https://mirrors.bfsu.edu.cn/armbian-releases/_rootfs'
+    ARMBIAN_ROOTFS_FILE="$(curl -L ${ARMBIAN_TUNA_REPO}/ | grep "${DISTRO_NAME}-${DISTRO_CODE}" | grep -Ev '\.tar\.lz4\.asc|\.torrent|\.lz4\.list|\.current' | grep ${ARCH_TYPE} | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1)"
+    ARMBIAN_ROOTFS_URL="${ARMBIAN_TUNA_REPO}/${ARMBIAN_ROOTFS_FILE}"
+    case "${DISTRO_NAME}" in
+    squeeze | wheezy | jessie | stretch | buster) install_armbian_buster_via_tuna ;;
+    *) install_armbian_testing_via_tuna ;;
+    esac
 }
 ########
 install_armbian_buster_via_tuna() {
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed \
-			-e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${ARMBIAN_ROOTFS_URL}@g" \
-			-e 's@rootfs.tar.xz@rootfs.tar.lz4@g' \
-			-e "s/debian container/${DISTRO_NAME} container/g" \
-			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-			-e 's@#deb http@deb http@g' \
-			-e 's/.*sid main/#&/' \
-			-e "s@stable/updates@${DISTRO_NAME}/updates@g" \
-			-e "s@buster-backports@${DISTRO_NAME}-backports@g" \
-			-e "s@debian/ stable@debian/ ${DISTRO_NAME}@g" \
-			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+    bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
+        sed \
+            -e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${ARMBIAN_ROOTFS_URL}@g" \
+            -e 's@rootfs.tar.xz@rootfs.tar.lz4@g' \
+            -e "s/debian container/${DISTRO_NAME} container/g" \
+            -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+            -e 's@#deb http@deb http@g' \
+            -e 's/.*sid main/#&/' \
+            -e "s@stable/updates@${DISTRO_NAME}/updates@g" \
+            -e "s@buster-backports@${DISTRO_NAME}-backports@g" \
+            -e "s@debian/ stable@debian/ ${DISTRO_NAME}@g" \
+            -e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 ###########
 install_armbian_testing_via_tuna() {
-	bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-		sed \
-			-e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${ARMBIAN_ROOTFS_URL}@g" \
-			-e 's@rootfs.tar.xz@rootfs.tar.lz4@g' \
-			-e "s/debian container/${DISTRO_NAME} container/g" \
-			-e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-			-e 's@#deb http@deb http@g' \
-			-e 's/.*sid main/#&/' \
-			-e "s@stable/updates@${DISTRO_NAME}-security@g" \
-			-e "s@buster-backports@${DISTRO_NAME}-backports@g" \
-			-e "s@debian/ stable@debian/ ${DISTRO_NAME}@g" \
-			-e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
+    bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
+        sed \
+            -e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${ARMBIAN_ROOTFS_URL}@g" \
+            -e 's@rootfs.tar.xz@rootfs.tar.lz4@g' \
+            -e "s/debian container/${DISTRO_NAME} container/g" \
+            -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
+            -e 's@#deb http@deb http@g' \
+            -e 's/.*sid main/#&/' \
+            -e "s@stable/updates@${DISTRO_NAME}-security@g" \
+            -e "s@buster-backports@${DISTRO_NAME}-backports@g" \
+            -e "s@debian/ stable@debian/ ${DISTRO_NAME}@g" \
+            -e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
 }
 ###########
 custom_armbian_version() {
-	TARGET=$(whiptail --inputbox "请输入armbian版本代号，例如bullseye(英文小写)\nPlease type the armbian version code." 9 50 --title "ARMBIAN CODE" 3>&1 1>&2 2>&3)
-	DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
-	if [ -z "${DISTRO_CODE}" ]; then
-		printf "%s\n" "检测到您取消了操作"
-		printf "%s\n" "已自动切换为armbian bullseye"
-		DISTRO_CODE='bullseye'
-	fi
-	DISTRO_NAME=${DISTRO_CODE}
+    TARGET=$(whiptail --inputbox "请输入armbian版本代号，例如bullseye(英文小写)\nPlease type the armbian version code." 9 50 --title "ARMBIAN CODE" 3>&1 1>&2 2>&3)
+    DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
+    if [ -z "${DISTRO_CODE}" ]; then
+        printf "%s\n" "检测到您取消了操作"
+        printf "%s\n" "已自动切换为armbian bullseye"
+        DISTRO_CODE='bullseye'
+    fi
+    DISTRO_NAME=${DISTRO_CODE}
 }
 ###########
 install_mint_linux_distro() {
-	case ${ARCH_TYPE} in
-	amd64 | i386) which_linux_mint_distro ;;
-	*)
-		case ${TMOE_LANG} in
-		zh_*UTF-8)
-			printf "%s\n" "${RED}WARNING！${RESET}检测到您使用的是${ARCH_TYPE}架构"
-			printf "%s\n" "Linux Mint${RED}不支持${RESET}您的架构"
-			printf "%s\n" "请尝试${PURPLE}跨架构${RESET}运行${YELLOW}amd64${RESET}或${YELLOW}i386${RESET}"
-			press_enter_to_return
-			install_beta_containers
-			;;
-		*) distro_does_not_support ;;
-		esac
-		;;
-	esac
+    case ${ARCH_TYPE} in
+    amd64 | i386) which_linux_mint_distro ;;
+    *)
+        case ${TMOE_LANG} in
+        zh_*UTF-8)
+            printf "%s\n" "${RED}WARNING！${RESET}检测到您使用的是${ARCH_TYPE}架构"
+            printf "%s\n" "Linux Mint${RED}不支持${RESET}您的架构"
+            printf "%s\n" "请尝试${PURPLE}跨架构${RESET}运行${YELLOW}amd64${RESET}或${YELLOW}i386${RESET}"
+            press_enter_to_return
+            install_beta_containers
+            ;;
+        *) distro_does_not_support ;;
+        esac
+        ;;
+    esac
 }
 ################
 check_mint_version_code() {
-	DISTRO_NAME='mint'
-	OLD_STABLE_VERSION='tricia'
-	LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
-	DISTRO_CODE=$(curl -sL ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|sarah|serena|sonya|sylvia|tara|tessa|tina|tricia|ulyana' | tail -n 1)
+    DISTRO_NAME='mint'
+    OLD_STABLE_VERSION='tricia'
+    LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
+    DISTRO_CODE=$(curl -sL ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|sarah|serena|sonya|sylvia|tara|tessa|tina|tricia|ulyana' | tail -n 1)
 }
 ###########
 which_linux_mint_distro() {
-	RETURN_TO_WHERE='which_linux_mint_distro'
-	DISTRO_NAME='mint'
-	BETA_SYSTEM=$(
-		whiptail --title "mint" --menu "您想要安装哪个Mint版本？\nWhich version do you want to install?\nIf you are using i386,then choose tricia." 0 0 0 \
-			"1" "Auto check 自动检测版本" \
-			"2" "Custom code手动输入版本代号" \
-			"0" "🌚 Return to previous menu 返回上级菜单" \
-			3>&1 1>&2 2>&3
-	)
-	##############################
-	case "${BETA_SYSTEM}" in
-	0 | "") choose_which_gnu_linux_distro ;;
-	1)
-		check_mint_version_code
-		which_version_do_you_want_to_install
-		;;
-	2) custom_mint_version ;;
-	esac
-	######################
-	press_enter_to_return
-	tmoe_manager_main_menu
+    RETURN_TO_WHERE='which_linux_mint_distro'
+    DISTRO_NAME='mint'
+    BETA_SYSTEM=$(
+        whiptail --title "mint" --menu "您想要安装哪个Mint版本？\nWhich version do you want to install?\nIf you are using i386,then choose tricia." 0 0 0 \
+            "1" "Auto check 自动检测版本" \
+            "2" "Custom code手动输入版本代号" \
+            "0" "🌚 Return to previous menu 返回上级菜单" \
+            3>&1 1>&2 2>&3
+    )
+    ##############################
+    case "${BETA_SYSTEM}" in
+    0 | "") choose_which_gnu_linux_distro ;;
+    1)
+        check_mint_version_code
+        which_version_do_you_want_to_install
+        ;;
+    2) custom_mint_version ;;
+    esac
+    ######################
+    press_enter_to_return
+    tmoe_manager_main_menu
 }
 #########################
 custom_mint_version() {
-	TARGET=$(whiptail --inputbox "请输入mint版本代号，例如ulyana(英文小写)\n Please enter the mint version code." 12 50 --title "MINT CODE" 3>&1 1>&2 2>&3)
-	DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
-	if [ -z "${DISTRO_CODE}" ]; then
-		printf "%s\n" "检测到您取消了操作"
-		printf "%s\n" "已自动切换为ulyana"
-		DISTRO_CODE='ulyana'
-	fi
-	before_going_to_proot_menu
-	printf "%s\n" "即将为您安装Mint ${DISTRO_CODE} GNU/Linux container"
-	do_you_want_to_continue
-	linux_distro_common_model_01
+    TARGET=$(whiptail --inputbox "请输入mint版本代号，例如ulyana(英文小写)\n Please enter the mint version code." 12 50 --title "MINT CODE" 3>&1 1>&2 2>&3)
+    DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
+    if [ -z "${DISTRO_CODE}" ]; then
+        printf "%s\n" "检测到您取消了操作"
+        printf "%s\n" "已自动切换为ulyana"
+        DISTRO_CODE='ulyana'
+    fi
+    before_going_to_proot_menu
+    printf "%s\n" "即将为您安装Mint ${DISTRO_CODE} GNU/Linux container"
+    do_you_want_to_continue
+    linux_distro_common_model_01
 }
 ######################
