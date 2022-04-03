@@ -1239,7 +1239,7 @@ kali_xfce4_extras() {
     eatmydata apt install -y kali-themes-common || apt install -y kali-themes-common
     if [ $(command -v chromium) ]; then
         eatmydata apt install -y chromium-l10n || apt install -y chromium-l10n
-        fix_chromium_root_no_sandbox
+        # fix_chromium_root_no_sandbox
     fi
     apt search kali-linux
     dbus-launch xfconf-query -c xsettings -np /Net/IconThemeName -s Windows-10-Icons
