@@ -287,6 +287,10 @@ install_firefox_esr_browser() {
     "debian")
         case "${DEBIAN_DISTRO}" in
         "ubuntu")
+            if [[ -z $(command -v add-apt-repository) ]]; then
+                apt update
+                apt install -y software-properties-common
+            fi
             add-apt-repository -y ppa:mozillateam/ppa
             #DEPENDENCY_02="firefox-esr-locale-zh-hans ffmpeg"
             case ${TMOE_MENU_LANG} in
