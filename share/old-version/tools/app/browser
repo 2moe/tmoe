@@ -269,6 +269,12 @@ read_chromium_sandbox_opt() {
     esac
 }
 ###############
+install_ppa_dep() {
+    if [[ -z $(command -v add-apt-repository) ]]; then
+        apt update
+        apt install -y software-properties-common
+    fi
+}
 install_firefox_esr_browser() {
     printf '%s\n' 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
     printf "%s\n" "${YELLOW} “谢谢您选择了我，我一定会比姐姐向您提供更好的上网服务的！”╰(*°▽°*)╯火狐ESR娘坚定地说道。 ${RESET}"
@@ -287,10 +293,7 @@ install_firefox_esr_browser() {
     "debian")
         case "${DEBIAN_DISTRO}" in
         "ubuntu")
-            if [[ -z $(command -v add-apt-repository) ]]; then
-                apt update
-                apt install -y software-properties-common
-            fi
+            install_ppa_dep
             add-apt-repository -y ppa:mozillateam/ppa
             #DEPENDENCY_02="firefox-esr-locale-zh-hans ffmpeg"
             case ${TMOE_MENU_LANG} in
@@ -351,6 +354,7 @@ set_ubuntu_firefox_stable_deps() {
     esac
 }
 set_ubuntu_firefox_next_deps() {
+    install_ppa_dep
     add-apt-repository -y ppa:mozillateam/ppa
     apt update
     local Firefox_version=$(apt-cache madison firefox | grep -v snap | awk -F'|' '{print $2}' | head -n 1 | sed 's@ @@')
