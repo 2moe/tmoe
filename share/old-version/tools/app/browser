@@ -35,9 +35,9 @@ hold_ubuntu_chromium() {
 #########
 get_chromium_version() {
     printf "%s\n" \
-    "arch: ${ARCH_TYPE}" \
-    "version: ${VERSION_ID}"
-    
+        "arch: ${ARCH_TYPE}" \
+        "version: ${VERSION_ID}"
+
     CHROMIUM_BROWSER_VERSION="$(printf "%s\n" "${CHROMIUM_DEB_RAW_LIST}" | grep 'chromium-browser_' | grep ${ARCH_TYPE} | grep ${VERSION_ID} | tail -n 1 | cut -d '_' -f 2 | cut -d '-' -f 1)"
 }
 ubuntu_ppa_chromium() {
@@ -82,9 +82,9 @@ ubuntu_ppa_chromium() {
             sed "s@^@./@g" | sed ":a;N;s/\n/ /g;ta")"
         DEB_LIST_03=$(printf "%s\n" "${CHROMIUM_DEB_LIST}" |
             sed -E \
-            -e "s@(chromium-browser)@\1-dev@g" \
-            -e "s@^@${GREEN}Downloading ${BLUE}@g" \
-            -e "s@\$@${RESET} ...@g")
+                -e "s@(chromium-browser)@\1-dev@g" \
+                -e "s@^@${GREEN}Downloading ${BLUE}@g" \
+                -e "s@\$@${RESET} ...@g")
         printf "%s\n" "${DEB_LIST_03}"
         sh -c "${DOWNLOAD_PPA}"
         case "${?}" in
@@ -336,6 +336,30 @@ install_firefox_esr_browser() {
     fi
 }
 #####################
+set_ubuntu_firefox_stable_deps() {
+    #add-apt-repository -y ppa:mozillateam/firefox-next
+    case ${TMOE_MENU_LANG} in
+    zh_CN.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-zh-hans" ;;
+    zh_*.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-zh-hant" ;;
+    ja_JP.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-ja" ;;
+    en_*.UTF-8) DEPENDENCY_02="ffmpeg ^firefox-locale-en" ;;
+    *) DEPENDENCY_02="ffmpeg ^firefox-locale-" ;;
+    esac
+}
+set_ubuntu_firefox_next_deps() {
+    add-apt-repository -y ppa:mozillateam/ppa
+    apt update
+    local Firefox_version=$(apt-cache madison firefox | grep -v snap | awk -F'|' '{print $2}' | head -n 1 | sed 's@ @@')
+    unset DEPENDENCY_02
+    DEPENDENCY_01="firefox=${Firefox_version}"
+}
+set_ubuntu_firefox_deps() {
+    if grep -Eq 'Impish|Hirsute|Groovy|Focal|Bionic|Eoan Ermine|=tricia|=tina' /etc/os-release; then
+        set_ubuntu_firefox_stable_deps
+    else
+        set_ubuntu_firefox_next_deps
+    fi
+}
 install_firefox_browser() {
     printf '%s\n' 'Thank you for choosing me, I will definitely do better than my sister! ╰ (* ° ▽ ° *) ╯'
     printf "%s\n" " ${YELLOW}“谢谢您选择了我，我一定会比妹妹向您提供更好的上网服务的！”╰(*°▽°*)╯火狐娘坚定地说道。${RESET}"
@@ -353,16 +377,7 @@ install_firefox_browser() {
     case "${LINUX_DISTRO}" in
     "debian")
         case "${DEBIAN_DISTRO}" in
-        "ubuntu")
-            #add-apt-repository -y ppa:mozillateam/firefox-next
-            case ${TMOE_MENU_LANG} in
-            zh_CN.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-zh-hans" ;;
-            zh_*.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-zh-hant" ;;
-            ja_JP.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-ja" ;;
-            en_*.UTF-8) DEPENDENCY_02="ffmpeg ^firefox-locale-en" ;;
-            *) DEPENDENCY_02="ffmpeg ^firefox-locale-" ;;
-            esac
-            ;;
+        "ubuntu") set_ubuntu_firefox_deps ;;
         esac
         ;;
     "arch")
@@ -404,9 +419,9 @@ firefox_or_firefoxesr() {
     if (whiptail --title "请从两个小可爱中选择一个 " --yes-button "Firefox" --no-button "Firefox-ESR" --yesno "I am Firefox,I have a younger sister called ESR.\n我是firefox，其实我还有个妹妹叫firefox-esr，您是选她还是选我?\n “(＃°Д°)姐姐，人家可是什么都没听你说啊！” 躲在姐姐背后的ESR瑟瑟发抖地说。\n✨请做出您的选择！ " 12 53); then
         #printf '%s\n' 'esr可怜巴巴地说道:“我也想要得到更多的爱。”  '
         #什么乱七八糟的，2333333戏份真多。
-        install_firefox_browser
-    else
         install_firefox_esr_browser
+    else
+        install_firefox_browser
     fi
 }
 firefox_or_chromium() {
@@ -479,21 +494,21 @@ install_360_browser() {
     BROWSER_360="https://down.360safe.com/gc/browser360-cn-stable_10.4.1020.88-1"
 
     case ${ARCH_TYPE} in
-    amd64) THE_LATEST_DEB_URL="${BROWSER_360}_amd64.deb";;
-    arm64) THE_LATEST_DEB_URL="${BROWSER_360}_arm64.deb";;
-    mips64el) THE_LATEST_DEB_URL="${BROWSER_360}_mips64el.deb";;
+    amd64) THE_LATEST_DEB_URL="${BROWSER_360}_amd64.deb" ;;
+    arm64) THE_LATEST_DEB_URL="${BROWSER_360}_arm64.deb" ;;
+    mips64el) THE_LATEST_DEB_URL="${BROWSER_360}_mips64el.deb" ;;
     *) arch_does_not_support ;;
     esac
 
     printf "%s\n" "${PURPLE}WARNING${RESET}: 当前软件包的链接可能不是最新的"
-    
+
     case ${LINUX_DISTRO} in
     debian | arch) ;;
     redhat)
         case ${ARCH_TYPE} in
-        amd64) THE_LATEST_DEB_URL="${BROWSER_360}.x86_64.rpm";;
-        arm64) THE_LATEST_DEB_URL="${BROWSER_360}.aarch64.rpm";;
-        mips64el) THE_LATEST_DEB_URL="${BROWSER_360}.mips64el.rpm";;
+        amd64) THE_LATEST_DEB_URL="${BROWSER_360}.x86_64.rpm" ;;
+        arm64) THE_LATEST_DEB_URL="${BROWSER_360}.aarch64.rpm" ;;
+        mips64el) THE_LATEST_DEB_URL="${BROWSER_360}.mips64el.rpm" ;;
         esac
         ;;
     esac
