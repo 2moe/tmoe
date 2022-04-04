@@ -282,13 +282,8 @@ install_firefox_esr_browser() {
     sleep 1
     DEPENDENCY_01="firefox-esr"
     #DEPENDENCY_02="firefox-esr-l10n-zh-cn"
-    case ${TMOE_MENU_LANG} in
-    zh_CN.UTF-8) DEPENDENCY_02="firefox-esr-l10n-zh-cn" ;;
-    zh_*.UTF-8) DEPENDENCY_02="firefox-esr-l10n-zh-tw" ;;
-    ja_JP.UTF-8) DEPENDENCY_02="firefox-esr-l10n-ja" ;;
-    en_*.UTF-8) DEPENDENCY_02="^firefox-esr-l10n-en" ;;
-    *) DEPENDENCY_02="^firefox-esr-l10n" ;;
-    esac
+    DEPENDENCY_02="^firefox-esr-l10n-${TMOE_MENU_LANG%%_*}"
+
     case "${LINUX_DISTRO}" in
     "debian")
         case "${DEBIAN_DISTRO}" in
@@ -296,13 +291,7 @@ install_firefox_esr_browser() {
             install_ppa_dep
             add-apt-repository -y ppa:mozillateam/ppa
             #DEPENDENCY_02="firefox-esr-locale-zh-hans ffmpeg"
-            case ${TMOE_MENU_LANG} in
-            zh_CN.UTF-8) DEPENDENCY_02="ffmpeg firefox-esr-locale-zh-hans" ;;
-            zh_*.UTF-8) DEPENDENCY_02="ffmpeg firefox-esr-locale-zh-hant" ;;
-            ja_JP.UTF-8) DEPENDENCY_02="ffmpeg firefox-esr-locale-ja" ;;
-            en_*.UTF-8) DEPENDENCY_02="ffmpeg ^firefox-esr-locale-en" ;;
-            *) DEPENDENCY_02="ffmpeg ^firefox-esr-locale-" ;;
-            esac
+            DEPENDENCY_02="ffmpeg ^firefox-esr-locale-${TMOE_MENU_LANG%%_*}"
             #libavcodec58
             ;;
         esac
@@ -345,21 +334,15 @@ install_firefox_esr_browser() {
 #####################
 set_ubuntu_firefox_stable_deps() {
     #add-apt-repository -y ppa:mozillateam/firefox-next
-    case ${TMOE_MENU_LANG} in
-    zh_CN.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-zh-hans" ;;
-    zh_*.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-zh-hant" ;;
-    ja_JP.UTF-8) DEPENDENCY_02="ffmpeg firefox-locale-ja" ;;
-    en_*.UTF-8) DEPENDENCY_02="ffmpeg ^firefox-locale-en" ;;
-    *) DEPENDENCY_02="ffmpeg ^firefox-locale-" ;;
-    esac
+    DEPENDENCY_02="ffmpeg ^firefox-locale-${TMOE_MENU_LANG%%_*}"
 }
 set_ubuntu_firefox_next_deps() {
     install_ppa_dep
     add-apt-repository -y ppa:mozillateam/ppa
     apt update
     local Firefox_version=$(apt-cache madison firefox | grep -v snap | awk -F'|' '{print $2}' | head -n 1 | sed 's@ @@')
-    unset DEPENDENCY_02
     DEPENDENCY_01="firefox=${Firefox_version}"
+    DEPENDENCY_02="ffmpeg ^firefox-locale-${TMOE_MENU_LANG%%_*}=${Firefox_version}"
 }
 set_ubuntu_firefox_deps() {
     if grep -Eq 'Impish|Hirsute|Groovy|Focal|Bionic|Eoan Ermine|=tricia|=tina' /etc/os-release; then
@@ -375,13 +358,7 @@ install_firefox_browser() {
     sleep 1
     DEPENDENCY_01="firefox"
     #DEPENDENCY_02="firefox-l10n-zh-cn"
-    case ${TMOE_MENU_LANG} in
-    zh_CN.UTF-8) DEPENDENCY_02="firefox-l10n-zh-cn" ;;
-    zh_*.UTF-8) DEPENDENCY_02="firefox-l10n-zh-tw" ;;
-    ja_JP.UTF-8) DEPENDENCY_02="firefox-l10n-ja" ;;
-    en_*.UTF-8) DEPENDENCY_02="^firefox-l10n-en" ;;
-    *) DEPENDENCY_02="^firefox-l10n" ;;
-    esac
+    DEPENDENCY_02="^firefox-l10n-${TMOE_MENU_LANG%%_*}"
     case "${LINUX_DISTRO}" in
     "debian")
         case "${DEBIAN_DISTRO}" in
