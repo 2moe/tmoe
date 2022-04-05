@@ -60,7 +60,6 @@ install_container_and_virtual_machine() {
             "4" "🖥️ VirtualBox(甲骨文开源虚拟机x64)" \
             "5" "🍷 wine:调用win api并即时转换" \
             "6" "genymotion(专为Android开发者打造的模拟器)" \
-            "7" "🥡 anbox(Android in a box)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             "00" "Back to the main menu 返回主菜单" \
             3>&1 1>&2 2>&3
@@ -75,7 +74,6 @@ install_container_and_virtual_machine() {
     4) install_virtual_box ;;
     5) wine_menu ;;
     6) install_genymotion ;;
-    7) install_anbox ;;
     esac
     ###############
     press_enter_to_return

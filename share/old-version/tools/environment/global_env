@@ -909,10 +909,6 @@ wine_menu() {
     source ${TMOE_TOOL_DIR}/virtualization/wine32.sh
 }
 ###########
-install_anbox() {
-    source ${TMOE_TOOL_DIR}/virtualization/anbox.sh
-}
-###########
 install_browser() {
     source ${TMOE_TOOL_DIR}/app/browser
 }
