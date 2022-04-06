@@ -100,6 +100,14 @@ android_termux() {
         fi
     fi
 
+    if [[ -z "$(command -v whiptail)" ]]; then
+        if ((ANDROID_VERSION < 7)); then
+            DEPENDENCIES="${DEPENDENCIES} dialog"
+        else
+            DEPENDENCIES="${DEPENDENCIES} whiptail"
+        fi
+    fi
+
     if ((ANDROID_VERSION >= 7)); then
         i=micro
         if [ ! "$(command -v ${i})" ]; then
@@ -114,7 +122,6 @@ android_termux() {
             xz) DEPENDENCIES="${DEPENDENCIES} xz-utils" ;;
             aria2c) DEPENDENCIES="${DEPENDENCIES} aria2" ;;
             termux-setup-storage) DEPENDENCIES="${DEPENDENCIES} termux-tools" ;;
-            whiptail) DEPENDENCIES="${DEPENDENCIES} dialog" ;;
             pkill) DEPENDENCIES="${DEPENDENCIES} procps" ;;
             # which) DEPENDENCIES="${DEPENDENCIES} debianutils" ;;
             chroot) DEPENDENCIES="${DEPENDENCIES} coreutils" ;;
@@ -132,6 +139,7 @@ android_termux() {
         esac
         notes_of_tmoe_package_installation
         apt update
+        apt dist-upgrade
         apt install -y ${DEPENDENCIES}
         case ${TERMUX_STORAGE} in
         false) termux-setup-storage ;;

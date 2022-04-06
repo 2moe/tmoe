@@ -155,8 +155,8 @@ install_android_whiptail() {
     do_you_want_to_continue
     apt update
     # for android6(termux), whiptail -> dialog
-    [[ -e ${PREFIX}/bin/dialog ]] || apt install -y dialog
     [[ -e ${PREFIX}/bin/whiptail ]] || apt install -y whiptail
+    [[ -e ${PREFIX}/bin/whiptail ]] || apt install -y dialog
 }
 check_android_termux_whiptail() {
     [[ -e ${PREFIX}/bin/whiptail ]] || install_android_whiptail
