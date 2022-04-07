@@ -2676,26 +2676,46 @@ install_ukui_desktop() {
     configure_vnc_xstartup
 }
 ##############
+# set_budgie_desktop_1() {
+#     REMOTE_DESKTOP_SESSION_01='budgie-desktop'
+#     REMOTE_DESKTOP_SESSION_02='budgie-desktop-builtin'
+# }
+set_budgie_desktop_2() {
+    REMOTE_DESKTOP_SESSION_01='budgie-desktop-builtin'
+    REMOTE_DESKTOP_SESSION_02='budgie-panel'
+}
+
+choose_debian_budgie_core_or_desktop() {
+    if (whiptail --title "budgie-core or budgie-desktop" --yes-button "core" --no-button "desktop" --yesno 'The former is more streamlined, and the latter\n includes some extra software of budgie.\n前者更精简' 0 0); then
+        DEPENDENCY_01='--no-install-recommends budgie-core'
+        # gnome-shell-extension-dashtodock
+    else
+        DEPENDENCY_01='budgie-desktop'
+    fi
+}
+choose_budgie_or_ubuntu_budgie_desktop() {
+    if (whiptail --title "budgie or ubuntu-budgie-desktop" --yes-button "budgie" --no-button "ubuntu-budgie" --yesno 'The former is more streamlined, and the latter\n includes some extra software of ubuntu-budgie.\n前者为budgie基础桌面，后者为ubuntu-budgie-desktop' 0 0); then
+        choose_debian_budgie_core_or_desktop
+    else
+        UBUNTU_DESKTOP=true
+        DEPENDENCY_01="ubuntu-budgie-desktop"
+    fi
+}
 install_budgie_desktop() {
     tmoe_desktop_warning
-    case ${TMOE_PROOT} in
-    true)
-        REMOTE_DESKTOP_SESSION_01='budgie-panel'
-        REMOTE_DESKTOP_SESSION_02='budgie-desktop'
-        ;;
-    false | *)
-        REMOTE_DESKTOP_SESSION_01='budgie-desktop'
-        REMOTE_DESKTOP_SESSION_02='budgie-panel'
-        ;;
-    esac
-
     DEPENDENCY_01="budgie-desktop"
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、budgie-desktop、budgie-indicator-applet和tightvncserver等软件包。'
+    set_budgie_desktop_2
+
     case ${LINUX_DISTRO} in
     debian)
+        # DEPENDENCY_01='budgie-desktop budgie-indicator-applet'
+        case ${DEBIAN_DISTRO} in
+        ubuntu) choose_budgie_or_ubuntu_budgie_desktop ;;
+        *) choose_debian_budgie_core_or_desktop ;;
+        esac
         dpkg --configure -a
         auto_select_keyboard_layout
-        DEPENDENCY_01='budgie-desktop budgie-indicator-applet'
         ;;
     arch | void | solus) DEPENDENCY_01='budgie-desktop' ;;
     *)
@@ -2706,6 +2726,7 @@ install_budgie_desktop() {
     esac
     ####################
     beta_features_quick_install
+    cat_budgie_desktop_builtin_session
     apt_purge_libfprint
     configure_vnc_xstartup
 }
@@ -2929,9 +2950,19 @@ get_ubuntu_desktop_language_pack() {
     esac
 }
 ################
+cat_budgie_desktop_builtin_session() {
+    local GNOME_SESSION="/usr/local/bin/budgie-desktop-builtin"
+    cat >${GNOME_SESSION} <<-'EOF'
+#!/usr/bin/env sh
+
+budgie-wm --x11 --replace &
+
+exec budgie-desktop --builtin --disable-acceleration-check "$@"
+EOF
+    chmod a+rx ${GNOME_SESSION}
+}
 cat_gnome_flashback_session() {
-    if [[ ! -e ${GNOME_SESSION} ]]; then
-        cat >${GNOME_SESSION} <<-'EOF'
+    cat >${GNOME_SESSION} <<-'EOF'
 #!/usr/bin/env sh
 
 if [ -z $XDG_CURRENT_DESKTOP ]; then
@@ -2939,34 +2970,30 @@ if [ -z $XDG_CURRENT_DESKTOP ]; then
 fi
 
 EOF
-        if [[ -n $(gnome-session --help 2>&1 | grep builtin) ]]; then
-            # nosystemd
-            echo 'exec gnome-session --builtin --session=gnome-flashback-metacity --disable-acceleration-check "$@"' >>${GNOME_SESSION}
-        else
-            printf "%s\n" \
-                'exec metacity &' \
-                'exec gnome-session --session=gnome-flashback-metacity --disable-acceleration-check "$@"' \
-                >>${GNOME_SESSION}
-        fi
-        chmod a+rx ${GNOME_SESSION}
+    if [[ -n $(gnome-session --help 2>&1 | grep builtin) ]]; then
+        # nosystemd
+        echo 'exec gnome-session --builtin --session=gnome-flashback-metacity --disable-acceleration-check "$@"' >>${GNOME_SESSION}
+    else
+        printf "%s\n" \
+            'metacity &' \
+            'exec gnome-session --session=gnome-flashback-metacity --disable-acceleration-check "$@"' \
+            >>${GNOME_SESSION}
     fi
+    chmod a+rx ${GNOME_SESSION}
 }
 cat_gnome_session_classic() {
     local GNOME_SESSION="/usr/local/bin/gnome-session-classic"
-    if [[ ! -e ${GNOME_SESSION} ]]; then
-        cat >${GNOME_SESSION} <<-'EOF'
+    cat >${GNOME_SESSION} <<-'EOF'
 #!/usr/bin/env sh
 
 export GNOME_SHELL_SESSION_MODE=classic
 exec gnome-session --session=gnome-classic --disable-acceleration-check "$@"
 EOF
-        chmod a+rx ${GNOME_SESSION}
-    fi
+    chmod a+rx ${GNOME_SESSION}
 }
 cat_gnome_session_ubuntu() {
     local GNOME_SESSION="/usr/local/bin/gnome-session-ubuntu"
-    if [[ ! -e ${GNOME_SESSION} ]]; then
-        cat >${GNOME_SESSION} <<-'EOF'
+    cat >${GNOME_SESSION} <<-'EOF'
 #!/usr/bin/env sh
 
 if [ -z $XDG_CURRENT_DESKTOP ]; then
@@ -2979,13 +3006,11 @@ export XDG_CONFIG_DIRS=/etc/xdg/xdg-ubuntu:/etc/xdg
 
 exec gnome-session --session=ubuntu --disable-acceleration-check "$@"
 EOF
-        chmod a+rx ${GNOME_SESSION}
-    fi
+    chmod a+rx ${GNOME_SESSION}
 }
 cat_gnome_shell_x11() {
     local GNOME_SESSION="/usr/local/bin/gnome-shell-x11"
-    if [[ ! -x ${GNOME_SESSION} ]]; then
-        cat >${GNOME_SESSION} <<-'EOF'
+    cat >${GNOME_SESSION} <<-'EOF'
 #!/usr/bin/env sh
 
 # if [ -z $XDG_CURRENT_DESKTOP ]; then
@@ -2994,8 +3019,7 @@ cat_gnome_shell_x11() {
 
 exec gnome-shell --x11 "$@"
 EOF
-        chmod a+rx ${GNOME_SESSION}
-    fi
+    chmod a+rx ${GNOME_SESSION}
 
 }
 ln_s_gnome_flashback_metacity() {
