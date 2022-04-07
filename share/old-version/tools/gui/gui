@@ -504,6 +504,7 @@ standand_desktop_installation() {
     # NON_DBUS=false
     REMOVE_UDISK2=false
     RETURN_TO_WHERE='standand_desktop_installation'
+    UBUNTU_DESKTOP=false
     preconfigure_gui_dependecies_02
     standand_desktop_installation_zh() {
         INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
