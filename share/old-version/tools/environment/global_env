@@ -549,18 +549,18 @@ beta_features_quick_install() {
     #   non_debian_function
     #fi
     #############
-    if [[ ! -z ${DEPENDENCY_01} ]]; then
+    if [[ -n ${DEPENDENCY_01} ]]; then
         DEPENDENCY_01_COMMAND=$(printf '%s\n' ${DEPENDENCY_01} | awk -F ' ' '$0=$NF')
-        if [ $(command -v ${DEPENDENCY_01_COMMAND}) ]; then
+        if [[ -n $(command -v ${DEPENDENCY_01_COMMAND}) ]]; then
             printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${RESET}"
             printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCY_01}${RESET}"
             EXISTS_COMMAND=true
         fi
     fi
     #############
-    if [[ ! -z ${DEPENDENCY_02} ]]; then
+    if [[ -n ${DEPENDENCY_02} ]]; then
         DEPENDENCY_02_COMMAND=$(printf '%s\n' "${DEPENDENCY_02}" | awk -F ' ' '$0=$NF')
-        if [ $(command -v ${DEPENDENCY_02_COMMAND}) ]; then
+        if [[ -n $(command -v ${DEPENDENCY_02_COMMAND}) ]]; then
             printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_02} ${RESET}"
             printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCY_02}${RESET}"
             EXISTS_COMMAND=true

@@ -265,7 +265,7 @@ source_tmoe_env() {
     esac
     case ${TMOE_CONTAINER_FORTUNE} in
     true)
-        if [ $(command -v fortune) ]; then
+        if [[ -n $(command -v fortune) ]]; then
             fortune 2>/dev/null
         elif [ -e /usr/games/fortune ]; then
             /usr/games/fortune 2>/dev/null
@@ -304,9 +304,9 @@ check_container_login_file_01() {
 }
 ########
 chmod_777_temporary_file_01() {
-    if [ $(command -v bat) ]; then
+    if [[ -n $(command -v bat) ]]; then
         sed '/\/tmp\/.tmoe_container_temporary/d' "${TEMP_FILE}" | bat -ppn
-    elif [ $(command -v batcat) ]; then
+    elif [[ -n $(command -v batcat) ]]; then
         sed '/\/tmp\/.tmoe_container_temporary/d' "${TEMP_FILE}" | batcat -ppn
     else
         sed '/\/tmp\/.tmoe_container_temporary/d' "${TEMP_FILE}" | cat
