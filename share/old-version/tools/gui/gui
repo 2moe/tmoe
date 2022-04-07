@@ -2808,7 +2808,7 @@ set_gnome_common_env() {
     REMOTE_DESKTOP_SESSION_02='gnome-shell-x11'
 }
 choose_gnome_session() {
-    GNOME_SESSION=$(whiptail --title "gnome-session" --menu \
+    GNOME_SESSION_OPT=$(whiptail --title "gnome-session" --menu \
         "Which session do you want to use?\nDifferent environments should use different sessions." 0 0 0 \
         "1" "gnome-shell-x11" \
         "2" "gnome-flashback" \
@@ -2818,22 +2818,23 @@ choose_gnome_session() {
         "0" "🌚 back" \
         3>&1 1>&2 2>&3)
     ##########################
-    case "${GNOME_SESSION}" in
+    case "${GNOME_SESSION_OPT}" in
     0 | "") tmoe_docker_and_chroot_container_desktop ;;
     1) gnome_session_1 ;;
-    2)
-        gnome_session_2
-        set_gnome_flashback_desktop
-        ;;
+    2) gnome_session_2 ;;
     3) gnome_session_3 ;;
     4) gnome_session_4 ;;
     5) gnome_session_5 ;;
+    esac
+    set_gnome_common_env
+    case "${GNOME_SESSION_OPT}" in
+    2) set_gnome_flashback_desktop ;;
     esac
 }
 install_gnome_desktop() {
     print_gnome_ascii
     gnome3_warning
-    set_gnome_common_env
+    # set_gnome_common_env
     choose_gnome_session
     do_you_want_to_install_fcitx4
     DEPENDENCY_01="gnome"
