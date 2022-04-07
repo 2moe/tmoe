@@ -5459,10 +5459,14 @@ debian_install_vnc_server() {
         #debian_remove_vnc_server
         #printf "%s\n" "${BLUE}${TMOE_INSTALLATION_COMMAND} ${DEPENDENCY_02} ${DEPENDENCY_01}${RESET}"
         printf "%s\n" "${PURPLE}sudo ${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}tigervnc-standalone-server tigervnc-common tigervnc-viewer${RESET}"
-        if [[ ! $(command -v Xtigervnc) ]]; then
+        if [[ -z $(command -v Xtigervnc) ]]; then
             for i in tigervnc-standalone-server tigervnc-viewer; do
                 eatmydata_apt_install_i
             done
+        fi
+        if [[ -z $(command -v Xtigervnc) ]]; then
+            i=vnc4server
+            eatmydata_apt_install_i
         fi
         printf "%s\n" "${PURPLE}sudo ${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}tightvncserver${RESET}"
         if [[ ! $(command -v Xtightvnc) ]]; then
