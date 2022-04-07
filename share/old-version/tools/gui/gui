@@ -584,8 +584,8 @@ tmoe_docker_and_chroot_container_desktop() {
     ##########################
     case "${INSTALLDESKTOP}" in
     0 | "") standand_desktop_installation ;;
-    1) install_gnome_desktop ;;
-    2) install_cinnamon_desktop ;;
+    1) install_cinnamon_desktop ;;
+    2) install_gnome_desktop ;;
     3) install_budgie_desktop ;;
     4) install_deepin_desktop ;;
     5) install_ukui_desktop ;;
