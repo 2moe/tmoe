@@ -2723,7 +2723,7 @@ choose_debian_gnome_shell_or_gnome_core() {
         DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-shell gnome-session'
         # gnome-shell-extension-dashtodock
     else
-        DEPENDENCY_01='gnome-core gnome-tweaks'
+        DEPENDENCY_01='gnome-core gnome-tweak-tool'
     fi
 }
 choose_gnome_or_ubuntu_desktop() {
