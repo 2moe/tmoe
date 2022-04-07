@@ -2938,8 +2938,16 @@ if [ -z $XDG_CURRENT_DESKTOP ]; then
     export XDG_CURRENT_DESKTOP="GNOME-Flashback:GNOME"
 fi
 
-exec gnome-session --builtin --session=gnome-flashback-metacity --disable-acceleration-check "$@"
 EOF
+        if [[ -n $(gnome-session --help 2>&1 | grep builtin) ]]; then
+            # nosystemd
+            echo 'exec gnome-session --builtin --session=gnome-flashback-metacity --disable-acceleration-check "$@"' >>${GNOME_SESSION}
+        else
+            printf "%s\n" \
+                'exec metacity &' \
+                'exec gnome-session --session=gnome-flashback-metacity --disable-acceleration-check "$@"' \
+                >>${GNOME_SESSION}
+        fi
         chmod a+rx ${GNOME_SESSION}
     fi
 }
@@ -2992,22 +3000,17 @@ EOF
 }
 ln_s_gnome_flashback_metacity() {
     GNOME_SESSION="/usr/local/bin/gnome-flashback-metacity"
-    GNOME_SESSION_FLASHBACK="/usr/lib/gnome-flashback/gnome-flashback-metacity"
-    # for i in /usr/lib/gnome-flashback/gnome-flashback-metacity /usr/lib/gnome-session-flashback/gnome-flashback-metacity /usr/libexec/gnome-flashback-metacity; do
-    #     if [[ -e ${i} ]]; then
-    #         ln -svf ${i} ${GNOME_SESSION}
-    #         break
+    # # GNOME_SESSION_FLASHBACK="/usr/lib/gnome-flashback/gnome-flashback-metacity"
+    # if [[ -e ${GNOME_SESSION_FLASHBACK} ]]; then
+    #     ln -svf ${GNOME_SESSION_FLASHBACK} ${GNOME_SESSION}
+    #     if grep -q '\-\-systemd' ${GNOME_SESSION}; then
+    #         rm -vf ${GNOME_SESSION}
+    #         cat_gnome_flashback_session
     #     fi
-    # done
-    if [[ -e ${GNOME_SESSION_FLASHBACK} ]]; then
-        ln -svf ${GNOME_SESSION_FLASHBACK} ${GNOME_SESSION}
-        if grep -q '\-\-systemd' ${GNOME_SESSION}; then
-            rm -vf ${GNOME_SESSION}
-            cat_gnome_flashback_session
-        fi
-    elif [[ $(command -v gnome-flashback) || -e /usr/share/xsessions/gnome-flashback-metacity.desktop ]]; then
-        cat_gnome_flashback_session
-    fi
+    # elif [[ $(command -v gnome-flashback) || -e /usr/share/xsessions/gnome-flashback-metacity.desktop ]]; then
+    #     cat_gnome_flashback_session
+    # fi
+    cat_gnome_flashback_session
 }
 cinnamon_warning() {
     case "${TMOE_PROOT}" in
