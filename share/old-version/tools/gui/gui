@@ -2707,6 +2707,8 @@ install_budgie_desktop() {
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、budgie-desktop、budgie-indicator-applet和tightvncserver等软件包。'
     set_budgie_desktop_2
 
+    # set_gnome_flashback_desktop
+    # ln_s_gnome_flashback_metacity
     case ${LINUX_DISTRO} in
     debian)
         # DEPENDENCY_01='budgie-desktop budgie-indicator-applet'
@@ -2741,10 +2743,11 @@ gnome3_warning() {
 ###############
 choose_debian_gnome_shell_or_gnome_core() {
     if (whiptail --title "gnome-shell or gnome-core" --yes-button "gnome-shell" --no-button "gnome-core" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者更精简' 0 0); then
-        DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-shell gnome-session'
+        DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-shell gnome-session'
         # gnome-shell-extension-dashtodock
     else
-        DEPENDENCY_01='gnome-core gnome-tweak-tool'
+        #  gnome-tweak-tool
+        DEPENDENCY_01='gnome-core'
     fi
 }
 choose_gnome_or_ubuntu_desktop() {
@@ -2799,8 +2802,8 @@ set_gnome_flashback_desktop() {
     "debian")
         #gnome-applets alacarte
         case ${DEBIAN_DISTRO} in
-        ubuntu) DEPENDENCY_01='gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session-flashback gnome-session' ;;
-        *) DEPENDENCY_01='gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session-flashback gnome-session' ;;
+        ubuntu) DEPENDENCY_01='gnome-panel gnome-menus gnome-shell gnome-session-flashback gnome-session' ;;
+        *) DEPENDENCY_01='gnome-panel gnome-menus gnome-shell gnome-session-flashback gnome-session' ;;
         esac
         dpkg --configure -a
         auto_select_keyboard_layout
@@ -2851,10 +2854,13 @@ choose_gnome_session() {
     4) gnome_session_4 ;;
     5) gnome_session_5 ;;
     esac
-    set_gnome_common_env
     case "${GNOME_SESSION_OPT}" in
     1) REMOTE_DESKTOP_SESSION_02='gnome-flashback-metacity' ;;
-    2) set_gnome_flashback_desktop ;;
+    2)
+        set_gnome_flashback_desktop
+        REMOTE_DESKTOP_SESSION_02='gnome-shell-x11'
+        ;;
+    *) set_gnome_common_env ;;
     esac
 }
 install_gnome_desktop() {
@@ -2956,8 +2962,8 @@ cat_budgie_desktop_builtin_session() {
 #!/usr/bin/env sh
 
 budgie-wm --x11 --replace &
-
-exec budgie-desktop --builtin --disable-acceleration-check "$@"
+budgie-panel --replace &
+# exec budgie-desktop --builtin --disable-acceleration-check "$@"
 EOF
     chmod a+rx ${GNOME_SESSION}
 }
