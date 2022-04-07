@@ -2711,8 +2711,7 @@ install_budgie_desktop() {
 ##############
 gnome3_warning() {
     case "${TMOE_PROOT}" in
-    true) printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}GNOME可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。" ;;
-    false) printf "%s\n" "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，不建议在当前环境下安装本桌面。" ;;
+    true) printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！不建议您在当前环境下安装本桌面。" ;;
     esac
     tips_of_tiger_vnc_server
     do_you_want_to_continue
