@@ -2213,7 +2213,7 @@ choose_ubuntu_budgie_or_cinnamon() {
         whiptail --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
             "1" "🐭 xfce" \
             "2" "👣 cinnamon" \
-            "3" "🦜 budgie" \
+            "3" "budgie" \
             "4" "cli(nogui)" \
             "5" "minimal(nogui)" \
             "0" "🌚 Return to previous menu" \

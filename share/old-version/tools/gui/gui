@@ -558,7 +558,7 @@ tmoe_docker_and_chroot_container_desktop() {
         local Menu="您可以在rootful容器(例如nspawn/docker)中运行这些桌面"
         local OPT_1="🌲 cinnamon(肉桂基于gnome,对用户友好)"
         local OPT_2="👣 gnome(GNU网络对象模型环境)"
-        local OPT_3="🦜 budgie(虎皮鹦鹉基于gnome,优雅且现代化)"
+        local OPT_3="budgie(虎皮鹦鹉基于gnome,优雅且现代化)"
         local OPT_4="dde(深度deepin桌面,崭新视界,创无止境)"
         local OPT_5="ukui(ubuntu-kylin优麒麟ukui桌面,简繁取易,温润灵性)"
         ;;
@@ -566,7 +566,7 @@ tmoe_docker_and_chroot_container_desktop() {
         local Menu="You can run these DEs on nspawn or docker container."
         local OPT_1="🌲 cinnamon"
         local OPT_2="👣 gnome(The GNU Network Object Model Environment)"
-        local OPT_3="🦜 budgie"
+        local OPT_3="budgie"
         local OPT_4="dde(deepin desktop environment)"
         local OPT_5="ukui(ubuntu-kylin desktop)"
         ;;
