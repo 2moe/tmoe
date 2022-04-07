@@ -2718,28 +2718,31 @@ gnome3_warning() {
     do_you_want_to_continue
 }
 ###############
+choose_debian_gnome_shell_or_gnome_core() {
+    if (whiptail --title "gnome-shell or gnome-core" --yes-button "gnome-shell" --no-button "gnome-core" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者更精简' 0 0); then
+        DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-shell gnome-session'
+        # gnome-shell-extension-dashtodock
+    else
+        DEPENDENCY_01='gnome-core gnome-tweaks'
+    fi
+}
+choose_gnome_or_ubuntu_desktop() {
+    if (whiptail --title "gnome or ubuntu-desktop" --yes-button "gnome" --no-button "ubuntu-desktop" --yesno 'The former is more streamlined, and the latter\n includes some extra software of ubuntu-desktop.\n前者为gnome基础桌面，后者为ubuntu-desktop' 0 0); then
+        # DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session'
+        choose_debian_gnome_shell_or_gnome_core
+    else
+        UBUNTU_DESKTOP=true
+        DEPENDENCY_01="ubuntu-desktop"
+    fi
+}
 set_gnome_desktop_deps() {
     case "${LINUX_DISTRO}" in
     "debian")
         #aptitude install -y task-gnome-desktop || apt install -y task-gnome-desktop
         #apt install --no-install-recommends xorg gnome-session gnome-menus gnome-tweak-tool gnome-shell || aptitude install -y gnome-core
         case ${DEBIAN_DISTRO} in
-        ubuntu)
-            if (whiptail --title "gnome-core or ubuntu-desktop" --yes-button "gnome" --no-button "ubuntu-desktop" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者为ubuntu-desktop' 0 0); then
-                DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session'
-            else
-                UBUNTU_DESKTOP=true
-                DEPENDENCY_01="ubuntu-desktop"
-            fi
-            ;;
-        *)
-            if (whiptail --title "gnome-core or gnome-extra" --yes-button "gnome-core" --no-button "gnome-extra" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者包含gnome软件包套件' 0 0); then
-                DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-shell gnome-session'
-                # gnome-shell-extension-dashtodock
-            else
-                DEPENDENCY_01='gnome-core gnome-tweaks'
-            fi
-            ;;
+        ubuntu) choose_gnome_or_ubuntu_desktop ;;
+        *) choose_debian_gnome_shell_or_gnome_core ;;
         esac
         dpkg --configure -a
         auto_select_keyboard_layout
