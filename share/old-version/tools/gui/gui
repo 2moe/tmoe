@@ -2833,11 +2833,11 @@ choose_gnome_session() {
 }
 install_gnome_desktop() {
     print_gnome_ascii
+    DEPENDENCY_01="gnome"
     gnome3_warning
     # set_gnome_common_env
     choose_gnome_session
     do_you_want_to_install_fcitx4
-    DEPENDENCY_01="gnome"
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、gnome-session、gnome-menus、gnome-tweak-tool、gnome-shell和tightvncserver等软件包。'
     ####################
     beta_features_quick_install
