@@ -2676,10 +2676,10 @@ install_ukui_desktop() {
     configure_vnc_xstartup
 }
 ##############
-# set_budgie_desktop_1() {
-#     REMOTE_DESKTOP_SESSION_01='budgie-desktop'
-#     REMOTE_DESKTOP_SESSION_02='budgie-desktop-builtin'
-# }
+set_budgie_desktop_1() {
+    REMOTE_DESKTOP_SESSION_01='budgie-desktop'
+    REMOTE_DESKTOP_SESSION_02='budgie-desktop-builtin'
+}
 set_budgie_desktop_2() {
     REMOTE_DESKTOP_SESSION_01='budgie-desktop-builtin'
     REMOTE_DESKTOP_SESSION_02='budgie-panel'
@@ -2701,12 +2701,18 @@ choose_budgie_or_ubuntu_budgie_desktop() {
         DEPENDENCY_01="ubuntu-budgie-desktop"
     fi
 }
+choose_budgie_panel_or_desktop() {
+    if (whiptail --title "budgie session" --yes-button "panel" --no-button "desktop" --yesno 'The former is budgie-panel, the later is budgie-desktop.' 0 0); then
+        set_budgie_desktop_2
+    else
+        set_budgie_desktop_1
+    fi
+}
 install_budgie_desktop() {
     tmoe_desktop_warning
     DEPENDENCY_01="budgie-desktop"
     printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、budgie-desktop、budgie-indicator-applet和tightvncserver等软件包。'
-    set_budgie_desktop_2
-
+    choose_budgie_panel_or_desktop
     # set_gnome_flashback_desktop
     # ln_s_gnome_flashback_metacity
     case ${LINUX_DISTRO} in
