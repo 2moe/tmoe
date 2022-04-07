@@ -1433,25 +1433,25 @@ install_ubuntu_gnu_linux_distro() {
         # OPT_3="🦛 21.04 多毛河馬 Hirsute Hippo"
         OPT_3="🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa"
         OPT_4="18.04(LTS)仿生海狸 Bionic Beaver"
-        OPT_5="Compatibility mode 兼容模式(仅安装)"
-        OPT_6="Custom code手动输入版本代号"
-        OPT_7="使用debootstrap手动构建"
-        OPT_8="Latest(自動檢測22.10)"
+        OPT_5="🐿️ 16.04(LTS)好客的非洲地松鼠 Xenial Xerus "
+        OPT_6="Compatibility mode 兼容模式(仅安装)"
+        OPT_7="Custom code手动输入版本代号"
+        OPT_8="使用debootstrap手动构建"
+        OPT_9="Latest(自動檢測22.10)"
         OPT_0="🌚 Return to previous menu 返回上级菜单"
-
     }
-    #	"8" "🐿️ 16.04(LTS)Xenial Xerus 好客的非洲地松鼠" \
     install_ubuntu_gnu_linux_distro_ja() {
         MENU="x =現在の年とします、x> = 2023の場合は、コードをカスタマイズしてください"
         OPT_1="22.04(LTS) Jammy Jellyfish"
         OPT_2="🐒 21.10 Impish Indri"
         # OPT_3="🦛 21.04 Hirsute Hippo"
-        OPT_3="🐱 20.04(LTS)Focal Fossa注目を集めるフォッサ"
-        OPT_4="18.04(LTS)Bionic Beaver"
-        OPT_5="互換モード"
-        OPT_6="カスタムコード"
-        OPT_7="debootstrapを使用して手動でビルドする"
-        OPT_8="Latest(最新バージョンを自動的に検出)"
+        OPT_3="🐱 20.04(LTS) Focal Fossa注目を集めるフォッサ"
+        OPT_4="18.04(LTS) Bionic Beaver"
+        OPT_5="🐿️ 16.04(LTS) Xenial Xerus"
+        OPT_6="互換モード"
+        OPT_7="カスタムコード"
+        OPT_8="debootstrapを使用して手動でビルドする"
+        OPT_9="Latest(最新バージョンを自動的に検出)"
         OPT_0="🌚 戻る"
     }
     install_ubuntu_gnu_linux_distro_en() {
@@ -1461,10 +1461,11 @@ install_ubuntu_gnu_linux_distro() {
         # OPT_3="🦛 21.04 Hirsute Hippo"
         OPT_3="🐱 20.04(LTS)Focal Fossa"
         OPT_4="18.04(LTS)Bionic Beaver"
-        OPT_5="Compatibility mode"
-        OPT_6="Custom code"
-        OPT_7="Manually build"
-        OPT_8="Latest"
+        OPT_5="🐿️ 16.04(LTS)Xenial Xerus"
+        OPT_6="Compatibility mode"
+        OPT_7="Custom code"
+        OPT_8="Manually build"
+        OPT_9="Latest"
         OPT_0="🌚 Return to previous menu"
     }
     install_ubuntu_gnu_linux_distro_menu() {
@@ -1480,6 +1481,7 @@ install_ubuntu_gnu_linux_distro() {
                 "6" "${OPT_6}" \
                 "7" "${OPT_7}" \
                 "8" "${OPT_8}" \
+                "9" "${OPT_9}" \
                 "0" "${OPT_0}" \
                 3>&1 1>&2 2>&3
         )
@@ -1500,13 +1502,14 @@ install_ubuntu_gnu_linux_distro() {
     # 3) DISTRO_CODE='hirsute' ;;
     3) DISTRO_CODE='focal' ;;
     4) DISTRO_CODE='bionic' ;;
-    5)
+    5) DISTRO_CODE='xenial' ;;
+    6)
         COMPATIBILITY_MODE=true
         custom_ubuntu_version
         ;;
-    6) custom_ubuntu_version ;;
-    7) debootstrap_ubuntu_distro ;;
-    8) check_the_latest_ubuntu_version ;;
+    7) custom_ubuntu_version ;;
+    8) debootstrap_ubuntu_distro ;;
+    9) check_the_latest_ubuntu_version ;;
     esac
     ######################
     TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"

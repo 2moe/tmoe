@@ -507,23 +507,21 @@ standand_desktop_installation() {
     preconfigure_gui_dependecies_02
     standand_desktop_installation_zh() {
         INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
-            "Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若当前环境为容器，则您只需选择第一或者第三项。\nIf you are using a container,then choose proot_DE or WM.\n若当前环境为虚拟机，则您可以任意挑选项目。" 0 0 0 \
-            "1" "🍰 proot_DE(proot容器可运行:xfce,kde,mate,lxqt)" \
-            "2" "🍔 chroot/docker_DE(dde,ukui,gnome-flashback)" \
+            "Desktop environment(简称DE)是一种多功能和多样化的图形界面。\n若当前环境为无root容器，则您只需选择第一或者第三项。\n若当前环境为虚拟机或nspawn容器，则您可以任意挑选项目。" 0 0 0 \
+            "1" "🍰 rootless_DE(无root容器可运行:xfce,kde,mate,lxqt)" \
+            "2" "🍱 VM/rootful_DE(dde,ukui,gnome,cinnamon)" \
             "3" "🍙 window manager窗口管理器(ice,fvwm)" \
-            "4" "🍱 VM_DE(虚拟机/systemd容器可运行:gnome)" \
-            "5" "🍣 display manager显示/登录管理器:lightdm,sddm" \
+            "4" "🍣 display manager显示/登录管理器:lightdm,sddm" \
             "0" "🌚 none我一个都不要 =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
     standand_desktop_installation_en() {
         INSTALLDESKTOP=$(whiptail --title "GUI" --menu \
-            "If you are using a container,then choose proot_DE or WM.\nIf you are using a virtual machine,you can choose any one" 0 0 0 \
-            "1" "🍰 proot_DE(xfce,kde,mate,lxqt)" \
-            "2" "🍔 chroot/docker_DE(dde,gnome-flashback)" \
+            "If you are using a rootless container,then choose rootless_DE or WM.\nIf you are using a virtual machine,you can choose any one" 0 0 0 \
+            "1" "🍰 rootless_DE(xfce,kde,mate,lxqt)" \
+            "2" "🍱 VM/rootful_DE(dde,gnome,cinnamon)" \
             "3" "🍙 window manager(ice,fvwm)" \
-            "4" "🍱 VM/nspawn_DE(gnome)" \
-            "5" "🍣 display manager(lightdm,sddm)" \
+            "4" "🍣 display manager(lightdm,sddm)" \
             "0" "🌚 back =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
@@ -536,10 +534,10 @@ standand_desktop_installation() {
         1) tmoe_container_desktop ;;
         2) tmoe_docker_and_chroot_container_desktop ;;
         3) window_manager_installation ;;
-        4) tmoe_virtual_machine_desktop ;;
-        5) install_tmoe_display_manager ;;
+        4) install_tmoe_display_manager ;;
         esac
     }
+    # 4) tmoe_virtual_machine_desktop ;;
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8) standand_desktop_installation_zh ;;
     *) standand_desktop_installation_en ;;
@@ -555,22 +553,44 @@ tmoe_desktop_faq() {
 }
 ######################
 tmoe_docker_and_chroot_container_desktop() {
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8)
+        local Menu="您可以在rootful容器(例如nspawn/docker)中运行这些桌面"
+        local OPT_1="🌲 cinnamon(肉桂基于gnome,对用户友好)"
+        local OPT_2="👣 gnome(GNU网络对象模型环境)"
+        local OPT_3="🦜 budgie(虎皮鹦鹉基于gnome,优雅且现代化)"
+        local OPT_4="dde(深度deepin桌面,崭新视界,创无止境)"
+        local OPT_5="ukui(ubuntu-kylin优麒麟ukui桌面,简繁取易,温润灵性)"
+        ;;
+    *)
+        local Menu="You can run these DEs on nspawn or docker container."
+        local OPT_1="🌲 cinnamon"
+        local OPT_2="👣 gnome(The GNU Network Object Model Environment)"
+        local OPT_3="🦜 budgie"
+        local OPT_4="dde(deepin desktop environment)"
+        local OPT_5="ukui(ubuntu-kylin desktop)"
+        ;;
+    esac
+
     INSTALLDESKTOP=$(whiptail --title "Desktop environment" --menu \
-        "您可以在docker或chroot容器中运行这些桌面\nYou can run these DEs on docker or chroot container." 0 0 0 \
-        "1" "👣 gnome-flashback-metacity" \
-        "2" "🌲 cinnamon(肉桂基于gnome,对用户友好)" \
-        "3" "dde(深度deepin桌面,崭新视界,创无止境)" \
-        "4" "ukui(ubuntu-kylin优麒麟ukui桌面,简繁取易,温润灵性)" \
+        "$Menu" 0 0 0 \
+        "1" "$OPT_1" \
+        "2" "$OPT_2" \
+        "3" "$OPT_3" \
+        "4" "$OPT_4" \
+        "5" "$OPT_5" \
         "0" "🌚 none我一个都不要 =￣ω￣=" \
         3>&1 1>&2 2>&3)
     ##########################
     case "${INSTALLDESKTOP}" in
     0 | "") standand_desktop_installation ;;
-    1) install_gnome_flashback_desktop ;;
+    1) install_gnome_desktop ;;
     2) install_cinnamon_desktop ;;
-    3) install_deepin_desktop ;;
-    4) install_ukui_desktop ;;
+    3) install_budgie_desktop ;;
+    4) install_deepin_desktop ;;
+    5) install_ukui_desktop ;;
     esac
+    # 5) install_gnome_desktop ;;
     ##########################
     press_enter_to_return
     standand_desktop_installation
@@ -1081,25 +1101,6 @@ install_fvwm() {
     esac
 }
 #################
-tmoe_virtual_machine_desktop() {
-    RETURN_TO_WHERE='tmoe_virtual_machine_desktop'
-    BETA_DESKTOP=$(whiptail --title "DE" --menu \
-        "您可以在虚拟机或实体机上安装以下桌面\nYou can install the following desktop in \na physical or virtual machine environment." 0 0 0 \
-        "1" "👣 gnome(GNU网络对象模型环境)" \
-        "2" "🦜 budgie(虎皮鹦鹉基于gnome,优雅且现代化)" \
-        "0" "🌚 Return to previous menu 返回上级菜单" \
-        3>&1 1>&2 2>&3)
-    ##############################
-    case "${BETA_DESKTOP}" in
-    0 | "") standand_desktop_installation ;;
-    1) install_gnome3_desktop ;;
-    2) install_budgie_desktop ;;
-    esac
-    ##################
-    press_enter_to_return
-    standand_desktop_installation
-}
-################
 configure_vnc_xstartup() {
     auto_install_and_configure_fcitx4
     #[[ -d "/var/run/dbus" ]] || mkdir -pv /var/run/dbus
@@ -2710,94 +2711,14 @@ install_budgie_desktop() {
 ##############
 gnome3_warning() {
     case "${TMOE_PROOT}" in
-    true) printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}GNOME3可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。" ;;
+    true) printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}GNOME可能无法正常运行${RESET},建议您换用虚拟机或实体机进行安装。" ;;
     false) printf "%s\n" "检测到您当前可能处于${BLUE}chroot容器${RESET}环境，不建议在当前环境下安装本桌面。" ;;
-    no) printf "%s\n" "检测到您无权读取${YELLOW}/proc${RESET}的部分数据，${RED}请勿安装${RESET}" ;;
     esac
     tips_of_tiger_vnc_server
     do_you_want_to_continue
 }
 ###############
-gnome_session_1() {
-    REMOTE_DESKTOP_SESSION_01='gnome-flashback-metacity'
-    REMOTE_DESKTOP_SESSION_02='gnome-session'
-    # REMOTE_DESKTOP_SESSION_03='gnome-panel'
-}
-gnome_session_2() {
-    REMOTE_DESKTOP_SESSION_01='gnome-session'
-    REMOTE_DESKTOP_SESSION_02='gnome-flashback-metacity'
-}
-gnome_session_3() {
-    REMOTE_DESKTOP_SESSION_01='gnome-flashback-metacity'
-    REMOTE_DESKTOP_SESSION_02='gnome-shell'
-}
-install_gnome_flashback_desktop() {
-    if [ $(command -v neofetch) ]; then
-        neofetch --logo --ascii_distro GNOME
-    fi
-
-    for i in /usr/bin/lolcat /usr/games/lolcat; do
-        if [ -e ${i} ]; then
-            CCAT=${i}
-            LOLCAT=true
-            break
-        fi
-    done
-
-    case ${LOLCAT} in
-    true)
-        neofetch --logo --ascii_distro GNOME | ${CCAT}
-        [[ ${TMOE_PROOT} != true ]] || printf "%s\n" "proot也可以运行gnome哦" | ${CCAT}
-        ;;
-    esac
-
-    gnome_session_3
-    DEPENDENCY_01="gnome"
-    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、gnome-session、gnome-session-flashback、gnome-flashback、alacarte和tightvncserver等软件包。'
-    case "${LINUX_DISTRO}" in
-    "debian")
-        #gnome-applets alacarte
-        case ${DEBIAN_DISTRO} in
-        ubuntu) DEPENDENCY_01='gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session-flashback gnome-session' ;;
-        *) DEPENDENCY_01='gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell gnome-session-flashback gnome-session' ;;
-        esac
-        dpkg --configure -a
-        auto_select_keyboard_layout
-        ;;
-    "redhat") DEPENDENCY_01='@GNOME gnome-flashback' ;;
-    "arch") DEPENDENCY_01='gnome gnome-tweaks gnome-flashback' ;;
-    "gentoo")
-        GNOMEnoSystemd=$(eselect profile list | grep gnome | grep -v systemd | tail -n 1 | cut -d ']' -f 1 | cut -d '[' -f 2)
-        eselect profile set ${GNOMEnoSystemd}
-        #emerge -auvDN --with-bdeps=y @world
-        dispatch-conf
-        etc-update
-        DEPENDENCY_01='gnome-shell gdm gnome-terminal'
-        ;;
-    "solus") DEPENDENCY_01='gnome-session gnome-shell' ;;
-    "suse") DEPENDENCY_01='patterns-gnome-gnome_x11' ;;
-    "alpine") DEPENDENCY_01="gnome-flashback gnome-flashback-lang gnome gnome-session" ;;
-    esac
-    ####################
-    beta_features_quick_install
-    ln_s_gnome_flashback_metacity
-    apt_purge_libfprint
-    configure_vnc_xstartup
-}
-##############
-install_gnome3_desktop() {
-    if [ $(command -v neofetch) ]; then
-        neofetch --logo --ascii_distro GNOME
-    fi
-    gnome3_warning
-    do_you_want_to_install_fcitx4
-    case ${TMOE_PROOT} in
-    true) gnome_session_1 ;;
-    *) gnome_session_2 ;;
-    esac
-
-    DEPENDENCY_01="gnome"
-    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、gnome-session、gnome-menus、gnome-tweak-tool、gnome-shell和tightvncserver等软件包。'
+set_gnome_desktop_deps() {
     case "${LINUX_DISTRO}" in
     "debian")
         #aptitude install -y task-gnome-desktop || apt install -y task-gnome-desktop
@@ -2805,7 +2726,7 @@ install_gnome3_desktop() {
         case ${DEBIAN_DISTRO} in
         ubuntu)
             if (whiptail --title "gnome-core or ubuntu-desktop" --yes-button "gnome" --no-button "ubuntu-desktop" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者为ubuntu-desktop' 0 0); then
-                DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session-flashback gnome-session'
+                DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session'
             else
                 UBUNTU_DESKTOP=true
                 DEPENDENCY_01="ubuntu-desktop"
@@ -2813,9 +2734,10 @@ install_gnome3_desktop() {
             ;;
         *)
             if (whiptail --title "gnome-core or gnome-extra" --yes-button "gnome-core" --no-button "gnome-extra" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者包含gnome软件包套件' 0 0); then
-                DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell-extension-dashtodock gnome-shell gnome-session-flashback gnome-session'
+                DEPENDENCY_01='--no-install-recommends xorg gnome-panel gnome-menus gnome-tweak-tool gnome-shell gnome-session'
+                # gnome-shell-extension-dashtodock
             else
-                DEPENDENCY_01='task-gnome-desktop'
+                DEPENDENCY_01='gnome-core gnome-tweaks'
             fi
             ;;
         esac
@@ -2826,14 +2748,11 @@ install_gnome3_desktop() {
     "redhat")
         #yum groupinstall "GNOME Desktop Environment"
         #dnf groupinstall -y "GNOME" || yum groupinstall -y "GNOME"
-        DEPENDENCY_01='@GNOME gnome-flashback'
+        DEPENDENCY_01='@GNOME'
         ;;
     "arch")
         if (whiptail --title "gnome or gnome-extra" --yes-button "gnome" --no-button "gnome-extra" --yesno 'The former is more streamlined, and the latter\n includes some extra software of gnome.\n前者为gnome基础桌面，后者包含gnome全家桶' 0 0); then
             DEPENDENCY_01='gnome-tweaks gnome'
-            if (whiptail --title "gnome-flashback or gnome" --yes-button "flashback" --no-button "gnome" --yesno 'The former is more streamlined.\n前者为gnome-flashback，后者为普通gnome' 0 0); then
-                DEPENDENCY_01='gnome-flashback'
-            fi
         else
             DEPENDENCY_01='gnome-extra gnome'
         fi
@@ -2848,16 +2767,115 @@ install_gnome3_desktop() {
         ;;
     "solus") DEPENDENCY_01='gnome-session gnome-shell' ;;
     "suse") DEPENDENCY_01='patterns-gnome-gnome_x11' ;;
-    "alpine")
-        DEPENDENCY_01="gnome"
-        REMOTE_DESKTOP_SESSION='gnome-session'
-        ;;
     esac
+}
+set_gnome_flashback_desktop() {
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、gnome-session、gnome-session-flashback、gnome-flashback、alacarte和tightvncserver等软件包。'
+    case "${LINUX_DISTRO}" in
+    "debian")
+        #gnome-applets alacarte
+        case ${DEBIAN_DISTRO} in
+        ubuntu) DEPENDENCY_01='gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session-flashback gnome-session' ;;
+        *) DEPENDENCY_01='gnome-panel gnome-menus gnome-tweak-tool gnome-core gnome-shell gnome-session-flashback gnome-session' ;;
+        esac
+        dpkg --configure -a
+        auto_select_keyboard_layout
+        ;;
+    "redhat") DEPENDENCY_01='@GNOME gnome-flashback' ;;
+    "arch") DEPENDENCY_01='gnome gnome-tweaks gnome-flashback' ;;
+    "alpine") DEPENDENCY_01="gnome-flashback gnome-flashback-lang gnome gnome-session" ;;
+    "void") DEPENDENCY_01="gnome-flashback" ;;
+    esac
+}
+gnome_session_1() {
+    REMOTE_DESKTOP_SESSION_01='gnome-shell-x11'
+    REMOTE_DESKTOP_SESSION_02='gnome-flashback-metacity'
+    # REMOTE_DESKTOP_SESSION_03='gnome-panel'
+}
+gnome_session_2() {
+    REMOTE_DESKTOP_SESSION_01='gnome-flashback-metacity'
+}
+gnome_session_3() {
+    REMOTE_DESKTOP_SESSION_01='gnome-session'
+}
+gnome_session_4() {
+    REMOTE_DESKTOP_SESSION_01='gnome-session-ubuntu'
+}
+gnome_session_5() {
+    REMOTE_DESKTOP_SESSION_01='gnome-session-classic'
+}
+set_gnome_common_env() {
+    set_gnome_desktop_deps
+    REMOTE_DESKTOP_SESSION_02='gnome-shell-x11'
+}
+choose_gnome_session() {
+    GNOME_SESSION=$(whiptail --title "gnome-session" --menu \
+        "Which session do you want to use?\nDifferent environments should use different sessions." 0 0 0 \
+        "1" "gnome-shell-x11" \
+        "2" "gnome-flashback" \
+        "3" "gnome-session" \
+        "4" "gnome-session-ubuntu(systemd)" \
+        "5" "gnome-session-classic" \
+        "0" "🌚 back" \
+        3>&1 1>&2 2>&3)
+    ##########################
+    case "${GNOME_SESSION}" in
+    0 | "") tmoe_docker_and_chroot_container_desktop ;;
+    1) gnome_session_1 ;;
+    2)
+        gnome_session_2
+        set_gnome_flashback_desktop
+        ;;
+    3) gnome_session_3 ;;
+    4) gnome_session_4 ;;
+    5) gnome_session_5 ;;
+    esac
+}
+install_gnome_desktop() {
+    print_gnome_ascii
+    gnome3_warning
+    set_gnome_common_env
+    choose_gnome_session
+    do_you_want_to_install_fcitx4
+    DEPENDENCY_01="gnome"
+    printf '%s\n' '即将为您安装fonts-noto-cjk（思源黑体）、fonts-noto-color-emoji、gnome-session、gnome-menus、gnome-tweak-tool、gnome-shell和tightvncserver等软件包。'
     ####################
     beta_features_quick_install
-    ln_s_gnome_flashback_metacity
+    case $REMOTE_DESKTOP_SESSION_01 in
+    'gnome-flashback-metacity') ln_s_gnome_flashback_metacity ;;
+    'gnome-session-classic') cat_gnome_session_classic ;;
+    'gnome-session-ubuntu') cat_gnome_session_ubuntu ;;
+    esac
+    cat_gnome_shell_x11
     apt_purge_libfprint
     configure_vnc_xstartup
+}
+print_gnome_ascii() {
+    printf "%s" "${BLUE}"
+    cat <<-'EOF'
+,@@@@@@@@,
+                 @@@@@@      @@@@@@@@@@@@
+        ,@@.    @@@@@@@    *@@@@@@@@@@@@
+       @@@@@%   @@@@@@(    @@@@@@@@@@@&
+       @@@@@@    @@@@*     @@@@@@@@@#
+@@@@*   @@@@,              *@@@@@%
+@@@@@.
+ @@@@#         @@@@@@@@@@@@@@@@
+         ,@@@@@@@@@@@@@@@@@@@@@@@,
+      ,@@@@@@@@@@@@@@@@@@@@@@@@@@&
+    .@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@
+   @@@@@@@@@@@@@@@@@@@@@@@@(
+   @@@@@@@@@@@@@@@@@@@@%
+    @@@@@@@@@@@@@@@@
+     @@@@@@@@@@@@*        @@@@@@@@/
+      &@@@@@@@@@@        @@@@@@@@@*
+        @@@@@@@@@@@,    @@@@@@@@@*
+          ,@@@@@@@@@@@@@@@@@@@@&
+              &@@@@@@@@@@@@@@
+                     ...
+EOF
+    printf "%s\n" "${RESET}"
 }
 ##################
 get_ubuntu_desktop_language_pack() {
@@ -2909,7 +2927,7 @@ get_ubuntu_desktop_language_pack() {
 cat_gnome_flashback_session() {
     if [[ ! -e ${GNOME_SESSION} ]]; then
         cat >${GNOME_SESSION} <<-'EOF'
-#!/bin/sh
+#!/usr/bin/env sh
 
 if [ -z $XDG_CURRENT_DESKTOP ]; then
     export XDG_CURRENT_DESKTOP="GNOME-Flashback:GNOME"
@@ -2919,6 +2937,53 @@ exec gnome-session --builtin --session=gnome-flashback-metacity --disable-accele
 EOF
         chmod a+rx ${GNOME_SESSION}
     fi
+}
+cat_gnome_session_classic() {
+    local GNOME_SESSION="/usr/local/bin/gnome-session-classic"
+    if [[ ! -e ${GNOME_SESSION} ]]; then
+        cat >${GNOME_SESSION} <<-'EOF'
+#!/usr/bin/env sh
+
+export GNOME_SHELL_SESSION_MODE=classic
+exec gnome-session --session=gnome-classic --disable-acceleration-check "$@"
+EOF
+        chmod a+rx ${GNOME_SESSION}
+    fi
+}
+cat_gnome_session_ubuntu() {
+    local GNOME_SESSION="/usr/local/bin/gnome-session-ubuntu"
+    if [[ ! -e ${GNOME_SESSION} ]]; then
+        cat >${GNOME_SESSION} <<-'EOF'
+#!/usr/bin/env sh
+
+if [ -z $XDG_CURRENT_DESKTOP ]; then
+    export XDG_CURRENT_DESKTOP="ubuntu:GNOME"
+fi
+
+export DESKTOP_SESSION=ubuntu
+export GNOME_SHELL_SESSION_MODE=ubuntu
+export XDG_CONFIG_DIRS=/etc/xdg/xdg-ubuntu:/etc/xdg
+
+exec gnome-session --session=ubuntu --disable-acceleration-check "$@"
+EOF
+        chmod a+rx ${GNOME_SESSION}
+    fi
+}
+cat_gnome_shell_x11() {
+    local GNOME_SESSION="/usr/local/bin/gnome-shell-x11"
+    if [[ ! -x ${GNOME_SESSION} ]]; then
+        cat >${GNOME_SESSION} <<-'EOF'
+#!/usr/bin/env sh
+
+# if [ -z $XDG_CURRENT_DESKTOP ]; then
+#     export XDG_CURRENT_DESKTOP="GNOME-Shell:GNOME"
+# fi
+
+exec gnome-shell --x11 "$@"
+EOF
+        chmod a+rx ${GNOME_SESSION}
+    fi
+
 }
 ln_s_gnome_flashback_metacity() {
     GNOME_SESSION="/usr/local/bin/gnome-flashback-metacity"
@@ -2968,7 +3033,7 @@ install_cinnamon_desktop() {
     "debian")
         if (whiptail --title "Lite or standard" --yes-button "lite" --no-button "standard" --yesno 'The former is more streamlined' 0 0); then
             UBUNTU_DESKTOP=false
-            DEPENDENCY_01="--no-install-recommends cinnamon-l10n cinnamon-desktop-environment cinnamon"
+            DEPENDENCY_01="--no-install-recommends cinnamon-l10n cinnamon"
         else
             UBUNTU_DESKTOP=true
             DEPENDENCY_01="cinnamon-l10n cinnamon-desktop-environment cinnamon"
@@ -3000,7 +3065,7 @@ deepin_desktop_warning() {
         printf "%s\n" "建议您在换用x86_64或i386架构的设备后，再来尝试。"
         printf "%s\n" "${YELLOW}警告！deepin桌面可能无法正常运行${RESET}"
         arch_does_not_support
-        tmoe_virtual_machine_desktop
+        tmoe_docker_and_chroot_container_desktop
         ;;
     esac
 }
