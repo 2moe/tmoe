@@ -2828,6 +2828,7 @@ choose_gnome_session() {
     esac
     set_gnome_common_env
     case "${GNOME_SESSION_OPT}" in
+    1) REMOTE_DESKTOP_SESSION_02='gnome-flashback-metacity' ;;
     2) set_gnome_flashback_desktop ;;
     esac
 }
