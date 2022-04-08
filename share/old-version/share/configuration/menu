@@ -365,6 +365,7 @@ tmoe_container_dns() {
         local _Opt_1_name="cfiec"
         local _Opt_2="$_Dns_cloudflare"
         local _Opt_2_name="cloudflare"
+        local _Opt_7="手动编辑"
         ;;
     *)
         local _Description="You can choose cloudflare or google dns."
@@ -372,6 +373,7 @@ tmoe_container_dns() {
         local _Opt_1_name="cloudflare"
         local _Opt_2="$_Dns_cfiec"
         local _Opt_2_name="cfiec"
+        local _Opt_7="manually edit"
         ;;
     esac
 
@@ -382,7 +384,8 @@ tmoe_container_dns() {
         "4" "[2400:3200::1](Ali)" \
         "5" "[2400:da00::6666](Baidu)" \
         "6" "[2001:da8::666](Tsinghua-Tuna)" \
-        "7" "How to customize dns?" \
+        "7" "$_Opt_7" \
+        "8" "How to customize dns?" \
         "0" "🌚 Back 返回" \
         3>&1 1>&2 2>&3)
     ##############################
@@ -399,7 +402,8 @@ tmoe_container_dns() {
     4) DNS_NAME='ali' ;;
     5) DNS_NAME='baidu' ;;
     6) DNS_NAME='tuna' ;;
-    7) how_to_customize_dns ;;
+    7) manually_edit_dns_conf ;;
+    8) how_to_customize_dns ;;
     esac
     [[ -z ${DNS_NAME} ]] || cp -vf ${TMOE_SHARE_DIR}/configuration/dns/${DNS_NAME} ${CONFIG_FOLDER}/default-dns.conf
     ####################
@@ -408,6 +412,14 @@ tmoe_container_dns() {
     "") tmoe_container_dns ;;
     *) ${RETURN_TO_MENU} ;;
     esac
+}
+manually_edit_dns_conf() {
+    for i in editor micro nano vi; do
+        if [[ -n $(command -v $i) ]]; then
+            ${i} ${CONFIG_FOLDER}/default-dns.conf
+            break
+        fi
+    done
 }
 ##############
 is_your_timezone_gmt9() {
