@@ -3,11 +3,17 @@
 # The default pulseaudio server address is 127.0.0.1
 # 本机默认音频服务地址为127.0.0.1,默认端口为4713。
 # Die Standard-Audiodienst Adresse dieses Geräts lautet 127.0.0.1
+# tcp:192.168.x.x:4713 or unix:/run/pulse.socket
 export PULSE_SERVER=127.0.0.1
 
 # The default resolution is 1440x720, it is recommended that you adjust it according to the screen ratio.
-# 默认分辨率为1440x720,您可以修改为其他值,例如3840x2160,2880x1440,2400x1200,1920x1080,1920x960,720x1140,1280x1024,1280x960,1280x720,1024x768,800x680等等。
-# Die Standardauflösung ist 1440x720
+# 默认分辨率为1440x720,您可以修改为其他值
+# 16:9 [3840x2160, 3200x1800, 2560X1440, 1920x1080, 1600x900, 1366x768, 1280x720, 1024x576, 960x540]
+# 16:10 [3840x2400, 2560x1600, 1920x1200, 1680x1050, 1440x900]
+# 18:9 [3840x1920, 2880x1440, 2160x1080, 1440x720]
+# 19:9 [3800x1800, 3040x1440, 2280x1080, 1520x720]
+# 21:9 [3440x1440, 2560x1080, 1792x768]
+# 4:3 [3840x2880, 2400x1800, 2048x1536, 1920x1440, 1600x1200, 1400x1050, 1024x768, 640x480]
 VNC_RESOLUTION=1440x720
 
 # If the display number=2,then vnc port=5902.
@@ -17,10 +23,10 @@ unset WAYLAND_DISPLAY
 VNC_DISPLAY=2
 RFB_PORT=$((5900 + VNC_DISPLAY))
 
-# You can specify a VNC user. The current user is $(whoami)
-# 您可以指定VNC用户，例如root或ubuntu，默认为$(whoami)
+# You can specify a VNC user. The current user is $(id -un)
+# 您可以指定VNC用户，例如root或ubuntu，默认为$(id -un)
 # Sie können einen VNC-Benutzer angeben
-VNC_USER=$(whoami)
+VNC_USER=$(id -un)
 
 # Only allow connections from localhost.Default is false.
 # 当此变量的值为true时，仅允许本机连接；为false时，允许局域网连接。默认为false
@@ -54,6 +60,8 @@ AUTO_STOP_VNC=true
 
 # If you are using arch and cannot start dbus-daemon, then change the value to true.
 # TMOE_CHROOT=false
+
+VNC_LOG_FILE=~/.vnc/vnc.log
 ###################
 if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
     if grep -q "^${VNC_USER}:" /etc/passwd; then
@@ -79,9 +87,9 @@ GREEN=$(printf '\033[32m')
 YELLOW=$(printf '\033[33m')
 BLUE=$(printf '\033[34m')
 PURPLE=$(printf '\033[35m')
-# CYAN=$(printf '\033[36m')
+CYAN=$(printf '\033[36m')
 RESET=$(printf '\033[m')
-# BOLD=$(printf '\033[1m')
+BOLD=$(printf '\033[1m')
 printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "vnc server" "..."
 printf "%s\n" "The current ${BLUE}vnc port${RESET} is ${YELLOW}${RFB_PORT}${RESET}, and vnc address is ${GREEN}localhost${YELLOW}:${RFB_PORT}${RESET}"
 export USER=${VNC_USER}
@@ -239,6 +247,20 @@ start_win10_tigervnc() {
     esac
 }
 ###################
+cat_vnc_log() {
+    for i in batcat bat; do
+        if [[ -n $(command -v $i) ]]; then
+            local Cat_bin
+            Cat_bin=$i
+            break
+        fi
+    done
+
+    case ${Cat_bin} in
+    batcat | bat) grep -Ev 'xkbcomp|keysym' ${VNC_LOG_FILE} | ${Cat_bin} -ppn -l log - ;;
+    *) cat -n ${VNC_LOG_FILE} ;;
+    esac
+}
 start_tmoe_xvnc() {
     case ${VNC_SERVER} in
     tight* | Tight*)
@@ -267,7 +289,7 @@ start_tmoe_xvnc() {
     elif ((PIXEL_DEPTH > 32)); then
         PIXEL_DEPTH=32
     fi
-    #[[ $(readlink /etc/alternatives/vncserver) = "${TIGERVNC_BIN}" || $(command -v vncsession) ]]
+
     if [[ ${TMOE_VNC_BIN} = tiger ]]; then
         set -- "${@}" "-ZlibLevel=${ZLIB_LEVEL}"
     fi
@@ -300,28 +322,41 @@ start_tmoe_xvnc() {
     set -- "${@}" "-desktop" "${desktop}"
     set -- "${@}" ":${VNC_DISPLAY}"
     set -- "${XVNC_BIN}" "${@}"
-    if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
-        [[ -n ${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${UID}
-        [[ -e ${XDG_RUNTIME_DIR} ]] || mkdir -pv ${XDG_RUNTIME_DIR}
-        "${@}" 2>~/.vnc/vnc.log &
+    if [[ $(id -u ${VNC_USER}) = $(id -u) || -z ${VNC_USER} ]]; then
+        # [[ -n ${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${UID}
+        # [[ -e ${XDG_RUNTIME_DIR} ]] || mkdir -pv ${XDG_RUNTIME_DIR}
+        "${@}" &>${VNC_LOG_FILE} &
+        Vnc_pid=$!
+
+        echo "$Vnc_pid" >~/.vnc/vnc.pid
+        printf "%s\n" "${CYAN}vnc pid${BOLD}: ${BLUE}$Vnc_pid${RESET}"
+        if [[ ! -e /proc/${Vnc_pid} ]]; then
+            printf "%s\n" \
+                "${RED}ERROR, ${PURPLE}failed ${RESET} to start ${BLUE}vnc${RESET}" \
+                "You can report this issue"
+            cat ${VNC_LOG_FILE}
+        fi
     else
-        #XVNC_COMMAND="${@}"
-        #sudo su - ${VNC_USER} -c "${XVNC_COMMAND} &" || su - ${VNC_USER} -c "${XVNC_COMMAND} &"
-        # [[ -n ${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${VNC_USER}
         sudo su - "${VNC_USER}" -c '"$0" "$@" &' -- "$@" || su - "${VNC_USER}" -c '"$0" "$@" &' -- "$@"
     fi
     export DISPLAY=:${VNC_DISPLAY}
 
     if [[ ${VNC_USER} = $(whoami) || -z ${VNC_USER} ]]; then
         bash ${XSESSION_FILE} &>~/.vnc/x.log &
+        # bash ${XSESSION_FILE} 2>&1 | tee ~/.vnc/x.log &
+        Xsession_pid=$!
+        echo "$Xsession_pid" >~/.vnc/x.pid
+        printf "%s\n" "${CYAN}session pid${BOLD}: ${BLUE}$Xsession_pid${RESET}"
+        if [[ ! -e /proc/${Xsession_pid} ]]; then
+            printf "%s\n" \
+                "${RED}ERROR, ${PURPLE}failed ${RESET} to start ${BLUE}session${RESET}" \
+                "You can report this issue"
+            cat ~/.vnc/x.log
+        fi
+        printf "%s\n" "${GREEN}cat ${YELLOW}-n ${BLUE}${VNC_LOG_FILE}${RESET}"
+        sleep 0.1
+        cat_vnc_log
     else
-        # if [[ ${VNC_USER} != root ]]; then
-        #     sudo -E su ${VNC_USER} -c "export PATH=$(printf '%s\n' "${PATH}" | sed 's@:/usr/local/sbin:@:@;s@:/usr/sbin:@:@;s@:/sbin:@:@;s@/root/.zinit/polaris/bin:@@');bash ${XSESSION_FILE} &"
-        #su - (X)
-        #preserve environment in container
-        #else
-        #    sudo -E su ${VNC_USER} -c "bash ${XSESSION_FILE} &" || su ${VNC_USER} -c "bash ${XSESSION_FILE} &"
-        #fi
         sudo su - "${VNC_USER}" -c "export LANG=${LANG} PULSE_SERVER=${PULSE_SERVER} TMOE_CHROOT=${TMOE_CHROOT} TMOE_PROOT=${TMOE_PROOT} DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &" || su - "${VNC_USER}" -c "export LANG=${LANG} PULSE_SERVER=${PULSE_SERVER} TMOE_CHROOT=${TMOE_CHROOT} TMOE_PROOT=${TMOE_PROOT} DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &"
     fi
     start_win10_tigervnc
@@ -331,21 +366,6 @@ start_tmoe_xvnc() {
 check_dbus_servcie() {
     if [[ ${AUTO_START_DBUS} = true ]]; then
         source ${TMOE_TOOL_DIR}/gui/launch_dbus_daemon
-    fi
-}
-###################
-check_vncsession() {
-    if [ "$(command -v vncsession)" ]; then
-        case $(id -u) in
-        0)
-            vncsession "$(whoami)" :${VNC_DISPLAY}
-            start_win10_tigervnc
-            exit 0
-            ;;
-        *) check_xvnc ;;
-        esac
-    else
-        check_xvnc
     fi
 }
 ###################
@@ -360,11 +380,8 @@ tmoe_vnc_preconfigure
 check_dbus_servcie
 # source_tmoe_dbus_daemon
 display_vnc_ip_addr
-#check_vncsession
 check_xvnc
 ##########
-if [[ ! $(command -v Xvnc) && ! $(command -v vncserver) ]]; then
+if [[ -z $(command -v Xvnc) ]]; then
     startx11vnc
 fi
-# 注: 推荐您使用startvnc, 而不是vncserver哦！startvnc在默认情况下，会比不包含参数的vncserver更流畅哦！
-# It is recommended to use startvnc instead of vncserver.

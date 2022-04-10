@@ -494,7 +494,7 @@ preconfigure_gui_dependecies_02() {
     suse) DEPENDENCY_02="tigervnc-x11vnc noto-sans-sc-fonts perl-base" ;;
     solus) DEPENDENCY_02="dbus-launch font-noto-cjk" ;;
     alpine)
-        DEPENDENCY_02="dbus-x11 font-noto-cjk tigervnc"
+        DEPENDENCY_02="dbus-x11 openrc font-noto-cjk tigervnc"
         #ca-certificates openssl xvfb x11vnc
         ;;
     esac
@@ -1127,33 +1127,44 @@ configure_vnc_xstartup() {
     #由于跨架构模拟时，桌面启动过慢，故下面先启动终端。
     mkdir -pv /etc/X11/xinit /etc/tigervnc
     rm -f ${XSESSION_FILE} 2>/dev/null
+    # unset SESSION_MANAGER
+    # unset DBUS_SESSION_BUS_ADDRESS
     cat >${XSESSION_FILE} <<-EndOfFile
 #!/usr/bin/env bash
-unset SESSION_MANAGER
-unset DBUS_SESSION_BUS_ADDRESS
+#------------------
+set_session_env() {
+    SESSION_1="${REMOTE_DESKTOP_SESSION_01}"
+    SESSION_2="${REMOTE_DESKTOP_SESSION_02}"
 
-[[ ! -s /etc/environment ]] || source /etc/environment
+    # Adding dbus-launch may cause problems with vscode.
+    DBUS_CMD=""
+    
+    [[ ! -s /etc/environment ]] || source /etc/environment
+    # /run/user/\$UID
+    [[ -n \${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-\${UID}
+    [[ -e \${XDG_RUNTIME_DIR} ]] || mkdir -pv \${XDG_RUNTIME_DIR}
+}
 
-# /run/user/\$UID
-[[ -n \${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-\${UID}
-[[ -e \${XDG_RUNTIME_DIR} ]] || mkdir -pv \${XDG_RUNTIME_DIR}
+open_terminal() {
+    for i in x-terminal-emulator xfce4-terminal konsole qterminal lxterminal gnome-terminal lxterm xterm mate-terminal; do
+        if [[ \$(command -v \${i}) ]]; then
+            \${i} &
+            break
+        fi
+    done
+}
 
-for i in x-terminal-emulator xfce4-terminal konsole qterminal lxterminal gnome-terminal lxterm xterm mate-terminal; do
-    if [[ \$(command -v \${i}) ]]; then
-        \${i} &
-        break
-    fi
-done
-unset i
-
-if [ \$(command -v ${REMOTE_DESKTOP_SESSION_01}) ]; then
-    dbus-launch ${REMOTE_DESKTOP_SESSION_01}
-elif [ \$(command -v ${REMOTE_DESKTOP_SESSION_02}) ]; then
-    dbus-launch ${REMOTE_DESKTOP_SESSION_02}
-else
-    printf "\033[0;35m%s\033[m%s\n" "ERROR！" "Xsession start failed."
-    printf "\033[34m%s\033[0;35m%s\033[m%s\n" "Xsession" "启动失败！" "您可以向开发者反馈。"
-fi
+start_session() {
+    for i in \${SESSION_1} \${SESSION_2}; do
+        if [[ -n \$(command -v \$i) ]]; then
+            exec \${DBUS_CMD} \${i} \${@}
+            break
+        fi
+    done
+}
+set_session_env
+open_terminal
+start_session \${@}
 	EndOfFile
     #--exit-with-session
     chmod 777 ${XSESSION_FILE}

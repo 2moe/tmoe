@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 #################
 stop_vnc_main() {
+    FORCE_KILL_XVNC=true
     tmoe_vnc_env
-    rm_vnc_lock
     pkill_vnc
+    rm_vnc_lock
     check_wsl
     case "$1" in
     -no-stop-dbus)
@@ -75,7 +76,7 @@ rm_vnc_lock() {
 }
 #############
 rm_dbus_pid_file() {
-    if [ $(command -v sudo) ]; then
+    if [[ -n $(command -v sudo) ]]; then
         sudo rm -vf /run/dbus/pid /var/run/dbus/pid /var/run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null
     else
         su -c "rm -vf /run/dbus/pid /var/run/dbus/pid /var/run/dbus/messagebus.pid /run/messagebus.pid /var/run/dbus/messagebus.pid /var/run/messagebus.pid 2>/dev/null"
@@ -85,23 +86,54 @@ rm_dbus_pid_file() {
 stop_dbus_daemon() {
     case ${TMOE_CHROOT} in
     true)
-        if [ -e "/var/run/dbus/pid" ]; then
-            DBUS_PID=$(sed -n p /var/run/dbus/pid)
-            printf "%s\n" "kill -9 ${DBUS_PID}"
-            sudo kill -9 ${DBUS_PID} || kill -9 ${DBUS_PID}
-            #此处不要用su -c "kill xxx"
-            rm_dbus_pid_file
-        fi
+        DBUS_PID_1="/var/run/dbus/pid"
+        DBUS_PID_2="/run/dbus/dbus.pid"
+
+        for i in $DBUS_PID_1 $DBUS_PID_2; do
+            if [ -e "$i" ]; then
+                DBUS_PID=$(head -n1 $i)
+                printf "%s\n" "kill -9 ${DBUS_PID}"
+                sudo kill -9 ${DBUS_PID} || kill -9 ${DBUS_PID}
+                #此处不要用su -c "kill xxx"
+                rm_dbus_pid_file
+            fi
+        done
         ;;
     esac
     #pkill dbus
 }
 ##########
+check_pid_and_rm_file() {
+    local Pid_file Pid_name _Pid
+    Pid_file=$1
+    Pid_name=$2
+    if [[ $Pid_name = vnc || -e $Pid_file ]]; then
+        _Pid=$(head -n1 "$Pid_file")
+        printf "%s\n" \
+            "${PURPLE}Killing ${BLUE}$Pid_name ${CYAN}..." \
+            "${GREEN}kill ${YELLOW}-9 ${BLUE}${_Pid}${RESET}"
+        rm -fv "${Pid_file}"
+    fi
+}
+pkill_all_vnc() {
+    for i in Xtightvnc Xtigervnc Xvnc; do
+        pkill $i
+    done
+}
 pkill_vnc() {
-    pkill Xtightvnc
-    pkill Xtigervnc
-    pkill Xvnc
-    #pkill vncsession
+    local Vnc_pid_file Session_pid_file
+    Vnc_pid_file="$HOME/.vnc/vnc.pid"
+    Session_pid_file="$HOME/.vnc/x.pid"
+
+    if [[ -e "$Vnc_pid_file" ]]; then
+        check_pid_and_rm_file "$Vnc_pid_file" "vnc"
+        check_pid_and_rm_file "$Session_pid_file" "session"
+        if $FORCE_KILL_XVNC; then
+            pkill_all_vnc
+        fi
+    else
+        pkill_all_vnc
+    fi
     pkill websockify
 }
 #############
