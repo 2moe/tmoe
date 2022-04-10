@@ -494,8 +494,8 @@ preconfigure_gui_dependecies_02() {
     suse) DEPENDENCY_02="tigervnc-x11vnc noto-sans-sc-fonts perl-base" ;;
     solus) DEPENDENCY_02="dbus-launch font-noto-cjk" ;;
     alpine)
-        DEPENDENCY_02="xvfb dbus-x11 font-noto-cjk x11vnc"
-        #ca-certificates openssl
+        DEPENDENCY_02="dbus-x11 font-noto-cjk tigervnc"
+        #ca-certificates openssl xvfb x11vnc
         ;;
     esac
 }
@@ -1441,7 +1441,7 @@ xfce_warning() {
   ║ 3 ║Manjaro     ║   ✓    ║    ✓   ║    ✓    ║
   ║---║------------║--------║--------║---------║
   ║   ║ Alpine     ║        ║        ║         ║
-  ║ 4 ║            ║  ✓     ║   X    ║   ✓     ║ 
+  ║ 4 ║            ║  ?     ║   ?    ║   ✓     ║ 
   ║---║------------║--------║--------║---------║
   ║   ║  Void      ║        ║        ║         ║
   ║ 5 ║            ║  ?     ║   ✓    ║   ✓     ║ 
@@ -4465,6 +4465,7 @@ x11vnc_warning() {
 
     DEPENDENCY_01=''
     DEPENDENCY_02=''
+    # alpine: xvfb x11vnc
     if [ ! $(command -v x11vnc) ]; then
         case ${LINUX_DISTRO} in
         gentoo) DEPENDENCY_01='x11-misc/x11vnc' ;;
