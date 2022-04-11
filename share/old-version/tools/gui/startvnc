@@ -61,53 +61,61 @@ AUTO_STOP_VNC=true
 # If you are using arch and cannot start dbus-daemon, then change the value to true.
 # TMOE_CHROOT=false
 
-VNC_LOG_FILE=~/.vnc/vnc.log
+# vnc log file
+VNC_LOG_FILE=$HOME/.vnc/vnc.log
+# Each time vnc is started, the previous log is cleared
+AUTO_VNC_LOG_CLEARING=true
+
+# vnc desktop name
+# VNC_DESKTOP_NAME="my_ubuntu/arch/fedora_xfce-desktop"
 ###################
-if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
-    if grep -q "^${VNC_USER}:" /etc/passwd; then
-        CURRENT_HOME=$(grep "^${VNC_USER}:" /etc/passwd | awk -F ':' '{print $6}' | head -n 1)
-        HOME=${CURRENT_HOME}
-    else
-        printf "\033[33m%s\033[m %s \033[32m%s \033[m%s\n" "WARNING！" "You should type" "useradd -m ${VNC_USER}" "to create it."
-        unset VNC_USER
+set_vnc_env_1() {
+    if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
+        if grep -q "^${VNC_USER}:" /etc/passwd; then
+            CURRENT_HOME=$(grep "^${VNC_USER}:" /etc/passwd | awk -F ':' '{print $6}' | head -n 1)
+            HOME=${CURRENT_HOME}
+        else
+            printf "\033[33m%s\033[m %s \033[32m%s \033[m%s\n" "WARNING！" "You should type" "useradd -m ${VNC_USER}" "to create it."
+            unset VNC_USER
+        fi
+        #sudo su - ${VNC_USER} -c "startvnc" || su - ${VNC_USER} -c "startvnc"
+        #return 0
     fi
-    #sudo su - ${VNC_USER} -c "startvnc" || su - ${VNC_USER} -c "startvnc"
-    #return 0
-fi
-###################
-X509_VNC_ENABLED=false
-#Default is false.
-X509_KEY=${HOME}/.vnc/x509-key.pem
-#Path to the key of the X509 certificate in PEM format
-X509_CERTIFICATE=${HOME}/.vnc/x509-cert.pem
-#Path to the X509 certificate in PEM format
-###################
-RED=$(printf '\033[31m')
-GREEN=$(printf '\033[32m')
-YELLOW=$(printf '\033[33m')
-BLUE=$(printf '\033[34m')
-PURPLE=$(printf '\033[35m')
-CYAN=$(printf '\033[36m')
-RESET=$(printf '\033[m')
-BOLD=$(printf '\033[1m')
-printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "vnc server" "..."
-printf "%s\n" "The current ${BLUE}vnc port${RESET} is ${YELLOW}${RFB_PORT}${RESET}, and vnc address is ${GREEN}localhost${YELLOW}:${RFB_PORT}${RESET}"
-export USER=${VNC_USER}
-[[ ${AUTO_STOP_VNC} != true ]] || stopvnc -no-stop-dbus 2>/dev/null
-###################
-TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
-TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
-TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
-TMOE_VNC_PASSWD_FILE="${HOME}/.vnc/passwd"
-XSESSION_FILE='/etc/X11/xinit/Xsession'
-TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
-TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-tmoe'
-TIGERVNC_VIEWER_WIN10='/mnt/c/Users/Public/Downloads/tigervnc/vncviewer64.exe'
-# TIGERVNC_BIN='/usr/bin/tigervncserver'
-unset TMOE_WSL
+    ###################
+    X509_VNC_ENABLED=false
+    #Default is false.
+    X509_KEY=${HOME}/.vnc/x509-key.pem
+    #Path to the key of the X509 certificate in PEM format
+    X509_CERTIFICATE=${HOME}/.vnc/x509-cert.pem
+    #Path to the X509 certificate in PEM format
+    ###################
+    RED=$(printf '\033[31m')
+    GREEN=$(printf '\033[32m')
+    YELLOW=$(printf '\033[33m')
+    BLUE=$(printf '\033[34m')
+    PURPLE=$(printf '\033[35m')
+    CYAN=$(printf '\033[36m')
+    RESET=$(printf '\033[m')
+    BOLD=$(printf '\033[1m')
+    printf "${GREEN}%s ${YELLOW}%s${RESET} %s\n" "Starting" "vnc server" "..."
+    printf "%s\n" "The current ${BLUE}vnc port${RESET} is ${YELLOW}${RFB_PORT}${RESET}, and vnc address is ${GREEN}localhost${YELLOW}:${RFB_PORT}${RESET}"
+    export USER=${VNC_USER}
+    [[ ${AUTO_STOP_VNC} != true ]] || stopvnc -no-stop-dbus 2>/dev/null
+    ###################
+    TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
+    TMOE_GIT_DIR="${TMOE_LINUX_DIR}/git"
+    TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
+    TMOE_VNC_PASSWD_FILE="${HOME}/.vnc/passwd"
+    XSESSION_FILE='/etc/X11/xinit/Xsession'
+    TMOE_LOCALE_FILE="${TMOE_LINUX_DIR}/locale.txt"
+    TIGERVNC_CONFIG_FILE='/etc/tigervnc/vncserver-config-tmoe'
+    TIGERVNC_VIEWER_WIN10='/mnt/c/Users/Public/Downloads/tigervnc/vncviewer64.exe'
+    # TIGERVNC_BIN='/usr/bin/tigervncserver'
+    unset TMOE_WSL
+}
 ###################
 check_tmoe_locale() {
-    if [ -e "${TMOE_LOCALE_FILE}" ]; then
+    if [[ -r ${TMOE_LOCALE_FILE} ]]; then
         TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
     else
         TMOE_LANG="en_US.UTF-8"
@@ -118,7 +126,7 @@ check_tmoe_locale() {
 check_current_user_name_and_group() {
     CURRENT_USER_NAME=$(grep "${HOME}" /etc/passwd | awk -F ':' '{print $1}' | head -n 1)
     CURRENT_USER_GROUP=$(grep "${HOME}" /etc/passwd | awk -F ':' '{print $4}' | cut -d ',' -f 1 | head -n 1)
-    if [ -z "${CURRENT_USER_GROUP}" ]; then
+    if [[ -z ${CURRENT_USER_GROUP} ]]; then
         CURRENT_USER_GROUP=${CURRENT_USER_NAME}
     fi
 }
@@ -134,7 +142,6 @@ fix_vnc_permissions() {
             [[ ! -e "${i}" ]] || VNC_FILE="${VNC_FILE} ${i}"
         done
         sudo -E chown -Rv "${CURRENT_USER_NAME}":"${CURRENT_USER_GROUP}" ${VNC_FILE} || su -c "chown -Rv ${CURRENT_USER_NAME}:${CURRENT_USER_GROUP} ${VNC_FILE}"
-        unset i
         ;;
     esac
 }
@@ -144,12 +151,17 @@ check_wsl() {
         UNAME="$(head -n 1 /proc/version)"
         case "${UNAME}" in
         *Microsoft* | *microsoft*)
-            export TMOE_CHROOT=true
-            export TMOE_WSL=true
+            TMOE_CHROOT=true
+            TMOE_WSL=true
+            export TMOE_CHROOT TMOE_WSL
             source ${TMOE_LINUX_DIR}/wsl_pulse_audio
             ;;
         esac
     fi
+}
+git_pull_tmoe_git_dir() {
+    ${SUDO_CMD} git reset --hard origin/master
+    ${SUDO_CMD} git pull --rebase --stat origin master --allow-unrelated-histories || ${SUDO_CMD} git rebase --skip
 }
 set_passwd() {
     mkdir -pv ~/.config/tmoe-linux ~/.vnc
@@ -163,13 +175,13 @@ set_passwd() {
             printf "%s\n" "${GREEN}git pull ${YELLOW}--rebase --stat ${BLUE}origin master ${PURPLE}--allow-unrelated-histories${RESET}"
             case $(id -u) in
             0)
-                git reset --hard origin/master
-                git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
+                SUDO_CMD=""
+                git_pull_tmoe_git_dir
                 ./share/old-version/tools/app/tool -passwd
                 ;;
             *)
-                sudo git reset --hard origin/master
-                sudo git pull --rebase --stat origin master --allow-unrelated-histories
+                SUDO_CMD="sudo"
+                git_pull_tmoe_git_dir
                 sudo -E bash ./share/old-version/tools/app/tool -passwd
                 ;;
             esac
@@ -248,20 +260,36 @@ start_win10_tigervnc() {
 }
 ###################
 cat_vnc_log() {
+    local Cat_bin Sleep_time
+    Cat_bin='cat'
+    Sleep_time=$1
     for i in batcat bat; do
         if [[ -n $(command -v $i) ]]; then
-            local Cat_bin
             Cat_bin=$i
             break
         fi
     done
 
+    printf "%s\n" \
+        "${GREEN}${Cat_bin} ${YELLOW}-n ${BLUE}${VNC_LOG_FILE}${RESET}"
+
+    sleep "$Sleep_time"
+
+    if [[ ! -s ${VNC_LOG_FILE} ]]; then
+        echo "Start vnc timeout ..."
+        sleep "$Sleep_time"
+        if [[ ! -s ${VNC_LOG_FILE} ]]; then
+            return 1
+        fi
+    fi
+
     case ${Cat_bin} in
-    batcat | bat) grep -Ev 'xkbcomp|keysym' ${VNC_LOG_FILE} | ${Cat_bin} -ppn -l log - ;;
+    batcat | bat) grep -Ev 'xkbcomp|keysym' ${VNC_LOG_FILE} | ${Cat_bin} -ppn - ;;
     *) cat -n ${VNC_LOG_FILE} ;;
     esac
 }
 start_tmoe_xvnc() {
+    local XVNC_BIN TMOE_VNC_BIN Desktop_name
     case ${VNC_SERVER} in
     tight* | Tight*)
         XVNC_BIN='Xtightvnc'
@@ -290,6 +318,12 @@ start_tmoe_xvnc() {
         PIXEL_DEPTH=32
     fi
 
+    if [[ -n ${VNC_DESKTOP_NAME} ]]; then
+        Desktop_name=${VNC_DESKTOP_NAME}
+    elif [[ -n ${desktop} ]]; then
+        Desktop_name=${desktop}
+    fi
+
     if [[ ${TMOE_VNC_BIN} = tiger ]]; then
         set -- "${@}" "-ZlibLevel=${ZLIB_LEVEL}"
     fi
@@ -301,7 +335,7 @@ start_tmoe_xvnc() {
         set -- "${@}" "-fp" "catalogue:/etc/X11/fontpath.d"
     fi
     set -- "${@}" "-rfbport" "${RFB_PORT}"
-    if [[ ${VNC_LOCALHOST} = true ]]; then
+    if ${VNC_LOCALHOST}; then
         set -- "${@}" "-localhost"
     fi
 
@@ -310,21 +344,34 @@ start_tmoe_xvnc() {
         set -- "${@}" "-X509Key" "${X509_KEY}"
         set -- "${@}" "-X509Cert" "${X509_CERTIFICATE}"
     fi
-    if [[ ${ALWAYS_SHARED} = true ]]; then
+    if ${ALWAYS_SHARED}; then
         set -- "${@}" "-alwaysshared"
     fi
     set -- "${@}" "-a" "5"
-    set -- "${@}" "-geometry" "${VNC_RESOLUTION}"
+
+    if [[ ${VNC_RESOLUTION} =~ ^[0-9]+x[0-9]+$ ]]; then
+        set -- "${@}" "-geometry" "${VNC_RESOLUTION}"
+    else
+        printf "%s\n" \
+            "${RED}ERROR${RESET}, your ${GREEN}vnc resolution ${YELLOW}is ${BLUE}\"${VNC_RESOLUTION}\"${RESET}" \
+            "Please ${PURPLE}reset ${RESET}it." \
+            "The value of ${BLUE}VNC_RESOLUTION${GREEN} should be ${CYAN}horizontal pixels ${YELLOW}x ${CYAN}vertical pixels${RESET}, e.g ${BLUE}2160x1080${RESET}"
+        set -- "${@}" "-geometry" "2160x1080"
+    fi
+
     set -- "${@}" "-once"
     set -- "${@}" "-depth" "${PIXEL_DEPTH}"
     #set -- "${@}" "-deferglyphs" "16"
     set -- "${@}" "-rfbauth" "${TMOE_VNC_PASSWD_FILE}"
-    set -- "${@}" "-desktop" "${desktop}"
+    set -- "${@}" "-desktop" "${Desktop_name}"
     set -- "${@}" ":${VNC_DISPLAY}"
     set -- "${XVNC_BIN}" "${@}"
     if [[ $(id -u ${VNC_USER}) = $(id -u) || -z ${VNC_USER} ]]; then
         # [[ -n ${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-${UID}
         # [[ -e ${XDG_RUNTIME_DIR} ]] || mkdir -pv ${XDG_RUNTIME_DIR}
+        if ${AUTO_VNC_LOG_CLEARING}; then
+            rm -f ${VNC_LOG_FILE}
+        fi
         "${@}" &>${VNC_LOG_FILE} &
         Vnc_pid=$!
 
@@ -353,9 +400,8 @@ start_tmoe_xvnc() {
                 "You can report this issue"
             cat ~/.vnc/x.log
         fi
-        printf "%s\n" "${GREEN}cat ${YELLOW}-n ${BLUE}${VNC_LOG_FILE}${RESET}"
-        sleep 0.1
-        cat_vnc_log
+        # sleeptime=0.2
+        cat_vnc_log 0.2
     else
         sudo su - "${VNC_USER}" -c "export LANG=${LANG} PULSE_SERVER=${PULSE_SERVER} TMOE_CHROOT=${TMOE_CHROOT} TMOE_PROOT=${TMOE_PROOT} DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &" || su - "${VNC_USER}" -c "export LANG=${LANG} PULSE_SERVER=${PULSE_SERVER} TMOE_CHROOT=${TMOE_CHROOT} TMOE_PROOT=${TMOE_PROOT} DISPLAY=${DISPLAY};bash ${XSESSION_FILE} &"
     fi
@@ -370,18 +416,20 @@ check_dbus_servcie() {
 }
 ###################
 check_xvnc() {
-    if [ "$(command -v Xvnc)" ]; then
+    if [[ -n $(command -v Xvnc) ]]; then
         start_tmoe_xvnc
         exit 0
+    else
+        startx11vnc
     fi
 }
 ###################
-tmoe_vnc_preconfigure
-check_dbus_servcie
-# source_tmoe_dbus_daemon
-display_vnc_ip_addr
-check_xvnc
-##########
-if [[ -z $(command -v Xvnc) ]]; then
-    startx11vnc
-fi
+main() {
+    set_vnc_env_1
+    tmoe_vnc_preconfigure
+    check_dbus_servcie
+    display_vnc_ip_addr
+    check_xvnc
+}
+# -------------------
+main "${@}"

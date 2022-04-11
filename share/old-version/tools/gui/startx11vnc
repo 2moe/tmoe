@@ -116,8 +116,9 @@ check_wsl() {
         UNAME="$(head -n 1 /proc/version)"
         case "${UNAME}" in
         *Microsoft* | *microsoft*)
-            export TMOE_CHROOT=true
-            export TMOE_WSL=true
+            TMOE_CHROOT=true
+            TMOE_WSL=true
+            export TMOE_CHROOT TMOE_WSL
             start_windows_10_pulse_audio_server
             ;;
         esac

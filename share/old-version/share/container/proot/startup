@@ -28,9 +28,9 @@ cat >"${TMOE_STARTUP_SCRIPT}" <<-ENDOFPROOT
 
 	Enabling this mode forces the values of other variables to be overwritten.
 
-	if dot_net_6_compatible_mode = true {
-	    proot_bin = "compatibility",
-	    share_proot_loader = true,
+	if dot_net_6_compatible_mode {
+	    proot_bin = "compatibility";
+	    share_proot_loader = true;
 	};
 	By the way, if it cannot find the dotnet bin. You should create a symlink in the container manually:
 	DOTNET_ROOT=\${DOTNET_ROOT:-\$HOME/.dotnet} \

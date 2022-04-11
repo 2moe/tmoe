@@ -34,11 +34,21 @@ stop_vnc_main() {
 }
 ############
 check_wsl() {
-    if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
-        export TMOE_CHROOT=true
-        export TMOE_WSL=true
-    elif grep -Eq '^[^#]*TMOE_CHROOT=.*true' /etc/environment 2>/dev/null; then
-        export TMOE_CHROOT=true
+    if [[ -r /proc/version ]]; then
+        UNAME="$(head -n 1 /proc/version)"
+        # if [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
+        case "${UNAME}" in
+        *Microsoft* | *microsoft*)
+            TMOE_CHROOT=true
+            TMOE_WSL=true
+            export TMOE_CHROOT TMOE_WSL
+            ;;
+        esac
+        # if [[ -r /etc/environment ]]; then
+        #     if grep -Eq '^[^#]*TMOE_CHROOT=.*true' /etc/environment 2>/dev/null; then
+        #         export TMOE_CHROOT=true
+        #     fi
+        # fi
     fi
 }
 ###########
