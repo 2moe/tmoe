@@ -284,7 +284,7 @@ cat_vnc_log() {
     fi
 
     case ${Cat_bin} in
-    batcat | bat) grep -Ev 'xkbcomp|keysym' ${VNC_LOG_FILE} | ${Cat_bin} -ppn -l log - ;;
+    batcat | bat) grep -Ev 'tigervnc.org|xkbcomp|keysym' ${VNC_LOG_FILE} | ${Cat_bin} -ppn -l log - ;;
     *) cat -n ${VNC_LOG_FILE} ;;
     esac
 }
