@@ -550,21 +550,31 @@ beta_features_quick_install() {
     #fi
     #############
     if [[ -n ${DEPENDENCY_01} ]]; then
-        DEPENDENCY_01_COMMAND=$(printf '%s\n' ${DEPENDENCY_01} | awk -F ' ' '$0=$NF')
-        if [[ -n $(command -v ${DEPENDENCY_01_COMMAND}) ]]; then
-            printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${RESET}"
-            printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCY_01}${RESET}"
-            EXISTS_COMMAND=true
-        fi
+        case "${DEPENDENCY_01}" in
+        -* | *no-install-recommends*) ;;
+        *)
+            DEPENDENCY_01_COMMAND=$(printf '%s\n' ${DEPENDENCY_01} | awk -F ' ' '$0=$NF')
+            if [[ -n $(command -v ${DEPENDENCY_01_COMMAND}) ]]; then
+                printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_01} ${RESET}"
+                printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCY_01}${RESET}"
+                EXISTS_COMMAND=true
+            fi
+            ;;
+        esac
     fi
     #############
     if [[ -n ${DEPENDENCY_02} ]]; then
-        DEPENDENCY_02_COMMAND=$(printf '%s\n' "${DEPENDENCY_02}" | awk -F ' ' '$0=$NF')
-        if [[ -n $(command -v ${DEPENDENCY_02_COMMAND}) ]]; then
-            printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_02} ${RESET}"
-            printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCY_02}${RESET}"
-            EXISTS_COMMAND=true
-        fi
+        case "${DEPENDENCY_02}" in
+        -* | *no-install-recommends*) ;;
+        *)
+            DEPENDENCY_02_COMMAND=$(printf '%s\n' "${DEPENDENCY_02}" | awk -F ' ' '$0=$NF')
+            if [[ -n $(command -v ${DEPENDENCY_02_COMMAND}) ]]; then
+                printf "%s\n" "检测到${YELLOW}您已安装${RESET} ${GREEN} ${DEPENDENCY_02} ${RESET}"
+                printf "%s\n" "If you want to ${RED}remove it${RESET}，please ${YELLOW}manually type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}${DEPENDENCY_02}${RESET}"
+                EXISTS_COMMAND=true
+            fi
+            ;;
+        esac
     fi
     ###############
     case ${TMOE_LANG} in

@@ -372,7 +372,7 @@ start_tmoe_xvnc() {
         if ${AUTO_VNC_LOG_CLEARING}; then
             rm -f ${VNC_LOG_FILE}
         fi
-        "${@}" &>${VNC_LOG_FILE} &
+        "${@}" &>>${VNC_LOG_FILE} &
         Vnc_pid=$!
 
         echo "$Vnc_pid" >~/.vnc/vnc.pid
