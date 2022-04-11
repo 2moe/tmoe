@@ -1854,9 +1854,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        eatmydata apt update || apt update
 	    fi
 	    if [[ ${TMOE_CHROOT} = true ]]; then
-	        printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}reinstall -y ${BLUE}perl-base${RESET}"
-	        eatmydata apt-get install --reinstall -y perl-base 2>/dev/null || apt-get install --reinstall -y perl-base 2>/dev/null
-	    fi
+            if [[ -n $(command -v perl) ]]; then
+	            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}reinstall -y ${BLUE}perl-base${RESET}"
+	            eatmydata apt-get install --reinstall -y perl-base 2>/dev/null || apt-get install --reinstall -y perl-base 2>/dev/null
+            fi
+        fi
 	    if [ ! $(command -v locale-gen) ]; then
 	        printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}locales${RESET}"
 	        eatmydata apt install -y locales 2>/dev/null || apt install -y locales 2>/dev/null

@@ -1147,7 +1147,7 @@ set_session_env() {
 
 open_terminal() {
     for i in x-terminal-emulator xfce4-terminal konsole qterminal lxterminal gnome-terminal lxterm xterm mate-terminal; do
-        if [[ \$(command -v \${i}) ]]; then
+        if [[ -n \$(command -v \${i}) ]]; then
             \${i} &
             break
         fi
