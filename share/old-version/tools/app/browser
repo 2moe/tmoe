@@ -49,7 +49,7 @@ ubuntu_ppa_chromium() {
     unset CHROMIUM_BROWSER_VERSION
     PPA_REPO_URL="https://packages.tmoe.me/chromium-dev/ubuntu/pool/main/c/chromium-browser/"
     case ${ARCH_TYPE} in
-    "amd64" | "arm64")
+    "amd64" | "arm64"| "armhf")
         if [ ! -e "/usr/share/doc/libva2/copyright" ]; then
             printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}libva2${RESET}"
             apt update
