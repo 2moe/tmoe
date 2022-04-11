@@ -348,16 +348,18 @@ Pin-Priority: 900
 EOF
     chmod a+r -v $Apt_conf_file
     case ${TMOE_CHROOT} in
-    true) mv -v $Apt_Packagekit ${Apt_Packagekit}.bak ;;
+    true) [[ -s $Apt_Packagekit ]] && mv -v $Apt_Packagekit ${Apt_Packagekit}.bak 2>/dev/null ;;
     esac
 }
 set_ubuntu_firefox_next_deps() {
     install_ppa_dep
     add-apt-repository -y ppa:mozillateam/ppa
     apt update
-    local Firefox_version=$(apt-cache madison firefox | grep -v snap | awk -F'|' '{print $2}' | head -n 1 | sed 's@ @@')
-    DEPENDENCY_01="firefox=${Firefox_version}"
-    DEPENDENCY_02="ffmpeg ^firefox-locale-${TMOE_MENU_LANG%%_*}=${Firefox_version}"
+    # local Firefox_version=$(apt-cache madison firefox | grep -v snap | awk -F'|' '{print $2}' | head -n 1 | sed 's@ @@')
+    # DEPENDENCY_01="firefox=${Firefox_version}"
+    # DEPENDENCY_02="ffmpeg ^firefox-locale-${TMOE_MENU_LANG%%_*}=${Firefox_version}"
+    DEPENDENCY_01="firefox"
+    DEPENDENCY_02="ffmpeg ^firefox-locale-${TMOE_MENU_LANG%%_*}"
     set_ubuntu_firefox_priority
 }
 set_ubuntu_firefox_deps() {
