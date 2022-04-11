@@ -336,6 +336,21 @@ set_ubuntu_firefox_stable_deps() {
     #add-apt-repository -y ppa:mozillateam/firefox-next
     DEPENDENCY_02="ffmpeg ^firefox-locale-${TMOE_MENU_LANG%%_*}"
 }
+set_ubuntu_firefox_priority() {
+    local Apt_conf_file Apt_Packagekit
+    Apt_conf_file="/etc/apt/preferences.d/90-mozilla-firefox"
+    Apt_Packagekit="/etc/apt/apt.conf.d/20packagekit"
+    # release v=22.04,o=LP-PPA-mozillateam,a=jammy,n=jammy,l=Firefox ESR and Thunderbird stable builds,c=main,b=arm64
+    cat >$Apt_conf_file <<-'EOF'
+Package: *
+Pin: release o=LP-PPA-mozillateam,l=Firefox ESR and Thunderbird stable builds
+Pin-Priority: 900
+EOF
+    chmod a+r -v $Apt_conf_file
+    case ${TMOE_CHROOT} in
+    true) mv -v $Apt_Packagekit ${Apt_Packagekit}.bak ;;
+    esac
+}
 set_ubuntu_firefox_next_deps() {
     install_ppa_dep
     add-apt-repository -y ppa:mozillateam/ppa
@@ -343,6 +358,7 @@ set_ubuntu_firefox_next_deps() {
     local Firefox_version=$(apt-cache madison firefox | grep -v snap | awk -F'|' '{print $2}' | head -n 1 | sed 's@ @@')
     DEPENDENCY_01="firefox=${Firefox_version}"
     DEPENDENCY_02="ffmpeg ^firefox-locale-${TMOE_MENU_LANG%%_*}=${Firefox_version}"
+    set_ubuntu_firefox_priority
 }
 set_ubuntu_firefox_deps() {
     if grep -Eq 'Impish|Hirsute|Groovy|Focal|Bionic|Eoan Ermine|=tricia|=tina' /etc/os-release; then
