@@ -399,6 +399,7 @@ install_vscode_official() {
         do_you_want_to_continue
     fi
 
+    ${TMOE_INSTALLATION_COMMAND} gnome-keyring
     case ${LINUX_DISTRO} in
     debian)
         download_vscode_x64_deb
@@ -423,7 +424,7 @@ install_vscode_official() {
         if [[ ${AUTO_INSTALL_VSCODE} != true ]]; then
             aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 1 -x 1 -o ${CODE_SHARE_FILE} https://gitee.com/ak2/vscode-share/raw/master/code.tar.xz || aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 1 -x 1 -o ${CODE_SHARE_FILE} https://github.com/2moe/vscode-share/raw/master/code.tar.xz
         else
-            aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 1 -x 1 -o ${CODE_SHARE_FILE} https://github.com/2moe/vscode-share/raw/master/code.tar.xz || aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 1 -x 1 -o ${CODE_SHARE_FILE} https://gitee.com/ak2/vscode-share/raw/master/code.tar.xz
+        curl -L -o ${CODE_SHARE_FILE} https://l.tmoe.me/code-share-files || aria2c --console-log-level=warn --no-conf --allow-overwrite=true -s 1 -x 1 -o ${CODE_SHARE_FILE} https://github.com/2moe/vscode-share/raw/master/code.tar.xz 
         fi
         tar -Jxvf ${CODE_SHARE_FILE} -C /
         #chown 0:0 /usr/share/zsh /usr/share/mime /usr/share/applications /usr/share/appdata /usr/share/bash-completion /usr/share/pixmaps /usr/share/zsh/vendor-completions /usr/share/zsh/vendor-completions/_code /usr/share/applications/code.desktop /usr/share/applications/code-url-handler.desktop /usr/share/code /usr/share/appdata/code.appdata.xml /usr/share/mime/packages/code-workspace.xml /usr/share/bash-completion/completions/code /usr/share/pixmaps/com.visualstudio.code.png
