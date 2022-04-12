@@ -1137,7 +1137,8 @@ set_session_env() {
     SESSION_2="${REMOTE_DESKTOP_SESSION_02}"
 
     # Adding dbus-launch may cause problems with vscode.
-    DBUS_CMD=""
+    # 
+    DBUS_CMD="dbus-launch"
     
     [[ ! -s /etc/environment ]] || source /etc/environment
     # /run/user/\$UID
