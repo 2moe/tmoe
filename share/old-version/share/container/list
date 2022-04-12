@@ -476,11 +476,12 @@ desktop_does_not_support() {
 choose_mate_distro() {
     MENU="Which distribution do you want to install?"
     OPT_0="🌚 Return to previous menu"
-    OPT_1="🌉 Arch-latest(arm64, x64)"
+    OPT_1="ubuntu-dev(arm64, x64)"
     OPT_2="🍥 Debian-sid(arm64, x64)"
-    OPT_3="👒 Fedora-rawhide(arm64, x64, armhf)"
-    OPT_4="🏔️ Alpine-edge(arm64, armhf, i386, x64)"
-    OPT_5="ubuntu-dev(arm64, x64)"
+    OPT_3="👒 Fedora-rawhide(arm64, x64)"
+    OPT_4="🌉 Arch-latest(arm64, x64)"
+    OPT_5="🏔️ Alpine-edge(arm64, armhf, i386, x64)"
+    #
     SELECTED_GNU_LINUX=$(whiptail --title "MATE DISTROS" --menu "${MENU}" 0 50 0 \
         "1" "$OPT_1" \
         "2" "$OPT_2" \
@@ -492,7 +493,7 @@ choose_mate_distro() {
     # "5" "🌿 Mint-tricia(amd64)" \
     case "${SELECTED_GNU_LINUX}" in
     0 | "") install_tmoe_weekly_build_edition ;;
-    1)
+    4)
         case ${ARCH_TYPE} in
         amd64 | arm64) set_arch_latest_env ;;
         *)
@@ -512,14 +513,14 @@ choose_mate_distro() {
         ;;
     3)
         case ${ARCH_TYPE} in
-        amd64 | arm64 | armhf) set_fedora_rawhide_env ;;
+        amd64 | arm64) set_fedora_rawhide_env ;;
         *)
             desktop_does_not_support
             distro_does_not_support
             ;;
         esac
         ;;
-    4) set_alpine_edge_env ;;
+    5) set_alpine_edge_env ;;
     # 5)
     # 	case ${ARCH_TYPE} in
     # 	amd64) set_mint_tricia_env ;;
@@ -529,7 +530,7 @@ choose_mate_distro() {
     # 		;;
     # 	esac
     # 	;;
-    5)
+    1)
         case ${ARCH_TYPE} in
         amd64 | arm64) set_ubuntu_dev_env ;;
         *)
@@ -750,7 +751,7 @@ choose_zsh_distro() {
         "1" "🌉 Arch(arm64,armhf,x64)" \
         "2" "🦛 Ubuntu devel(arm64,x64)" \
         "3" "🍥 Debian sid(arm64,armhf,x64,i386)" \
-        "4" "👒 Fedora rawhide(arm64,armhf,x64)" \
+        "4" "👒 Fedora rawhide(arm64,x64)" \
         "5" "🏔️ Alpine edge(arm64,armhf,x64,i386)" \
         "6" "🐉 Kali-rolling(arm64,armhf,x64)" \
         "7" "Manjaro(arm64,x64)" \
@@ -787,7 +788,7 @@ choose_zsh_distro() {
         ;;
     4)
         case ${ARCH_TYPE} in
-        amd64 | arm64 | armhf) set_fedora_rawhide_env ;;
+        amd64 | arm64) set_fedora_rawhide_env ;;
         *)
             desktop_does_not_support
             distro_does_not_support
@@ -847,7 +848,6 @@ view_the_schedule() {
 
 			${GREEN}fedora ${CYAN}rawhide ${YELLOW}amd64 ${PURPLE}* ${BLUE}[kde, xfce, mate, lxqt, zsh]${RESET}
 			${GREEN}fedora ${CYAN}rawhide ${YELLOW}arm64 ${PURPLE}* ${BLUE}[kde, xfce, mate, lxqt, zsh]${RESET}
-			${GREEN}fedora ${CYAN}36 ${YELLOW}armhf ${PURPLE}* ${BLUE}[mate, zsh]${RESET}
 
 		${BOLD}${YELLOW}Wednesday/周三/水曜日${RESET}：
 			${GREEN}arch ${YELLOW}amd64 ${PURPLE}* ${BLUE}[kde, xfce, mate, zsh]${RESET}
@@ -1743,17 +1743,7 @@ install_arch_linux_distro() {
     DISTRO_CODE='latest'
     DISTRO_CODE_02='current'
     case ${ARCH_TYPE} in
-    amd64 | arm64 | armhf)
-        linux_distro_common_model_03
-        # armhf)
-        # bash -c "$(sed -n p ${TMOE_SHARE_DIR}/container/install |
-        # 	sed 's@${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@https://mirrors.bfsu.edu.cn/archlinuxarm/os/ArchLinuxARM-armv7-latest.tar.gz@g' |
-        # 	sed "s/debian container/${DISTRO_NAME} container/g" |
-        # 	sed "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" |
-        # 	sed 's:rootfs.tar.xz:rootfs.tar.gz:g' |
-        # 	sed "s:Debian GNU/Linux:${DISTRO_NAME}:g")"
-        # ;;
-        ;;
+    amd64 | arm64 | armhf) linux_distro_common_model_03 ;;
     *) distro_does_not_support ;;
     esac
 }
@@ -1786,98 +1776,7 @@ which_version_do_you_want_to_install() {
         case_cloud_rootfs_01_04
     fi
 }
-######################
-fedora_distro_menu() {
-    RETURN_TO_WHERE='fedora_distro_menu'
-    BETA_SYSTEM=$(
-        whiptail --title "Fedora" --menu "您想要安装哪个Fedora版本？\nWhich version do you want to install?" 0 0 0 \
-            "1" "latest" \
-            "2" "33" \
-            "3" "rawhide(For testing only)" \
-            "0" "🌚 Return to previous menu 返回上级菜单" \
-            3>&1 1>&2 2>&3
-        #			"2" "34" \
-    )
-    ##############################
-    case "${BETA_SYSTEM}" in
-    0 | "") choose_which_gnu_linux_distro ;;
-    1)
-        OLD_STABLE_VERSION=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/fedora/ | grep date | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
-        check_the_latest_distro_version
-        ;;
-        #2)
-        #	DISTRO_CODE=34
-        #case ${ARCH_TYPE} in
-        #amd64) CORRENT_SHA256SUM='4f8471bb8402d8b903fbe0a4944df5f935a6b32b0a3032e645ac6881a60ef4dc' ;;
-        #arm64) CORRENT_SHA256SUM='504be6ae28e26f3d94166e480fc8b59f1c7e469df0d7de510056c951f9ce50d5' ;;
-        #esac
-        #	git_clone_fedora_rootfs
-    #	;;
-    2)
-        DISTRO_CODE=33
-        before_going_to_proot_menu
-        case_cloud_rootfs_01_04
-        # linux_distro_common_model_04
-        ;;
-    3)
-        DISTRO_CODE=35
-        git_clone_fedora_rootfs
-        ;;
-    esac
-    ######################
-    press_enter_to_return
-    tmoe_manager_main_menu
-}
 #########################
-git_clone_fedora_rootfs() {
-    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-    create_container_edition_txt
-    go_to_proot_management
-    [[ -e ${ROOTFS_DIR} ]] || mkdir -pv ${ROOTFS_DIR}
-    cd ${ROOTFS_DIR}
-    FEDORA_ROOTFS_FILE="fedora-${DISTRO_CODE}_${ARCH_TYPE}-rootfs.tar.xz"
-    FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
-    if [[ ! -s "${FEDORA_ROOTFS_FILE}" ]]; then
-        rm -rvf \
-            "${FEDORA_TEMP_FOLDER}" \
-            2>/dev/null
-
-        git clone \
-            --depth=1 \
-            "${AK2_GIT_URL}/fedora-${DISTRO_CODE}_${ARCH_TYPE}" \
-            "${FEDORA_TEMP_FOLDER}"
-
-        mv -f \
-            "${FEDORA_TEMP_FOLDER}/fedora-${DISTRO_CODE}_${ARCH_TYPE}.tar.xz" \
-            "${ROOTFS_DIR}/${FEDORA_ROOTFS_FILE}"
-
-        rm -rvf ${FEDORA_TEMP_FOLDER}
-    fi
-
-    case ${DISTRO_CODE} in
-    33)
-        bash -c "$(sed -n p \
-            ${TMOE_SHARE_DIR}/container/install |
-            sed -E \
-                -e "s/debian (container)/${DISTRO_NAME} \1/g" \
-                -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-                -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
-                -e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
-        ;;
-    *)
-        bash -c "$(sed -n p \
-            ${TMOE_SHARE_DIR}/container/install |
-            sed -E \
-                -e "s/debian (container)/${DISTRO_NAME} \1/g" \
-                -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
-                -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
-                -e "s@(FEDORA_VERSION)=.*@\1=29@g" \
-                -e "s:Debian (GNU/Linux):${DISTRO_NAME} \1:g")"
-        #当版本低于30，或为rawhide时不会自动换源
-        ;;
-    esac
-}
-###################
 install_fedora_gnu_linux_distro() {
     DISTRO_NAME='fedora'
     TMOE_LINUX_CONTAINER_DISTRO='fedora'
@@ -1885,43 +1784,14 @@ install_fedora_gnu_linux_distro() {
     case "${ARCH_TYPE}" in
     armel | i386) distro_does_not_support ;;
     armhf)
-        DISTRO_CODE=33
-        TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-        create_container_edition_txt
-        go_to_proot_management
-        [[ -e ${ROOTFS_DIR} ]] || mkdir -pv "${ROOTFS_DIR}"
-        cd "${ROOTFS_DIR}"
-        FEDORA_ROOTFS_FILE='fedora-33_armhf-rootfs.tar.xz'
-        FEDORA_TEMP_FOLDER=".${FEDORA_ROOTFS_FILE}_TEMP_FOLDER"
-        if [[ ! -s "${FEDORA_ROOTFS_FILE}" ]]; then
-            rm -rvf ${FEDORA_TEMP_FOLDER} 2>/dev/null
-
-            git clone \
-                --depth=1 \
-                "${AK2_GIT_URL}/fedora-33_armhf" \
-                "${FEDORA_TEMP_FOLDER}"
-
-            mv -f \
-                "${FEDORA_TEMP_FOLDER}/${FEDORA_ROOTFS_FILE}" \
-                "${ROOTFS_DIR}"
-
-            rm -rvf ${FEDORA_TEMP_FOLDER}
-        fi
-        : <<\EOF
-		#CORRENT_SHA256SUM='bec3047102e6edbb834735233713f45ef085f9b8e46f493f39732f53891d3a0e'
-		printf "%s\n" 'Verifying sha256hash...'
-		printf "%s\n" '正在校验sha256哈希值...'
-		printf "%s\n" "${CORRENT_SHA256SUM}"
-		LOCAL_SHA256SUM=$(sha256sum ${FEDORA_ROOTFS_FILE} | cut -c 1-64)
-		case ${LOCAL_SHA256SUM} in
-		"${CORRENT_SHA256SUM}") printf "%s\n" "Congratulations！检测到sha256哈希值与源文件一致。" ;;
-		esac
-EOF
-        linux_distro_common_model_01
+        # The last fedora_armhf is 36.
+        OLD_STABLE_VERSION=34
+        DISTRO_CODE=35
+        which_version_do_you_want_to_install
         ;;
     *)
-        #OLD_STABLE_VERSION='31'
-        fedora_distro_menu
+        OLD_STABLE_VERSION=34
+        check_the_latest_distro_version
         ;;
     esac
 }
