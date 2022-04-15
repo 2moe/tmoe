@@ -477,8 +477,6 @@ what_is_your_timezone() {
         determining_timezone_by_region
     fi
     is_your_timezone_utc
-
-    mkdir -pv ${CONFIG_FOLDER}/gitstatus
     write_to_timezone_txt
 }
 check_time_zone_file() {
@@ -571,6 +569,7 @@ tmoe_container_timezone() {
 }
 write_to_timezone_txt() {
     local _File="${CONFIG_FOLDER}/gitstatus/timezone.txt"
+    mkdir -pv "${_File%/*}"
     case ${TIMEZONE} in
     "") ;;
     UTC* | GMT*) printf "%s\n" "Etc/${TIMEZONE}" >"${_File}" ;;
