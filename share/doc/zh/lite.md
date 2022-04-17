@@ -24,7 +24,7 @@
 - [2. 快速上手](#2-快速上手)
   - [2.1. 容器镜像](#21-容器镜像)
     - [GUI 容器](#gui-容器)
-    - [nogui](#nogui)
+    - [noGUI](#nogui)
   - [2.2. 本地安装](#22-本地安装)
   - [2.3. 有问题?](#23-有问题)
   - [2.4. 我可以干什么?](#24-我可以干什么)
@@ -141,9 +141,9 @@ docker run \
 对于 宿主 为 wayland 的环境，您需要对 docker 执行更多的操作。
 例如：设置 WAYLAND_DISPLAY 变量，`-e WAYLAND_DISPLAY=$WAYLAND_DISPLAY`  
 设置 XDG_RUNTIME_DIR 环境变量  
-`-e XDG_RUNTIME_DIR=/run/user/1000`  
+`-e XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR`  
 绑定宿主的 wayland socket  
-`-v $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/run/user/1000/$WAYLAND_DISPLAY`  
+`-v $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY`  
 设置其他与 wayland 相关的环境变量  
 `-e QT_QPA_PLATFORM=wayland`
 
@@ -151,7 +151,7 @@ docker run \
 
 </details>
 
-#### nogui
+#### noGUI
 
 现阶段，对于与 tmoe 相关的 nogui 容器，从严格意义上来说，它们属于另外的项目。  
 因为它们并没有预装 tmoe tools。

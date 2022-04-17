@@ -149,9 +149,10 @@ You'll need to use docker more in environments that have a wayland host.
 Set the WAYLAND_DISPLAY variable：  
 `-e WAYLAND_DISPLAY=$WAYLAND_DISPLAY`  
 Set the XDG_RUNTIME_DIR variable：  
-`-e XDG_RUNTIME_DIR=/run/user/1000`  
+If UID is 1000, then default is /run/user/1000.  
+`-e XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR`  
 binding the wayland socket of host  
-`-v $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/run/user/1000/$WAYLAND_DISPLAY`  
+`-v $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY`  
 Set other environment variables related to wayland  
 `-e QT_QPA_PLATFORM=wayland`
 
