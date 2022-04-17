@@ -427,21 +427,21 @@ tmoe_electron_music_app() {
         "1" "electron-netease-cloud-music(云音乐)" \
         "2" "YesPlayMusic(高颜值的第三方网易云播放器)" \
         "3" "listen1(免费音乐聚合)" \
-        "4" "cocomusic(第三方QQ音乐)" \
-        "5" "iease-music(界面华丽的云音乐客户端)" \
-        "6" "petal(第三方豆瓣FM客户端)" \
+        "4" "petal(第三方豆瓣FM客户端)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
+    # "4" "cocomusic(第三方QQ音乐)" \
+    # "5" "iease-music(界面华丽的云音乐客户端)" \
     ##############
     case "${INSTALL_APP}" in
     0 | "") electron_apps_main_menu ;;
     1) install_electron_netease_cloud_music ;;
     2) install_yes_play_music ;;
     3) install_listen1 ;;
-    4) install_coco_music ;;
-    5) install_iease_music ;;
-    6) install_electron_petal ;;
+    4) install_electron_petal ;;
     esac
+    # 4) install_coco_music ;;
+    # 5) install_iease_music ;;
     ##########################
     # 2) install_lx_music_desktop ;;
     #      "7" "chord(支持虾米、云音乐、qq音乐多平台)" \

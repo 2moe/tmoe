@@ -1220,7 +1220,7 @@ install_tmoe_electron_app_pack() {
         check_electron
         install_electron_v8
         DEPENDENCY_01=''
-        for DEPENDENCY_01 in electron-netease-cloud-music bilibili-web listen1 yesplaymusic cocomusic petal zy-player; do
+        for DEPENDENCY_01 in electron-netease-cloud-music bilibili-web listen1 yesplaymusic petal zy-player; do
             download_tmoe_electron_app
         done
     fi
@@ -1492,7 +1492,7 @@ do_you_want_to_install_electron_apps_zh() {
     alpine) ;;
     *)
         if [[ ! $(command -v electron) ]]; then
-            if (whiptail --title "Electron apps" --yesno '请问您是否需要安装开发者推荐的electron软件包合集?\n该合集包含electron-netease-cloud-music,bilibili-web,listen1,\nYesPlayMusic,cocomusic,petal和zy-player\n您可以选择NO跳过,之后可以单独安装electron app.' 0 0); then
+            if (whiptail --title "Electron apps" --yesno '请问您是否需要安装开发者推荐的electron软件包合集?\n该合集包含electron-netease-cloud-music,bilibili-web,listen1,\nYesPlayMusic,petal和zy-player\n您可以选择NO跳过,之后可以单独安装electron app.' 0 0); then
                 AUTO_INSTALL_ELECTRON_APPS=true
             fi
         fi
@@ -1505,7 +1505,7 @@ do_you_want_to_install_electron_apps_en() {
     alpine) ;;
     *)
         if [[ ! $(command -v electron) ]]; then
-            if (whiptail --title "Electron apps" --yesno 'Do you want to install electron apps pack?\nIt includes electron-netease-cloud-music,bilibili-web,listen1,\nYesPlayMusic,cocomusic,petal & zy-player.' 0 0); then
+            if (whiptail --title "Electron apps" --yesno 'Do you want to install electron apps pack?\nIt includes electron-netease-cloud-music,bilibili-web,listen1,\nYesPlayMusic,petal & zy-player.' 0 0); then
                 AUTO_INSTALL_ELECTRON_APPS=true
             fi
         fi
