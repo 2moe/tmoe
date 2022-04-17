@@ -92,18 +92,15 @@ EOF
     alpine)
         AUTO_INSTALL_FCITX4=false
         AUTO_INSTALL_ELECTRON_APPS=false
-        AUTO_INSTALL_HARD_INFO=false
         ;;
     redhat)
         AUTO_INSTALL_FCITX4=false
         AUTO_INSTALL_ELECTRON_APPS=true
-        AUTO_INSTALL_HARD_INFO=false
         AUTO_INSTALL_VSCODE=true
         ;;
     debian | arch)
         AUTO_INSTALL_FCITX4=false #true
         AUTO_INSTALL_ELECTRON_APPS=true
-        AUTO_INSTALL_HARD_INFO=true
         ${TMOE_INSTALLATION_COMMAND} baobab
         ${TMOE_INSTALLATION_COMMAND} bleachbit
         AUTO_INSTALL_VSCODE=true
@@ -1530,22 +1527,12 @@ do_you_want_to_install_fcitx_pinyin() {
     esac
 }
 do_you_want_to_install_fcitx4() {
-    unset AUTO_INSTALL_HARD_INFO
     [[ ${WINDOWS_DISTRO} != WSL ]] || do_you_want_to_install_fcitx_pinyin
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8) do_you_want_to_install_electron_apps_zh ;;
     *) do_you_want_to_install_electron_apps_en ;;
     esac
     do_you_want_to_install_chromium
-    case "${LINUX_DISTRO}" in
-    "debian" | "arch")
-        if [[ ! $(command -v hardinfo) ]]; then
-            if (whiptail --title "HARDINFO" --yesno 'Do you want to install hardinfo?\nIt can display system information.' 0 0); then
-                AUTO_INSTALL_HARD_INFO=true
-            fi
-        fi
-        ;;
-    esac
     do_you_want_to_install_kali_tools
 }
 #########
@@ -1628,11 +1615,6 @@ auto_install_and_configure_fcitx4() {
     [[ ${AUTO_INSTALL_FCITX4} != true ]] || source ${TMOE_TOOL_DIR}/app/input-method --auto-install-fcitx4
     install_tmoe_electron_app_pack
     install_kali_linux_tools
-    if [[ ${AUTO_INSTALL_HARD_INFO} = true ]]; then
-        printf "%s\n" "${GREEN}${TMOE_INSTALLATION_COMMAND} ${BLUE}hardinfo${RESET}"
-        ${TMOE_INSTALLATION_COMMAND} hardinfo
-        printf "%s\n" "You can type ${PURPLE}${TMOE_REMOVAL_COMMAND} ${BLUE}hardinfo${RESET} to remove it."
-    fi
     if [[ ${AUTO_INSTALL_VSCODE} = true ]]; then
         source ${TMOE_TOOL_DIR}/code/vscode --auto-install-vscode
     fi
