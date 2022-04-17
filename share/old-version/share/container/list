@@ -850,9 +850,9 @@ view_the_schedule() {
 			${GREEN}fedora ${CYAN}rawhide ${YELLOW}arm64 ${PURPLE}* ${BLUE}[kde, xfce, mate, lxqt, zsh]${RESET}
 
 		${BOLD}${YELLOW}Wednesday/周三/水曜日${RESET}：
-			${GREEN}arch ${YELLOW}amd64 ${PURPLE}* ${BLUE}[kde, xfce, mate, zsh]${RESET}
-			${GREEN}arch ${YELLOW}arm64 ${PURPLE}* ${BLUE}[kde, xfce, mate, zsh]${RESET}
-			${GREEN}arch ${YELLOW}armhf ${PURPLE}* ${BLUE}[xfce, zsh]${RESET}
+			${GREEN}arch ${YELLOW}amd64 ${PURPLE}* ${BLUE}[kde, cutefish, xfce, mate, zsh]${RESET}
+			${GREEN}arch ${YELLOW}arm64 ${PURPLE}* ${BLUE}[kde, cutefish, xfce, mate, zsh]${RESET}
+			${GREEN}arch ${YELLOW}armhf ${PURPLE}* ${BLUE}[xfce, cutefish, zsh]${RESET}
 
 			${GREEN}debian ${CYAN}sid ${YELLOW}amd64 ${PURPLE}* ${BLUE}[kde, xfce, mate, zsh]${RESET}
 			${GREEN}debian ${CYAN}sid ${YELLOW}arm64 ${PURPLE}* ${BLUE}[kde, xfce, mate, zsh]${RESET}
