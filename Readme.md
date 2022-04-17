@@ -94,6 +94,9 @@ docker run \
 Run `tmoe` to select locale, then choose tools, and then exit.  
 Run `novnc`,then open your browser on your host, and type "http://your_ip_address:36081"
 
+Note: Exposing it to the public network is extremely risky, so consider using the **nginx reverse proxy** and adding an extra layer of authentication to it.  
+If you have any doubts about nginx + novnc, then please report an issue.
+
 In addition to novnc + browser, you can also use the vnc client.
 
 ```sh
