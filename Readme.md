@@ -78,6 +78,10 @@ install docker
 ```sh
 sudo apt update
 sudo apt install docker.io
+
+WHOAMI=$(id -un)
+sudo adduser $WHOAMI docker
+# then reboot
 ```
 
 test alpine

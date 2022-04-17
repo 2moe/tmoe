@@ -71,6 +71,10 @@ A: 不！ 完全不需要。
 ```sh
 sudo apt update
 sudo apt install docker.io
+
+WHOAMI=$(id -un)
+sudo adduser $WHOAMI docker
+# then reboot
 ```
 
 然後用 alpine 試試水
