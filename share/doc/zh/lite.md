@@ -141,7 +141,7 @@ docker run \
     -u $_UID:$_GID \
     --shm-size=1G \
     -v $XDG_RUNTIME_DIR/pulse/native:/run/pulse.sock \
-    -e PULSE_SERVER=unix:/run/pulse.sock
+    -e PULSE_SERVER=unix:/run/pulse.sock \
     -e DISPLAY=$DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     cake233/kde:ubuntu
