@@ -91,7 +91,7 @@ docker run \
 请新建一个网络，将其与 nginx 置于同一网络，并设置 `network-alias`(网络别名), 然后用 nginx 给它加上一层认证（例如`auth_basic_user_file pw_file;`）, 最后将其 reverse proxy 出去。  
 注：proxy_pass 那里要写 `http://novnc容器的网络别名:36080` 。  
 如果 nginx 那里套了 tls 证书，那么访问地址就是 `https://您的novnc的域名:端口`。  
-您如果对 nginx + novnc 这块有疑问的话，请给我发 issue。
+如果您对 nginx + novnc 这块有疑问的话，请给我发 issue。
 
 您也可以使用普通的 vnc 客户端，不过这时候 tcp 端口就不是 36081 了。
 
