@@ -114,7 +114,7 @@ Run `startvnc`, then open the vnc client and type "your_ip_address:5903"
 
 The next section describes how desktop users can use these GUI containers.  
 It is probably a mistake to use docker containers as virtual machines.  
-In fact, for GUI desktop containers, the developers recommend using systemd-nspawn rather than docker.
+In fact, for GUI desktop containers, I recommend using systemd-nspawn rather than docker.
 
 The following is only a basic overview, additional changes are required.
 Note: Some fantastic projects, such as x11docker, can assist you in improving your performance.
