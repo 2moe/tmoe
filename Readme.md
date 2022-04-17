@@ -143,9 +143,9 @@ docker run \
 ```
 
 Create a user with the same name as the host user within the container.
-Finally, run `/etc/X11/xinit/Xsession`
+Finally, start dbus-daemon and run `/etc/X11/xinit/Xsession`
 
-You'll need to use docker more in environments that have a wayland host.  
+For wayland host environment, you will need to do more with docker.  
 Set the WAYLAND_DISPLAY variable：  
 `-e WAYLAND_DISPLAY=$WAYLAND_DISPLAY`  
 Set the XDG_RUNTIME_DIR variable：  
