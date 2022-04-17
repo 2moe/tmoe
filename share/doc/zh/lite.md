@@ -136,7 +136,7 @@ docker run \
 ```
 
 在容器内部创建一个与宿主用户同名的用户。  
-最后启动 dbus-daemon， 并特定 Xsession，例如 `/etc/X11/xinit/Xsession`
+最后启动 dbus-daemon， 并运行特定 Xsession，例如 `/etc/X11/xinit/Xsession`
 
 对于 宿主 为 wayland 的环境，您需要对 docker 执行更多的操作。
 例如：设置 WAYLAND_DISPLAY 变量，`-e WAYLAND_DISPLAY=$WAYLAND_DISPLAY`  
