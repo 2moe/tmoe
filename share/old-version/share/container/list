@@ -156,11 +156,11 @@ install_tmoe_moonthly_build_edition() {
             "8" "Node.js(A back-end JavaScript runtime environment)" \
             "9" "Nginx(A high-performance HTTP server)" \
             "10" "PHP(A general-purpose scripting language)" \
-            "11" "MongoDB(Classified as a NoSQL database program)" \
-            "12" "Ruby(An interpreted,general-purpose lang)" \
+            "11" "Ruby(An interpreted,general-purpose lang)" \
             "0" "🌚 back =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
+    # "11" "MongoDB(Classified as a NoSQL database program)" \
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8) choose_service_en ;;
     *) choose_service_en ;;
@@ -207,11 +207,11 @@ install_tmoe_moonthly_build_edition() {
         DISTRO_NAME="php"
         choose_latest_or_alpine
         ;;
+    # 11)
+    #     DISTRO_NAME="mongo"
+    #     DESKTOP="latest"
+    #     ;;
     11)
-        DISTRO_NAME="mongo"
-        DESKTOP="latest"
-        ;;
-    12)
         DISTRO_NAME="ruby"
         choose_latest_or_alpine
         ;;

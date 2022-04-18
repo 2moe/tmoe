@@ -98,14 +98,22 @@ do_you_want_to_set_pwsh_as_your_default_shell() {
         fi
     fi
 }
+add_user_to_group_inet() {
+    local user_name=$1
+    if [[ -s /tmp/.ANDROID_VERSION.txt ]]; then
+        usermod -aG aid_inet "$user_name" 2>/dev/null
+    fi
+}
 check_container_name() {
     CONTAINER_NAME=$(grep CONTAINER_NAME ${CONTAINER_TXT} | awk -F '=' '{print $2}')
+    AUTO_CONFIGURE=false
     case ${CONTAINER_NAME} in
     *dotnet*)
         # dotnet-nogui_arm64
-        AUTO_CONFIGURE=false
         do_you_want_to_set_pwsh_as_your_default_shell
         ;;
+    nginx_*) add_user_to_group_inet nginx ;;
+    node_*) add_user_to_group_inet node ;;
     *nogui*zsh) AUTO_CONFIGURE=true ;;
     *nogui* | code_web-*) AUTO_CONFIGURE=false ;;
     *) AUTO_CONFIGURE=true ;;
