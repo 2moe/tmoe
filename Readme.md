@@ -115,7 +115,7 @@ docker run \
 
 Run `su -`, and type the root password: root  
 Run `adduser yourusername` to create a new user.  
-Run `adduser yourusername sudo` to add yourusername to group sudo.
+Run `adduser yourusername sudo` to add **your user** to group sudo.
 
 Run `startvnc`, then open the vnc client and type "your_ip_address:5903"
 
@@ -123,11 +123,11 @@ The next section describes how desktop users can use these GUI containers.
 It is probably a mistake to use docker containers as virtual machines.  
 In fact, for GUI desktop containers, I recommend using systemd-nspawn rather than docker.
 
-The following is only a basic overview, additional changes are required.
+The following is only a basic overview, additional changes are required.  
 Note: Some fantastic projects, such as x11docker, can assist you in improving your performance.
 
-For environments where xorg is the host:
-In the host, give the current user xhost rights.
+For xorg host environment:  
+In the host, allow the current user to access xhost.
 
 ```sh
 xhost +SI:localuser:$(id -un)
