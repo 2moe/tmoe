@@ -92,7 +92,7 @@ docker run \
 然后运行 `novnc`, 最后打开浏览器，输入 `http://您的IP地址:36081`
 
 如果需要将 novnc 容器暴露到公网的话，那么不建议对其使用 `-p` 参数（暴露 36081 端口），建议走 nginx 的 443 端口。  
-请新建一个网络，将其与 nginx 置于同一网络，并设置 `network-alias`(网络别名), 最后用 nginx 给它加上一层认证（例如`auth_basic_user_file pw_file;`）并配置 reverse proxy。  
+请新建一个网络，将 novnc 容器 与 nginx 容器置于同一网络，并为前者设置 `network-alias`(网络别名), 最后用 nginx 给它加上一层认证（例如`auth_basic_user_file pw_file;`）并配置 reverse proxy。  
 注：proxy_pass 那里要写 `http://novnc容器的网络别名:36080;`  
 如果 nginx 那里套了 tls 证书，那么访问地址就是 `https://您在nginx中配置的novnc的域名:端口`。（若端口为 443，则无需加 **:端口** ）  
 注 2： 处于相同网络环境下的 nginx 和 novnc 必须同时运行，若您在 nginx 中配置了 novnc 的域名， 而 novnc 没有运行，则 nginx 的配置会加载失败，这可能会导致 nginx 无法正常运行。  
@@ -276,6 +276,7 @@ file "$FILE"
 ### 2.3. 有问题?
 
 有问题一定要问哦！不能憋坏了。  
+有 bug 也要及时反馈哦！（~~虽然开发者可能会咕很久，但是~~ bug 总归是要修的)  
 您可以提 [issue](https://github.com/2moe/tmoe-linux/issues/new/choose)，也可以在 **discussions** 里进行交流和讨论。
 
 如果是与本项目自身无关的话题，那请发在 [discussions](https://github.com/2moe/tmoe-linux/discussions) 里。
