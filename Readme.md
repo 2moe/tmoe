@@ -163,7 +163,7 @@ binding the wayland socket of host
 Set other environment variables related to wayland  
 `-e QT_QPA_PLATFORM=wayland`
 
-Note: If you want to run GUI app in a container or sandbox, you should consider using a mature solution like 'flatpak.'
+Note: If you want to run GUI app in a container or sandbox, you should consider using a mature solution like **flatpak**.
 
 </details>
 

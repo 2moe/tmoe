@@ -5139,7 +5139,7 @@ xrdp_restart() {
     fi
     if [ "${WINDOWS_DISTRO}" = 'WSL' ]; then
         printf '%s\n' '检测到您使用的是WSL，正在为您打开音频服务'
-        export PULSE_SERVER=127.0.0.1
+        export PULSE_SERVER=${PULSE_SERVER:-127.0.0.1}
         #if grep -q '172..*1' "/etc/resolv.conf"; then
         if [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
             printf "%s\n" "检测到您当前使用的可能是WSL2"

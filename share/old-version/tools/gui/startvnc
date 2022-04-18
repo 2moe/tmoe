@@ -4,7 +4,7 @@
 # 本机默认音频服务地址为127.0.0.1,默认端口为4713。
 # Die Standard-Audiodienst Adresse dieses Geräts lautet 127.0.0.1
 # tcp:192.168.x.x:4713 or unix:/run/pulse.socket
-export PULSE_SERVER=127.0.0.1
+export PULSE_SERVER=${PULSE_SERVER:-127.0.0.1}
 
 # The default resolution is 1440x720, it is recommended that you adjust it according to the screen ratio.
 # 默认分辨率为1440x720,您可以修改为其他值
@@ -68,6 +68,9 @@ AUTO_VNC_LOG_CLEARING=true
 
 # vnc desktop name
 # VNC_DESKTOP_NAME="my_ubuntu/arch/fedora_xfce-desktop"
+
+# xdg runtime dir
+# export XDG_RUNTIME_DIR=/tmp/runtime-$(id -u)
 ###################
 set_vnc_env_1() {
     if [[ ${VNC_USER} != $(whoami) && -n ${VNC_USER} ]]; then
@@ -118,7 +121,10 @@ check_tmoe_locale() {
     if [[ -r ${TMOE_LOCALE_FILE} ]]; then
         TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
     else
-        TMOE_LANG="en_US.UTF-8"
+        case ${LANG} in
+        *UTF-8) TMOE_LANG=${LANG} ;;
+        *) TMOE_LANG="en_US.UTF-8" ;;
+        esac
     fi
     export LANG="${TMOE_LANG}"
 }

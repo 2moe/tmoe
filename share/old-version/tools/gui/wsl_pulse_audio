@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 printf '%s\n' '检测到您使用的是WSL,正在为您打开音频服务'
 printf "%s\n" "若您使用的是 win11 的 WSL2， 则建议您使用 wslg 命令，而不是 startvnc 或 startxsdl"
-export PULSE_SERVER=127.0.0.1
+export PULSE_SERVER=${PULSE_SERVER:-127.0.0.1}
 cd "/mnt/c/Users/Public/Downloads/pulseaudio"
 /mnt/c/WINDOWS/system32/cmd.exe /c "start .\pulseaudio.bat" &
 printf "%s\n" "若无法自动打开音频服务，则请手动在资源管理器中打开C:\Users\Public\Downloads\pulseaudio\pulseaudio.bat"

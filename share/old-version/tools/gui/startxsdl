@@ -2,7 +2,7 @@
 ###################
 unset WAYLAND_DISPLAY
 export DISPLAY=127.0.0.1:0
-export PULSE_SERVER=tcp:127.0.0.1:4713
+export PULSE_SERVER=${PULSE_SERVER:-127.0.0.1:4713}
 AUTO_START_DBUS=true
 ###############
 TMOE_LINUX_DIR='/usr/local/etc/tmoe-linux'
@@ -30,7 +30,10 @@ check_tmoe_locale() {
     if [ -e "${TMOE_LOCALE_FILE}" ]; then
         TMOE_LANG=$(head -n 1 ${TMOE_LOCALE_FILE})
     else
-        TMOE_LANG="en_US.UTF-8"
+        case ${LANG} in
+        *UTF-8) TMOE_LANG=${LANG} ;;
+        *) TMOE_LANG="en_US.UTF-8" ;;
+        esac
     fi
     export LANG="${TMOE_LANG}"
 }
