@@ -95,7 +95,7 @@ docker run \
 请新建一个网络，将 novnc 容器 与 nginx 容器置于同一网络，并为前者设置 `network-alias`(网络别名), 最后用 nginx 给它加上一层认证（例如`auth_basic_user_file pw_file;`）并配置 reverse proxy。  
 注：proxy_pass 那里要写 `http://novnc容器的网络别名:36080;`  
 如果 nginx 那里套了 tls 证书，那么访问地址就是 `https://您在nginx中配置的novnc的域名:端口`。（若端口为 443，则无需加 **:端口** ）  
-注 2： 处于相同网络环境下的 nginx 和 novnc 必须同时运行，若您在 nginx 中配置了 novnc 的域名， 而 novnc 没有运行，则 nginx 的配置会加载失败，这可能会导致 nginx 无法正常运行。  
+注 2： 若您在 nginx 中配置了 novnc 的域名，则处于相同网络环境下的 nginx 和 novnc 必须同时运行。 若 novnc 没有运行，则 nginx 的配置会加载失败，这可能会导致 nginx 无法正常运行。  
 如果您对 nginx + novnc 这块有疑问的话，请前往本项目的 [github disscussion](https://github.com/2moe/tmoe-linux/discussions) 发表话题。
 
 您也可以使用普通的 vnc 客户端来连接，不过这时候 tcp 端口就不是 36081 了。
@@ -111,7 +111,7 @@ docker run \
 ```
 
 对于 debian 系发行版，执行 `su -c "adduser yourusername"` 创建新用户，先输入默认 root 密码： **root**，然后设置新用户的密码。
-设置完密码后，执行 `su -c "adduser yourusername sudo"` 将当前用户加入到 sudo 用户组。  
+设置完密码后，执行 `su -c "adduser yourusername sudo"` 将您的用户加入到 sudo 用户组。  
 注 1：其他发行版与 debian 系不同。  
 注 2：您可以手动安装并换用其他类似于 `sudo` 的工具，例如：`doas` 或 `calife`。  
 注 3：不一定要在容器内部开 vnc, 您可以在宿主或另一个容器开 vnc 服务，不过这样做会稍微麻烦一点。
