@@ -95,9 +95,9 @@ docker run \
 請新建一個網絡，將其與 nginx 置於同一網絡，並設置 `network-alias`(網絡別名), 最後用 nginx 給它加上一層認證（例如`auth_basic_user_file pw_file;`）並配置 reverse proxy。  
 注：proxy_pass 那裏要寫 `http://novnc容器的網絡別名:36080;`  
 如果 nginx 那裏套了 tls 證書，那麼訪問地址就是 `https://您在nginx中配置的novnc的域名:端口`。（若端口為 443，則無需加 **:端口** ）  
-如果您對 nginx + novnc 這塊有疑問的話，請給我發 issue。
+如果您對 nginx + novnc 這塊有疑問的話，請前往本項目的 [github disscussion](https://github.com/2moe/tmoe-linux/discussions) 發表話題。
 
-您也可以使用普通的 vnc 客户端，不過這時候 tcp 端口就不是 36081 了。
+您也可以使用普通的 vnc 客户端來連接，不過這時候 tcp 端口就不是 36081 了。
 
 ```sh
 docker run \
@@ -206,23 +206,23 @@ mkdir -p tmp
 
 # 若本地存在 hello 項目，則可跳過這一步。
 docker run \
-  -t \
-  --rm \
-  -u "$_UID":"$_GID" \
-  -v "$PWD"/tmp:/app \
-  -w /app \
-  cake233/rust-riscv64 \
-  cargo new hello
+    -t \
+    --rm \
+    -u "$_UID":"$_GID" \
+    -v "$PWD"/tmp:/app \
+    -w /app \
+    cake233/rust-riscv64 \
+    cargo new hello
 
 # build
 docker run \
-  -t \
-  --rm \
-  -u "$_UID":"$_GID" \
-  -v "$PWD"/tmp/hello:/app \
-  -w /app \
-  cake233/rust-riscv64 \
-  cargo b --release
+    -t \
+    --rm \
+    -u "$_UID":"$_GID" \
+    -v "$PWD"/tmp/hello:/app \
+    -w /app \
+    cake233/rust-riscv64 \
+    cargo b --release
 
 # check file
 
@@ -241,14 +241,14 @@ opt-level = "z"
 EOF
 
 docker run \
-  -t \
-  --rm \
-  -u "$_UID":"$_GID" \
-  -v "$PWD"/tmp/hello:/app \
-  -w /app \
-  --platform linux/arm64 \
-  cake233/rust:musl \
-  cargo b --release
+    -t \
+    --rm \
+    -u "$_UID":"$_GID" \
+    -v "$PWD"/tmp/hello:/app \
+    -w /app \
+    --platform linux/arm64 \
+    cake233/rust:musl \
+    cargo b --release
 
 file "$FILE"
 # output: tmp/hello/target/release/hello: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, stripped
@@ -274,10 +274,13 @@ file "$FILE"
 
 ### 2.3. 有問題?
 
-有問題一定要問哦！不能憋壞了。
+有問題一定要問哦！不能憋壞了。  
 您可以提 [issue](https://github.com/2moe/tmoe-linux/issues/new/choose)，也可以在 **discussions** 裏進行交流和討論。
 
-您如果無法訪問 GitHub 的話，那就前往 [gitee](https://gitee.com/mo2/linux/issues) 反饋吧！
+如果是與本項目自身無關的話題，那請發在 [discussions](https://github.com/2moe/tmoe-linux/discussions) 裏。
+
+> 比如説你使用了 `startvnc`， 但是它出問題了，這屬於與本項目自身有關的話題。  
+> 您使用了自己配置的 vnc 服務，這屬於與本項目自身無關的話題。
 
 ### 2.4. 我可以幹什麼?
 
