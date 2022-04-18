@@ -88,13 +88,13 @@ docker run \
     cake233/xfce:alpine
 ```
 
-進入容器後，執行 `tmoe` 選擇語言環境，再選擇 tools，接著退出。  
-然後執行 `novnc`, 最後回到宿主環境，開啟瀏覽器，輸入 `http://您的IP地址:36081`
+進入容器後，輸入 `tmoe`，並按下回車，接著選擇語言環境，再選擇 tools，接著退出。  
+然後執行 `novnc`, 最後開啟瀏覽器，輸入 `http://您的IP地址:36081`
 
-如果需要將 novnc 容器暴露到公網的話，那麼不建議對其使用 `-p` 引數，建議走 nginx 的 443 埠。  
-請新建一個網路，將其與 nginx 置於同一網路，並設定 `network-alias`(網路別名), 然後用 nginx 給它加上一層認證（例如`auth_basic_user_file pw_file;`）, 最後再用 nginx 配置 reverse proxy。  
-注：proxy_pass 那裡要寫 `http://novnc容器的網路別名:36080;` 。  
-如果 nginx 那裡套了 tls 證書，那麼訪問地址就是 `https://您在nginx中配置的novnc的域名:埠`。（若埠為 443，則可忽略）  
+如果需要將 novnc 容器暴露到公網的話，那麼不建議對其使用 `-p` 引數（暴露 36081 埠），建議走 nginx 的 443 埠。  
+請新建一個網路，將其與 nginx 置於同一網路，並設定 `network-alias`(網路別名), 最後用 nginx 給它加上一層認證（例如`auth_basic_user_file pw_file;`）並配置 reverse proxy。  
+注：proxy_pass 那裡要寫 `http://novnc容器的網路別名:36080;`  
+如果 nginx 那裡套了 tls 證書，那麼訪問地址就是 `https://您在nginx中配置的novnc的域名:埠`。（若埠為 443，則無需加 **:埠** ）  
 如果您對 nginx + novnc 這塊有疑問的話，請給我發 issue。
 
 您也可以使用普通的 vnc 客戶端，不過這時候 tcp 埠就不是 36081 了。
