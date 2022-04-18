@@ -117,8 +117,8 @@ Run `su -`, and type the root password: root
 Run `adduser yourusername` to create a new user.  
 Run `adduser yourusername sudo` to add **your user** to group sudo.
 
-Run `startvnc`, then open the vnc client and type "your_ip_address:5903"
-
+Run `exit` or `su - yourusername`  
+Run `startvnc`, then open the vnc client and type "your_ip_address:5903"  
 The next section describes how desktop users can use these GUI containers.  
 It is probably a mistake to use docker containers as virtual machines.  
 In fact, for GUI desktop containers, I recommend using systemd-nspawn rather than docker.
