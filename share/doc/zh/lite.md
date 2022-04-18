@@ -95,6 +95,7 @@ docker run \
 请新建一个网络，将其与 nginx 置于同一网络，并设置 `network-alias`(网络别名), 最后用 nginx 给它加上一层认证（例如`auth_basic_user_file pw_file;`）并配置 reverse proxy。  
 注：proxy_pass 那里要写 `http://novnc容器的网络别名:36080;`  
 如果 nginx 那里套了 tls 证书，那么访问地址就是 `https://您在nginx中配置的novnc的域名:端口`。（若端口为 443，则无需加 **:端口** ）  
+注 2： 处于相同网络环境下的 nginx 和 novnc 必须同时运行，若您在 nginx 中配置了 novnc 的域名， 而 novnc 没有运行，则 nginx 的配置会加载失败，这可能会导致 nginx 无法正常运行。  
 如果您对 nginx + novnc 这块有疑问的话，请前往本项目的 [github disscussion](https://github.com/2moe/tmoe-linux/discussions) 发表话题。
 
 您也可以使用普通的 vnc 客户端来连接，不过这时候 tcp 端口就不是 36081 了。
