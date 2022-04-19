@@ -377,9 +377,9 @@ tmoe_electron_note_app() {
         "2" "gridea:静态博客写作app,你可以用它来记录你的生活、心情、知识和创意" \
         "3" "draw.io:思维导图绘制工具" \
         "4" "simplenote:简单、轻量级的开源跨平台云笔记工具" \
-        "5" "marktext:(x64)界面直观、功能出众、操作轻松的markdown编辑器" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
+    # "5" "marktext:(x64)界面直观、功能出众、操作轻松的markdown编辑器" \
     ##############
     case "${INSTALL_APP}" in
     0 | "") electron_apps_main_menu ;;
@@ -400,12 +400,12 @@ tmoe_electron_note_app() {
         DEPENDENCY_01='simplenote'
         ORIGINAL_URL='https://github.com/Automattic/simplenote-electron'
         ;;
-    5)
-        DEBIAN_INSTALLATION_MENU='02'
-        DEPENDENCY_01='marktext'
-        DEPENDENCY_02="ripgrep"
-        ORIGINAL_URL='https://github.com/marktext/marktext'
-        ;;
+        # 5)
+        #     DEBIAN_INSTALLATION_MENU='02'
+        #     DEPENDENCY_01='marktext'
+        #     DEPENDENCY_02="ripgrep"
+        #     ORIGINAL_URL='https://github.com/marktext/marktext'
+        #     ;;
     esac
     ##########################
     printf "%s\n" "${YELLOW}${ORIGINAL_URL}${RESET}"
