@@ -1400,10 +1400,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	elif grep -q 'Mint' "/etc/issue"; then
 	    mint_sources_list
 	elif grep -Eq 'deepin|uos\.com' "/etc/os-release"; then
-	    if grep -q '15\.5 SP2' /etc/issue; then
+        if grep -q '15\.5 SP2' /etc/issue; then
 	        DEBIAN_VERSION='stretch'
 	        sed -i 's@mirrors.bfsu.edu.cn@packages.deepin.com@g' /etc/apt/sources.list
 	        apt update
+	        apt install -y apt-transport-https 2>/dev/null
 	    fi
         # don't add debian buster source to deepin
 	    # DEBIAN_STABLE_LIST='/etc/apt/sources.list.d/debian-stable.list'

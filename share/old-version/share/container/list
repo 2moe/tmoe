@@ -1349,10 +1349,10 @@ install_beta_containers() {
                 "5" "Void(基于xbps包管理器的独立发行版)" \
                 "6" "🌿 Mint(x86,x64,简单易用的系统)" \
                 "7" "Solus(x64,一个对新手友好的发行版)" \
-                "8" "Pop！_OS(x64,让桌面更具生产力,激发专业人员的创造力)" \
                 "0" "🌚 Return to previous menu 返回上级菜单" \
                 3>&1 1>&2 2>&3
         )
+        # "8" "Pop！_OS(x64,让桌面更具生产力,激发专业人员的创造力)" \
     }
     install_beta_containers_ja() {
         BETA_SYSTEM=$(
@@ -1364,10 +1364,10 @@ install_beta_containers() {
                 "5" "Void:ゼロから設計および実装されたX Binary Package System" \
                 "6" "🌿 Mint(x86,x64,洗練され、最新で快適なLinuxデスクトップを提供すること)" \
                 "7" "Solus(x64,以前はEvolve OSとして知られていた)" \
-                "8" "Pop！_OS(x64，based upon Ubuntu)" \
                 "0" "🌚 戻る" \
                 3>&1 1>&2 2>&3
         )
+        # "8" "Pop！_OS(x64，based upon Ubuntu)" \
     }
     install_beta_containers_en() {
         BETA_SYSTEM=$(
@@ -1379,10 +1379,10 @@ install_beta_containers() {
                 "5" "Void is a general purpose operating system, based on the monolithic Linux kernel" \
                 "6" "🌿 Mint(x86,x64,elegant, easy to use, up to date and comfortable GNU/Linux desktop distribution)" \
                 "7" "Solus(x64,designed for home computing)" \
-                "8" "Pop！_OS(x64,for STEM and creative professionals who use their computer as a tool to discover and create)" \
                 "0" "🌚 Return to previous menu" \
                 3>&1 1>&2 2>&3
         )
+        # "8" "Pop！_OS(x64,for STEM and creative professionals who use their computer as a tool to discover and create)" \
     }
     ##############################
     case ${TMOE_MENU_LANG} in
@@ -1413,7 +1413,7 @@ install_beta_containers() {
         ;;
     6) install_mint_linux_distro ;;
     7) install_solus_distro ;;
-    8) install_pop_distro ;;
+        # 8) install_pop_distro ;;
     esac
     ######################
     exit 0
