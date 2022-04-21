@@ -1400,20 +1400,16 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	elif grep -q 'Mint' "/etc/issue"; then
 	    mint_sources_list
 	elif grep -Eq 'deepin|uos\.com' "/etc/os-release"; then
-	    if grep -q '20' /etc/issue; then
-	        DEBIAN_VERSION='buster'
-	    elif grep -q '15\.5 SP2' /etc/issue; then
+	    if grep -q '15\.5 SP2' /etc/issue; then
 	        DEBIAN_VERSION='stretch'
 	        sed -i 's@mirrors.bfsu.edu.cn@packages.deepin.com@g' /etc/apt/sources.list
 	        apt update
-	        apt install -y apt-transport-https 2>/dev/null
-	    else
-	        DEBIAN_VERSION='stable'
 	    fi
-	    DEBIAN_STABLE_LIST='/etc/apt/sources.list.d/debian-stable.list'
-	    sed -i 's@http:@https:@g' /etc/apt/sources.list 2>/dev/null
-	    printf "%s\n" "deb https://mirrors.bfsu.edu.cn/debian/ ${DEBIAN_VERSION} main" >${DEBIAN_STABLE_LIST}
-	    chmod a+r -v ${DEBIAN_STABLE_LIST}
+        # don't add debian buster source to deepin
+	    # DEBIAN_STABLE_LIST='/etc/apt/sources.list.d/debian-stable.list'
+	    # sed -i 's@http:@https:@g' /etc/apt/sources.list 2>/dev/null
+	    # printf "%s\n" "deb https://mirrors.bfsu.edu.cn/debian/ ${DEBIAN_VERSION} main" >${DEBIAN_STABLE_LIST}
+	    # chmod a+r -v ${DEBIAN_STABLE_LIST}
 	elif grep -q 'OpenWrt' "/etc/os-release"; then
 	    cp /etc/opkg/distfeeds.conf /etc/opkg/distfeeds.conf.bak
 	    sed -i 's@downloads.openwrt.org@mirrors.bfsu.edu.cn/openwrt@g' /etc/opkg/distfeeds.conf
