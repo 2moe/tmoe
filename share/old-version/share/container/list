@@ -988,7 +988,7 @@ install_chroot_exclusive_containers() {
     ALPHA_SYSTEM=$(
         whiptail --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
             "1" "opensuse tumbleweed(小蜥蜴风滚草)" \
-            "2" "deepin深度(arm64,x86,x64)" \
+            "2" "deepin深度(x86,x64)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
             3>&1 1>&2 2>&3
     )
