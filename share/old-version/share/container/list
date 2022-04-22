@@ -159,8 +159,8 @@ cloud_server_distro_menu() {
     local OPT_0="🌚 Return to previous menu"
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8)
-        local OPT_1="openEuler(arm64,x64,华为欧拉开源版)"
-        local OPT_2="Microsoft CBL-Mariner(为azure优化,用于微软的云基础设施和边缘产品及服务)"
+        local OPT_1="openEuler(arm64,x64,华为欧拉社区版)"
+        local OPT_2="Microsoft CBL-Mariner(用于微软的云基础设施和边缘产品)"
         local OPT_3="Oracle甲骨文(arm64, x64)"
         local OPT_4="Amazon亚马逊(arm64, x64)"
         ;;
