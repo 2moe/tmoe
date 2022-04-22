@@ -123,7 +123,10 @@ check_container_name() {
     node_*) add_user_to_group_inet node ;;
     euler_gui-dde)
         dnf_install_passwd
+        do_you_want_to_update_tmoe
+        cp -fv ${TMOE_TOOL_DIR}/gui/startvnc ${TMOE_TOOL_DIR}/gui/stopvnc ${TMOE_TOOL_DIR}/gui/startxsdl /usr/local/bin
         reset_vnc_passwd
+        whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,\ntype stopvnc to stop it." 0 0
         printf "%s\n" "You can ${YELLOW}run ${GREEN}startvnc${RESET} to start vnc"
         printf "%s\n" \
             "cd ~" \
@@ -216,10 +219,8 @@ reset_vnc_passwd() {
     ${TMOE_TOOL_DIR}/app/tool -passwd
     ${TMOE_TOOL_DIR}/app/tool --choose-vnc-port
 }
-set_your_vnc_passwd() {
-    # auto-update: false
+do_you_want_to_update_tmoe() {
     cd ${TMOE_GIT_DIR}
-
     if (whiptail --title "Update" --yesno "Do you want to update tmoe?" 0 0); then
         case ${LANG} in
         zh_*)
@@ -237,6 +238,11 @@ set_your_vnc_passwd() {
         *) git_pull_rebase_tmoe ;;
         esac
     fi
+}
+set_your_vnc_passwd() {
+    do_you_want_to_update_tmoe
+    # auto-update: false
+
     mkdir -pv /usr/local/bin
     cp -fv ${TMOE_TOOL_DIR}/gui/startvnc ${TMOE_TOOL_DIR}/gui/stopvnc ${TMOE_TOOL_DIR}/gui/startx11vnc ${TMOE_TOOL_DIR}/gui/startxsdl ${TMOE_TOOL_DIR}/gui/tigervnc ${TMOE_TOOL_DIR}/gui/tightvnc /usr/local/bin
     reset_vnc_passwd
