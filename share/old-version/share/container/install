@@ -970,18 +970,15 @@ if [ ! -d "${DEBIAN_CHROOT}/usr/local/bin" ]; then
 fi
 #cd ${DEBIAN_CHROOT}/usr/local/bin
 cd "${CONFIG_FOLDER}"
-CURRENT_MONTH=$(date -u +%Y%m)
-case ${CURRENT_MONTH} in
-2021* | 202201)
-    if [[ -e neofetch ]]; then
-        if [[ $(sha256sum neofetch | awk '{print $1}') = bd3564aa793309792687c241808f31907c0294652c50a7459b54dd0359383c20 ]]; then
-            rm -fv neofetch
-        fi
-    fi
-    [[ -e "neofetch" ]] || curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/2b559cb8c62088dcbe997f6bb5a27002a9c22e27/neofetch'
-    ;;
-*) [[ -e "neofetch" ]] || curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch' ;;
-esac
+if [[ -s neofetch ]]; then
+    Neofetch_sha256=$(sha256sum neofetch | awk '{print $1}')
+    case ${Neofetch_sha256} in
+    bd3564aa793309792687c241808f31907c0294652c50a7459b54dd0359383c20 | 2aac92a0a75925698970dca95e7a93feff815c7ad44bdf6718c58ceca66c9894) rm -fv neofetch ;;
+    *) ;;
+    esac
+fi
+[[ -e "neofetch" ]] || curl --connect-timeout 5 -Lo "neofetch" 'https://gcore.jsdelivr.net/gh/dylanaraps/neofetch@master/neofetch'
+[[ -e "neofetch" ]] || curl -Lo "neofetch" 'https://gitee.com/mirrors/neofetch/raw/neofetch'
 
 if [[ -e "debian-i" ]]; then
     chmod 666 debian-i
