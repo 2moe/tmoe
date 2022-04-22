@@ -128,11 +128,6 @@ check_container_name() {
         reset_vnc_passwd
         whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,\ntype stopvnc to stop it." 0 0
         printf "%s\n" "You can ${YELLOW}run ${GREEN}startvnc${RESET} to start vnc"
-        printf "%s\n" \
-            "cd ~" \
-            "startvnc" \
-            >${ENV_DIR}/entrypoint
-        chmod a+rx -v ${ENV_DIR}/entrypoint
         ;;
     euler_* | amazon_* | oracle_*) AUTO_CONFIGURE=false ;;
     *nogui*zsh) AUTO_CONFIGURE=true ;;
