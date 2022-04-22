@@ -1058,8 +1058,8 @@ install_alpha_containers() {
         OPT_5="Oracle(arm64, x64)"
         OPT_6="VMware photon OS(arm64,x64,optimized for cloud-native apps)"
         OPT_7="Intel clear linux(x64)"
-        OPT_8="Slackware(armhf, x64)"
-        OPT_9="archcraft(x64)"
+        # OPT_8="Slackware(armhf, x64)"
+        OPT_8="archcraft(x64)"
         OPT_0="🌚 戻る"
     }
     install_alpha_containers_zh() {
@@ -1071,9 +1071,9 @@ install_alpha_containers() {
         OPT_5="Oracle(arm64,x64,甲骨文云服务器系统)"
         OPT_6="VMware photon OS(arm64,x64,为云原生应用优化)"
         OPT_7="Intel clear linux(x64,专注于服务器的性能优化)"
-        OPT_8="Slackware(armhf, x64)"
-        OPT_9="archcraft(x64, 使用了轻量级的 bspwm & openbox)"
+        OPT_8="archcraft(x64, 使用了轻量级的 bspwm & openbox)"
         OPT_0="🌚 返回上级菜单"
+        # OPT_8="Slackware(armhf, x64)"
         #	"9" "SteamOS(x64,蒸汽平台开发商Valve发行的游戏系统,基于debian)" \
         #"5" "Huawei euler OS(arm64,x64,华为欧拉,服务器系统)" \
     }
@@ -1086,8 +1086,7 @@ install_alpha_containers() {
         OPT_5="Oracle(arm64, x64)"
         OPT_6="VMware photon OS(arm64,x64,optimized for cloud-native apps)"
         OPT_7="Intel clear linux(x64)"
-        OPT_8="Slackware(armhf, x64)"
-        OPT_9="archcraft(x64, it uses lightweight bspwm & openbox)"
+        OPT_8="archcraft(x64, it uses lightweight bspwm & openbox)"
         OPT_0="🌚 Return to previous menu"
     }
 
@@ -1102,7 +1101,6 @@ install_alpha_containers() {
                 "6" "${OPT_6}" \
                 "7" "${OPT_7}" \
                 "8" "${OPT_8}" \
-                "9" "${OPT_9}" \
                 "0" "${OPT_0}" \
                 3>&1 1>&2 2>&3
         )
@@ -1126,9 +1124,9 @@ install_alpha_containers() {
     5) install_oracle_linux_distro ;;
     6) install_photon_linux_distro ;;
     7) install_clear_linux_distro ;;
-    8) install_slackware_linux_distro ;;
     9) install_archcraft_distro ;;
     esac
+    # 8) install_slackware_linux_distro ;;
     #999) install_euler_linux_distro ;;
     ###########################
     exit 0
@@ -1875,27 +1873,6 @@ install_gentoo_linux_distro() {
     else
         DISTRO_CODE='systemd'
     fi
-
-    # case "${ARCH_TYPE}" in
-    # 'arm64')
-    # 	create_container_edition_txt
-    # 	go_to_proot_management
-    # 	DISTRO_CODE='current'
-    # 	#sed '45 a\ARCH_TYPE="armhf"' |
-    # 	TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.bfsu.edu.cn/gentoo/releases/arm64/autobuilds/current-stage3-arm64"
-    # 	TTIME=$(curl -L "${TUNA_LXC_IMAGE_MIRROR_REPO}/" | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | grep -Ev 'systemd|DIGESTS|CONTENTS.gz' | grep 'tar' | tail -n 1)
-    # 	bash -c "$(sed -n p \
-    # 		${TMOE_SHARE_DIR}/container/install |
-    # 		sed -E \
-    # 			-e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${TUNA_LXC_IMAGE_MIRROR_REPO}/${TTIME}@g" \
-    # 			-e 's/debian (container)/Gentoo \1/g' \
-    # 			-e 's:debian-sid:gentoo-current:g' \
-    # 			-e 's:debian/sid:gentoo/current:g' \
-    # 			-e 's:Debian (GNU/Linux):Gentoo \1:g')"
-    # 	;;
-    # *)
-    # 		;;
-    # esac
     create_container_edition_txt
     go_to_proot_management
     DISTRO_CODE_02='current'
@@ -1947,64 +1924,34 @@ install_opensuse_linux_distro() {
 ####################
 install_raspios_linux_distro() {
     DISTRO_NAME='raspios'
-    DISTRO_CODE='buster'
+    DISTRO_CODE='bullseye'
     TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
     case "${ARCH_TYPE}" in
-    arm64)
-        printf "%s\n" "检测到您选择的是树莓派系统"
-        printf "%s\n" "检测到您使用的是${PURPLE}arm64${RESET}架构，请回到跨架构（cross-arch）菜单，并选择${BLUE}armhf${RESET}"
-        # printf "%s\n" "已将您的架构临时识别为armhf"
-        printf "%s\n" "如需安装${YELLOW}arm64${RESET}版的树莓派系统，则请将arm64版的RaspiOS rootfs.tar.xz文件重命名为${GREEN}raspios-buster_armhf_lite-rootfs.tar.xz${RESET},并将其移动到${BLUE}${ROOTFS_DIR}${RESET}"
-        press_enter_to_continue
-        ;;
-    esac
-    case "${ARCH_TYPE}" in
-    arm64 | armhf) NEW_TMOE_ARCH='armhf' ;;
+    arm64 | armhf) ;;
     *) distro_does_not_support ;;
     esac
-    case "${TRUE_ARCH_TYPE}" in
-    arm64 | armhf)
-        TMOE_QEMU_ARCH=""
-        create_tmoe_arch_file
-        ;;
-    esac
-    ARCH_TYPE="${NEW_TMOE_ARCH}"
     create_container_edition_txt
     go_to_proot_management
     if (whiptail --title "RASPIOS" --yes-button "FULL" --no-button "LITE" --yesno "您想要安装哪个版本的raspios？Full版约1.9G,lite版约274M" 9 50); then
-        install_raspios_full_armhf_rootfs
+        install_raspios_rootfs full
     else
-        install_raspios_lite_armhf_rootfs
+        install_raspios_rootfs lite
     fi
 }
 ###################
-install_raspios_lite_armhf_rootfs() {
-    bash -c "$(sed -n p \
-        ${TMOE_SHARE_DIR}/container/install |
-        sed -E \
-            -e 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' \
-            -e 's@(TUNA_LXC_IMAGE_MIRROR_REPO_02=).*@\1https://mirrors.tuna.tsinghu.edu.cn/raspberry-pi-os-images/raspios_lite_armhf/archive@' \
-            -e 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' \
-            -e 's@#deb http@deb http@g' \
-            -e 's@-rootfs.tar.xz@_lite-rootfs.tar.xz@g' \
-            -e 's/.*sid main/#&/' \
-            -e 's/debian (container)/raspios \1/g' \
-            -e 's:debian-sid:raspios-buster:g' \
-            -e 's:Debian (GNU/Linux):Raspios \1:g')"
-}
-##################
-install_raspios_full_armhf_rootfs() {
+install_raspios_rootfs() {
+    local raspios_var=$1
     bash -c "$(sed -n p \
         "${TMOE_SHARE_DIR}"/container/install |
         sed -E \
-            -e 's@TUNA_LXC_IMAGE_MIRROR_REPO=.*@TUNA_LXC_IMAGE_MIRROR_REPO=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' \
-            -e's@(TUNA_LXC_IMAGE_MIRROR_REPO_02=).*@\1https://mirrors.tuna.tsinghu.edu.cn/raspberry-pi-os-images/raspios_full_armhf/archive@' \
-            -e 's@${TTIME}rootfs.tar.xz@${TTIME}root.tar.xz@g' \
-            -e 's@#deb http@deb http@g' \
-            -e 's@-rootfs.tar.xz@_full-rootfs.tar.xz@g' \
-            -e 's/.*sid main/#&/' \
-            -e 's/debian (container)/raspios \1/g' \
-            -e 's:debian-sid:raspios-buster:g' \
+            -e "s@(TUNA_LXC_IMAGE_MIRROR_REPO)=.*@\1=https://mirrors.bfsu.edu.cn/raspberry-pi-os-images/raspios_${raspios_var}_${ARCH_TYPE}/archive@" \
+            -e "s@(TUNA_LXC_IMAGE_MIRROR_REPO_02)=.*@\1=https://mirrors.tuna.tsinghua.edu.cn/raspberry-pi-os-images/raspios_${raspios_var}_${ARCH_TYPE}/archive@" \
+            -e 's@(TTIME)\}(root)fs.(tar.xz)@\1\}\2.\3@g' \
+            -e 's@#(deb http)@\1@g' \
+            -e "s@-(rootfs.tar.xz)@_${raspios_var}-\1@g" \
+            -e 's@.*sid main@#&@' \
+            -e 's@debian (container)@raspios \1@g' \
+            -e "s:debian-sid:raspios-${DISTRO_CODE}:g" \
             -e 's:Debian (GNU/Linux):Raspios \1:g')"
 }
 ############################
@@ -2015,57 +1962,6 @@ install_devuan_linux_distro() {
     #OLD_STABLE_VERSION=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/devuan/ | grep date | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
     OLD_STABLE_VERSION=ascii
     check_the_latest_distro_version
-}
-######################
-install_slackware_linux_distro() {
-    DISTRO_NAME='slackware'
-    TMOE_LINUX_CONTAINER_DISTRO='slackware'
-    create_container_edition_txt
-    [[ -e ${ROOTFS_DIR} ]] || mkdir -pv "${ROOTFS_DIR}"
-    cd ${ROOTFS_DIR}
-    case "${ARCH_TYPE}" in
-    amd64)
-        go_to_proot_management
-        if [ ! -e "slackware-current_amd64-rootfs.tar.xz" ]; then
-            git clone -b x64 --depth=1 "${AK2_GIT_URL}"/slackware_rootfs.git .SLACKWARE_AMD64_TEMP_FOLDER
-            #aria2c --console-log-level=warn --no-conf -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://cdn.tmoe.me/Tmoe-Debian-Tool/chroot/archive/slackware_amd64.tar.xz" || aria2c --console-log-level=warn --no-conf -x 16 -s 16 -k 1M -o "slackware-current-rootfs.tar.xz" "https://m.tmoe.me/down/share/Tmoe-linux/chroot/slackware_amd64.tar.xz"
-            cd .SLACKWARE_AMD64_TEMP_FOLDER
-            mv -f slackware_amd64.tar.xz ../slackware-current_amd64-rootfs.tar.xz
-            cd ..
-            rm -rf .SLACKWARE_AMD64_TEMP_FOLDER
-        fi
-        bash -c "$(sed -n p \
-            "${TMOE_SHARE_DIR}"/container/install |
-            sed -E \
-                -e 's/debian container/slackware container/g' \
-                -e 's:debian-sid:slackware-current:g' \
-                -e 's:debian/sid:slackware/current:g' \
-                -e 's:Debian (GNU/Linux):Slackware \1:g')"
-        ;;
-    arm64 | armhf)
-        NEW_TMOE_ARCH='armhf'
-        unset TMOE_QEMU_ARCH
-        create_tmoe_arch_file
-        ARCH_TYPE='armhf'
-        go_to_proot_management
-        #if [ ! -e "slackware-current_armhf-rootfs.tar.xz" ]; then
-        printf "%s\n" "检测到您当前使用的是${ARCH_TYPE}架构，将为您安装armhf版slackware容器"
-        SLACKWARE_ROOTFS_TUNA_REPO='https://mirrors.bfsu.edu.cn/slackwarearm/slackwarearm-devtools/minirootfs/roots'
-        LatestSlack="$(curl -L ${SLACKWARE_ROOTFS_TUNA_REPO}/ | grep 'tar.xz' | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2)"
-        #aria2c --console-log-level=warn --no-conf -x 5 -s 5 -k 1M -o "slackware-current_armhf-rootfs.tar.xz" "${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
-        #fi
-        THE_LATEST_SLACKWARE_URL="${SLACKWARE_ROOTFS_TUNA_REPO}/${LatestSlack}"
-        bash -c "$(sed -n p \
-            "${TMOE_SHARE_DIR}"/container/install |
-            sed -E \
-                -e "s@\${TUNA_LXC_IMAGE_MIRROR_REPO}.*rootfs.tar.xz@${THE_LATEST_SLACKWARE_URL}@g" \
-                -e 's/debian (container)/slackware \1/g' \
-                -e 's:debian-sid:slackware-current:g' \
-                -e 's:debian/sid:slackware/current:g' \
-                -e 's:Debian (GNU/Linux):Slackware \1:g')"
-        ;;
-    *) distro_does_not_support ;;
-    esac
 }
 #########################
 distro_does_not_support() {

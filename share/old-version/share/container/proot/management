@@ -1047,7 +1047,8 @@ normally_start_gnu_linux_distro() {
 
     if [[ $(command -v pulseaudio) && $(id -u) != 0 ]]; then
         pulseaudio --start --exit-idle-time=7200
-        pacmd load-module module-native-protocol-tcp auth-ip-acl='127.0.0.1;192.168.0.0/16;172.16.0.0/12' auth-anonymous=1 2>/dev/null
+        # auth-anonymous=0
+        pacmd load-module module-native-protocol-tcp auth-ip-acl='127.0.0.1;192.168.0.0/16;172.16.0.0/12' 2>/dev/null
     fi
     # case ${SYSTEMD_NSPAWN} in
     # true)
