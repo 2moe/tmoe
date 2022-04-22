@@ -121,9 +121,15 @@ check_container_name() {
         ;;
     nginx_*) add_user_to_group_inet nginx ;;
     node_*) add_user_to_group_inet node ;;
-    euler_dde*)
+    euler_gui-dde)
         dnf_install_passwd
         reset_vnc_passwd
+        printf "%s\n" "You can ${YELLOW}run ${GREEN}startvnc${RESET} to start vnc"
+        printf "%s\n" \
+            "cd ~" \
+            "startvnc" \
+            >${ENV_DIR}/entrypoint
+        chmod a+rx -v ${ENV_DIR}/entrypoint
         ;;
     euler_* | amazon_* | oracle_*) AUTO_CONFIGURE=false ;;
     *nogui*zsh) AUTO_CONFIGURE=true ;;
