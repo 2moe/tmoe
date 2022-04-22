@@ -129,6 +129,7 @@ check_container_name() {
         whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,\ntype stopvnc to stop it." 0 0
         printf "%s\n" "You can ${YELLOW}run ${GREEN}startvnc${RESET} to start vnc"
         ;;
+    cblmariner_*) echo "LANG=$LANG" >>~/.profile ;;
     euler_* | amazon_* | oracle_*) AUTO_CONFIGURE=false ;;
     *nogui*zsh) AUTO_CONFIGURE=true ;;
     *nogui* | code_web-*) AUTO_CONFIGURE=false ;;
