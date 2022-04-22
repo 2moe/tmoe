@@ -12,7 +12,7 @@ choose_which_gnu_linux_distro() {
     [[ ! -e ${CONFIG_FOLDER}/debootstrap_dir.txt ]] || rm -fv ${CONFIG_FOLDER}/debootstrap_dir.txt
     unset NODE01_ENABLED WEEKLY_BUILD_CONTAINER
     TITLE="CONTAINERS"
-    OPT_10="☁️  Server: openEuler,Oracle,Amazon"
+    OPT_10="☁️  Server: openEuler,Oracle,Amazon,Microsoft CBL-Mariner"
     choose_which_gnu_linux_distro_ja() {
         MENU="容器をお選びください"
         OPT_0="🌚 戻る"
@@ -40,7 +40,7 @@ choose_which_gnu_linux_distro() {
         OPT_7="🐉 Kali rolling:设计用于数字取证和渗透测试"
         OPT_8="🍊 Armbian:香蕉派,香橙派(预装xfce/cinnamon/budgie)"
         OPT_9="👒 Fedora:红帽社区版,新技术试验场"
-        OPT_10="☁️  服务器系统:华为欧拉(openEuler),甲骨文,亚马逊"
+        OPT_10="☁️  服务器系统:华为欧拉(openEuler),微软CBL-Mariner,甲骨文,亚马逊"
         OPT_11="🦎 Chroot专属:openSUSE, deepin"
         OPT_12="🍓 体验版:archcraft,树莓派,gentoo"
     }
@@ -154,17 +154,29 @@ choose_dde_or_nogui() {
     fi
 }
 cloud_server_distro_menu() {
-    MENU="Which distribution do you want to install?"
-    TITLE="CLOUD SERVER DISTROS"
-    OPT_0="🌚 Return to previous menu"
-    OPT_1="openEuler(arm64, x64)"
-    OPT_2="Oracle(arm64, x64)"
-    OPT_3="Amazon(arm64, x64)"
+    local MENU="Which distribution do you want to install?"
+    local TITLE="CLOUD SERVER DISTROS"
+    local OPT_0="🌚 Return to previous menu"
+    case ${TMOE_MENU_LANG} in
+    zh_*UTF-8)
+        local OPT_1="openEuler(arm64,x64,华为欧拉开源版)"
+        local OPT_2="Microsoft CBL-Mariner(为azure优化,用于微软的云基础设施和边缘产品及服务)"
+        local OPT_3="Oracle甲骨文(arm64, x64)"
+        local OPT_4="Amazon亚马逊(arm64, x64)"
+        ;;
+    *)
+        local OPT_1="openEuler(arm64, x64)"
+        local OPT_2="Microsoft CBL-Mariner(for Azure 1P services and edge appliances)"
+        local OPT_3="Oracle(arm64, x64)"
+        local OPT_4="Amazon(arm64, x64)"
+        ;;
+    esac
     DESKTOP="base"
     SELECTED_GNU_LINUX=$(whiptail --title "$TITLE" --menu "$MENU" 0 50 0 \
         "1" "$OPT_1" \
         "2" "$OPT_2" \
         "3" "$OPT_3" \
+        "4" "$OPT_4" \
         "0" "$OPT_0" \
         3>&1 1>&2 2>&3)
     #"99" "Microsoft CBL-Mariner(x64,为azure优化,用于微软的云基础设施和边缘产品)" \
@@ -178,8 +190,9 @@ cloud_server_distro_menu() {
         DISTRO_NAME="euler"
         choose_dde_or_nogui
         ;;
-    2) DISTRO_NAME="oracle" ;;
-    3) DISTRO_NAME="amazon" ;;
+    2) DISTRO_NAME="cblmariner" ;;
+    3) DISTRO_NAME="oracle" ;;
+    4) DISTRO_NAME="amazon" ;;
     esac
     set_service_container_env
     press_enter_to_return

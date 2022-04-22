@@ -835,7 +835,7 @@ change_the_password() {
 do_you_want_to_set_it_as_the_default_user() {
     case ${TMOE_LANG} in
     zh_*UTF-8)
-        if (whiptail --title "DEFAULT USER" --yes-button "否" --no-button "是" --yesno "Do you want to set ${USER_NAME} as the default user?\n请问您是否想要将${USER_NAME}设置为默认用户?\n重启容器后生效" 0 0); then
+        if (whiptail --title "DEFAULT USER" --yes-button "No" --no-button "Yes" --yesno "Do you want to set ${USER_NAME} as the default user?\n请问您是否想要将${USER_NAME}设置为默认用户?\n重启容器后生效" 0 0); then
             printf ""
         else
             set_it_as_the_default_user
