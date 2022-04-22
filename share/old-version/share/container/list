@@ -12,6 +12,7 @@ choose_which_gnu_linux_distro() {
     [[ ! -e ${CONFIG_FOLDER}/debootstrap_dir.txt ]] || rm -fv ${CONFIG_FOLDER}/debootstrap_dir.txt
     unset NODE01_ENABLED WEEKLY_BUILD_CONTAINER
     TITLE="CONTAINERS"
+    OPT_10="☁️  Server: openEuler,Oracle,Amazon"
     choose_which_gnu_linux_distro_ja() {
         MENU="容器をお選びください"
         OPT_0="🌚 戻る"
@@ -20,12 +21,12 @@ choose_which_gnu_linux_distro() {
         OPT_3="🍥 Debian は オペレーティングシステムのフリーなディストリビューションです"
         OPT_4="🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである"
         OPT_5="🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている"
-        OPT_6="🍱 CentOS,alpine,mint,rocky & puppy"
+        OPT_6="🍱 Alpine,mint,rocky & puppy"
         OPT_7="🐉 Kali rolling:ペネトレーションテストを主な目的としている"
         OPT_8="🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです"
         OPT_9="👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro"
-        OPT_10="🦎 Chroot専属する:opensuse"
-        OPT_11="🍓 体験版,サポートされなくなりました:RaspiOS,Gentoo"
+        OPT_11="🦎 Chroot専属する:openSUSE"
+        OPT_12="🍓 体験版:RaspiOS,Gentoo"
     }
     choose_which_gnu_linux_distro_zh() {
         MENU="您想要安装哪个容器?"
@@ -35,12 +36,13 @@ choose_which_gnu_linux_distro() {
         OPT_3="🍥 Debian:致力于自由"
         OPT_4="🍛 Ubuntu:我的存在是因為大家的存在"
         OPT_5="🌉 Arch:系统设计以KISS为总体指导原则"
-        OPT_6="🍱 CentOS,alpine,mint,rocky & puppy"
+        OPT_6="🍱 Alpine,mint,rocky,solus & puppy"
         OPT_7="🐉 Kali rolling:设计用于数字取证和渗透测试"
         OPT_8="🍊 Armbian:香蕉派,香橙派(预装xfce/cinnamon/budgie)"
         OPT_9="👒 Fedora:红帽社区版,新技术试验场"
-        OPT_10="🦎 Chroot专属:opensuse"
-        OPT_11="🍓 Experimental(体验版):archcraft,树莓派"
+        OPT_10="☁️  服务器系统:华为欧拉(openEuler),甲骨文,亚马逊"
+        OPT_11="🦎 Chroot专属:openSUSE, deepin"
+        OPT_12="🍓 体验版:archcraft,树莓派,gentoo"
     }
     choose_which_gnu_linux_distro_en() {
         MENU="Which container do you want to install?"
@@ -50,12 +52,12 @@ choose_which_gnu_linux_distro() {
         OPT_3="🍥 Debian is a distro composed of free and open-source software"
         OPT_4="🍛 Ubuntu is the modern, open source OS."
         OPT_5="🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility"
-        OPT_6="🍱 CentOS,alpine,mint,rocky & puppy"
+        OPT_6="🍱 Alpine,mint,rocky & puppy"
         OPT_7="🐉 Kali:designed for digital forensics and penetration testing"
         OPT_8="🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)"
         OPT_9="👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
-        OPT_10="🦎 Chroot exclusive:opensuse"
-        OPT_11="🍓 Experimental,no longer maintained:RaspiOS,Gentoo"
+        OPT_11="🦎 Chroot exclusive:openSUSE,deepin"
+        OPT_12="🍓 Experimental:RaspiOS,Gentoo,Archcraft"
     }
     choose_which_gnu_linux_distro_menu() {
         SELECTED_GNU_LINUX=$(whiptail --title "${TITLE}" --menu "${MENU}" 0 50 0 \
@@ -70,6 +72,7 @@ choose_which_gnu_linux_distro() {
             "9" "$OPT_9" \
             "10" "$OPT_10" \
             "11" "$OPT_11" \
+            "12" "$OPT_12" \
             "0" "$OPT_0" \
             3>&1 1>&2 2>&3)
     }
@@ -103,8 +106,9 @@ choose_which_gnu_linux_distro() {
         ;;
     8) install_armbian_linux_distro ;;
     9) install_fedora_gnu_linux_distro ;;
-    10) install_chroot_exclusive_containers ;;
-    11) install_alpha_containers ;;
+    10) cloud_server_distro_menu ;;
+    11) install_chroot_exclusive_containers ;;
+    12) install_alpha_containers ;;
     esac
     ####################
     exit 0
@@ -130,8 +134,8 @@ set_service_container_env_02() {
 }
 set_service_container_env() {
     case ${DESKTOP} in
-    alpine) set_service_container_env_02 ;;
-    latest | *) set_service_container_env_01 ;;
+    alpine | dde) set_service_container_env_02 ;;
+    latest | base | *) set_service_container_env_01 ;;
     esac
 }
 #####################
@@ -141,6 +145,45 @@ choose_latest_or_alpine() {
     else
         DESKTOP="alpine"
     fi
+}
+choose_dde_or_nogui() {
+    if (whiptail --title "TAGS" --yes-button "dde" --no-button "nogui" --yesno "dde(deepin desktop environment).\nIn general, nogui is more streamlined." 8 50); then
+        DESKTOP="dde"
+    else
+        DESKTOP="base"
+    fi
+}
+cloud_server_distro_menu() {
+    MENU="Which distribution do you want to install?"
+    TITLE="CLOUD SERVER DISTROS"
+    OPT_0="🌚 Return to previous menu"
+    OPT_1="openEuler(arm64, x64)"
+    OPT_2="Oracle(arm64, x64)"
+    OPT_3="Amazon(arm64, x64)"
+    DESKTOP="base"
+    SELECTED_GNU_LINUX=$(whiptail --title "$TITLE" --menu "$MENU" 0 50 0 \
+        "1" "$OPT_1" \
+        "2" "$OPT_2" \
+        "3" "$OPT_3" \
+        "0" "$OPT_0" \
+        3>&1 1>&2 2>&3)
+    #"99" "Microsoft CBL-Mariner(x64,为azure优化,用于微软的云基础设施和边缘产品)" \
+    case ${ARCH_TYPE} in
+    arm64 | amd64) WEEKLY_BUILD_CONTAINER=true ;;
+    *) distro_does_not_support ;;
+    esac
+    case "${SELECTED_GNU_LINUX}" in
+    0 | "") choose_which_gnu_linux_distro ;;
+    1)
+        DISTRO_NAME="euler"
+        choose_dde_or_nogui
+        ;;
+    2) DISTRO_NAME="oracle" ;;
+    3) DISTRO_NAME="amazon" ;;
+    esac
+    set_service_container_env
+    press_enter_to_return
+    install_tmoe_moonthly_build_edition
 }
 install_tmoe_moonthly_build_edition() {
     choose_service_en() {
@@ -1051,27 +1094,22 @@ install_alpha_containers() {
     TITLE="Maintenance has ceased"
     install_alpha_containers_ja() {
         MENU="天萌マネージャーの開発者は、次のコンテナーを維持しなくなりました"
-        OPT_1="ラズベリーパイ OS buster"
+        OPT_1="ラズベリーパイ OS"
         OPT_2="Gentoo(arm64,armhf,x86,x64)"
         OPT_3="DevuanはDebian から派生したLinuxディストリビューションである"
-        OPT_4="Amazon(arm64, x64)"
-        OPT_5="Oracle(arm64, x64)"
-        OPT_6="VMware photon OS(arm64,x64,optimized for cloud-native apps)"
-        OPT_7="Intel clear linux(x64)"
-        # OPT_8="Slackware(armhf, x64)"
-        OPT_8="archcraft(x64)"
+        OPT_4="VMware photon OS(arm64,x64,optimized for cloud-native apps)"
+        OPT_5="Intel clear linux(x64)"
+        OPT_6="archcraft(x64)"
         OPT_0="🌚 戻る"
     }
     install_alpha_containers_zh() {
         MENU="虽然您仍可以安装基础容器,但Tmoe-linux开发者已不再对以下容器进行维护"
-        OPT_1="Raspberry Pi OS 樹莓派 buster"
+        OPT_1="Raspberry Pi OS 樹莓派"
         OPT_2="Gentoo(arm64,armhf,x86,x64,追求极限配置和极高自由)"
         OPT_3="Devuan(不使用systemd,基于debian)"
-        OPT_4="Amazon(arm64,x64,亚马逊云服务器系统)"
-        OPT_5="Oracle(arm64,x64,甲骨文云服务器系统)"
-        OPT_6="VMware photon OS(arm64,x64,为云原生应用优化)"
-        OPT_7="Intel clear linux(x64,专注于服务器的性能优化)"
-        OPT_8="archcraft(x64, 使用了轻量级的 bspwm & openbox)"
+        OPT_4="VMware photon OS(arm64,x64,为云原生应用优化)"
+        OPT_5="Intel clear linux(x64,专注于服务器的性能优化)"
+        OPT_6="archcraft(x64, 使用了轻量级的 bspwm & openbox)"
         OPT_0="🌚 返回上级菜单"
         # OPT_8="Slackware(armhf, x64)"
         #	"9" "SteamOS(x64,蒸汽平台开发商Valve发行的游戏系统,基于debian)" \
@@ -1079,14 +1117,12 @@ install_alpha_containers() {
     }
     install_alpha_containers_en() {
         MENU="The developer of Tmoe-linux no longer maintain the following containers."
-        OPT_1="Raspberry Pi OS buster"
+        OPT_1="Raspberry Pi OS"
         OPT_2="Gentoo(arm64,armhf,x86,x64)"
         OPT_3="Devuan is a fork of Debian that uses sysvinit or OpenRC instead of systemd"
-        OPT_4="Amazon(arm64, x64)"
-        OPT_5="Oracle(arm64, x64)"
-        OPT_6="VMware photon OS(arm64,x64,optimized for cloud-native apps)"
-        OPT_7="Intel clear linux(x64)"
-        OPT_8="archcraft(x64, it uses lightweight bspwm & openbox)"
+        OPT_4="VMware photon OS(arm64,x64,optimized for cloud-native apps)"
+        OPT_5="Intel clear linux(x64)"
+        OPT_6="archcraft(x64, it uses lightweight bspwm & openbox)"
         OPT_0="🌚 Return to previous menu"
     }
 
@@ -1099,15 +1135,11 @@ install_alpha_containers() {
                 "4" "${OPT_4}" \
                 "5" "${OPT_5}" \
                 "6" "${OPT_6}" \
-                "7" "${OPT_7}" \
-                "8" "${OPT_8}" \
                 "0" "${OPT_0}" \
                 3>&1 1>&2 2>&3
         )
     }
-    #"999" "Huawei euler OS(arm64,x64)"
     #SteamOS(x64,Valve steam os,based on Debian GNU/Linux)
-    #"99" "Microsoft CBL-Mariner(x64,为azure优化,用于微软的云基础设施和边缘产品和服务)" \
     ##############################
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8) install_alpha_containers_zh ;;
@@ -1120,11 +1152,9 @@ install_alpha_containers() {
     1) install_raspios_linux_distro ;;
     2) install_gentoo_linux_distro ;;
     3) install_devuan_linux_distro ;;
-    4) install_amazon_linux_distro ;;
-    5) install_oracle_linux_distro ;;
-    6) install_photon_linux_distro ;;
-    7) install_clear_linux_distro ;;
-    9) install_archcraft_distro ;;
+    4) install_photon_linux_distro ;;
+    5) install_clear_linux_distro ;;
+    6) install_archcraft_distro ;;
     esac
     # 8) install_slackware_linux_distro ;;
     #999) install_euler_linux_distro ;;
@@ -1235,42 +1265,6 @@ install_photon_linux_distro() {
     *) distro_does_not_support ;;
     esac
 }
-install_amazon_linux_distro() {
-    DISTRO_NAME='amazon'
-    DISTRO_CODE='2'
-    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-    case "${ARCH_TYPE}" in
-    'amd64' | 'arm64')
-        create_container_edition_txt
-        create_container_edition_txt_02
-        go_to_proot_management
-        git_clone_linux_distro_rootfs_01
-        ;;
-    *) distro_does_not_support ;;
-    esac
-}
-install_oracle_linux_distro() {
-    DISTRO_NAME='oracle'
-    DISTRO_CODE=8
-    TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-    case "${ARCH_TYPE}" in
-    'arm64')
-        create_container_edition_txt
-        go_to_proot_management
-        git_clone_linux_distro_rootfs_01
-        ;;
-    amd64)
-        CLOUD_ROOTFS=true
-        DISTRO_CODE=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/oracle/ | grep date | sed -E 's@<a (href)@\n\1@g' | awk -F 'href=' '{print $2}' | cut -d '"' -f 2 | tail -n 1 | cut -d '/' -f 1)
-        TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
-        create_container_edition_txt
-        go_to_proot_management
-        linux_distro_common_model_04
-        ;;
-    *) distro_does_not_support ;;
-    esac
-}
-####################
 git_clone_linux_distro_rootfs_01() {
     # set -x
     mkdir -pv ${ROOTFS_DIR}
@@ -1339,7 +1333,7 @@ install_beta_containers() {
     CLOUD_ROOTFS=false
     install_beta_containers_zh() {
         BETA_SYSTEM=$(
-            whiptail --title "Beta features" --menu "公测版容器将带给您别样的惊喜\nBeta container, endless fun." 0 55 0 \
+            whiptail --title "CONTAINERS" --menu "Some interesting containers" 0 55 0 \
                 "1" "🏔️ Alpine(基于musl libc和busybox,超精简系统)" \
                 "2" "CentOS(基于红帽的社区企业操作系统)" \
                 "3" "Rocky(arm64,x64,enterprise-grade, production-ready)" \
@@ -1354,7 +1348,7 @@ install_beta_containers() {
     }
     install_beta_containers_ja() {
         BETA_SYSTEM=$(
-            whiptail --title "Beta features" --menu "Beta container, endless fun." 0 55 0 \
+            whiptail --title "CONTAINERS" --menu "Some interesting containers" 0 55 0 \
                 "1" "🏔️ Alpine:セキュリティ・シンプルさ・リソース効率を重視するパワーユーザー向けに設計されている" \
                 "2" "CentOS:RHELと機能的に互換性があることを目指したフリーのLinuxディストリビューションである" \
                 "3" "Rocky(arm64,x64, enterprise-grade, production-ready)" \
@@ -1369,7 +1363,7 @@ install_beta_containers() {
     }
     install_beta_containers_en() {
         BETA_SYSTEM=$(
-            whiptail --title "Beta features" --menu "Beta container, endless fun." 0 55 0 \
+            whiptail --title "CONTAINERS" --menu "Some interesting containers" 0 55 0 \
                 "1" "🏔️ Alpine:Small. Simple. Secure. Alpine Linux is a security-oriented, lightweight Linux distribution based on musl libc and busybox" \
                 "2" "CentOS is a community-driven free software effort focused on delivering a robust open source ecosystem around a Linux platform" \
                 "3" "Rocky(arm64,x64, enterprise-grade, production-ready)" \

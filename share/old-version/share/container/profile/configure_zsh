@@ -104,6 +104,13 @@ add_user_to_group_inet() {
         usermod -aG aid_inet "$user_name" 2>/dev/null
     fi
 }
+dnf_install_passwd() {
+    if [[ -z $(command -v chpasswd) ]]; then
+        printf "%s\n" \
+            "${GREEN}dnf ${YELLOW}install -y ${BLUE}passwd${RESET}"
+        dnf install -y passwd
+    fi
+}
 check_container_name() {
     CONTAINER_NAME=$(grep CONTAINER_NAME ${CONTAINER_TXT} | awk -F '=' '{print $2}')
     AUTO_CONFIGURE=false
@@ -114,6 +121,11 @@ check_container_name() {
         ;;
     nginx_*) add_user_to_group_inet nginx ;;
     node_*) add_user_to_group_inet node ;;
+    euler_dde*)
+        dnf_install_passwd
+        reset_vnc_passwd
+        ;;
+    euler_* | amazon_* | oracle_*) AUTO_CONFIGURE=false ;;
     *nogui*zsh) AUTO_CONFIGURE=true ;;
     *nogui* | code_web-*) AUTO_CONFIGURE=false ;;
     *) AUTO_CONFIGURE=true ;;
@@ -193,9 +205,13 @@ git_pull_rebase_tmoe() {
     git reset --hard origin/master
     git pull --rebase --stat origin master --allow-unrelated-histories || git rebase --skip
 }
+reset_vnc_passwd() {
+    chmod a+rx /usr/local/bin/start*
+    ${TMOE_TOOL_DIR}/app/tool -passwd
+    ${TMOE_TOOL_DIR}/app/tool --choose-vnc-port
+}
 set_your_vnc_passwd() {
     # auto-update: false
-
     cd ${TMOE_GIT_DIR}
 
     if (whiptail --title "Update" --yesno "Do you want to update tmoe?" 0 0); then
@@ -215,12 +231,10 @@ set_your_vnc_passwd() {
         *) git_pull_rebase_tmoe ;;
         esac
     fi
-
     mkdir -pv /usr/local/bin
     cp -fv ${TMOE_TOOL_DIR}/gui/startvnc ${TMOE_TOOL_DIR}/gui/stopvnc ${TMOE_TOOL_DIR}/gui/startx11vnc ${TMOE_TOOL_DIR}/gui/startxsdl ${TMOE_TOOL_DIR}/gui/tigervnc ${TMOE_TOOL_DIR}/gui/tightvnc /usr/local/bin
-    chmod a+rx /usr/local/bin/start*
-    ${TMOE_TOOL_DIR}/app/tool -passwd
-    ${TMOE_TOOL_DIR}/app/tool --choose-vnc-port
+    reset_vnc_passwd
+
     if [[ $(command -v apt-get) ]]; then
         whiptail --title "VNC COMMANDS" --msgbox "You can type startvnc to start vncserver,type stopvnc to stop it.\n您可以使用以下任意一条命令来启动vnc或x: \nstartvnc,tightvnc,tigervnc,startx11vnc,startxsdl,novnc,输入stopvnc停止" 12 55
     else
