@@ -191,14 +191,14 @@ container_mount_sd_conf() {
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8)
         local _Title="共享 sd 目录"
-        local _Description="将宿主的内置sd 挂载至容器内部的/media/sd\n当选择第三 或 第四个时，将共享（挂载）整个内置sd。\n当为第二个（None）时，MOUNT_SD 将被设为 false，即不挂载sd。\n请注意：这是全局配置，如需单独配置，请在各自的容器菜单里进行选择。"
-        local OPT_2="None（禁用共享）"
+        local _Description="将宿主的内置 sd 挂载至容器内部的/media/sd\n当选择第三 或 第四个时,将共享（挂载）整个内置sd\n当为第二个（None）时,MOUNT_SD 将被设为 false,即不挂载sd\n请注意：这是全局配置,如需单独配置,请在各自的容器菜单里进行选择\n除非您有充足的理由,否则不建议您挂载整个内置存储/sd"
+        local OPT_2="None(禁用共享/挂载)"
         local OPT_8="自定义路径"
         local OPT_9="手动编辑"
         ;;
     *)
         local _Title="Shared directory: sd"
-        local _Description="Mount the host\'s sd dir to /media/sd in the container.\nNote:it is a global configuration, for independent conf, please select it in the respective container menu."
+        local _Description="Mount the host\'s sd dir to /media/sd in the container.\nNote:it is a global configuration, for independent conf, please select it in the respective container menu.\nIt is not recommended that you mount the entire internal storage/sd."
         local OPT_2="None (Disable sharing)"
         local OPT_8="customize"
         local OPT_9="edit manually"

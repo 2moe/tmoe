@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 ########################
 locale_gen_or_choose_container_locale() {
-    case ${SET_TMOE_LOCALE} in
-    true) TMOE_LOCALE_GEN=false ;;
-    *)
-        if (whiptail --title "CONTAINER OR HOST" --yes-button "set default locale" --no-button "locale-gen" --yesno "Do you want to set the default locale or generate the localhost system locale?♪(^∇^*) " 8 60); then
-            TMOE_LOCALE_GEN=false
-        else
-            TMOE_LOCALE_GEN=true
-        fi
-        ;;
-    esac
+    # case ${SET_TMOE_LOCALE} in
+    # true) TMOE_LOCALE_GEN=false ;;
+    # *)
+    #     if (whiptail --title "CONTAINER OR HOST" --yes-button "set default locale" --no-button "locale-gen" --yesno "Do you want to set the default locale or generate the localhost system locale?♪(^∇^*) " 8 60); then
+    #         TMOE_LOCALE_GEN=false
+    #     else
+    #         TMOE_LOCALE_GEN=true
+    #     fi
+    #     ;;
+    # esac
+    TMOE_LOCALE_GEN=false
 }
 ###################
 tmoe_locale_menu() {

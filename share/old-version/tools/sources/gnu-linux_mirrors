@@ -397,16 +397,16 @@ tmoe_sources_list_manager() {
             "3" "worldwide mirror sites:全球镜像站" \
             "4" "ping(镜像站延迟测试)" \
             "5" "speed(镜像站下载速度测试)" \
-            "6" "+ppa:(🍥debian添加ubuntu ppa源)" \
-            "7" "restore to default(还原默认源)" \
-            "8" "edit list manually(手动编辑)" \
-            "9" "${EXTRA_SOURCE}" \
-            "10" "FAQ(常见问题)" \
-            "11" "http/https" \
-            "12" "delete invalid rows(去除无效行)" \
-            "13" "trust(强制信任软件源)" \
+            "6" "restore to default(还原默认源)" \
+            "7" "edit list manually(手动编辑)" \
+            "8" "${EXTRA_SOURCE}" \
+            "9" "FAQ(常见问题)" \
+            "10" "http/https" \
+            "11" "delete invalid rows(去除无效行)" \
+            "12" "trust(强制信任软件源)" \
             "0" "Back 返回" \
             3>&1 1>&2 2>&3
+        # "6" "+ppa:(🍥debian添加ubuntu ppa源)" \
     )
     ########################
     case "${SOURCES_LIST}" in
@@ -421,14 +421,14 @@ tmoe_sources_list_manager() {
     3) worldwide_mirror_station ;;
     4) ping_mirror_sources_list ;;
     5) mirror_sources_station_download_speed_test ;;
-    6) tmoe_debian_add_ubuntu_ppa_source ;;
-    7) restore_default_sources_list ;;
-    8) edit_sources_list_manually ;;
-    9) add_extra_source_list ;;
-    10) sources_list_faq ;;
-    11) switch_sources_http_and_https ;;
-    12) delete_sources_list_invalid_rows ;;
-    13) mandatory_trust_software_sources ;;
+    # 6) tmoe_debian_add_ubuntu_ppa_source ;;
+    6) restore_default_sources_list ;;
+    7) edit_sources_list_manually ;;
+    8) add_extra_source_list ;;
+    9) sources_list_faq ;;
+    10) switch_sources_http_and_https ;;
+    11) delete_sources_list_invalid_rows ;;
+    12) mandatory_trust_software_sources ;;
     esac
     ##########
     press_enter_to_return
