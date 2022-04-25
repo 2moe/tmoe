@@ -131,6 +131,7 @@ check_container_name() {
         ;;
     cblmariner_*) echo "LANG=$LANG" >>~/.profile ;;
     euler_* | amazon_* | oracle_*) AUTO_CONFIGURE=false ;;
+    ubuntu_nogui-kinetic) AUTO_CONFIGURE=true ;;
     *nogui*zsh) AUTO_CONFIGURE=true ;;
     *nogui* | code_web-*) AUTO_CONFIGURE=false ;;
     *) AUTO_CONFIGURE=true ;;

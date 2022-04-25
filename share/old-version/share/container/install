@@ -1313,9 +1313,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    i*86 | x86_64 | amd64) sed -i 's@ubuntu-ports/@ubuntu/@g' /etc/apt/sources.list ;;
 	    esac
 		VERSION_CODENAME=$(grep 'VERSION_CODENAME' /etc/os-release | awk -F'=' '{print $2}')
-	    [[ -z ${VERSION_CODENAME} ]] || sed -i "s@focal@${VERSION_CODENAME}@g" /etc/apt/sources.list
-
-	}
+        [[ -z ${VERSION_CODENAME} ]] || sed -i "s@focal@${VERSION_CODENAME}@g" /etc/apt/sources.list
+    }
 	#########################
 	modify_mint_source_list() {
 	    sed -i 's@^@#&@g' ${SOURCE_LIST}.bak 2>/dev/null

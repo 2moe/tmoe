@@ -1125,7 +1125,7 @@ install_typora() {
     case "${ARCH_TYPE}" in
     "amd64" | "arm64")
         LATEST_DEB_REPO='https://packages.tmoe.me/deb/pool/non-free/t/typora/'
-        LATEST_DEB_VERSION="typora_0.11.18_${ARCH_TYPE}.deb"
+        LATEST_DEB_VERSION="typora_0.11.18-1_${ARCH_TYPE}.deb"
         install_deb_file_common_model_01
 
         sed -E \

@@ -123,7 +123,7 @@ install_yozo_office() {
         THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_DEB_FILE}" | sed 's@.deb@@' | sed "s@${GREP_NAME}-@@" | sed "s@${GREP_NAME}_@@")
         ;;
     arm64)
-        THE_LATEST_DEB_FILE="yozo-office_8.0.1322.191zh.s1_arm64.deb"
+        THE_LATEST_DEB_FILE="yozo-office_8.0.1322.191ZH.SY01.S1_arm64.deb"
         THE_LATEST_DEB_VERSION="8.0.1322.191zh.s1_arm64"
         ;;
     *) ;;

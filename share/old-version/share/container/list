@@ -1170,7 +1170,6 @@ install_alpha_containers() {
     6) install_archcraft_distro ;;
     esac
     # 8) install_slackware_linux_distro ;;
-    #999) install_euler_linux_distro ;;
     ###########################
     exit 0
 }
@@ -1251,19 +1250,6 @@ install_solus_distro() {
     DISTRO_NAME='solus'
     DISTRO_CODE='4.2'
     git_clone_amd64_distro_from_gitee
-}
-install_euler_linux_distro() {
-    DISTRO_NAME='euler'
-    unset DISTRO_CODE
-    TMOE_LINUX_CONTAINER_DISTRO='euler'
-    case "${ARCH_TYPE}" in
-    'amd64' | 'arm64')
-        create_container_edition_txt
-        go_to_proot_management
-        git_clone_linux_distro_rootfs_01
-        ;;
-    *) distro_does_not_support ;;
-    esac
 }
 install_photon_linux_distro() {
     DISTRO_NAME='photon'
@@ -1431,46 +1417,43 @@ install_ubuntu_gnu_linux_distro() {
     RETURN_TO_WHERE='install_ubuntu_gnu_linux_distro'
     COMPATIBILITY_MODE=false
     TITLE="Which version do you want to install?"
+    OPT_1="22.10(dev) Kinetic Kudu"
+    OPT_2="22.04(LTS,stable) Jammy Jellyfish"
+    OPT_3="🐒 21.10(oldstable) Impish Indri"
+    # OPT_3="🦛 21.04 Hirsute Hippo"
+    OPT_5="18.04(LTS) Bionic Beaver"
+    OPT_6="🐿️ 16.04(LTS) Xenial Xerus"
     install_ubuntu_gnu_linux_distro_zh() {
-        MENU="2022至2027年的长期支持版为jammy 22.04(2022年4月正式发布)\n设x=当前年份,若x>=2023,则请手动输入版本代号"
-        OPT_1="22.04(LTS) 果酱水母 Jammy Jellyfish"
-        OPT_2="🐒 21.10 頑皮大狐猴 Impish Indri"
+        MENU="2022至2027年的长期支持版为jammy 22.04(2022年4月正式发布)\n设x=当前年份,若x>=2024,则请手动输入版本代号"
+        OPT_1="22.10(dev) 動力羚羊 Kinetic Kudu"
+        OPT_2="22.04(LTS,stable) 果酱水母 Jammy Jellyfish"
+        OPT_3="🐒 21.10(oldstable) 頑皮大狐猴 Impish Indri"
         # OPT_3="🦛 21.04 多毛河馬 Hirsute Hippo"
-        OPT_3="🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa"
-        OPT_4="18.04(LTS)仿生海狸 Bionic Beaver"
-        OPT_5="🐿️ 16.04(LTS)好客的非洲地松鼠 Xenial Xerus "
-        OPT_6="Compatibility mode 兼容模式(仅安装)"
-        OPT_7="Custom code手动输入版本代号"
-        OPT_8="使用debootstrap手动构建"
-        OPT_9="Latest(自動檢測22.10)"
+        OPT_4="🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa"
+        OPT_5="18.04(LTS)仿生海狸 Bionic Beaver"
+        OPT_6="🐿️ 16.04(LTS)好客的非洲地松鼠 Xenial Xerus "
+        OPT_7="Compatibility mode 兼容模式(仅安装)"
+        OPT_8="Custom code手动输入版本代号"
+        OPT_9="使用debootstrap手动构建"
+        OPT_10="Latest(自動檢測23.04)"
         OPT_0="🌚 Return to previous menu 返回上级菜单"
     }
     install_ubuntu_gnu_linux_distro_ja() {
-        MENU="x =現在の年とします、x> = 2023の場合は、コードをカスタマイズしてください"
-        OPT_1="22.04(LTS) Jammy Jellyfish"
-        OPT_2="🐒 21.10 Impish Indri"
-        # OPT_3="🦛 21.04 Hirsute Hippo"
-        OPT_3="🐱 20.04(LTS) Focal Fossa注目を集めるフォッサ"
-        OPT_4="18.04(LTS) Bionic Beaver"
-        OPT_5="🐿️ 16.04(LTS) Xenial Xerus"
-        OPT_6="互換モード"
-        OPT_7="カスタムコード"
-        OPT_8="debootstrapを使用して手動でビルドする"
-        OPT_9="Latest(最新バージョンを自動的に検出)"
+        MENU="x =現在の年とします、x> = 2024の場合は、コードをカスタマイズしてください"
+        OPT_4="🐱 20.04(LTS) Focal Fossa注目を集めるフォッサ"
+        OPT_7="互換モード"
+        OPT_8="カスタムコード"
+        OPT_9="debootstrapを使用して手動でビルドする"
+        OPT_10="Latest(最新バージョンを自動的に検出)"
         OPT_0="🌚 戻る"
     }
     install_ubuntu_gnu_linux_distro_en() {
-        MENU="The long-term support version between 2022 and 2027 is jammy(22.04).\nLet x = current year, if x>=2023,then customize the version code"
-        OPT_1="22.04(LTS) Jammy Jellyfish"
-        OPT_2="🐒 21.10 Impish Indri"
-        # OPT_3="🦛 21.04 Hirsute Hippo"
-        OPT_3="🐱 20.04(LTS)Focal Fossa"
-        OPT_4="18.04(LTS)Bionic Beaver"
-        OPT_5="🐿️ 16.04(LTS)Xenial Xerus"
-        OPT_6="Compatibility mode"
-        OPT_7="Custom code"
-        OPT_8="Manually build"
-        OPT_9="Latest"
+        MENU="The long-term support version between 2022 and 2027 is jammy(22.04).\nLet x = current year, if x>=2024,then customize the version code"
+        OPT_4="🐱 20.04(LTS)Focal Fossa"
+        OPT_7="Compatibility mode"
+        OPT_8="Custom code"
+        OPT_9="Manually build"
+        OPT_10="Latest"
         OPT_0="🌚 Return to previous menu"
     }
     install_ubuntu_gnu_linux_distro_menu() {
@@ -1487,6 +1470,7 @@ install_ubuntu_gnu_linux_distro() {
                 "7" "${OPT_7}" \
                 "8" "${OPT_8}" \
                 "9" "${OPT_9}" \
+                "10" "${OPT_10}" \
                 "0" "${OPT_0}" \
                 3>&1 1>&2 2>&3
         )
@@ -1502,22 +1486,46 @@ install_ubuntu_gnu_linux_distro() {
     ##############################
     case "${BETA_SYSTEM}" in
     0 | "") choose_which_gnu_linux_distro ;;
-    1) DISTRO_CODE='jammy' ;;
-    2) DISTRO_CODE='impish' ;;
+    1) DISTRO_CODE="kinetic" ;;
+    2) DISTRO_CODE='jammy' ;;
+    3) DISTRO_CODE='impish' ;;
     # 3) DISTRO_CODE='hirsute' ;;
-    3) DISTRO_CODE='focal' ;;
-    4) DISTRO_CODE='bionic' ;;
-    5) DISTRO_CODE='xenial' ;;
-    6)
+    4) DISTRO_CODE='focal' ;;
+    5) DISTRO_CODE='bionic' ;;
+    6) DISTRO_CODE='xenial' ;;
+    7)
         COMPATIBILITY_MODE=true
         custom_ubuntu_version
         ;;
-    7) custom_ubuntu_version ;;
-    8) debootstrap_ubuntu_distro ;;
-    9) check_the_latest_ubuntu_version ;;
+    8) custom_ubuntu_version ;;
+    9) debootstrap_ubuntu_distro ;;
+    10) check_the_latest_ubuntu_version ;;
     esac
     ######################
     TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
+
+    case ${DISTRO_CODE} in
+    kinetic)
+        local Current_day
+        Current_day=$(date -u +%Y%m%d)
+        if ((Current_day <= 20220515)); then
+            case "${ARCH_TYPE}" in
+            amd64 | arm64 | armhf) ;;
+            *) distro_does_not_support ;;
+            esac
+            WEEKLY_BUILD_CONTAINER=true
+            DESKTOP="kinetic"
+            # DISTRO_CODE="${DESKTOP}"
+            DISTRO_NAME_02="ubuntu-dev"
+            NODE01_ENABLED=false
+            create_container_edition_txt
+            create_container_edition_txt_02
+            go_to_proot_management
+            press_enter_to_return
+            install_ubuntu_gnu_linux_distro
+        fi
+        ;;
+    esac
     create_container_edition_txt
     go_to_proot_management
     ####################
