@@ -1417,7 +1417,7 @@ install_ubuntu_gnu_linux_distro() {
     RETURN_TO_WHERE='install_ubuntu_gnu_linux_distro'
     COMPATIBILITY_MODE=false
     TITLE="Which version do you want to install?"
-    OPT_1="22.10(dev) Kinetic Kudu"
+    OPT_1="🐐 22.10(dev) Kinetic Kudu"
     OPT_2="22.04(LTS,stable) Jammy Jellyfish"
     OPT_3="🐒 21.10(oldstable) Impish Indri"
     # OPT_3="🦛 21.04 Hirsute Hippo"
@@ -1425,7 +1425,7 @@ install_ubuntu_gnu_linux_distro() {
     OPT_6="🐿️ 16.04(LTS) Xenial Xerus"
     install_ubuntu_gnu_linux_distro_zh() {
         MENU="2022至2027年的长期支持版为jammy 22.04(2022年4月正式发布)\n设x=当前年份,若x>=2024,则请手动输入版本代号"
-        OPT_1="22.10(dev) 動力羚羊 Kinetic Kudu"
+        OPT_1="🐐 22.10(dev) 動力羚羊 Kinetic Kudu"
         OPT_2="22.04(LTS,stable) 果酱水母 Jammy Jellyfish"
         OPT_3="🐒 21.10(oldstable) 頑皮大狐猴 Impish Indri"
         # OPT_3="🦛 21.04 多毛河馬 Hirsute Hippo"
@@ -1732,14 +1732,14 @@ install_different_ubuntu_gnu_linux_distros() {
 do_you_want_to_install_ubuntu_older_version() {
     if [ -z ${DISTRO_CODE} ]; then
         printf "%s\n" "${YELLOW}Sorry${RESET}, tmoe cannot install ubuntu ${PURPLE}${VERSION}${RESET} now"
-        printf "%s\n" "Do you want to install ubuntu ${GREEN}22.04(jammy)?${RESET}"
-        DISTRO_CODE='jammy'
+        printf "%s\n" "Do you want to install ubuntu ${GREEN}22.10(kinetic)?${RESET}"
+        DISTRO_CODE='kinetic'
         do_you_want_to_continue
     fi
 }
 check_the_latest_ubuntu_version() {
     LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
-    DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish|jammy' | tail -n 1)
+    DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish|jammy|kinetic' | tail -n 1)
     VERSION="next version"
     do_you_want_to_install_ubuntu_older_version
 }
