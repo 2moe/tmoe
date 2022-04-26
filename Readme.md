@@ -266,14 +266,12 @@ file "$FILE"
 
 If you can't, or don't want to use docker, then you can install it locally.
 
-| method | tool  | condition                                                                                                          | command                                    |
-| ------ | ----- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
-| ~~1~~  | cargo | ~~you are using `rustc` **nightly**~~ (Temporarily unavailable, `tmm`(edition 2022) will be released before 2023.) | ~~`cargo install tmm`~~                    |
-| 2      | curl  | you have `curl` installed, and can access github                                                                   | `. <(curl -L git.io/linux.sh)`             |
-| 3      | curl  | you cannot access github                                                                                           | `. <(curl -L gitee.com/mo2/linux/raw/2/2)` |
-| 4      | curl  | none of the above methods can be installed                                                                         | `curl -Lo l l.tmoe.me; sh l`               |
-
-<!-- | 1      | cargo | you have `cargo` installed        | `cargo install tmoe`            | -->
+| method | tool  | condition                                                                                                          | command                            |
+| ------ | ----- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------- |
+| ~~1~~  | cargo | ~~you are using `rustc` **nightly**~~ (Temporarily unavailable, `tmm`(edition 2022) will be released before 2023.) | ~~`cargo install tmm`~~            |
+| 2      | curl  | you have `curl` installed, and can access github                                                                   | `. <(curl -L l.tmoe.me/hub/sh)`    |
+| 3      | curl  | you cannot access github                                                                                           | `. <(curl -L l.tmoe.me/m/sh)`      |
+| 4      | curl  | none of the above methods can be installed                                                                         | `curl -Lo l l.tmoe.me/ee/sh; sh l` |
 
 ## 3. have issue?
 

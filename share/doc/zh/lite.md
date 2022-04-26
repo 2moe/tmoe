@@ -262,12 +262,12 @@ file "$FILE"
 
 如果您的环境无法运行 docker， 那么您可以在本地安装 tmoe。
 
-| 方法  | 工具  | 条件                                                                                                   | 命令                                           |
-| ----- | ----- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------- |
-| ~~1~~ | cargo | ~~you are using `rustc` **nightly**~~ </br>(暂时不可用, `tmm`(edition 2022) </br>将于 2023 年之前发布) | ~~`cargo install tmm`~~                        |
-| 2     | curl  | 您已经安装了 `curl`,</br> 并且可以访问 github                                                          | `. <(curl -L git.io/linux.sh)`                 |
-| 3     | curl  | 您无法访问 github                                                                                      | `. <(curl -L l.tmoe.me)`                       |
-| 4     | curl  | 以上方法都出错了                                                                                       | `curl -Lo l gitee.com/mo2/linux/raw/2/2; sh l` |
+| 方法  | 工具  | 条件                                                                                                   | 命令                               |
+| ----- | ----- | ------------------------------------------------------------------------------------------------------ | ---------------------------------- |
+| ~~1~~ | cargo | ~~you are using `rustc` **nightly**~~ </br>(暂时不可用, `tmm`(edition 2022) </br>将于 2023 年之前发布) | ~~`cargo install tmm`~~            |
+| 2     | curl  | 您已经安装了 `curl`,</br> 并且可以访问 github                                                          | `. <(curl -L l.tmoe.me/hub/sh)`    |
+| 3     | curl  | 您无法访问 github                                                                                      | `. <(curl -L l.tmoe.me/m/sh)`      |
+| 4     | curl  | 以上方法都出错了                                                                                       | `curl -Lo l l.tmoe.me/ee/sh; sh l` |
 
 > 1.4989.x 可能是 edition 2021 的 最后一个“大功能”更新的版本了。
 > 之后，edition 2021 会进行一些小修复，可能会加一些小功能。
