@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript">
+      const lang = navigator.language || navigator.languages[0];
+      switch (lang) {
+        case "zh-HK":
+          var language = "zh-HK";
+          break;
+        case "zh-TW":
+          var language = "zh-TW";
+          break;
+        case (lang.match(/^zh/) || {}).input:
+          var language = "zh";
+          break;
+        default:
+          var language = "en";
+          break;
+      }
+      let new_url = window.location.origin + "/" + language + "/prologue.html";
+      // window.location.pathname +
+      // window.location.search +
+      // window.location.hash;
+      window.location.replace(new_url);
+    </script>
+  </head>
+</html>

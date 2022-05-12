@@ -1,0 +1,56 @@
+name: build mdbook & deploy gh-pages
+
+on:
+  push:
+    branches: [doc]
+    # paths:
+    #   - ".github/workflows/mdbook.yml"
+
+jobs:
+  mdbook:
+    runs-on: ubuntu-latest
+    # fail-fast: false
+    # continue-on-error: true
+    # env:
+    #   name: ubuntu
+
+    steps:
+      - name: install mdbook
+        run: |
+          curl -LO https://l.tmoe.me/neko.deb
+          sudo apt install -y ./neko.deb
+          sudo apt-get update
+          sudo apt-get install -y mdbook
+
+      - uses: actions/checkout@v2
+        with:
+          # repository: "2moe/xxx"
+          ref: "doc"
+          fetch-depth: 1
+          # persist-credentials: false
+      - name: build
+        run: |
+          mdbook build
+          cp book/en/CNAME book/
+
+      - name: Commit
+        run: |
+          cp assets/index.html book
+          cd book
+          git init
+          git branch -M "gh-pages"
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "ci: deploy pages"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          force: true
+          directory: book
+        # run:
+        #   working-directory: book
+  #------------------------------------------------

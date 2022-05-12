@@ -1,0 +1,21 @@
+# blacklist
+/*
+# /book
+book
+test
+
+# whitelist
+!/assets
+!/theme
+!/.git*
+!/src
+!/Readme.md
+!/License
+!/Copyright
+!/share
+!/book.toml
+
+# cache
+# target
+
+# core

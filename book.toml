@@ -1,0 +1,88 @@
+[book]
+authors = ["Moe Master <m@tmoe.me>"]
+# title = "tmoe-doc"
+# multilingual = true
+# src = "src/en"
+
+# [language.de]
+# name = "Deutsch"
+
+# [language.de-CH]
+# name = "Deutsch(Schweiz)"
+
+# [language.es]
+# name = "Español"
+
+# [language.fr]
+# name = "Français"
+
+# [language.ja]
+# name = "日本語"
+
+[language.en]
+name = "English(US)"
+title = "The TMoe Reference"
+
+[language.zh]
+name = "简体中文"
+title = "天萌参考手册"
+
+[language.zh-TW]
+name = "正體中文"
+title = "天萌參考手冊 正體中文版"
+
+[language.zh-HK]
+name = "繁體中文"
+title = "天萌參考手冊 繁體中文版"
+
+[rust]
+edition = "2021"
+
+[build]
+build-dir = "book"
+create-missing = false
+# use-default-preprocessors = false
+
+# [preprocessor.links]
+# # set the renderers this preprocessor will run for
+# renderers = ["html"]
+# some_extra_feature = true
+
+# [preprocessor.mermaid]
+# command = "mdbook-mermaid"
+# renderers = ["html"]
+# optional = true
+
+# [preprocessor.theme]
+# pagetoc = true
+# sidebar-width = "250px"
+
+[output.html]
+default-theme = "ayu"
+# LaTex
+mathjax-support = false
+
+additional-js = [
+    # "assets/pagetoc.js",
+    "assets/giscus.js",
+]
+
+additional-css = [
+    # "assets/pagetoc.js",
+    "assets/css/custom-style.css",
+]
+
+git-repository-url = "https://github.com/2moe/tmoe-linux"
+# edit-url-template = "https://github.com/2moe/tmoe-linux/edit/doc/{path}"
+cname = "doc.tmoe.me"
+
+# [output.html.print]
+# enable = false
+
+[output.html.playground]
+editable = true
+copy-js = true
+
+[output.html.fold]
+enable = false
+# level = 1

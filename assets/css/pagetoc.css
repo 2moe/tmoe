@@ -1,0 +1,97 @@
+/* Copyright (c) 2021 ZJPzjp <jiping_zhou@foxmail.com> 
+License: MIT */
+@media only screen and (max-width: 1439px) {
+  .sidetoc {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  main {
+    position: relative;
+    padding-right: 200px;
+  }
+  .sidetoc {
+    margin-left: auto;
+    margin-right: auto;
+    left: calc(90% + (var(--content-min-width)) / 4 - 110px);
+    left: calc(100% - 200px);
+    position: absolute;
+    font-size: var(--pagetoc-fontsize);
+  }
+  .pagetoc {
+    position: fixed;
+    width: var(--pagetoc-width);
+    height: calc(100vh - var(--menu-bar-height) - 10rem);
+    overflow: auto;
+    z-index: 1000;
+  }
+  .pagetoc a {
+    border-left: 1px solid var(--sidebar-bg);
+    color: var(--fg);
+    display: block;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    padding-left: 10px;
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+  }
+  .pagetoc a:hover,
+  .pagetoc a.active {
+    background: var(--sidebar-bg);
+    color: var(--sidebar-fg);
+    color: var(--sidebar-active);
+    font-weight: bold;
+    font-size: var(--pagetoc-fontsize);
+  }
+  .pagetoc .active {
+    background: var(--sidebar-bg);
+    color: var(--sidebar-fg);
+  }
+}
+
+.page-footer {
+  margin-top: 50px;
+  border-top: 1px solid #ccc;
+  overflow: hidden;
+  padding: 10px 0;
+  color: gray;
+}
+
+.chapter li.chapter-item {
+  color: #939da3;
+  margin-top: 1rem;
+}
+
+table {
+  margin-left: 0;
+}
+
+@media only screen and (max-width: 2560px) {
+  .nav-wide-wrapper {
+    display: none;
+  }
+  .nav-wrapper {
+    display: block;
+  }
+}
+@media only screen and (max-width: 2560px) {
+  .sidebar-visible .nav-wide-wrapper {
+    display: none;
+  }
+  .sidebar-visible .nav-wrapper {
+    display: block;
+  }
+}
+
+code.editable,
+.ace_scroller {
+  top: 10px;
+}
+
+.chapter .spacer {
+  background-color: #99ccff;
+  height: 2px;
+  margin-top: 8px;
+}

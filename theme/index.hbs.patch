@@ -1,0 +1,25 @@
+--- index.hbs	2022-05-09 16:16:23.207480405 +0000
++++ test/index.org.hbs	2022-05-09 15:33:19.491583111 +0000
+@@ -181,11 +181,7 @@
+ 
+                 <div id="content" class="content">
+                     <main>
+-                    <!-- Page table of contents -->
+-                    <div class="sidetoc"><nav class="pagetoc"></nav></div>
+-
+                         {{{ content }}}
+-                        <div id="giscus-container"></div>
+                     </main>
+ 
+                     <nav class="nav-wrapper" aria-label="Page navigation">
+@@ -290,10 +286,6 @@
+         <script src="{{ path_to_root }}clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+         <script src="{{ path_to_root }}highlight.js" type="text/javascript" charset="utf-8"></script>
+         <script src="{{ path_to_root }}book.js" type="text/javascript" charset="utf-8"></script>
+-        <script type="text/javascript" charset="utf-8">
+-        var pagePath = "{{ path }}"
+-        </script>
+-
+ 
+         <!-- Custom JS scripts -->
+         {{#each additional_js}}

@@ -1,0 +1,154 @@
+name: Bug Report
+description: "(⋟﹏⋞) I have encountered some problems"
+# title: "[Bug]: "
+labels: ["bug"]
+assignees: ["2moe"]
+
+body:
+  # - type: dropdown
+  #   id: tmoe
+  #   attributes:
+  #     label: Are you using tmoe?
+  #     options:
+  #       - "Yes"
+  #       - "No"
+  #   validations:
+  #     required: false
+
+  - type: dropdown
+    id: root
+    attributes:
+      label: Are you rooted?
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: desktop
+    attributes:
+      label: Desktop environment
+      options:
+        - "🐭 xfce"
+        - "🦖 kde plasma"
+        - "👣 gnome"
+        - "🌿 mate"
+        - "🐦 lxqt"
+        - "🕊️ lxde"
+        - "🌲 cinnamon"
+        - "🦜 budgie"
+        - "🐟 cutefish"
+        - "deepin"
+        - "ukui"
+        - "wm"
+        - "other"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: container-type
+    attributes:
+      label: Container type
+      options:
+        - "proot"
+        - "chroot"
+        - "unshare"
+        - "systemd-nspawn"
+        - "docker"
+        - "podman"
+        - "lxc"
+        - "other"
+    validations:
+      required: false
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration
+      description: "Please type the container and host info."
+      value: |
+        | container | value        |
+        | --------- | -------------|
+        | os        | ubuntu dev   |
+        | arch      | arm64        |
+
+        ---
+
+        | host     | value        |
+        | -------- | -------------|
+        | os       | android 12   |
+        | arch     | arm64        |
+        | terminal | ?            |
+        | tmoe     | latest       |
+
+        ---
+
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: |
+        I used tmoe-tools to install gnome, but it doesn't work.
+        Please help me!
+
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Please add any relevant screenshots here, if any
+      placeholder: |
+        ![Screenshot_1](https://user-images.githubusercontent.com/25324935/128526303-9c644d80-8588-415e-b23b-fe905280352d.png)
+    validations:
+      required: false
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1.  
+
+        2.
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: I expected it to work fine...
+    validations:
+      required: false
+
+  - type: textarea
+    id: errorlogs
+    attributes:
+      label: Error Logs
+      description: Please add any relevant errlogs here, if any
+      # render: log
+      placeholder: |
+        thread 'main' panicked at 'explicit panic', src/main.rs:2:5
+        note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
+      placeholder: |
+        Thanks for taking the time to fill out this bug! 
+        If you need to discuss anything else, please go to github discussions.
+    validations:
+      required: false
