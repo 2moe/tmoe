@@ -21,8 +21,8 @@ TMOE, More Optional Environments.
 
 The default branch is doc.  
 You can find the description of this project in the documentation.  
-The developer expects you to read the documentation before using it.
-For users who have used tmoe before, it can be annoying that the default branch is not master.
+The developer expects you to read the documentation before using it.  
+For users who have used tmoe before, it can be annoying that the default branch is not master.  
 All you need to do is specify the master branch.
 
 ```sh

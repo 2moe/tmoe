@@ -371,12 +371,12 @@ deb http://mirrors.bfsu.edu.cn/debian/ sid main non-free contrib
 除了 security 源的区别外，backports 也应该使用不同的源。  
 不能简单地将 "stable-backports" 替换为 "old-stabe-backports"
 
-如果这个镜像源不包含 "debian-security" 镜像，那么它默认会启用官方的 security 源，并禁用镜像 security 源。  
+此外，如果这个镜像源不包含 "debian-security" 镜像，那么它默认会启用官方的 security 源，并禁用镜像 security 源。  
 如果它不支持 https, 那么 uris 那里显示的是 **http://** 开头的 uri 。  
 在使用 neko-repo 的镜像源 deb 包的情况下，您不需要手动去判断它支不支持 `https` 等东西。
 
 虽然这些只是小细节问题，不过说实话，“天萌”的开发者很羡慕“天萌”的用户。  
-您真的幸福，不需要去了解那些细节，就能用到这么好用的工具了。
+您真的很幸福，不需要去了解那些细节，就能用到这么好用的工具了。
 
 ```sh
 cat /etc/apt/sources.list.d/cn-mirror.sources
