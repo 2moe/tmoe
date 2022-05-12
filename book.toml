@@ -58,7 +58,7 @@ create-missing = false
 # sidebar-width = "250px"
 
 [output.html]
-default-theme = "ayu"
+default-theme = "navy"
 # LaTex
 mathjax-support = false
 
