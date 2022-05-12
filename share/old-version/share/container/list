@@ -1504,28 +1504,28 @@ install_ubuntu_gnu_linux_distro() {
     ######################
     TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
 
-    case ${DISTRO_CODE} in
-    kinetic)
-        local Current_day
-        Current_day=$(date -u +%Y%m%d)
-        if ((Current_day <= 20220515)); then
-            case "${ARCH_TYPE}" in
-            amd64 | arm64 | armhf) ;;
-            *) distro_does_not_support ;;
-            esac
-            WEEKLY_BUILD_CONTAINER=true
-            DESKTOP="kinetic"
-            # DISTRO_CODE="${DESKTOP}"
-            DISTRO_NAME_02="ubuntu-dev"
-            NODE01_ENABLED=false
-            create_container_edition_txt
-            create_container_edition_txt_02
-            go_to_proot_management
-            press_enter_to_return
-            install_ubuntu_gnu_linux_distro
-        fi
-        ;;
-    esac
+    # case ${DISTRO_CODE} in
+    # kinetic)
+    #     local Current_day
+    #     Current_day=$(date -u +%Y%m%d)
+    #     if ((Current_day <= 20220515)); then
+    #         case "${ARCH_TYPE}" in
+    #         amd64 | arm64 | armhf) ;;
+    #         *) distro_does_not_support ;;
+    #         esac
+    #         WEEKLY_BUILD_CONTAINER=true
+    #         DESKTOP="kinetic"
+    #         # DISTRO_CODE="${DESKTOP}"
+    #         DISTRO_NAME_02="ubuntu-dev"
+    #         NODE01_ENABLED=false
+    #         create_container_edition_txt
+    #         create_container_edition_txt_02
+    #         go_to_proot_management
+    #         press_enter_to_return
+    #         install_ubuntu_gnu_linux_distro
+    #     fi
+    #     ;;
+    # esac
     create_container_edition_txt
     go_to_proot_management
     ####################
