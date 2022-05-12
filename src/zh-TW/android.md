@@ -80,7 +80,7 @@ ls /sdcard
   - 前提：條件同上
   - 作用：啟動 x11vnc
 - `stopvnc`
-  - 此命令可以方便地幹掉 rootless 容器（包含它的 vnc 服務程序）
+  - 此命令可以方便地幹掉 rootless 容器（包括它的 vnc 服務程序）
   - 對於 chroot/unshare（rootful）容器, 您需要單獨停止容器程序。
 - `startxsdl`
   - 前提：您需要先在宿主環境中安裝 xserver app
