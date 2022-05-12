@@ -69,8 +69,8 @@ set_colour() {
 
 set_path_and_url() {
     TMOE_MANAGER="share/old-version/share/app/manager"
-    TMOE_URL="https://raw.githubusercontent.com/2moe/tmoe-linux/master/${TMOE_MANAGER}"
-    TMOE_URL_02="https://cdn.jsdelivr.net/gh/2moe/tmoe-linux@master/${TMOE_MANAGER}"
+    TMOE_URL="https://raw.githubusercontent.com/2moe/tmoe/master/${TMOE_MANAGER}"
+    TMOE_URL_02="https://cdn.jsdelivr.net/gh/2moe/tmoe@master/${TMOE_MANAGER}"
     TMOE_GIT_DIR="${HOME}/.local/share/tmoe-linux/git"
     TMOE_GIT_DIR_02="/usr/local/etc/tmoe-linux/git"
     TEMP_FILE=".tmoe-linux.sh"

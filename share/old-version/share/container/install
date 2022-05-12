@@ -946,7 +946,7 @@ cat >${PREFIX}/bin/startxsdl <<-ENDOFXSDL
 	fi
 ENDOFXSDL
 ################
-#aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager'
+#aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${PREFIX}/bin -o debian-i 'https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/share/app/manager'
 #############
 printf '%s\n' 'Giving startup script execution permission'
 printf "%s\n" "正在赋予启动脚本执行权限"
@@ -984,7 +984,7 @@ if [[ -e "debian-i" ]]; then
     chmod 666 debian-i
     rm -f debian-i
 fi
-#curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
+#curl -Lo "debian-i" 'https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/tools/app/tool'
 cp -f "${TMOE_GIT_DIR}"/share/old-version/tools/app/tool ./debian-i
 chmod a+rx neofetch debian-i
 
@@ -1045,7 +1045,7 @@ esac
 #dbus-daemon --system --fork 2>/dev/null;;
 #esac
 ############
-#curl -Lo '.profile' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/profile.sh'
+#curl -Lo '.profile' 'https://raw.githubusercontent.com/2moe/tmoe/master/profile.sh'
 #chmod u+x .profile
 #不要将profile转换为外部脚本，否则将影响sed
 cat >'.profile' <<-'ENDOFbashPROFILE'

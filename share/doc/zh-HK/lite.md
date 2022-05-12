@@ -97,7 +97,7 @@ docker run \
 注：proxy_pass 那裏要寫 `http://novnc容器的網絡別名:36080;`  
 如果 nginx 那裏套了 tls 證書，那麼訪問地址就是 `https://您在nginx中配置的novnc的域名:端口`。（若端口為 443，則無需加 **:端口** ）  
 注 2： 若您在 nginx 中配置了 novnc 的域名，則處於相同網絡環境下的 nginx 和 novnc 必須同時運行。 若 novnc 沒有運行，則 nginx 的配置會加載失敗，這可能會導致 nginx 無法正常運行。  
-如果您對 nginx + novnc 這塊有疑問的話，請前往本項目的 [github disscussion](https://github.com/2moe/tmoe-linux/discussions) 發表話題。
+如果您對 nginx + novnc 這塊有疑問的話，請前往本項目的 [github disscussion](https://github.com/2moe/tmoe/discussions) 發表話題。
 
 您也可以使用普通的 vnc 客户端來連接，不過這時候 tcp 端口就不是 36081 了。
 
@@ -278,9 +278,9 @@ file "$FILE"
 
 有問題一定要問哦！不能憋壞了。  
 有 bug 也要及時反饋哦！（~~雖然開發者可能會咕很久，但是~~ bug 總歸是要修的)  
-您可以提 [issue](https://github.com/2moe/tmoe-linux/issues/new/choose)，也可以在 **discussions** 裏進行交流和討論。
+您可以提 [issue](https://github.com/2moe/tmoe/issues/new/choose)，也可以在 **discussions** 裏進行交流和討論。
 
-如果是與本項目自身無關的話題，那請發在 [discussions](https://github.com/2moe/tmoe-linux/discussions) 裏。
+如果是與本項目自身無關的話題，那請發在 [discussions](https://github.com/2moe/tmoe/discussions) 裏。
 
 > 比如説你使用了 `startvnc`， 但是它出問題了，這屬於與本項目自身有關的話題。  
 > 您使用了自己配置的 vnc 服務，這屬於與本項目自身無關的話題。

@@ -20,7 +20,7 @@ main() {
         elif [ -e "/tmp/.tmoe-linux-mirror.sh" ]; then
             source /tmp/.tmoe-linux-mirror.sh
         else
-            curl -Lv -o /tmp/.tmoe-linux-mirror.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/sources/gnu-linux_mirrors" || wget -O /tmp/.tmoe-linux-mirror.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/sources/gnu-linux_mirrors"
+            curl -Lv -o /tmp/.tmoe-linux-mirror.sh "https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/tools/sources/gnu-linux_mirrors" || wget -O /tmp/.tmoe-linux-mirror.sh "https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/tools/sources/gnu-linux_mirrors"
             chmod a+rx /tmp/.tmoe-linux-mirror.sh
             source /tmp/.tmoe-linux-mirror.sh
         fi
@@ -52,7 +52,7 @@ main() {
         elif [ -e "/tmp/.tmoe-linux-mirror.sh" ]; then
             source /tmp/.tmoe-linux-mirror.sh --autoswitch
         else
-            curl -Lvo /tmp/.tmoe-linux-mirror.sh "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/sources/gnu-linux_mirrors"
+            curl -Lvo /tmp/.tmoe-linux-mirror.sh "https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/tools/sources/gnu-linux_mirrors"
             chmod a+rx /tmp/.tmoe-linux-mirror.sh
             source /tmp/.tmoe-linux-mirror.sh --autoswitch
         fi
@@ -106,7 +106,7 @@ gnu_linux_env() {
     TMOE_ICON_DIR="${TMOE_LINUX_DIR}/icons"
     TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
     TMOE_OPT_BIN_DIR="${TMOE_TOOL_DIR}/sources/opt-bin"
-    TMOE_GIT_URL="github.com/2moe/tmoe-linux"
+    TMOE_GIT_URL="github.com/2moe/tmoe"
     APPS_LNK_DIR='/usr/share/applications'
     if [ ! -e "${APPS_LNK_DIR}" ]; then
         mkdir -pv ${APPS_LNK_DIR}
@@ -187,12 +187,12 @@ check_root() {
             sudo -E bash ${TMOE_GIT_DIR}/share/old-version/tools/app/tool || su -c "bash ${TMOE_GIT_DIR}/share/old-version/tools/app/tool"
         else
             if [ $(command -v curl) ]; then
-                sudo -E bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)" || su -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
+                sudo -E bash -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe/master/debian.sh)" || su -c "$(curl -LfsS https://raw.githubusercontent.com/2moe/tmoe/master/debian.sh)"
             elif [ $(command -v aria2c) ]; then
-                aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o /tmp/.tmoe-linux-tool.bash https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool
+                aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o /tmp/.tmoe-linux-tool.bash https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/tools/app/tool
                 su -c "$(bash /tmp/.tmoe-linux-tool.bash)"
             else
-                su -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe-linux/master/debian.sh)"
+                su -c "$(wget -qO- https://raw.githubusercontent.com/2moe/tmoe/master/debian.sh)"
             fi
         fi
         exit 0
@@ -644,8 +644,8 @@ check_dependencies() {
             fi
             ;;
         *)
-            printf "%s\n" "${RED}Sorry${RESET}, tmoe does not support your distro. If you want to report a bug, please go to ${BLUE}github.${YELLOW}https://github.com/2moe/tmoe-linux${RESET}"
-            printf "%s\n" "${RED}不支持${RESET}您当前的发行版，您可以前往${YELLOW}https://github.com/2moe/tmoe-linux${RESET}提交issue,并附上${BLUE}cat /etc/os-release${RESET}的截图。"
+            printf "%s\n" "${RED}Sorry${RESET}, tmoe does not support your distro. If you want to report a bug, please go to ${BLUE}github.${YELLOW}https://github.com/2moe/tmoe${RESET}"
+            printf "%s\n" "${RED}不支持${RESET}您当前的发行版，您可以前往${YELLOW}https://github.com/2moe/tmoe${RESET}提交issue,并附上${BLUE}cat /etc/os-release${RESET}的截图。"
             uname -a
             press_enter_to_continue
             exit 1

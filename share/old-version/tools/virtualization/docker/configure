@@ -75,17 +75,17 @@ tmoe_locale_gen() {
 }
 ############
 if [ $(command -v curl) ]; then
-    curl -Lvo .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager
+    curl -Lvo .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/share/app/manager
 elif [ $(command -v aria2c) ]; then
-    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager
+    aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/share/app/manager
 elif [ $(command -v wget) ]; then
-    wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager
+    wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/share/app/manager
 else
     #带三个#为docker容器专用
     ###tuna_mirror
     DEPENDENCY_01='wget'
     install_dependency
-    wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/share/app/manager
+    wget -O .tmoe-linux.sh https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/share/app/manager
 fi
 #用于docker容器自动配置区域与语言环境。
 ###tmoe_locale_gen

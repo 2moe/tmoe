@@ -266,18 +266,18 @@ file "$FILE"
 
 If you can't, or don't want to use docker, then you can install it locally.
 
-| method | tool  | condition                                                                                                          | command                            |
-| ------ | ----- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------- |
-| ~~1~~  | cargo | ~~you are using `rustc` **nightly**~~ (Temporarily unavailable, `tmm`(edition 2022) will be released before 2023.) | ~~`cargo install tmm`~~            |
-| 2      | curl  | you have `curl` installed, and can access github                                                                   | `. <(curl -L l.tmoe.me/hub/sh)`    |
-| 3      | curl  | you cannot access github                                                                                           | `. <(curl -L l.tmoe.me/m/sh)`      |
-| 4      | curl  | none of the above methods can be installed                                                                         | `curl -Lo l l.tmoe.me/ee/sh; sh l` |
+| method | tool  | condition                                                                                                               | command                            |
+| ------ | ----- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| ~~1~~  | cargo | ~~you are using `rustc` **nightly**~~ </br>(Temporarily unavailable, `tmm`(edition 2022) will be released before 2023.) | ~~`cargo install tmm`~~            |
+| 2      | curl  | you have `curl` installed, and can access github                                                                        | `. <(curl -L l.tmoe.me/hub/sh)`    |
+| 3      | curl  | you cannot access github                                                                                                | `. <(curl -L l.tmoe.me/m/sh)`      |
+| 4      | curl  | none of the above methods can be installed                                                                              | `curl -Lo l l.tmoe.me/ee/sh; sh l` |
 
 ## 3. have issue?
 
-Please report an [issue](https://github.com/2moe/tmoe-linux/issues/new/choose).  
+Please report an [issue](https://github.com/2moe/tmoe/issues/new/choose).  
 You can use čeština, Deutsch, español, français, português, ру́сский & 中文, etc.  
-If you want to discuss topics unrelated to this project, then please go to github [discussions](https://github.com/2moe/tmoe-linux/discussions).
+If you want to discuss topics unrelated to this project, then please go to github [discussions](https://github.com/2moe/tmoe/discussions).
 
 ## 4. what can I do?
 

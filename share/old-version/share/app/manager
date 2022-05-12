@@ -63,9 +63,9 @@ tmoe_manager_env() {
     TMOE_CONTAINER_DIR="${TMOE_LINUX_DIR}/containers"
     TMOE_TOOL_DIR="${TMOE_GIT_DIR}/share/old-version/tools"
     TMOE_SHARE_DIR="${TMOE_GIT_DIR}/share/old-version/share"
-    TMOE_GIT_URL="github.com/2moe/tmoe-linux"
+    TMOE_GIT_URL="github.com/2moe/tmoe"
     AK2_GIT_URL="https://gitee.com/ak2"
-    TMOE_LINUX_ISSUE_URL="https://github.com/2moe/tmoe-linux/issues?q=is%3Aissue+is%3Aclosed"
+    TMOE_LINUX_ISSUE_URL="https://github.com/2moe/tmoe/issues?q=is%3Aissue+is%3Aclosed"
     if [[ -e ${TMOE_GIT_DIR}/.git ]]; then
         source ${TMOE_SHARE_DIR}/environment/manager_environment
         #check_dependencies_03
@@ -224,8 +224,8 @@ check_gnu_linux_git_and_whiptail() {
             fi
             ;;
         *)
-            printf "%s\n" "${RED}Sorry${RESET},tmoe-linux manager does not support your distro. If you want to report a bug, please go to ${BLUE}github.${YELLOW}https://github.com/2moe/tmoe-linux${RESET}"
-            printf "%s\n" "${RED}不支持${RESET}您当前的发行版，您可以前往${YELLOW}https://github.com/2moe/tmoe-linux${RESET}提交issue,并附上${BLUE}cat /etc/os-release${RESET}的截图。"
+            printf "%s\n" "${RED}Sorry${RESET},tmoe-linux manager does not support your distro. If you want to report a bug, please go to ${BLUE}github.${YELLOW}https://github.com/2moe/tmoe${RESET}"
+            printf "%s\n" "${RED}不支持${RESET}您当前的发行版，您可以前往${YELLOW}https://github.com/2moe/tmoe${RESET}提交issue,并附上${BLUE}cat /etc/os-release${RESET}的截图。"
             uname -a
             sleep 3
             exit 1
@@ -414,9 +414,9 @@ check_gnu_linux_distro() {
             fi
         else
             if [ ! $(command -v curl) ]; then
-                wget -O /tmp/.tmoe-linux-tool.bash "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool"
+                wget -O /tmp/.tmoe-linux-tool.bash "https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/tools/app/tool"
             else
-                curl -Lv -o /tmp/.tmoe-linux-tool.bash "https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool"
+                curl -Lv -o /tmp/.tmoe-linux-tool.bash "https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/tools/app/tool"
             fi
             source /tmp/.tmoe-linux-tool.bash
         fi

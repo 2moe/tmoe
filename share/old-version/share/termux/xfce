@@ -2,7 +2,7 @@
 #######################################
 install_termux_xfce() {
     if [ "${LINUX_DISTRO}" != 'Android' ]; then
-        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.bash' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.bash' 'https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/tools/app/tool'
         bash /tmp/.tmoe-linux-tool.bash --install-gui
         exit 0
     fi
@@ -59,7 +59,7 @@ install_termux_xfce() {
 ##########
 tmoe_modify_vnc_conf() {
     if [ "${LINUX_DISTRO}" != 'Android' ]; then
-        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.bash' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.bash' 'https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/tools/app/tool'
         bash /tmp/.tmoe-linux-tool.bash --modify_remote_desktop_config
         exit 0
     fi
@@ -118,7 +118,7 @@ termux_original_system_gui_menu() {
 ###############
 remove_termux_xfce() {
     if [ "${LINUX_DISTRO}" != 'Android' ]; then
-        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.bash' 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d /tmp -o '.tmoe-linux-tool.bash' 'https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/tools/app/tool'
         bash /tmp/.tmoe-linux-tool.bash --remove_gui
         exit 0
     fi

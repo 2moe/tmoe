@@ -473,9 +473,9 @@ auto_configure_tmoe_tool_02() {
 check_tmoe_linux_tool() {
     if [ ! $(command -v debian-i) ]; then
         if [ -e "/usr/bin/curl" ]; then
-            curl -Lo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
+            curl -Lo /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/tools/app/tool'
         else
-            wget -qO /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe-linux/master/share/old-version/tools/app/tool'
+            wget -qO /usr/local/bin/debian-i 'https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/tools/app/tool'
         fi
     fi
     chmod 777 /usr/local/bin/debian-i
@@ -667,8 +667,8 @@ git_clone_tmoe_linux() {
     fi
     TMOE_MIRROR_DIR="${TMOE_SHARE_DIR}/configuration/mirror-list"
     mkdir -pv ${TMOE_LINUX_DIR}
-    TMOE_GIT_URL='https://github.com/2moe/tmoe-linux.git'
-    printf "%s\n" "github.com/2moe/tmoe-linux"
+    TMOE_GIT_URL='https://github.com/2moe/tmoe.git'
+    printf "%s\n" "github.com/2moe/tmoe"
     if [ ! -e "${TMOE_GIT_DIR}/.git" ]; then
         rm -rvf ${TMOE_GIT_DIR} 2>/dev/null
         git clone --depth=1 ${TMOE_GIT_URL} ${TMOE_GIT_DIR}
