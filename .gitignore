@@ -10,6 +10,7 @@ test
 !/.git*
 !/src
 !/Readme.md
+!/readme.md
 !/License
 !/Copyright
 !/share
