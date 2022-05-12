@@ -79,8 +79,8 @@ let initAll = function () {
   script.src = "https://giscus.app/client.js";
   script.async = true;
   script.crossOrigin = "anonymous";
-  script.setAttribute("data-repo", "2moe/tmoe-linux");
-  script.setAttribute("data-repo-id", "MDEwOlJlcG9zaXRvcnkyNTQxOTAxMzU");
+  script.setAttribute("data-repo", "2moe/tmoe");
+  script.setAttribute("data-repo-id", "MDEwOlJlcG9zaXRvcnkyNTQxOTAxMzU=");
   script.setAttribute("data-category", "Doc");
   script.setAttribute("data-category-id", "DIC_kwDODyaiN84CPBPv");
   script.setAttribute("data-mapping", "pathname");

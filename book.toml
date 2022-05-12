@@ -72,8 +72,8 @@ additional-css = [
     "assets/css/custom-style.css",
 ]
 
-git-repository-url = "https://github.com/2moe/tmoe-linux"
-# edit-url-template = "https://github.com/2moe/tmoe-linux/edit/doc/{path}"
+git-repository-url = "https://github.com/2moe/tmoe"
+# edit-url-template = "https://github.com/2moe/tmoe/edit/doc/{path}"
 cname = "doc.tmoe.me"
 
 # [output.html.print]

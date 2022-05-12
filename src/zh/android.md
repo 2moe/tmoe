@@ -44,7 +44,7 @@
  请选择特定的子目录，例如 "/data/media/0/Download"。  
 挂载整个内置 sd 可能会导致它在 `umount` 时被一同卸载。  
 [issue1](https://gitee.com/mo2/linux/issues/I5488U)  
-[issue2](https://github.com/2moe/tmoe-linux/discussions/166)
+[issue2](https://github.com/2moe/tmoe/discussions/166)
 
 如果您坚持要做的话，那么请在挂载整个内置 sd 前，手动做个小测试。
 
@@ -61,9 +61,9 @@ ls /sdcard
 
 ## 4. proot
 
-| problem                  | note                                                                                 |
-| ------------------------ | ------------------------------------------------------------------------------------ |
-| 无法绑定 1024 以下的端口 | see this [issue](https://github.com/2moe/tmoe-linux/issues?q=is%3Aissue+is%3Aclosed) |
+| problem                  | note                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------ |
+| 无法绑定 1024 以下的端口 | see this [issue](https://github.com/2moe/tmoe/issues?q=is%3Aissue+is%3Aclosed) |
 
 ## 5. 命令
 

@@ -45,7 +45,7 @@ For miui, please do not select the whole "/data/media/0" or "/sdcard"
 Mounting the whole internal sd may cause it to be unmounted together when `umount`.
 
 [issue1](https://gitee.com/mo2/linux/issues/I5488U)  
-[issue2](https://github.com/2moe/tmoe-linux/discussions/166)
+[issue2](https://github.com/2moe/tmoe/discussions/166)
 
 If you insist, perform a little manual test before mounting the whole internal sd.
 
@@ -62,9 +62,9 @@ See what's going on?
 
 ## 4. proot
 
-| problem                                 | note                                                                                 |
-| --------------------------------------- | ------------------------------------------------------------------------------------ |
-| Unable to bind ports between 0 and 1023 | see this [issue](https://github.com/2moe/tmoe-linux/issues?q=is%3Aissue+is%3Aclosed) |
+| problem                                 | note                                                                           |
+| --------------------------------------- | ------------------------------------------------------------------------------ |
+| Unable to bind ports between 0 and 1023 | see this [issue](https://github.com/2moe/tmoe/issues?q=is%3Aissue+is%3Aclosed) |
 
 ## 5. Command
 
