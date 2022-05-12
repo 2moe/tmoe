@@ -1,4 +1,4 @@
-name: build mdbook & deploy gh-pages
+name: build mdbook
 
 on:
   push:
