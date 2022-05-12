@@ -1798,12 +1798,12 @@ install_fedora_gnu_linux_distro() {
     armel | i386) distro_does_not_support ;;
     armhf)
         # The last fedora_armhf is 36.
-        OLD_STABLE_VERSION=34
-        DISTRO_CODE=35
+        OLD_STABLE_VERSION=35
+        DISTRO_CODE=36
         which_version_do_you_want_to_install
         ;;
     *)
-        OLD_STABLE_VERSION=34
+        OLD_STABLE_VERSION=35
         check_the_latest_distro_version
         ;;
     esac
