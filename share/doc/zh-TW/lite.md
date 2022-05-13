@@ -1,11 +1,11 @@
 # 文件
 
 本專案的文件已經遷移到 doc 分支。
-您可以前往 tmoe 的 doc 網站線上預覽。
+您可以前往 tmoe 的 doc 網站線上閱覽。
 
 [doc.tmoe.me](https://doc.tmoe.me)
 
-您如果無法訪問此網站，那就手動手動克隆 **doc** 或 **gh-pages** 分支吧！
+您如果無法訪問此網站，那就手動克隆 **doc** 或 **gh-pages** 分支吧！
 
 ```sh
 git clone \

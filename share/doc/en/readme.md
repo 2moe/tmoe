@@ -1,7 +1,7 @@
 # Documentation
 
 The documentation for this project has been migrated to the doc branch.  
-You can preview it online at tmoe's doc site.
+You can read it online at tmoe's doc site.
 
 [doc.tmoe.me](https://doc.tmoe.me)
 
