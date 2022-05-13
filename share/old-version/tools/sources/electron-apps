@@ -167,7 +167,7 @@ show_tmoe_electron_app_version() {
 upgrade_electron_app_01() {
     PNG_DIR="/opt/${DEPENDENCY_01}/usr/share/icons/hicolor/0x0/apps"
     case ${DEPENDENCY_01} in
-    bilibili-web) PNG_FILE="${PNG_DIR}/bili.png" ;;
+    # bilibili-web) PNG_FILE="${PNG_DIR}/bili.png" ;;
     zy-player) PNG_FILE="${PNG_DIR}/zy.png" ;;
     *) PNG_FILE="${PNG_DIR}/${DEPENDENCY_01}.png" ;;
     esac
@@ -324,8 +324,8 @@ tmoe_electron_video_app() {
     DEBIAN_INSTALLATION_MENU='01'
     INSTALL_APP=$(whiptail --title "VIDEO APP" --menu \
         "影視\nWhich software do you want to install? " 0 0 0 \
-        "1" "zy-player:搜索全网影视" \
-        "2" "📺 bilibili-web" \
+        "1" "📺 bilibili 哔哩哔哩PC客户端" \
+        "2" "zy-player:搜索全网影视" \
         "3" "🎬 腾讯视频(Linux在线视频软件)" \
         "4" "lossless-cut:无损剪切音视频工具" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
@@ -334,10 +334,13 @@ tmoe_electron_video_app() {
     case "${INSTALL_APP}" in
     0 | "") electron_apps_main_menu ;;
     1)
+        DEPENDENCY_01='bilibili'
+        ORIGINAL_URL='https://app.bilibili.com'
+        ;;
+    2)
         DEPENDENCY_01='zy-player'
         ORIGINAL_URL='https://github.com/Hunlongyu/ZY-Player'
         ;;
-    2) DEPENDENCY_01='bilibili-web' ;;
     3)
         DEBIAN_INSTALLATION_MENU='02'
         DEPENDENCY_01='tenvideo_universal'
