@@ -36,7 +36,7 @@ pub enum Option<T> {
 
 在数日后，“二萌”以与预想完全不同的形式写完了这个功能，然后默默删掉了那段 rust 代码。
 
-求“二萌”的心路历程？
+求“二萌”的心路历程。
 
 ## 1. 开发历程
 
@@ -99,7 +99,7 @@ fn main() -> std::io::Result<()> {
 
 二萌最后为每一个源都打了一个包，并且每个源都依赖了一个用 dash 写的小脚本（`set-src-link`）。
 
-> 对于 only for debian-based 的发行版来说，用 dash 写脚本还是挺好的。  
+> 对于 only for debian-based 的应用来说，用 dash 写脚本还是挺好的。  
 > 二萌在很久之前曾用过某个只有 `dash` ，没有 `bash` 的 debian-based 发行版。  
 > `dash` 虽然会比 `bash` 更快， 但是不适合交互式操作  
 > TUI 和 CLI 并不冲突，或许有一天，二萌会再给这个小功能写个前端。  

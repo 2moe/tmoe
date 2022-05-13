@@ -107,7 +107,7 @@ Language is merely a tool, and we should examine its application before employin
 
 2moe has a package for each source, and each source relies on a small script written in dash (`set-src-link`).
 
-> For debian-based distributions only, scripting with dash is fine.  
+> For applications that can only be used for debian-based, scripting in dash is fine.  
 > 2moe used a debian-based distribution with only `dash` and no `bash` a long time ago.  
 > `dash` is faster than `bash`, but not for interactive operations  
 > TUI and CLI don't conflict, so maybe someday 2moe will write a front-end for this little feature again.
