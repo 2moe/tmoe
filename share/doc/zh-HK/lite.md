@@ -1,6 +1,6 @@
 # 文檔
 
-本項目的文檔已經遷移到 doc 分支。
+本項目的文檔已經遷移至 doc 分支。  
 您可以前往 tmoe 的 doc 網站在線閲覽。
 
 [doc.tmoe.me](https://doc.tmoe.me)

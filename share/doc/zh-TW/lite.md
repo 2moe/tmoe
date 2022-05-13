@@ -1,6 +1,6 @@
 # 文件
 
-本專案的文件已經遷移到 doc 分支。
+本專案的文件已經遷移至 doc 分支。  
 您可以前往 tmoe 的 doc 網站線上閱覽。
 
 [doc.tmoe.me](https://doc.tmoe.me)
