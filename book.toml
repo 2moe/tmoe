@@ -42,17 +42,17 @@ name = "Polski"
 [language.pt]
 name = "Português"
 
-[language.ro]
-name = "Română"
+# [language.ro]
+# name = "Română"
 
 [language.ru]
 name = "ру́сский"
 
-[language.tr]
-name = "Türkçe"
+# [language.tr]
+# name = "Türkçe"
 
-[language.vi]
-name = "Việt Nam"
+# [language.vi]
+# name = "Việt Nam"
 
 [language.zh]
 name = "简体中文"
