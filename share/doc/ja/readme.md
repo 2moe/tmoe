@@ -2,6 +2,6 @@
 
 Do you want to read 中国語の doc?
 
-| Ok                      | Cancel                         |
-| ----------------------- | ------------------------------ |
-| [確認](../zh/readme.md) | [取り消し](../../../Readme.md) |
+| Ok                                           | Cancel                                           |
+| -------------------------------------------- | ------------------------------------------------ |
+| [確認](https://doc.tmoe.me/zh/prologue.html) | [取り消し](https://doc.tmoe.me/en/prologue.html) |

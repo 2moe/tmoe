@@ -2,6 +2,6 @@
 
 Do you want to read 중국어 doc?
 
-| Ok                        | Cancel                     |
-| ------------------------- | -------------------------- |
-| [괜찮아](../zh/readme.md) | [취소](../../../Readme.md) |
+| Ok                                             | Cancel                                       |
+| ---------------------------------------------- | -------------------------------------------- |
+| [괜찮아](https://doc.tmoe.me/zh/prologue.html) | [취소](https://doc.tmoe.me/en/prologue.html) |

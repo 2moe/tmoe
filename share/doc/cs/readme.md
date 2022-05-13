@@ -2,6 +2,6 @@
 
 Do you want to read čínština doc?
 
-| Ok                       | Cancel                        |
-| ------------------------ | ----------------------------- |
-| [dobře](../zh/readme.md) | [zrušení](../../../Readme.md) |
+| Ok                                            | Cancel                                          |
+| --------------------------------------------- | ----------------------------------------------- |
+| [dobře](https://doc.tmoe.me/zh/prologue.html) | [zrušení](https://doc.tmoe.me/en/prologue.html) |
