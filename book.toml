@@ -1,27 +1,58 @@
 [book]
 authors = ["Moe Master <m@tmoe.me>"]
+title = "The TMoe Reference"
 # title = "tmoe-doc"
 # multilingual = true
 # src = "src/en"
 
-# [language.de]
-# name = "Deutsch"
+[language.cs]
+name = "čeština"
+
+[language.de]
+name = "Deutsch"
 
 # [language.de-CH]
 # name = "Deutsch(Schweiz)"
 
-# [language.es]
-# name = "Español"
-
-# [language.fr]
-# name = "Français"
-
-# [language.ja]
-# name = "日本語"
-
 [language.en]
 name = "English(US)"
 title = "The TMoe Reference"
+
+[language.es]
+name = "Español"
+
+[language.fr]
+name = "Français"
+
+[language.id]
+name = "Indonesia"
+
+[language.it]
+name = "Italiano"
+
+[language.ja]
+name = "日本語"
+
+[language.ko]
+name = "한국어"
+
+[language.pl]
+name = "Polski"
+
+[language.pt]
+name = "Português"
+
+[language.ro]
+name = "Română"
+
+[language.ru]
+name = "ру́сский"
+
+[language.tr]
+name = "Türkçe"
+
+[language.vi]
+name = "Việt Nam"
 
 [language.zh]
 name = "简体中文"

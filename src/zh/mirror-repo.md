@@ -99,7 +99,7 @@ fn main() -> std::io::Result<()> {
 
 二萌最后为每一个源都打了一个包，并且每个源都依赖了一个用 dash 写的小脚本（`set-src-link`）。
 
-> 对于 only for debian-based 的应用来说，用 dash 写脚本还是挺好的。  
+> 对于仅适用于 debian-based 发行版的应用来说，用 dash 写脚本还是挺好的。  
 > 二萌在很久之前曾用过某个只有 `dash` ，没有 `bash` 的 debian-based 发行版。  
 > `dash` 虽然会比 `bash` 更快， 但是不适合交互式操作  
 > TUI 和 CLI 并不冲突，或许有一天，二萌会再给这个小功能写个前端。  

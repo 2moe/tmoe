@@ -133,9 +133,6 @@ let initAll = function () {
     case (lang.match(/^ko/) || {}).input:
       var language = "ko";
       break;
-    case (lang.match(/^ko/) || {}).input:
-      var language = "ko";
-      break;
     case (lang.match(/^id/) || {}).input:
       var language = "id";
       break;
