@@ -103,7 +103,7 @@ additional-css = [
     "assets/css/custom-style.css",
 ]
 
-git-repository-url = "https://github.com/2moe/tmoe"
+git-repository-url = "https://github.com/2moe/tmoe/tree/doc"
 # edit-url-template = "https://github.com/2moe/tmoe/edit/doc/{path}"
 cname = "doc.tmoe.me"
 
