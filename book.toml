@@ -100,7 +100,7 @@ additional-js = [
 
 additional-css = [
     # "assets/pagetoc.js",
-    "assets/css/custom-style.css",
+    "assets/css/style-20220514.css",
 ]
 
 git-repository-url = "https://github.com/2moe/tmoe/tree/doc"

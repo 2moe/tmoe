@@ -64,7 +64,7 @@ If you want to make one system completely resemble another, you must do the oppo
 
 This is equivalent to upgrading from a lower version to a higher version.
 
-For example, if you want to replace debian with a kali source, you should use the lower debian buster to add the higher kali rolling source, not the higher debian sid.
+For example, if you want to replace debian with a kali source, you should use the lower debian stable to add the higher kali rolling source, not the higher debian sid.
 
 > The highs and lows are relative.
 

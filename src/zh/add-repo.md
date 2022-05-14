@@ -58,7 +58,7 @@ B 的某个软件 b 依赖了 glibc。
 如果您想要将一个系统完全变成另一个系统的模样，那么结论与上面完全相反，您得要像上面那张流程图那样做才行。  
 这样做相当于从低版本系统升级到高版本。
 
-比如说您想要将 debian 更换为 kali 源，这时候应该用低版本的 debian buster 添加高版本的 kali rolling 源，而不能用高版本的 debian sid 来添加低版本 kali rolling 源。
+比如说您想要将 debian 更换为 kali 源，这时候应该用低版本的 debian stable 添加高版本的 kali rolling 源，而不能用高版本的 debian sid 来添加低版本 kali rolling 源。
 
 > 这里的高低是相对而言的。
 
