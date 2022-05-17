@@ -99,7 +99,7 @@ fn main() -> std::io::Result<()> {
 
 二萌最後為每一個源都打了一個包，並且每個源都依賴了一個用 dash 寫的小指令碼（`set-src-link`）。
 
-> 對於 only for debian-based 的應用來說，用 dash 寫指令碼還是挺好的。  
+> 對於僅適用於 debian-based 發行版的應用來說，用 dash 寫指令碼還是挺好的。  
 > 二萌在很久之前曾用過某個只有 `dash` ，沒有 `bash` 的 debian-based 發行版。  
 > `dash` 雖然會比 `bash` 更快， 但是不適合互動式操作  
 > TUI 和 CLI 並不衝突，或許有一天，二萌會再給這個小功能寫個前端。  

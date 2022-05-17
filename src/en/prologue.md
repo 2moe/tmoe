@@ -8,6 +8,7 @@
   - [License](#license)
 - [Communication and Discussion](#communication-and-discussion)
   - [Feedback](#feedback)
+- [End of this chapter](#end-of-this-chapter)
 
 ## Q & A
 
@@ -150,3 +151,11 @@ Once upon a time, no matter what question you posed in the issue section of "Tmo
 But "2moe" has changed and no longer wants to answer questions.
 
 You can put topics unrelated to this project in the "discussions", but "2moe" may not even be able to cure a minor "cat illness".
+
+## End of this chapter
+
+The prologue is now complete.
+
+We will walk you through the fascination in the chapters that follow.
+
+> To begin a new chapter, click the **>** symbol in the bottom right corner.

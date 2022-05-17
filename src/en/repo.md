@@ -5,7 +5,7 @@
 How do I go about getting a software package?
 
 Manual compilation may be necessary for some persons.  
-Because they must be highly adaptable.
+Because they must be highly adaptable and customisable.
 
 > "2moe" has seen some individuals utilize compiled installations for the sake of vanity.  
 > In fact, it's probably not the best choice.
