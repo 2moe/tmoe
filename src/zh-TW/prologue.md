@@ -1,6 +1,6 @@
 # 序章
 
-中文|[English](https://doc.tmoe.me/en/prologue.html)
+中文 | [English](https://doc.tmoe.me/en/prologue.html)
 
 - [問與答](#問與答)
   - [我是否應該閱讀這本書？](#我是否應該閱讀這本書)
