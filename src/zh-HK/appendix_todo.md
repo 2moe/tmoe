@@ -59,7 +59,7 @@ ROOT_PATH = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin:/usr/bin:/bin"
 NORMAL_PATH = "/usr/local/bin:/usr/games:/usr/bin:/bin"
 ```
 
-手動修改這個配置
+手動修改這個配置  
 用 set 子命令修改
 
 ```sh
@@ -73,5 +73,5 @@ tmm get uuu image.tag
 # 輸出 kinetic
 ```
 
-也可以直接修改配置文件。
+也可以直接修改配置文件。  
 最後運行`tmm r uuu` 或者是 `tmm run uuu`
