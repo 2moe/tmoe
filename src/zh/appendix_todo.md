@@ -59,7 +59,8 @@ ROOT_PATH = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin:/usr/bin:/bin"
 NORMAL_PATH = "/usr/local/bin:/usr/games:/usr/bin:/bin"
 ```
 
-手动修改这个配置  
+手动修改这个配置
+
 用 set 子命令修改
 
 ```sh
