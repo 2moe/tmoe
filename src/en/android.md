@@ -130,7 +130,7 @@ Or you can use `adb` to adjust the system's resource scheduling and background m
 Secondly, it has to do with the services inside the container. Something related to "power-manager" for example, it will try to call the host itself, and in some cases this can cause the whole container process to crash.  
 Finally it has to do with resource usage, if some of the system resources are already full or can't be called, then it will get stuck.
 
-If, say, you get stuck when starting a gui environment, or if the gui environment is particularly unstable.  
+If you get stuck when starting a gui environment, or if the gui environment is particularly unstable.  
 Then what is it related to?
 
 The answer is D-Bus.
