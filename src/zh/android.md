@@ -132,7 +132,7 @@ SHARE_PROC=true
 
 答案是 D-Bus。
 
-Q: D-Bus 关掉更好吗？  
+Q: 关掉 D-Bus 会更好吗？  
 A: 恰恰相反，对于部分桌面环境来说，让它的 daemon 处于运行状态会更好。  
 比如说，对于 ubuntu 18.04 + gnome，开启 dbus-daemon 后，您就可以在 rootless 环境下跑 gnome-shell 了。
 

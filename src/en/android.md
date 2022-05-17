@@ -142,7 +142,7 @@ For example, for ubuntu 18.04 + gnome, turning on dbus-daemon will allow you to 
 Q: How do I turn it off?  
 A: There are three locations related to D-Bus.
 
-- The configuration of the container. You can disable `fake cap_last_cap` in the environment variables and logins management.
+- The configuration of the container. You can disable `fake cap_last_cap` in the "user, env var & login item".
 - The configuration of the session. Change the value of `DBUS_CMD` in **/etc/X11/xinit/Xsession** to blank.
 - The configuration of startvnc or other vnc servers. Change the value of `AUTO_START_DBUS` to `false`.
 
