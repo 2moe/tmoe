@@ -1621,6 +1621,35 @@ auto_install_and_configure_fcitx4() {
     [[ ${AUTO_INSTALL_CHROMIUM} != true ]] || source ${TMOE_TOOL_DIR}/app/browser --auto-install-chromium
 }
 #######
+fix_mlocate() {
+    #mkdir -pv /var/lib/mlocate/
+    #touch /var/lib/mlocate/mlocate.db /run/mlocate.daily.lock
+    if [ ! $(command -v mlocate) ]; then
+        CUR=$(pwd)
+        TEMP_DIR='/tmp/.MLOCATE_TEMP_FOLDER'
+        mkdir -pv ${TEMP_DIR}
+        cd ${TEMP_DIR}
+        apt-get download mlocate
+        dpkg --unpack ./mlocate*.deb
+        cd ${CUR}
+        rm -rvf ${TEMP_DIR}
+        cp -f ${TMOE_TOOL_DIR}/gui/config/mlocate.postinst /var/lib/dpkg/info/
+        chmod a+rx -v /var/lib/dpkg/info/mlocate.postinst
+        apt-mark hold mlocate
+        #sed -i 's@flock@#&@g;s@/usr/bin/updatedb.mlocate || true@#&@' /var/lib/dpkg/info/mlocate.postinst
+    fi
+}
+get_ubuntu_version() {
+    if [[ ! -e /usr/lib/os-release ]]; then
+        return 1
+    fi
+    local release_info
+    release_info=$(</usr/lib/os-release)
+    case $release_info in
+    *=focal* | *=bionic* | *=xenial* | *=impish*) fix_mlocate ;;
+    *) return 0 ;;
+    esac
+}
 choose_xfce_or_xubuntu() {
     case ${DEBIAN_DISTRO} in
     ubuntu)
@@ -1631,24 +1660,7 @@ choose_xfce_or_xubuntu() {
             DEPENDENCY_01="xubuntu-desktop"
             case ${TMOE_PROOT} in
             false) ;;
-            true)
-                #mkdir -pv /var/lib/mlocate/
-                #touch /var/lib/mlocate/mlocate.db /run/mlocate.daily.lock
-                if [ ! $(command -v mlocate) ]; then
-                    CUR=$(pwd)
-                    TEMP_DIR='/tmp/.MLOCATE_TEMP_FOLDER'
-                    mkdir -pv ${TEMP_DIR}
-                    cd ${TEMP_DIR}
-                    apt-get download mlocate
-                    dpkg --unpack ./mlocate*.deb
-                    cd ${CUR}
-                    rm -rvf ${TEMP_DIR}
-                    cp -f ${TMOE_TOOL_DIR}/gui/config/mlocate.postinst /var/lib/dpkg/info/
-                    chmod a+rx -v /var/lib/dpkg/info/mlocate.postinst
-                    apt-mark hold mlocate
-                    #sed -i 's@flock@#&@g;s@/usr/bin/updatedb.mlocate || true@#&@' /var/lib/dpkg/info/mlocate.postinst
-                fi
-                ;;
+            true) get_ubuntu_version ;;
             esac
         fi
         ;;

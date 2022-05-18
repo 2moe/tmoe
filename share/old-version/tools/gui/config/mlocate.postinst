@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+# set -e
 
 #DIR=/var/lib/dpkg/info/
 #UBUNTU mlocate postinst
