@@ -1524,7 +1524,6 @@ install_tmoe_app_01() {
     printf "%s\n" "url: ${YELLOW}${OFFICIAL_URL}${RESET}"
     case ${DEPENDENCY_01} in
     vivaldi-stable | vivaldi | vivaldi-arm64) install_vivaldi_browser ;;
-    browser360-cn-stable | browser360) install_360_browser ;;
     yozo-office) install_yozo_office ;;
     freeoffice) install_free_office ;;
     mitalk) install_mitalk ;;

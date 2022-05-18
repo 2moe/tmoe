@@ -49,7 +49,7 @@ ubuntu_ppa_chromium() {
     unset CHROMIUM_BROWSER_VERSION
     PPA_REPO_URL="https://packages.tmoe.me/chromium-dev/ubuntu/pool/main/c/chromium-browser/"
     case ${ARCH_TYPE} in
-    "amd64" | "arm64"| "armhf")
+    "amd64" | "arm64" | "armhf")
         if [ ! -e "/usr/share/doc/libva2/copyright" ]; then
             printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}libva2${RESET}"
             apt update
@@ -487,46 +487,6 @@ install_vivaldi_browser() {
     fi
 }
 #############
-install_360_browser() {
-    # REPO_URL='https://aur.archlinux.org/packages/browser360/'
-    # THE_LATEST_DEB_URL=$(curl -L ${REPO_URL} | grep deb | cut -d '=' -f 2 | cut -d '"' -f 2 | head -n 1)
-    #https://down.360safe.com/gc/browser360-cn-stable_12.2.1070.0-1_amd64.deb
-    #http://down.360safe.com/gc/browser360-cn-stable-10.2.1005.3-1.aarch64.rpm
-    BROWSER_360="https://down.360safe.com/gc/browser360-cn-stable_10.4.1020.88-1"
-
-    case ${ARCH_TYPE} in
-    amd64) THE_LATEST_DEB_URL="${BROWSER_360}_amd64.deb" ;;
-    arm64) THE_LATEST_DEB_URL="${BROWSER_360}_arm64.deb" ;;
-    mips64el) THE_LATEST_DEB_URL="${BROWSER_360}_mips64el.deb" ;;
-    *) arch_does_not_support ;;
-    esac
-
-    printf "%s\n" "${PURPLE}WARNING${RESET}: 当前软件包的链接可能不是最新的"
-
-    case ${LINUX_DISTRO} in
-    debian | arch) ;;
-    redhat)
-        case ${ARCH_TYPE} in
-        amd64) THE_LATEST_DEB_URL="${BROWSER_360}.x86_64.rpm" ;;
-        arm64) THE_LATEST_DEB_URL="${BROWSER_360}.aarch64.rpm" ;;
-        mips64el) THE_LATEST_DEB_URL="${BROWSER_360}.mips64el.rpm" ;;
-        esac
-        ;;
-    esac
-    #) non_debian_function ;;
-    THE_LATEST_DEB_FILE=$(printf '%s\n' "${THE_LATEST_DEB_URL}" | awk -F '/' '{print $NF}')
-    THE_LATEST_DEB_VERSION=$(printf '%s\n' "${THE_LATEST_DEB_FILE}" | sed 's@.deb@@' | sed "s@${GREP_NAME}-@@" | sed "s@${GREP_NAME}_@@")
-    check_deb_version
-    download_and_install_deb
-    case ${LINUX_DISTRO} in
-    debian)
-        PACKAGE=browser360-cn-stable
-        sed -i '1 a\return 0' /var/lib/dpkg/info/${PACKAGE}.postinst
-        dpkg --configure -a
-        ;;
-    esac
-}
-##############
 install_microsoft_edge_debian() {
     cd /tmp
     curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >microsoft.gpg
@@ -630,7 +590,6 @@ tmoe_browser_menu() {
         "4" "Vivaldi(一切皆可定制)" \
         "5" "Epiphany(GNOME默认浏览器,基于Mozilla的Gecko)" \
         "6" "Midori(轻量级,开源浏览器)" \
-        "7" "360安全浏览器(arm64,x64)" \
         "0" "🌚 Return to previous menu 返回上级菜单" \
         3>&1 1>&2 2>&3)
     ##########################
@@ -662,16 +621,6 @@ tmoe_browser_menu() {
         ;;
     5) DEPENDENCY_01="epiphany-browser" ;;
     6) DEPENDENCY_01="midori" ;;
-    7)
-        case ${LINUX_DISTRO} in
-        arch) DEPENDENCY_01='browser360' ;;
-        *) DEPENDENCY_01='browser360-cn-stable' ;;
-        esac
-        GREP_NAME='browser360-cn-stable'
-        OFFICIAL_URL='https://browser.360.cn/se/linux/'
-        tmoe_app_menu_01
-        DEPENDENCY_01=""
-        ;;
     esac
     #    5) DEPENDENCY_01="konqueror" ;;
     #    "5" "konqueror(KDE默认浏览器,支持文件管理)" \
