@@ -75,11 +75,11 @@ check_and_view_the_eula() {
 tmoe_linux_container_eula() {
     if [ ! -d "${DEBIAN_CHROOT}" ]; then
         #less -meQ
-        sed -n p ${TMOE_GIT_DIR}/License
+        sed -n p ${TMOE_GIT_DIR}/Copyright
         cat <<-EOF
-			You must agree to the EULA to continue.
-			Press ${GREEN}Enter${RESET} to agree ${BLUE}the EULA${RESET}, otherwise press ${YELLOW}Ctrl + C${RESET} or ${RED}close${RESET} the terminal directly.
-			按${GREEN}回车键${RESET}同意${BLUE}《最终用户许可协议》${RESET} ，否则请按${YELLOW}Ctrl+C${RESET} 或直接${RED}关闭${RESET}终端。 
+			You must agree to the license to continue.
+			Press ${GREEN}Enter${RESET} to agree ${BLUE}the license${RESET}, otherwise press ${YELLOW}Ctrl + C${RESET} or ${RED}close${RESET} the terminal directly.
+			按${GREEN}回车键${RESET}同意${BLUE}《许可协议》${RESET} ，否则请按${YELLOW}Ctrl+C${RESET} 或直接${RED}关闭${RESET}终端。 
 		EOF
         read -r
         echo "You have agreed to this Agreement and its additional agreements." >${CONFIG_FOLDER}/eula-v1.2.txt
