@@ -2,6 +2,20 @@
 
 ## tmm
 
+### installation
+
+- 方法 4
+  - 工具: apt
+  - 平台: tmoe
+  - 条件: 您已经添加了 neko/tinor 仓库
+    - 命令 1: ~~`apt install tmm`~~
+    - 命令 2: ~~`apt install tmoe-2021`~~
+- 方法 5
+  - 工具: cargo
+  - 平台: crates.io
+  - 条件: 您想要手动编译
+    - 命令: ~~`cargo install tmm`~~
+
 ### config
 
 运行以下命令

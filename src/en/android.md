@@ -44,14 +44,58 @@ Afterwards "2moe" may make a deb package of the content, or it may adapt it to o
 > The reason why `curl` is used is that termux pre-installs it.  
 > If it is not pre-installed, then you need to install it with `apt update; apt install -y curl`
 
-| method | tool | condition                                             | command                            |
-| ------ | ---- | ----------------------------------------------------- | ---------------------------------- |
-| 1      | curl | You have `curl` installed,</br> and can access github | `. <(curl -L l.tmoe.me/hub/sh)`    |
-| 2      | curl | You cannot access github                              | `. <(curl -L l.tmoe.me/m/sh)`      |
-| 3      | curl | None of the above methods work                        | `curl -Lo l l.tmoe.me/ee/sh; sh l` |
+<div style="display:none">
 
-"tmoe-linux" could be renamed or blocked for some reason.  
-The above link will automatically take you to the corresponding git repository.
+```mermaid
+graph TD
+    A{Can you access github} --> |No| B(gitmoe)
+    A --> |No| C(gitee)
+    A --> |Yes| D(github)
+    D --> d(method 1)
+    C --> c(method 3)
+    B --> b(method 2)
+    d --> E{Any network errors}
+    b --> E
+    c --> E
+    E --> |Yes|F(Use alternative methods)
+```
+
+</div>
+
+![tmm_installation](assets/tmm_installation.svg)
+
+- method 1
+  - tool: curl
+  - platform: github
+  - condition: You have `curl` installed, and can access **github**
+  - choose any one of the following commands
+    - cmd 1
+      - `. <(curl -L l.tmoe.me/hub/sh)`
+    - cmd 2
+      - `. <(curl -L git.io/linux.sh)`
+    - cmd 3
+      - `curl -LO l.tmoe.me/hub/sh; sh sh`
+    - cmd 4
+      - `curl -LO git.io/linux.sh; sh linux.sh`
+    - note：[Git.io deprecation](https://github.blog/changelog/2022-04-25-git-io-deprecation)
+- method 2
+  - tool: curl
+  - platform: gitmoe
+  - condition: You cannot access **github**
+  - choose any one of the following commands
+    - cmd 1
+      - `. <(curl -L l.tmoe.me/m/sh)`
+    - cmd 2
+      - `curl -LO l.tmoe.me/ee/sh; sh sh`
+- method 3
+  - tool: curl
+  - platform: gitee
+  - condition：None of the above methods work
+  - choose any one of the following commands
+    - cmd 1
+      - `curl -LO l.tmoe.me/ee/sh; sh sh`
+    - cmd 2
+      - `curl -LO gitee.com/mo2/linux/raw/2/2; sh 2`
 
 ## 3. About the container environment
 

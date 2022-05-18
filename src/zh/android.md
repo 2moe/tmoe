@@ -45,14 +45,58 @@
 > 之所以使用`curl`, 是因为 termux 预装了它。  
 > 如果它没有被预装的话，那么您需要使用 `apt update; apt install -y curl` 来安装。
 
-| 方法 | 工具 | 条件                                          | 命令                               |
-| ---- | ---- | --------------------------------------------- | ---------------------------------- |
-| 1    | curl | 您已经安装了 `curl`,</br> 并且可以访问 github | `. <(curl -L l.tmoe.me/hub/sh)`    |
-| 2    | curl | 您无法访问 github                             | `. <(curl -L l.tmoe.me/m/sh)`      |
-| 3    | curl | 以上方法都出错了                              | `curl -Lo l l.tmoe.me/ee/sh; sh l` |
+<div style="display:none">
 
-“tmoe-linux” 可能会改名, 也有可能因为某些原因而被封锁。  
-上面的链接实际上会自动重定向到对应的 git 仓库。
+```mermaid
+graph TD
+    A{可以访问 github 吗} --> |不行| B(gitmoe)
+    A --> |不行| C(gitee)
+    A --> |可以| D(github)
+    D --> d(方法 1)
+    C --> c(方法 3)
+    B --> b(方法 2)
+    d --> E{是否出错}
+    b --> E
+    c --> E
+    E --> |是|F(使用其他方法)
+```
+
+</div>
+
+![tmm_installation](assets/tmm_installation.svg)
+
+- 方法 1
+  - 工具: curl
+  - 平台: github
+  - 条件: 您已经安装了 `curl`,并且可以访问 **github**
+  - 以下命令任选一个
+    - 命令 1
+      - `. <(curl -L l.tmoe.me/hub/sh)`
+    - 命令 2
+      - `. <(curl -L git.io/linux.sh)`
+    - 命令 3
+      - `curl -LO l.tmoe.me/hub/sh; sh sh`
+    - 命令 4
+      - `curl -LO git.io/linux.sh; sh linux.sh`
+    - 注：[Git.io deprecation](https://github.blog/changelog/2022-04-25-git-io-deprecation)
+- 方法 2
+  - 工具: curl
+  - 平台: gitmoe
+  - 条件: 您无法访问 **github**
+  - 以下命令任选一个
+    - 命令 1
+      - `. <(curl -L l.tmoe.me/m/sh)`
+    - 命令 2
+      - `curl -LO l.tmoe.me/ee/sh; sh sh`
+- 方法 3
+  - 工具: curl
+  - 平台: gitee
+  - 条件：以上方法都出错了
+  - 以下命令任选一个
+    - 命令 1
+      - `curl -LO l.tmoe.me/ee/sh; sh sh`
+    - 命令 2
+      - `curl -LO gitee.com/mo2/linux/raw/2/2; sh 2`
 
 ## 3. 关于容器环境
 
