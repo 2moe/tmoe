@@ -564,7 +564,7 @@ set_locale_title_and_desc() {
     unset MENU
     case ${LANG} in
     zh_HK*) local _Language="繁體中文_香港" ;;
-    zh_TW*) local _Language="正體中文_台灣" ;;
+    zh_TW*) local _Language="正體中文_臺灣" ;;
     zh_SG*) local _Language="简体中文_新加坡" ;;
     zh_*) local _Language="简体中文_中国内地" ;;
     ja_JP*)

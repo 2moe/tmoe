@@ -978,7 +978,7 @@ if [[ -s neofetch ]]; then
     esac
 fi
 [[ -e "neofetch" ]] || curl --connect-timeout 5 -Lo "neofetch" 'https://gcore.jsdelivr.net/gh/dylanaraps/neofetch@master/neofetch'
-[[ -e "neofetch" ]] || curl -Lo "neofetch" 'https://gitee.com/mirrors/neofetch/raw/neofetch'
+[[ -e "neofetch" ]] || curl -Lo "neofetch" 'https://raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch'
 
 if [[ -e "debian-i" ]]; then
     chmod 666 debian-i

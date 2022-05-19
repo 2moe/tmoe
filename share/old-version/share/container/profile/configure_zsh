@@ -671,7 +671,7 @@ git_clone_tmoe_linux() {
     printf "%s\n" "github.com/2moe/tmoe"
     if [ ! -e "${TMOE_GIT_DIR}/.git" ]; then
         rm -rvf ${TMOE_GIT_DIR} 2>/dev/null
-        git clone --depth=1 ${TMOE_GIT_URL} ${TMOE_GIT_DIR}
+        git clone --depth=1 -b master ${TMOE_GIT_URL} ${TMOE_GIT_DIR}
     fi
     ######################
     #TMOE_LANG=$(head -n 1 ${TMOE_LINUX_DIR}/locale.txt)
