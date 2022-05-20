@@ -61,10 +61,7 @@ Most likely, but you won't believe it.
 It's the same with "Tmoe", as some say, "it just a third-party script, it's a miracle it doesn't have problems."  
 This comment made "2moe" so upset that it was on the verge of crying.
 
-Edition 2022 is here, although in a limited capacity, but it may not be in the shape you think.
-
-"2moe" will describe in depth what some of the small features accomplish in the book's repo part.
-
+Edition 2022 is here, although in a limited capacity, but it may not be in the shape you think.  
 It is entirely up to you whether or not you use it and whether or not it has any value.
 
 In any case, "2moe" expects that you would use it only once you have thoroughly understood the feature in question, rather than naively.
@@ -81,8 +78,7 @@ If you believe the name or content in question violates your rights, please cont
 
 "Tmoe" is a minor open source project, and "2moe" lacks the financial resources and mental will to accept legal responsibility for "infringement."
 
-> "Tmoe" is a project, "2moe" is a living entity.  
-> "2moe" is not a grass, nor is it an extraterrestrial creature. "2moe" will be quite upset if you go too far.
+> "Tmoe" is a project, "2moe" is a living entity.
 
 Previously, Tmoe employed such a tight license because 2moe was concerned about different legal difficulties.
 
