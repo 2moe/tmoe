@@ -282,7 +282,7 @@ We are not implying that "Tmoe" is beautiful, or it is attractive.
 On the contrary, it is considered ugly and vulgar by some.  
 But even if it's an ugly thing, it has its own worth.
 
-It may be difficult to find some of the problem's wonderful applications if you approach it with a mindset of quick success.
+If you approach things in a hurry, it may be difficult to find some fantastic uses for them.
 
 In this section, we'll use the previously mentioned **rust container image** and combine it with CI to demonstrate its use.  
 If one day someone releases some similar images that is more comprehensive and more aggressively updated than the Tmoe-related images, then the Tmoe-related images may be of little use.  
