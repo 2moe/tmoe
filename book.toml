@@ -89,7 +89,8 @@ create-missing = false
 # sidebar-width = "250px"
 
 [output.html]
-default-theme = "navy"
+# default-theme = "navy"
+default-theme = "ayu"
 # LaTex
 mathjax-support = false
 
