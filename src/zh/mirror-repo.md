@@ -74,10 +74,10 @@ pub enum Option<T> {
 在换源过程中，可能要给软件源文件创建软链接。
 
 ```rust
-use std::os::unix::fs;
+use std::os::unix;
 
-fn main() -> std::io::Result<()> {
-    fs::symlink("/etc/tmoe/repo/src/debian/xxyy.source", "/etc/apt/sources.list.d/mirror.source")?;
+fn create_symlink()-> std::io::Result<()> {
+    unix::fs::symlink("/etc/tmoe/repo/src/debian/xxyy.source", "/etc/apt/sources.list.d/mirror.source")?;
     Ok(())
 }
 ```
