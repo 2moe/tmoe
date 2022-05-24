@@ -3279,7 +3279,7 @@ install_deepin_desktop() {
     esac
     ####################
     beta_features_quick_install
-    apt_purge_libfprint
+    # apt_purge_libfprint
     configure_vnc_xstartup
 }
 ############################
