@@ -3190,16 +3190,13 @@ dde_warning() {
 ENDofTable
 
     cat <<-EOF
-    若您使用的是deepin，则可直接从软件源安装。
-    对于除deepin外的其他debian系发行版，本工具调用的是${BLUE}Ubuntu DDE${RESET}的软件源,而非${YELLOW}UOS${RESET}。
-    您可以使用新版的Ubuntu LTS系统来安装DDE，旧版系统可能存在依赖关系问题。
-    过新的系统亦存在此问题,例如debian sid。
-    而对于其他系发行版，请尽量选择最新的发行版。
-    例如红帽系,请选fedora,勿选centos。
-    若您需要在arm64容器环境中运行,则建议您使用OpenEuler。
-    若您需要在x64容器环境中运行，则建议您使用arch/fedora/ubuntu。
+    若您使用的是deepin，则可直接从软件源安装。  
+    对于除deepin外的其他debian系发行版，本工具调用的是${BLUE}Ubuntu DDE${RESET}的软件源,而非${YELLOW}UOS${RESET}。  
+    您可以使用Ubuntu LTS系统来安装DDE， 例如 focal  
+    对于红帽系,请选fedora,勿选centos。  
 EOF
-
+    # 若您需要在arm64容器环境中运行,则建议您使用 UOS。
+    # 若您需要在x64容器环境中运行，则建议您使用 deepin/arch/fedora/ubuntu。
     case "${TMOE_PROOT}" in
     true) printf "%s\n" "${RED}WARNING！${RESET}检测到您当前可能处于${BLUE}PROOT容器${RESET}环境下！${YELLOW}DDE可能无法正常运行${RESET},您可以换用deepin或fedora chroot容器进行安装。" ;;
     false)

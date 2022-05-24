@@ -1076,10 +1076,10 @@ install_deepin_linux_distro() {
     ALPHA_SYSTEM=$(
         whiptail --title "DEEPIN" --menu "deepin20正式版采取统一的设计风格,从桌面环境\n和应用进行重新设计,带来焕然一新的视觉感受" 0 50 0 \
             "1" "deepin20 apricot(x64,i386) 大小45M" \
+            "2" "deepin15.5 camel(arm64) 大小84M" \
             "0" "🌚 Back 返回" \
             3>&1 1>&2 2>&3
     )
-    # "2" "deepin15.5 camel(arm64) 大小78M" \
     #"999" "uos20 eagle(arm64,x64,i386) 大小38M" \
     ##############################
     case "${ALPHA_SYSTEM}" in
@@ -1088,14 +1088,14 @@ install_deepin_linux_distro() {
         DISTRO_NAME='deepin'
         install_deepin_apricot_amd64_and_i386
         ;;
-        # 999)
-        #     DISTRO_NAME='uos'
-        #     install_uos_eagle
-        #     ;;
-        # 2)
-        #     DISTRO_NAME='deepin'
-        #     install_deepin_camel_arm64
-        #     ;;
+    # 999)
+    #     DISTRO_NAME='uos'
+    #     install_uos_eagle
+    #     ;;
+    2)
+        DISTRO_NAME='deepin'
+        install_deepin_camel_arm64
+        ;;
     esac
     ###########################
     exit 0
