@@ -3279,10 +3279,21 @@ install_deepin_desktop() {
     esac
     ####################
     beta_features_quick_install
+    fix_dde_dpkg_error
     # apt_purge_libfprint
     configure_vnc_xstartup
 }
 ############################
+fix_dde_dpkg_error() {
+    local dpkg_info_dir
+    dpkg_info_dir="/var/lib/dpkg/info"
+    for i in mincores-dkms warm-sched; do
+        if [[ -e ${dpkg_info_dir}/$i.postinst ]]; then
+            sed -i '1a\return 0' $i.postinst
+        fi
+    done
+    dpkg --configure -a
+}
 set_default_xfce_icon_theme() {
     dbus-launch xfconf-query -c xsettings -np /Net/IconThemeName -s ${XFCE_ICON_NAME} 2>/dev/null
     case ${HOME} in
