@@ -2867,7 +2867,10 @@ choose_gnome_session() {
     5) gnome_session_5 ;;
     esac
     case "${GNOME_SESSION_OPT}" in
-    1) REMOTE_DESKTOP_SESSION_02='gnome-flashback-metacity' ;;
+    1)
+        set_gnome_desktop_deps
+        REMOTE_DESKTOP_SESSION_02='gnome-flashback-metacity'
+        ;;
     2)
         set_gnome_flashback_desktop
         REMOTE_DESKTOP_SESSION_02='gnome-shell-x11'

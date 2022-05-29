@@ -291,7 +291,7 @@ cat_vnc_log() {
 
     case ${Cat_bin} in
     batcat | bat) grep -Ev 'tigervnc.org|xkbcomp|keysym' ${VNC_LOG_FILE} | ${Cat_bin} -ppn -l log - ;;
-    *) grep -Ev 'tigervnc.org|xkbcomp|keysym' ${VNC_LOG_FILE} | cat -n ${VNC_LOG_FILE} ;;
+    *) grep -Ev 'tigervnc.org|xkbcomp|keysym' ${VNC_LOG_FILE} | cat -n - ;;
     esac
 }
 start_tmoe_xvnc() {
