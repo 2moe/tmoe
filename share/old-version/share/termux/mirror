@@ -158,7 +158,7 @@ mirror_sources_station_download_speed_test() {
     SOURCE_MIRROR_STATION='mirrors.cloud.tencent.com/termux'
     download_termux_clang
     SOURCE_MIRROR_STATION_NAME='official'
-    SOURCE_MIRROR_STATION='packages.termux.org'
+    SOURCE_MIRROR_STATION='packages.termux.dev'
     download_termux_clang
     ###此处一定要将SOURCE_MIRROR_STATION赋值为空
     SOURCE_MIRROR_STATION=""
