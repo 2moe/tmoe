@@ -272,10 +272,9 @@ check_android_version() {
     ANDROID_6_FILE="${CONFIG_FOLDER}/android6_termux"
     if [ "${LINUX_DISTRO}" = 'Android' ] && [ ! -e "${ANDROID_6_FILE}" ]; then
         if (("${ANDROID_VERSION}" < 7)); then
-            printf "%s\n" "检测到您当前的安卓系统版本低于7,请勿使用本工具进行换源。" >${ANDROID_6_FILE}
+            printf "%s\n" "检测到您当前的安卓系统版本低于7,请使用官方Termux为低于安卓7版本构建的app：https://github.com/termux/termux-app/actions/runs/2237286563" >${ANDROID_6_FILE}
             sed -n p ${ANDROID_6_FILE}
-            printf "%s\n" "Your current Android system version is lower than 7."
-            printf "%s\n" "旧版Android可能无法使用本功能。"
+            printf "%s\n" "Your current Android system version is lower than 7,Please use the official Termux app built for versions lower than Android 7:https://github.com/termux/termux-app/actions/runs/2237286563"
             press_enter_to_continue
         fi
     fi
