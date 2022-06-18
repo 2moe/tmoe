@@ -86,7 +86,7 @@ worldwide_mirror_station() {
         POINTLESS_LIST="${PREFIX}/etc/apt/sources.list.d/pointless.list"
         [[ ! -s ${POINTLESS_LIST} ]] || do_you_want_to_continue
         cd ${TMPDIR}
-        curl -Lo .setup-pointless-repo.sh https://its-pointless.github.io/setup-pointless-repo.sh
+        aria2c --console-log-level=warn --no-conf --allow-overwrite=true -d ${TMPDIR} -o '.setup-pointless-repo.sh' 'https://raw.githubusercontent.com/2moe/tmoe/master/share/old-version/share/termux/setup-pointless-repo'
         if [ $(command -v bat) ]; then
             bat -ppn .setup-pointless-repo.sh
         else

@@ -1,0 +1,12 @@
+#!/data/data/com.termux/files/usr/bin/sh
+pkg up -y
+pkg upgr -y
+pkg i coreutils gnupg -y
+mkdir -p $PREFIX/etc/apt/sources.list.d
+ANDROID_VERSION=$(getprop ro.build.version.release)
+if [ "$ANDROID_VERSION" -ge "7" ]; then
+    echo "deb [trusted=yes] https://its-pointless.github.io/files/24 termux extras" > $PREFIX/etc/apt/sources.list.d/pointless.list
+else
+    echo "deb [trusted=yes] https://its-pointless.github.io/files/21 termux extras" > $PREFIX/etc/apt/sources.list.d/pointless.list
+fi
+pkg up -y
