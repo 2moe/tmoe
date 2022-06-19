@@ -2,44 +2,54 @@
 
 中文 | [English](https://doc.tmoe.me/en/prologue.html)
 
-- [問與答](#問與答)
-  - [我是否應該閱讀這本書？](#我是否應該閱讀這本書)
-  - [如何閱讀這本書](#如何閱讀這本書)
-- [關於天萌的使用](#關於天萌的使用)
 - [宣告](#宣告)
-  - [許可證](#許可證)
-- [交流與討論](#交流與討論)
-  - [問題反饋](#問題反饋)
-- [尾聲](#尾聲)
+- [如何閱讀這本書](#如何閱讀這本書)
+- [使用場景](#使用場景)
+  - [有意義與否](#有意義與否)
+  - [android 、圖書館與 LaTex](#android-圖書館與-latex)
+  - [iOS、旅館與 manjaro+goland](#ios旅館與-manjarogoland)
+  - [其他場景](#其他場景)
+- [題外話](#題外話)
+  - [關於之前的文件](#關於之前的文件)
 
 > 下文將用“本書”來代指“本手冊”。
 
-## 問與答
+## 宣告
 
-### 我是否應該閱讀這本書？
+對於普通使用者來說，本專案自身沒有任何價值。  
+本書亦是如此。  
+這裡沒有輕小說中“劍與魔法”的奇幻異世界冒險歷程, 更沒有《詩經》中“墮山喬嶽，允猶翕河”般遼闊壯美的風景。  
+有的只是無聊透頂的內容。  
 
-<div style="display:none">
+對於非普通使用者來說，它的價值主要取決於使用場景。  
 
-```mermaid
-graph TD
-    A{您是天萌的使用者嗎} --> |否| B{您打算使用天萌嗎}
-    B --> |否| D(不用看了)
-    B --> |是| E(簡單看一下)
-    A --> |是|C(有必要去閱讀)
-```
+> 在本章的“使用場景”中，我們將簡單介紹相關內容。  
 
-</div>
+若在同一場景下，存在更優的替代品，那麼您不妨敞開胸懷，給本專案多提幾個 issues。  
+或許有一天，世界會變得更加美化呢！
 
-![should_I_read_this_book](assets/prologue_should_I_read_this_book.svg)
+<!-- 
+我們在很久之前，就已經知道了：多肽鏈的盤曲、摺疊方式及其形成的空間結構的千差萬別，這是蛋白質多樣性的原因之一。
+而結構的多樣性決定了功能的多樣性。  
+類比本專案，由於本專案在架構設計上的不合理，因此對於 edition 2021，除了 android 外，開發者只建議您在容器環境中使用。   
+-->
+除了 android 外，對於某些功能或工具，本專案的開發者若未將其打成包（例如 deb 包），並且未在本書中對其進行詳細解析，那麼只建議您在容器中使用。  
+對於 android, 請翻閱 “容器/android”。  
 
-### 如何閱讀這本書
+> old-version 的內容會被新版所替代，新版將會放在 dev 分支。  
+> Trust us. 未來會更好的!  
 
-在閱讀本書時，您需要了解的內容。
+## 如何閱讀這本書
+
+在閱讀本書時，您需要了解的內容。  
+
+> 本書由 [mdbook](https://github.com/rust-lang/mdBook) 生成。  
 
 - 左上角的三條槓 "≡"
   - 點選三條槓開啟目錄
 - 頁面最下方的評論區
-  - 您可以使用 github 帳號登入，您發表的內容將與 "github discussions" 保持同步。同理，如果您在 discussions 中找到當前章節的討論頁面，並在裡面發表內容，那麼相關內容也會同步到下方的評論區。
+  - 您可以使用 github 帳號登入，您發表的內容將與 "github discussions" 保持同步。
+  - 同理，如果您在 discussions 中找到當前章節的討論頁面，並在裡面發表內容，那麼相關內容也會同步到下方的評論區。
 - 左上角的畫筆 "🖌️"
   - 先點選畫筆，再選擇主題，最後完成切換
 - 左下角的 "<" 符號
@@ -49,69 +59,263 @@ graph TD
 
 > 如果您的網頁（螢幕）顯示空間足夠寬，那麼"<" 和 ">" 將位於中間，而不是下方。
 
-## 關於天萌的使用
+## 使用場景
 
-從 edition 2022 開始，對於某些功能或工具，天萌的開發者如果沒有把它打成包（例如 deb 包），並且沒有在本書中對其進行詳細解析。  
-那麼不建議您在宿主環境下使用相關功能，只建議您在容器中使用。
+在合適的場景下，若您能用本專案做一些有趣或者是有意義的事情，則這即為本專案存在的意義。  
 
-> 對於 edition 2021 的所有功能，“二萌” 只建議您在容器中使用。  
-> 對於 edition 2021 中無法在容器中使用的部分功能，您可以在虛擬機器中測試。
+對您來說有意義的事情，對本專案而言，亦是如此。  
 
-您如果對一個功能不夠了解，那麼會去使用它嗎？  
-或許會，但是您可能不會去信任它。
+You can do something interesting or meaningful.
 
-“天萌” 也是一樣的。  
-“天萌” 只是一個第三方專案，正如有些人所說的：“它不出問題才奇怪呢？”  
-這句話讓“二萌”非常非常傷心，難過到要哭了。
+### 有意義與否
 
-edition 2022 其實已經來了，雖然只有一小部分，但是它可能與您預想的形式完全不一樣。  
-在本書的 repo 篇中，“二萌”將為您詳細解析一些小功能的作用。  
-至於是否使用它，以及它是否存在價值，這取決於您的看法。
+有意義與否並非如 `bool` 變數那般非 `true` 即 `false`。  
+它是相對的，而非絕對。  
+在這裡我們並不想深入去探求哲學問題，簡而言之，這個問題的答案因人而異，沒有絕對的標準。  
 
-無論如何，“二萌”都希望您在瞭解完相關功能後，再去使用它，而不是盲目去用。
+> 問題：什麼是意義不大的事情呢？
 
-悄悄埋個伏筆，本書將在 repo 篇中介紹一個對於 debian 和 ubuntu 來說，可能有點用的小功能。  
-您可能會用到這個小功能，但是不一定能猜到這個小功能被 “二萌” 拆成了數百個 deb 包。
+假設存在以下兩個場景：  
 
-## 宣告
+- 1.您在 arm64 裝置上模擬 x64 環境，然後在上面打！遊！戲！  
+- 2.您在 arm64 裝置上遠端連線到 x64 windows 裝置，然後執行 windows x64 平臺的遊戲。  
 
-在本書中，“天萌” 對應 "tmoe"；  
-“二萌” 對應 "2moe"。  
-“二萌” 沒有為 "tmoe" 相關的東西註冊商標。  
-如果相關名稱或內容侵害了您的權益，請聯絡 “二萌” 進行修改。
+前者花了一小時，而後者花了五分鐘。  
+___
 
-### 許可證
+>主觀回答1：
+>前者可能是有趣的，但是意義相較於後者而言，可能沒有那麼大。  
+>時間是很寶貴的，我希望大家能把時間花在更有意義的事情上，而不是浪費時間。
 
-“天萌” 只是一個小小的開源專案，“二萌” 並沒有充足的資金和良好的心理狀態去承擔“侵權”帶來的法律責任。
+___
 
-> “天萌” 是一個專案，“二萌” 是一個有生命的個體。
+> 主觀回答2：
+> 我既沒有電腦，也租不起 x64 虛擬專用伺服器，更玩不起雲遊戲，在手機上體驗 windows 遊戲讓我感受到了快樂，我認為這是值得的，並且是有意義的。  
 
-“天萌”之前之所以使用如此嚴格的許可證，就是因為“二萌”擔心各種各樣的法律問題。
+___
 
-從 2022-05-12 開始，“二萌” 將“天萌” 的許可證更換為 “Apache-2.0”，並刪除了之前的私有協議和 "GPL-2.0+"。  
-對於“天萌”呼叫的外部專案，如果存在衝突許可證，那麼 “二萌” 會將其拆成外部的包。
+在下文中，我們將會假設幾個場景，您可以對其進行評價，判斷其是否有意義。  
 
-“天萌” 的 “documentation(文件)” 使用 "CC-BY-4.0"，“非 doc” 使用 "Apache-2.0"。  
-“天萌” 呼叫的外部專案，使用它們各自的協議，詳見專案根目錄下的 "Copyright" 檔案。
+### android 、圖書館與 LaTex
 
-如果相關許可證沒有衝突的話， 那麼您可以在商業專案中呼叫 “天萌”。  
-~~二萌很窮很窮的，嗚嗚，如果您用天萌賺到錢了，希望能給二萌或者是天萌的其他開發者一點點~~
+- 地點：圖書館
+- 裝置：android 手機/平板 (無root)
+- 條件：無網路，或網路狀態不佳 (網速很慢)
 
-> 從理論上來說，對於一般的許可證，只要取得了所有貢獻者的同意，那麼就可以換許可證。  
-> 如果相關貢獻者不同意更換，那麼很簡單，把他們貢獻過的程式碼都刪掉或重寫就可以了。
+![latex_editor](./assets/latex_editor.png)
 
-## 交流與討論
+- 描述：您在圖書館裡，帶著 android 手機/平板，在離線環境下，執行 gnome + LaTex 環境（texlive-full） + LaTex 編輯器，在上面用 LaTex 編輯器寫文章。  
 
-如果您有什麼奇思妙想，可以在評論區裡告訴“二萌”，也可以提交 issue。  
-有個情況是個例外。  
-假設您想要增加一個上游幾乎停止維護的系統到“天萌”的容器列表，對於這種情況，就算您直接提交 PR, “二萌”也不太想接。（其他 PR 還是很樂意接受的。）
+### iOS、旅館與 manjaro+goland
 
-曾經有個人說過這樣一句話：“軟體包不能有太多錯誤，以至於我們拒絕維護它。”  
-“二萌” 雖然不知道這句話是誰說的，但是覺得它很有道理。
+- 地點：旅館、酒店、餐廳、銀行或電信營業廳（等網路良好的場所）
+- 裝置：iPhone/iPad (或其他帶有瀏覽器的裝置)
+- 條件：網路環境優秀（至少要良好）
+- 描述：您出門在外，只帶了 ios 裝置。可是您做夢都想要用 `idea`, `clion` 和 `goland`。  
+  github 的 codespace (線上版 vscode) 可以執行不同的環境，於是您將 tmoe 的 gui 容器直接作為 codespace 的 devcontainer。
+  在上面跑 gui (xfce), 再跑 goland。
 
-### 問題反饋
+> 在 vscode 上跑 jetbrains goland, 這何嘗不是一種 PV 呢？關於 PV 的說明，詳見本章的“題外話”。
 
-先來看一個流程圖
+- 教程：
+  - 準備：
+    - 您擁有一個支援 codespace 的 github 賬號
+    - 若顯示區域不夠寬，則您可能需要將瀏覽器（如 safari）切換為桌面版網站（檢視）
+  - 開始：
+    - 成功連線到 codespace 後，開啟 vscode 內建終端，並在專案目錄下執行以下操作
+  - 說明：
+    - 截至 2022-06-15, github 官方並沒有提供基於 manjaro 的 xfce 環境（容器映象）。  
+    - 儘管 github 的 codespace （vscode）外掛自帶了生成配置的功能，但是之後本專案開發者可能會寫個類似功能的小工具。從而讓大家更省心一點。  
+
+```json
+mkdir -p .devcontainer
+cd .devcontainer
+cat >devcontainer.json<<-'EOFJSON'
+// For format details, see https://aka.ms/devcontainer.json.
+{
+    "name": "Manjaro",
+    "dockerFile": "Dockerfile",
+    "runArgs": [
+        "--cap-add=SYS_PTRACE",
+        "--security-opt",
+        "seccomp=unconfined"
+    ],
+    // "mounts": [
+    //     "source=dind-var-lib-docker,target=/var/lib/docker,type=volume"
+    // ],
+    "mounts": [
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    ],
+    "overrideCommand": false,
+    // Configure tool-specific properties.
+    "customizations": {
+        // Configure properties specific to VS Code.
+        "vscode": {
+            // Add the IDs of extensions you want installed when the container is created.
+            "extensions": [
+                // "MS-CEINTL.vscode-language-pack-zh-hans",
+                "ms-azuretools.vscode-docker"
+            ]
+        }
+    },
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    "forwardPorts": [
+        5902
+    ],
+    // Use 'postCreateCommand' to run commands after the container is created.
+    // "postCreateCommand": "docker --version",
+    // Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+    // "build": {
+    //     "args": {
+    //         "ENABLE_NONROOT_DOCKER": "false"
+    //     }
+    // },
+    "remoteUser": "ddk"
+}
+EOFJSON
+
+cat > Dockerfile<<-'EOFDKF'
+# syntax=docker/dockerfile:1
+#---------------------------
+# FROM cake233/manjaro-zsh-amd64
+
+FROM cake233/manjaro-xfce-amd64
+
+# set username & group
+ARG USERNAME=ddk
+ARG GROUPNAME=ddk
+# ARG USER_UID=1001
+# ARG USER_GID=$USER_UID
+
+# rm cn mirrorlist
+RUN sed -e '/bfsu.edu.cn/d' \
+    -e '/tuna.tsinghua.edu.cn/d' \
+    -e '/opentuna.cn/d' \
+    -i /etc/pacman.conf
+
+# install dependencies
+# live server: https://docs.microsoft.com/en-us/visualstudio/liveshare/reference/linux#install-linux-prerequisites
+RUN pacman -Syu \
+    --noconfirm \
+    --needed \
+    base \
+    base-devel \
+    git \
+    lib32-gcc-libs \
+    lib32-glibc \
+    gcr \
+    liburcu \
+    openssl-1.0 \
+    krb5 \
+    icu \
+    zlib \
+    gnome-keyring \
+    libsecret \
+    desktop-file-utils \
+    xorg-xprop \
+    xdg-utils
+
+# locale: Chinese Simplified (China)
+ENV LANG=zh_CN.UTF-8
+
+# add new user
+RUN groupadd --force ${GROUPNAME} \
+    && useradd --create-home --gid ${GROUPNAME} ${USERNAME} \
+    && mkdir -p /etc/sudoers.d \
+    && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ddk \
+    && chmod 400 /etc/sudoers.d/ddk
+
+WORKDIR ["/home/$USERNAME"]
+
+# clean cache
+RUN yes | pacman -Scc; \
+    rm -rf /var/cache/pacman/pkg/* \
+    /tmp/* \
+    2>/dev/null
+
+# command: sleep infinity
+CMD [ "sleep", "inf" ]
+EOFDKF
+```
+
+rebuild：
+
+- 1.按下 F1 或 Ctrl+Shift+P 或 cmd+shift+p  
+- 2.搜尋 rebuild  
+- 3.選擇 Codespaces: Rebuild container
+
+>您也可以手動選擇“遠端資源管理器”，再選擇 Codespace, 最後點選 rebuild container 的 圖示。
+
+上面已經做了 docker in docker 的配置。  
+如果需要在裡面跑 docker 的話，那就執行以下操作：
+
+- 安裝 docker： `sudo pacman -Syu docker`  
+- 將 ddk 使用者加入到 docker 使用者組： `sudo usermod -aG docker ddk`  
+
+> `ddk` 可以修改為其他使用者名稱。
+> 關於上述命名的來源，詳見“題外話”
+
+關於 vnc
+
+進入了 codespace 環境後，在內建終端裡執行以下操作
+- 執行 `tmoe`
+- 先選擇語言環境，再選擇 tools
+- 接著選 software， 然後選 dev 
+- 安裝 goland, clion 或者其他 IDEs
+- 退出 tools
+
+由於此容器映象已經預裝了 xfce, 因此您無需重複安裝。
+
+對於網頁連線的 codespace:
+- 執行 `novnc`，設定密碼
+- 開啟埠轉發處的 `36080` 對應的 local address
+
+對於本地 vscode 連線的 codespace：
+- 執行 `startvnc`
+- 開啟vnc客戶端，輸入本地 vnc地址(預設是 127.0.0.1:5902)。
+
+
+### 其他場景
+
+序章中描述的內容是有限的，更多內容分佈於本書的其他章節。  
+對於其他場景，例如：您想要使用 github actions 來編譯不同架構的軟體，那麼可以去看看 “容器/docker”。
+
+## 題外話
+
+注意：
+題外話對您來說，可能是**沒有意義**的，甚至有可能引起您的**反感**。  
+開發者建議您開啟目錄，並跳轉至其他章節。  
+
+___
+
+Q: 為什麼是 `ddk`
+
+A: 有個叫 `ddk` 的使用者，給本專案提了個與 `codespace` 相關的 issue, 於是他就“青史留名”了。  
+(￣▽￣)
+其實非本專案相關的 Issue 發在 discussions 裡會更好。  
+
+Q: 什麼是 `PV`
+
+A: 這是理想氣體狀態方程。
+  `PV=nTR`
+
+- 解析：
+  - P: 壓強
+  - V: 氣體體積
+  - n: 物質的量
+  - T: 熱力學溫度
+  - R: 氣體常數
+
+您可能不知道的冷知識：
+    2moe 之前在某個漫畫網站上，看到過一本漫畫，它的標題是 <font style="background: white">~~《我因為被前輩 PV 了，所以也要 PV 前輩的女朋友》~~</font>  
+    哎呀，這孩子物理應該學得還不錯吧！  
+
+> 這只是標題吸引人而已，好孩子不要去看。  
+
+### 關於之前的文件
+
+之前的文件會用下面這種風格來描述。
+現在正在逐步“改進”。
 
 <div style="display:none">
 ```mermaid
@@ -130,33 +334,8 @@ graph TD
 
 ![cat](assets/prologue_cat.svg)
 
-不好意思，好像放錯圖了。  
-~~因為二萌懶得再畫新圖了，所以就用這張吧~~
+上述流程圖換成短篇漫畫可能會更好。  
+開發者只是希望使用者不要冷眼旁觀，有問題要及時反饋。  
 
-如果沒有人知道這隻貓咪受傷了，或者大家都知道，只是不想去管它，那麼它可能幾天後就前往喵星了。  
-(其實這隻貓是外星的喵，它受傷只是偽裝，真正的目的是潛伏在地球，執行一些機密任務 QwQ)
-
-還有可能，這隻貓憑藉著自身頑強的生命力，自愈了。
-
-再做個假設，假設您很有愛心，想要救貓貓。  
-您想要靠近貓貓，可是貓貓對您哈氣，它不肯讓陌生人接近。  
-於是您跑到五金店裡買了籠子，然後費勁千辛萬苦，抓到了這隻貓。  
-最後您把這隻貓送到了附近的 xx 人民醫院，或者是 xx 小診所。  
-有些大醫院裡可能會有獸醫，或者是獸藥。  
-可是您去的那家剛好沒有。  
-而且附近既沒有寵物救助站，也沒有寵物醫院。  
-那怎麼辦呢？  
-能在人類的醫院給貓咪掛號嗎？
-
-> 本故事純屬虛構，如有雷同，純屬巧合。
-
-很久之前，無論您在 “天萌” 的 issue 區裡問什麼問題，“二萌” 都會想辦法回答您，很少有不回覆的情況。  
-但是現在，“二萌” 變了，變壞了，變得不想回答問題了。  
-嗚喵，對於與本專案無關的話題，其實您還是可以放在 “discussions” 裡的，不過“二萌”可能連小“貓病”都治不好。
-
-## 尾聲
-
-至此，序章正式完結。  
-在之後的篇章中，我們將為您揭開“她”的層層面紗，一步一步帶您領略其中的魅力。
-
-> 點選右下角的 **>** 符號，開啟新的篇章。
+咱是知道有人在罵的，但是他沒有反饋。  
+就像是這篇文件，寫得不好也可以改呀！  
