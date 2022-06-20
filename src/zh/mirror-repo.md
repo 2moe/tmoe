@@ -1,111 +1,27 @@
 # 镜像源
 
-- [1. 开发历程](#1-开发历程)
-  - [1.1. 始端](#11-始端)
-  - [1.2. 整理与分析源](#12-整理与分析源)
-  - [1.3. 后续工作](#13-后续工作)
-  - [1.4. 最终结果](#14-最终结果)
-- [2. debian-based 镜像源](#2-debian-based-镜像源)
-  - [2.1. 快速上手](#21-快速上手)
-  - [2.2. 详细解析](#22-详细解析)
-    - [2.2.1. set-src-list](#221-set-src-list)
-    - [2.2.2. region-code-repo](#222-region-code-repo)
-    - [2.2.3. 软件包解析](#223-软件包解析)
-    - [2.2.4. set-src-link](#224-set-src-link)
-      - [2.2.4.1. region & link](#2241-region--link)
-      - [2.2.4.2. unlink](#2242-unlink)
-    - [2.2.5. 源文件解析](#225-源文件解析)
-    - [2.2.6. 手动安装](#226-手动安装)
+- [1. debian-based](#1-debian-based)
+  - [1.1. 快速上手](#11-快速上手)
+  - [1.2. 详细解析](#12-详细解析)
+    - [1.2.1. set-src-list](#121-set-src-list)
+    - [1.2.2. region-code-repo](#122-region-code-repo)
+    - [1.2.3. 软件包解析](#123-软件包解析)
+    - [1.2.4. set-src-link](#124-set-src-link)
+      - [1.2.4.1. region & link](#1241-region--link)
+      - [1.2.4.2. unlink](#1242-unlink)
+    - [1.2.5. 源文件解析](#125-源文件解析)
 
 ---
 
-“二萌”在写这个小功能前，开心地为“天萌”设计了“新”标语。
+本项目致力于为世界上大多数国家和地区提供更优秀的服务。
 
-TMOE, More Optional Environments.
+若您在使用发行版的官方镜像源时，网速不佳，那么不妨试试本项目的“镜像源”功能。
 
-```rust,editable
-pub enum Option<T> {
-    Some(T),
-    None,
-}
-```
+## 1. debian-based
 
-> 上面那段代码是 rust 标准库中很经典的一段定义
+开发者为每一个镜像源都打了一个 deb 包。
 
-“二萌” 在打完之后，暗自感叹：这段代码与 **TMOE** 的结合是多么巧妙呀！
-
-在数日后，“二萌”以与预想完全不同的形式写完了这个功能，然后默默删掉了那段 rust 代码。
-
-求“二萌”的心路历程。
-
-## 1. 开发历程
-
-### 1.1. 始端
-
-在很久之前，曾经有人希望“天萌”能支持这个功能：在容器初始化前，手动配置软件源。  
-二萌当初说：“如果只是加个 ustc 源的选项，那么不改也可以。 如果要考虑到德国、法国和英国等国家的镜像源，那就得要改了。”  
-此处的“改”指的是修改逻辑。  
-二萌当初就想要做个新的换源功能了。
-
-### 1.2. 整理与分析源
-
-二萌最开始打算用 rust 来写。  
-不管用什么语言写，最开始的时候，都必须要有一份源列表。  
-比如说，debian 官方的 [worldwide mirror list](https://www.debian.org/mirror/list)  
-不过 debian 官方列表的源太少了，应该还有更多的源吧。  
-于是，二萌开开心心地踏上了搜集和整理世界上各个国家和地区的软件源的旅途了 ~~,然后一去不复返了~~  
-~~(想要我的宝藏吗？都给你吧！人们对此趋之若骛，二萌也踏上了征程，从此世界进入了新时代。)~~  
-这么简单的事情只需要几个小时就能搞定了吧！  
-然而，事情并没有那么简单。  
-二萌只能告诉您，这件事花了很多天，尽是些脏活和累活。
-
-如果一个源提供了 debian 镜像，那它不一定有 debian-security 镜像。  
-如果一个源提供了 ubuntu 镜像，那它不一定有 debian 镜像。  
-如果一个源支持 http， 那它不一定支持 https。  
-二萌只是简单地举了几个例子，是不是让数据分析的工作变得麻烦起来了呢？
-
-### 1.3. 后续工作
-
-因为二萌已经把脏活和累活都干完了，所以接下来的工作就不难了。  
-二萌可以用 rust 写一个 TUI 换源工具，然后通过解析外部的 **软件源.toml** 来实现换源， 也可以直接把源列表硬编码进程序内部。  
-为了更广的适用性，这个工具应该还得要支持 CLI。  
-可是二萌那时已经很累了，不想再做太多额外的工作了。
-
-在换源过程中，可能要给软件源文件创建软链接。
-
-```rust
-use std::os::unix;
-
-fn create_symlink()-> std::io::Result<()> {
-    unix::fs::symlink("/etc/tmoe/repo/src/debian/xxyy.source", "/etc/apt/sources.list.d/mirror.source")?;
-    Ok(())
-}
-```
-
-如果只是 CLI, 使用上面那种方法创建软链接，真的会比 `ln -s` 更高效，更安全吗？
-
-> 其实 rust 可以直接调用系统的 `ln`
-
-不过这不是关键，关键是不同架构要用不同的包。  
-这在极端情况下有点不太好。
-
-> 什么是极端情况？  
-> 您可以去回顾一下本书的“买口罩问题”。
-
-二萌想了想，觉得这已经变成了为了用 rust 而用 rust 了。  
-语言只是工具，我们在使用前应该考虑它的适用范围。
-
-### 1.4. 最终结果
-
-二萌最后为每一个源都打了一个包，并且每个源都依赖了一个用 dash 写的小脚本（`set-src-link`）。
-
-> 对于仅适用于 debian-based 发行版的应用来说，用 dash 写脚本还是挺好的。  
-> 二萌在很久之前曾用过某个只有 `dash` ，没有 `bash` 的 debian-based 发行版。  
-> `dash` 虽然会比 `bash` 更快， 但是不适合交互式操作  
-> TUI 和 CLI 并不冲突，或许有一天，二萌会再给这个小功能写个前端。  
-> 嗯，还是 rust, 用 rust 写 TUI 前端。
-
-对于 debian 和 ubuntu 通用的源的 deb 包，二萌把它们放到了 neko 仓库。
+对于 debian 和 ubuntu 通用的源的 deb 包，开发者把它们放到了 neko 仓库。
 
 <div style="display:none">
 ```mermaid
@@ -119,16 +35,12 @@ graph TD
 
 ![mirror-repo_neko-toy-and-uuu.svg](assets/mirror-repo_neko-toy-and-uuu.svg)
 
-## 2. debian-based 镜像源
+缺陷：
 
-对于 debian，您在安装完 `neko-repo` 后，就可以通过 `apt` 来安装 debian 的镜像源了。  
-其实这个功能还可以给 kali 和 mint 用。  
-但是呢！ 并非所有镜像源都支持它们。  
-提供 ubuntu 镜像源的网站不一定会同时提供 mint 源。
+- 尽管您可以在 kali 和 mint 上使用，但是并非所有镜像源都支持它们，提供 ubuntu 镜像源的网站不一定会同时提供 mint 源。
+- 目前，由于 debian-ports 的镜像源过于稀少，因此本功能未对 riscv64 等架构进行适配。
 
-> 如果您正在使用其他 debian-based 的发行版，请告诉“二萌”，“二萌” 会为它适配。
-
-### 2.1. 快速上手
+### 1.1. 快速上手
 
 如果您不明白下面的命令的具体意义，那么请不要直接运行。  
 在下一小节中，我们将会对其进行解析。
@@ -140,9 +52,9 @@ sudo apt install ustc-linux-user-group-cn-repo
 sudo apt update
 ```
 
-### 2.2. 详细解析
+### 1.2. 详细解析
 
-#### 2.2.1. set-src-list
+#### 1.2.1. set-src-list
 
 > `set-src-list` 由 `neko-repo` 提供
 
@@ -165,7 +77,7 @@ If you run "set-src-list en", then it will move your "sources.list.bak" to "sour
 
 > 作用：在换源前禁用原来的软件源。
 
-#### 2.2.2. region-code-repo
+#### 1.2.2. region-code-repo
 
 > 如果您不知道具体区域代号是什么，那么请翻阅“附录”中的“区域代号”章节。
 
@@ -186,14 +98,101 @@ apt search de-repo$
 "China": CN
 
 ```sh
-apt search cn-repo$
+apt search "cn-repo|tw-repo|hk-repo"
 ```
 
 ```log,editable
-opentuna-cn-repo/neko,now 0.0.1-2 all [已安装]
+alibaba-cloud-computing-cn-repo/neko 0.0.1-2 all
+  阿里云镜像源(China)
+
+bjtu-cn-repo/neko 0.0.1-2 all
+  北京交通大学镜像源(China)
+
+blendbyte-inc-tw-repo/neko 0.0.1-2 all
+  Blendbyte Inc.(Taiwan)
+
+capital-online-data-service-cn-repo/neko 0.0.1-2 all
+  Capital Online Data Service(China)
+
+china-open-source-mirror-alliance-cn-repo/neko 0.0.1-2 all
+  China open source mirror Alliance(China)
+
+chongqing-university-cn-repo/neko 0.0.1-2 all
+  重庆大学镜像源(China)
+
+cn99-cn-repo/neko 0.0.1-2 all
+  CN99(China)
+
+dalian-university-of-technology-cn-repo/neko 0.0.1-2 all
+  Dalian University of Technology 大连理工学院镜像源(China)
+
+debian-cs-nctu-edu-tw-repo/toy 0.0.1-3 all
+  debian.cs.nctu.edu.tw(Taiwan)
+
+debian-csie-ncku-edu-tw-repo/toy 0.0.1-3 all
+  debian.csie.ncku.edu.tw(Taiwan)
+
+debian-csie-ntu-edu-tw-repo/toy 0.0.1-3 all
+  debian.csie.ntu.edu.tw(Taiwan)
+
+dongguan-university-of-technology-gnu-linux-association-cn-repo/neko 0.0.1-2 all
+  Dongguan University of Technology GNU/Linux Association 东莞理工学院镜像源(China)
+
+escience-center-nanjing-university-cn-repo/neko 0.0.1-2 all
+  eScience Center, Nanjing University 南京大学镜像源(China)
+
+ftp-cn-debian-org-cn-repo/neko 0.0.1-2 all
+  ftp.cn.debian.org(China)
+
+ftp-hk-debian-org-hk-repo/neko 0.0.1-2 all
+  ftp.hk.debian.org(Hong Kong)
+
+ftp-tw-debian-org-tw-repo/neko 0.0.1-2 all
+  ftp.tw.debian.org(Taiwan)
+
+harbin-institute-of-technology-cn-repo/neko 0.0.1-2 all
+  哈尔滨工业大学镜像源 Harbin Institute of Technology(China)
+
+huawei-cloud-cn-repo/neko 0.0.1-2 all
+  Huawei Cloud 华为云镜像源(China)
+
+institute-of-network-development-national-taiwan-ocean-university-tw-repo/neko 0.0.1-2 all
+  Institute of Network Development, National Taiwan Ocean University(Taiwan)
+
+lanzhou-university-open-source-society-cn-repo/neko 0.0.1-2 all
+  Lanzhou University Open Source Society 兰州大学镜像源(China)
+
+mirrors-163-com-cn-repo/neko 0.0.1-2 all
+  网易镜像源(China)
+
+mirrors-bfsu-edu-cn-repo/neko 0.0.1-2 all
+  北京外国语大学镜像源(China)
+
+mirrors-neusoft-edu-cn-repo/neko 0.0.1-2 all
+  大连东软信息学院镜像源(China)
+
+mirrors-pku-edu-cn-repo/neko 0.0.1-2 all
+  北京大学镜像源(China)
+
+mirrors-tuna-tsinghua-edu-cn-repo/neko 0.0.1-2 all
+  清华大学镜像源(China)
+
+nchc-taiwan-tw-repo/neko 0.0.1-2 all
+  NCHC, Taiwan(Taiwan)
+
+nic-beijing-university-of-posts-and-telecommunications-cn-repo/neko 0.0.1-2 all
+  NIC, Beijing University of Posts and Telecommunications 北京邮电大学镜像源(China)
+
+njuptmirrorsgroup-cn-repo/neko 0.0.1-2 all
+  南京邮电大学镜像源(China)
+
+opensource-nchc-org-tw-repo/neko 0.0.1-2 all
+  opensource.nchc.org.tw(Taiwan)
+
+opentuna-cn-repo/neko 0.0.1-2 all
   OpenTUNA(China)
 
-shanghai-jiaotong-university-cn-repo/neko,now 0.0.1-2 all [已安装]
+shanghai-jiaotong-university-cn-repo/neko 0.0.1-2 all
   Shanghai Jiaotong University 上海交通大学镜像源(China)
 
 sohu-cn-repo/neko 0.0.1-2 all
@@ -202,8 +201,17 @@ sohu-cn-repo/neko 0.0.1-2 all
 tencent-cloud-cn-repo/neko 0.0.1-2 all
   Tencent Cloud 腾讯云镜像源(China)
 
+tku-tamkanguniversity-tw-repo/neko 0.0.1-2 all
+  TKU-TamKangUniversity(Taiwan)
+
 ustc-linux-user-group-cn-repo/neko 0.0.1-2 all
   中国科学技术大学镜像源(China)
+
+xi-an-jiaotong-university-cn-repo/neko 0.0.1-2 all
+  Xi'an Jiaotong University(China)
+
+xtom-hk-repo/neko 0.0.1-2 all
+  xTom(Hong Kong)
 ```
 
 > 实际上，0.0.1-4 修复了 debian (old-stable) 的一些小细节问题，这里还是 0.0.1-2  
@@ -215,7 +223,7 @@ ustc-linux-user-group-cn-repo/neko 0.0.1-2 all
 apt install opentuna-cn-repo
 ```
 
-#### 2.2.3. 软件包解析
+#### 1.2.3. 软件包解析
 
 先拆开来看看
 
@@ -261,7 +269,7 @@ apt install opentuna-cn-repo
 在一般情况下，您只需要安装您的服务器/pc 所在区域的镜像源即可。  
 除非您有充分的理由，否则请不要在一台设备上安装不同区域的镜像源。
 
-#### 2.2.4. set-src-link
+#### 1.2.4. set-src-link
 
 在上一小节中，我们提到了 `set-src-link`，在本小节中，我们将对其进行深入解析。
 
@@ -303,7 +311,7 @@ Example:
 
 > `set-src-link` 需要以 root 身份运行，否则将无法修改 `/etc/apt/sources.list.d/*-mirror.sources`
 
-##### 2.2.4.1. region & link
+##### 1.2.4.1. region & link
 
 获取 region 的帮助信息
 
@@ -327,7 +335,7 @@ set-src-link -r us -n opentuna-cn-repo
 # '/etc/apt/sources.list.d/us-mirror.sources' -> '/etc/tmoe/repo/src/debian/opentuna-cn-repo_sid.sources'
 ```
 
-##### 2.2.4.2. unlink
+##### 1.2.4.2. unlink
 
 ```sh
 set-src-link unlink
@@ -352,7 +360,7 @@ set-src-link unlink -r us
 # unlink /etc/apt/sources.list.d/us-mirror.sources
 ```
 
-#### 2.2.5. 源文件解析
+#### 1.2.5. 源文件解析
 
 您如果之前曾有过手动更换 debian/ubuntu 源的经历，那么应该会知道 debian 传统的 one-line-style 源格式。
 
@@ -360,7 +368,7 @@ set-src-link unlink -r us
 deb http://mirrors.bfsu.edu.cn/debian/ sid main non-free contrib
 ```
 
-与传统的 one-line-style 不同，天萌使用的是更现代化的 deb822-style。  
+与传统的 one-line-style 不同，本项目的“镜像源”功能使用的是更现代化的 deb822-style。  
 此格式要求 apt 的版本 >= 1.1.0。  
 因此它在默认情况下不兼容 debian 8(Jessie)。
 
@@ -373,10 +381,7 @@ deb http://mirrors.bfsu.edu.cn/debian/ sid main non-free contrib
 
 此外，如果这个镜像源不包含 "debian-security" 镜像，那么它默认会启用官方的 security 源，并禁用镜像 security 源。  
 如果它不支持 https, 那么 uris 那里显示的是 **http://** 开头的 uri 。  
-在使用 neko-repo 的镜像源 deb 包的情况下，您不需要手动去判断它支不支持 `https` 等东西。
-
-虽然这些只是小细节问题，不过说实话，“天萌”的开发者很羡慕“天萌”的用户。  
-您真的很幸福，不需要去了解那些细节，就能用到这么好用的工具了。
+在使用 neko-repo 的镜像源 deb 包的情况下，您无需要手动去判断它支不支持 `https` 等东西。
 
 ```sh
 cat /etc/apt/sources.list.d/cn-mirror.sources
@@ -455,47 +460,3 @@ components: main contrib non-free
 ```yaml
 signed-by: /usr/share/keyrings/tmoe-archive-keyring.gpg
 ```
-
-#### 2.2.6. 手动安装
-
-这适用于极端情况。  
-只有当您的环境同时满足以下三种情况时，才需要手动安装。
-
-- 不支持 https（没有 ca 证书）
-- 没有常规下载工具
-- 访问官方源的速度很慢
-
-首先，在一台已经安装 neko-repo 的设备上，手动下载相关的 deb 包。
-
-> 您可以将 opentuna-cn-repo 替换为其他仓库
-
-```sh
-apt download set-src-link
-apt download neko-repo
-apt download opentuna-cn-repo
-```
-
-接着想办法将这三个 deb 包传输到处于极端环境下的设备中。  
-然后，在那个环境中运行：
-
-```sh
-apt install --no-install-recommends ./neko*.deb
-set-src-list dis
-apt install ./set-src-link*.deb
-apt install ./opentuna-cn-repo*.deb
-apt purge -y neko-repo
-apt update
-```
-
-您在哪种环境下会遇到这种极端情况呢？  
-您使用了数个超精简版的容器： kali ,mint, lmde, ubuntu focal, ubuntu jammmy , debian 9, 10, 11, 12 & sid。  
-您可以很方便地使用 docker 的 `-v` 绑定宿主的 deb 包所在的目录。
-
-说实话，这种手动安装的方法太麻烦了，在一般情况下，“二萌”一点儿都不推荐您这么做。
-
----
-
-至此，"repo" 篇正式完结。  
-您如果之前从来没有使用过 “天萌”，那么看到此处就足够了。  
-对于老用户，您可以继续看下一篇章。  
-由于这是一个持续更新的项目，因此“二萌”之后可能还会续写，敬请期待吧！

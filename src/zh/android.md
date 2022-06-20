@@ -1,7 +1,7 @@
 # android
 
 - [1. 关于 docker](#1-关于-docker)
-- [2. 天萌管理器](#2-天萌管理器)
+- [2. 管理器](#2-管理器)
 - [3. 关于容器环境](#3-关于容器环境)
   - [3.1. 配置与环境](#31-配置与环境)
     - [3.1.1. rootless 环境的一些小问题](#311-rootless-环境的一些小问题)
@@ -16,8 +16,8 @@
 
 ---
 
-天萌分为两个部分，分别是“管理器”和“工具箱”。  
-对于 android，您可以使用“天萌管理器”。  
+本项目的本体分为两个部分，分别是“管理器”和“工具箱”。  
+对于 android，您可以使用“管理器”。  
 在下文中, rootless 指的是 “无 root 容器环境”，rootful 指的是“有 root 容器环境”。
 
 ## 1. 关于 docker
@@ -31,16 +31,16 @@
 - 如何为 android 重新编译内核
 - 如何在 android 上运行 docker
 
-## 2. 天萌管理器
+## 2. 管理器
 
-如果您想要使用 “天萌管理器”，那么您可以使用脚本进行安装。
+如果您想要使用 “管理器”，那么您可以使用脚本进行安装。
 
 > 在 edition 2022 中，“天萌管理器” 叫做 `tmm`  
 > 现阶段，天萌的大部分内容仍处于 edition 2021  
 > 为了与旧版本的兼容，开发者之后会为 android 保留 `tmoe` 命令
 
 对于 android, 您可以用 [termux](https://github.com/termux/termux-app/actions) 运行以下脚本。  
-之后“二萌”可能会把相关内容打成 deb 包，也可能会适配其他的终端。
+之后，开发者可能会将相关内容打成 deb 包，也可能会适配其他的终端。
 
 > 之所以使用`curl`, 是因为 termux 预装了它。  
 > 如果它没有被预装的话，那么您需要使用 `apt update; apt install -y curl` 来安装。
@@ -178,7 +178,7 @@ SHARE_PROC=true
 
 Q: 关掉 D-Bus 会更好吗？  
 A: 恰恰相反，对于部分桌面环境来说，让它的 daemon 处于运行状态会更好。  
-比如说，对于 ubuntu 18.04 + gnome，开启 dbus-daemon 后，您就可以在 rootless 环境下跑 gnome-shell 了。
+比如说，对于 gnome，开启 dbus-daemon 后，您就可以在 rootless 环境下跑 gnome-shell 了。
 
 Q: 如何关闭？  
 A: 与 D-Bus 相关的地方分布在以下三个位置。
