@@ -16,8 +16,8 @@
   - [2.3. uuu-repo](#23-uuu-repo)
     - [2.3.1. 説明](#231-説明)
 - [3. Android](#3-android)
-  - [3.1. 3.1 termux](#31-31-termux)
-    - [3.1.1. 3.1.1 tinor](#311-311-tinor)
+  - [3.1. termux](#31-termux)
+    - [3.1.1. tinor](#311-tinor)
 - [4. 題外話](#4-題外話)
   - [4.1. 您可能不需要了解的知識](#41-您可能不需要了解的知識)
   - [4.2. `doas` 與 `sudo`](#42-doas-與-sudo)
@@ -265,13 +265,13 @@ uuu 倉庫只能給 **ubuntu** 用，不能給 **debian** 用。
 
 uuu 倉庫對於 ubuntu 來説是通用的。
 
-本項目之後可能還有 "focal-repo" 這種只能給單獨的版本使用的倉庫。
+本項目之後可能還會有 "focal-repo" 這種只能給單獨的版本使用的倉庫。
 
 ## 3. Android
 
-### 3.1. 3.1 termux
+### 3.1. termux
 
-#### 3.1.1. 3.1.1 tinor
+#### 3.1.1. tinor
 
 TINOR Is Not Official Repository.
 
