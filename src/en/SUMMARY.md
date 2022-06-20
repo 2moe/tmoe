@@ -8,6 +8,7 @@
 
 ## Getting started
 
+<!--
 - [Repo](./repo.md)
   - [add repo](./add-repo.md)
   - [mirror](./mirror-repo.md)
@@ -20,4 +21,4 @@
   - [editor](./editor.md)
 - [Appendix](./appendix.md)
   - [region code](./appendix_region-code.md)
-  - [todo](./appendix_todo.md)
+  - [todo](./appendix_todo.md) -->
