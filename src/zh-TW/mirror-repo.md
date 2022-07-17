@@ -379,7 +379,7 @@ deb http://mirrors.bfsu.edu.cn/debian/ sid main non-free contrib
 
 此外，如果這個映象源不包含 "debian-security" 映象，那麼它預設會啟用官方的 security 源，並禁用映象 security 源。  
 如果它不支援 https, 那麼 uris 那裡顯示的是 **http://** 開頭的 uri 。  
-在使用 neko-repo 的映象源 deb 包的情況下，您無需要手動去判斷它支不支援 `https` 等東西。
+在使用 neko-repo 的映象源 deb 包的情況下，您無需手動去判斷它支不支援 `https` 等東西。
 
 ```sh
 cat /etc/apt/sources.list.d/cn-mirror.sources

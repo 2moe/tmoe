@@ -313,7 +313,8 @@ A: 这是理想气体状态方程。
   - R: 气体常数
 
 您可能不知道的冷知识：
-2moe 之前在某个漫画网站上，看到过一本漫画，它的标题是 <font style="background: black">~~《我因为被前辈 PV 了，所以也要 PV 前辈的女朋友》~~</font>  
+2moe 之前在某个漫画网站上，看到过一本漫画，它的标题是 <font style="background: black">~~《wo yb ww bw qm bw PV le, so yi ye yc PV qm bw de nv pg yz》~~</font>  
+
  哎呀，这孩子物理应该学得还不错吧！
 
 > 这只是标题吸引人而已，好孩子不要去看。
