@@ -34,17 +34,19 @@
 
 ![debian](assets/logo/debian.svg)
 
-- 要求
-  - Debian GNU/Linux
-    - 目前支援的最低版本為 Debian 9 Stretch
-    - 由於 Stretch 已經 EOL, 之後最低版本可能會升級至 Buster
-  - 不支援 Debian GNU/Hurd 和 kFreeBSD
+- 系統要求
+  - 支援
+    - Debian GNU/Linux
+      - 目前支援的最低版本為 Debian 9 Stretch
+      - 由於 Stretch 已經 EOL, 之後最低版本可能會升級至 Buster
+  - 不支援
+    - Debian GNU/Hurd 和 kFreeBSD
 
 ```sh
 su -c "apt update; apt install doas curl"
 su -c "echo 'permit nopass $(id -un) cmd apt' >> /etc/doas.conf"
 
-curl -LO l.tmoe.me/neko.deb
+curl -LO https://l.tmoe.me/neko.deb
 doas apt install ./neko.deb
 rm -v neko.deb
 doas apt update
