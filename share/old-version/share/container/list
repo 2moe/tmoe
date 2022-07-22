@@ -397,7 +397,7 @@ install_tmoe_weekly_build_edition() {
         choose_zsh_distro
         ;;
     7) view_the_schedule ;;
-    # 999) request_weekly_build_version ;;
+        # 999) request_weekly_build_version ;;
     esac
     press_enter_to_return
     install_tmoe_weekly_build_edition
@@ -1472,11 +1472,11 @@ install_ubuntu_gnu_linux_distro() {
                 "7" "${OPT_7}" \
                 "8" "${OPT_8}" \
                 "9" "${OPT_9}" \
-                "10" "${OPT_10}" \
                 "0" "${OPT_0}" \
                 3>&1 1>&2 2>&3
         )
         # "9" "${OPT_9}" \
+        # "10" "${OPT_10}" \
     }
     #🦦
     case ${TMOE_MENU_LANG} in
