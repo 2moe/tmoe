@@ -34,6 +34,12 @@
 
 ![debian](assets/logo/debian.svg)
 
+- 要求
+  - Debian GNU/Linux
+    - 目前支援的最低版本為 Debian 9 Stretch
+    - 由於 Stretch 已經 EOL, 之後最低版本可能會升級至 Buster
+  - 不支援 Debian GNU/Hurd 和 kFreeBSD
+
 ```sh
 su -c "apt update; apt install doas curl"
 su -c "echo 'permit nopass $(id -un) cmd apt' >> /etc/doas.conf"
@@ -45,7 +51,7 @@ doas apt update
 doas apt install toy-repo
 ```
 
-> 在題外話中，本專案開發者將介紹：為什麼使用 OpenBSD `doas` 而非 `sudo`
+> 在題外話中，本專案開發者將介紹：為什麼是 OpenBSD `doas` 而非 `sudo`
 
 #### 1.1.2. ubuntu
 

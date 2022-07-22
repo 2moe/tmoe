@@ -72,7 +72,7 @@ You can do something interesting or meaningful.
 
 ### 有意義與否
 
-有意義與否並非如 `bool` 變數那般非 `true` 即 `false`。  
+有意義與否並非如 `bool` 型別那般非 `true` 即 `false`。  
 它是相對的，而非絕對。  
 在這裡我們並不想深入去探求哲學問題，簡而言之，這個問題的答案因人而異，沒有絕對的標準。
 
@@ -313,9 +313,11 @@ A: 這是理想氣體狀態方程。
   - R: 氣體常數
 
 您可能不知道的冷知識：
-2moe 之前在某個漫畫網站上，看到過一本漫畫，它的標題是 <font style="background: black">~~《wo yb ww bw qm bw PV le, so yi ye yc PV qm bw de nv pg yz》~~</font>  
+2moe 之前在某個漫畫網站上，看到過一本漫畫，它的標題是 ~~《wopd ybww bwpy qmbw PV levl, soyi yeyc PV qmbwde nvpgyz》~~
 
- 哎呀，這孩子物理應該學得還不錯吧！
+<!-- <font style="background: black"></font> -->
+
+哎呀，這孩子物理應該學得還不錯吧！
 
 > 這只是標題吸引人而已，好孩子不要去看。
 
