@@ -16,7 +16,7 @@ choose_which_gnu_linux_distro() {
     choose_which_gnu_linux_distro_ja() {
         MENU="容器をお選びください"
         OPT_0="🌚 戻る"
-        OPT_1="🍭 毎週のGUIビルド(cutefish,kde,mate,xfce & lxqt)"
+        OPT_1="🍭 毎週のGUIビルド(kde,mate,xfce & lxqt)"
         OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
         OPT_3="🍥 Debian は オペレーティングシステムのフリーなディストリビューションです"
         OPT_4="🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである"
@@ -31,7 +31,7 @@ choose_which_gnu_linux_distro() {
     choose_which_gnu_linux_distro_zh() {
         MENU="您想要安装哪个容器?"
         OPT_0="🌚 Return to previous menu 返回上级菜单"
-        OPT_1="🍭 每周构建cutefish,kde,xfce,mate & lxqt"
+        OPT_1="🍭 每周构建:kde,xfce,mate & lxqt"
         OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
         OPT_3="🍥 Debian:致力于自由"
         OPT_4="🍛 Ubuntu:我的存在是因為大家的存在"
@@ -47,7 +47,7 @@ choose_which_gnu_linux_distro() {
     choose_which_gnu_linux_distro_en() {
         MENU="Which container do you want to install?"
         OPT_0="🌚 Return to previous menu"
-        OPT_1="🍭 Weekly builds(cutefish,xfce,kde,mate & lxqt)"
+        OPT_1="🍭 Weekly builds(xfce,kde,mate & lxqt)"
         OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
         OPT_3="🍥 Debian is a distro composed of free and open-source software"
         OPT_4="🍛 Ubuntu is the modern, open source OS."
@@ -326,12 +326,11 @@ install_tmoe_weekly_build_edition() {
             "${MENU}" 0 0 0 \
             "1" "🐭 xfce(elegant, high compatibility)" \
             "2" "🦖 kde plasma5(beautiful and modern)" \
-            "3" "🐟 cutefish" \
-            "4" "🌿 mate(the continuation of GNOME 2)" \
-            "5" "🐦 lxqt" \
-            "6" "🕊️ lxde(lightweight)" \
-            "7" "zsh(nogui)" \
-            "8" "Weekly schedule" \
+            "3" "🌿 mate(the continuation of GNOME 2)" \
+            "4" "🐦 lxqt" \
+            "5" "🕊️ lxde(lightweight)" \
+            "6" "zsh(nogui)" \
+            "7" "Weekly schedule" \
             "0" "🌚 back =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
@@ -342,15 +341,15 @@ install_tmoe_weekly_build_edition() {
             "${MENU}" 0 0 0 \
             "1" "🐭 xfce(elegant, high compatibility)" \
             "2" "🦖 kde plasma5(风格华丽的桌面环境)" \
-            "3" "🐟 cutefish 可爱鱼(arm64, x64, armhf)" \
-            "4" "🌿 mate(the continuation of GNOME 2)" \
-            "5" "🐦 lxqt(arm64, x64)" \
-            "6" "🕊️ lxde(轻量级, armhf, i386)" \
-            "7" "zsh(nogui)" \
-            "8" "schedule 自动构建计划日程表" \
+            "3" "🌿 mate(the continuation of GNOME 2)" \
+            "4" "🐦 lxqt(arm64, x64)" \
+            "5" "🕊️ lxde(轻量级, armhf, i386)" \
+            "6" "zsh(nogui)" \
+            "7" "schedule 自动构建计划日程表" \
             "0" "🌚 back =￣ω￣=" \
             3>&1 1>&2 2>&3)
     }
+    # "3" "🐟 cutefish 可爱鱼(arm64, x64, armhf)" \
     # "4" "dde 深度桌面环境(arm64, x64)" \
     # "5" "ukui 优麒麟ui(arm64, x64, armhf)" \
     #"7" "Request specific version" \"7" "request 请求更新/增加版本" \
@@ -368,10 +367,10 @@ install_tmoe_weekly_build_edition() {
         DESKTOP="kde"
         choose_kde_distro
         ;;
-    3)
-        DESKTOP="cutefish"
-        choose_cutefish_distro
-        ;;
+    # 3)
+    #     DESKTOP="cutefish"
+    #     choose_cutefish_distro
+    #     ;;
     # 4)
     # 	DESKTOP="dde"
     # 	choose_dde_distro
@@ -380,25 +379,25 @@ install_tmoe_weekly_build_edition() {
     # 	DESKTOP="ukui"
     # 	choose_ukui_distro
     # 	;;
-    4)
+    3)
         DESKTOP="mate"
         choose_mate_distro
         ;;
-    5)
+    4)
         DESKTOP="lxqt"
         choose_lxqt_distro
         ;;
-    6)
+    5)
         DESKTOP="lxde"
         choose_lxde_distro
         ;;
-    7)
+    6)
         #printf "%s\n" "This feature may be available on 2020-02-17."
         DESKTOP="zsh"
         choose_zsh_distro
         ;;
-    8) view_the_schedule ;;
-    999) request_weekly_build_version ;;
+    7) view_the_schedule ;;
+    # 999) request_weekly_build_version ;;
     esac
     press_enter_to_return
     install_tmoe_weekly_build_edition
@@ -1419,7 +1418,7 @@ install_ubuntu_gnu_linux_distro() {
     TITLE="Which version do you want to install?"
     OPT_1="🐐 22.10(dev) Kinetic Kudu"
     OPT_2="22.04(LTS,stable) Jammy Jellyfish"
-    OPT_3="🐒 21.10(oldstable) Impish Indri"
+    # OPT_3="🐒 21.10(oldstable) Impish Indri"
     # OPT_3="🦛 21.04 Hirsute Hippo"
     OPT_5="18.04(LTS) Bionic Beaver"
     OPT_6="🐿️ 16.04(LTS) Xenial Xerus"
@@ -1427,33 +1426,36 @@ install_ubuntu_gnu_linux_distro() {
         MENU="2022至2027年的长期支持版为jammy 22.04(2022年4月正式发布)\n设x=当前年份,若x>=2024,则请手动输入版本代号"
         OPT_1="🐐 22.10(dev) 動力羚羊 Kinetic Kudu"
         OPT_2="22.04(LTS,stable) 果酱水母 Jammy Jellyfish"
-        OPT_3="🐒 21.10(oldstable) 頑皮大狐猴 Impish Indri"
+        # OPT_3="🐒 21.10(oldstable) 頑皮大狐猴 Impish Indri"
         # OPT_3="🦛 21.04 多毛河馬 Hirsute Hippo"
         OPT_4="🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa"
         OPT_5="18.04(LTS)仿生海狸 Bionic Beaver"
         OPT_6="🐿️ 16.04(LTS)好客的非洲地松鼠 Xenial Xerus "
         OPT_7="Compatibility mode 兼容模式(仅安装)"
-        OPT_8="Custom code手动输入版本代号"
-        OPT_9="使用debootstrap手动构建"
-        OPT_10="Latest(自動檢測23.04)"
+        OPT_8="使用debootstrap手动构建"
+        OPT_9="Latest(自動檢測23.04)"
+        # OPT_10
+        OPT_3="Custom code手动输入版本代号"
         OPT_0="🌚 Return to previous menu 返回上级菜单"
     }
     install_ubuntu_gnu_linux_distro_ja() {
         MENU="x =現在の年とします、x> = 2024の場合は、コードをカスタマイズしてください"
         OPT_4="🐱 20.04(LTS) Focal Fossa注目を集めるフォッサ"
         OPT_7="互換モード"
-        OPT_8="カスタムコード"
-        OPT_9="debootstrapを使用して手動でビルドする"
-        OPT_10="Latest(最新バージョンを自動的に検出)"
+        OPT_8="debootstrapを使用して手動でビルドする"
+        OPT_9="Latest(最新バージョンを自動的に検出)"
+        # OPT_10
+        OPT_3="カスタムコード"
         OPT_0="🌚 戻る"
     }
     install_ubuntu_gnu_linux_distro_en() {
         MENU="The long-term support version between 2022 and 2027 is jammy(22.04).\nLet x = current year, if x>=2024,then customize the version code"
         OPT_4="🐱 20.04(LTS)Focal Fossa"
         OPT_7="Compatibility mode"
-        OPT_8="Custom code"
-        OPT_9="Manually build"
-        OPT_10="Latest"
+        OPT_8="Manually build"
+        OPT_9="Latest"
+        # OPT_10
+        OPT_3="Custom code"
         OPT_0="🌚 Return to previous menu"
     }
     install_ubuntu_gnu_linux_distro_menu() {

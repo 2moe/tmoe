@@ -7,7 +7,7 @@ show_package_info() {
     # Architecture: amd64, i386, arm64, armhf, mipsel, riscv64, ppc64el, s390x
     cat <<-EndOfShow
 		Package: tmoe-linux-manager
-		Version: 1.4989.45
+		Version: 1.4989.46
 		Priority: optional
 		Section: admin
 		Maintainer: 2moe <25324935+2moe@users.noreply.github.com>

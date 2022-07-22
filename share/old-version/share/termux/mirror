@@ -68,44 +68,6 @@ china_university_mirror_station() {
     china_university_mirror_station
 }
 #############
-worldwide_mirror_station() {
-    NEW_TERMUX_SOURCES_LIST=true
-    SOURCE_MIRROR_STATION=""
-    RETURN_TO_WHERE='worldwide_mirror_station'
-    SOURCES_LIST=$(
-        whiptail --title "TERMUX MIRROR SOURCE" --menu \
-            "Which mirror source do you want to switch to?" 0 50 0 \
-            "1" "Extra source:its-pointless" \
-            "0" "🌚 Return to previous menu 返回上级菜单" \
-            3>&1 1>&2 2>&3
-    )
-    ########################
-    case "${SOURCES_LIST}" in
-    0 | "") tmoe_sources_list_manager ;;
-    1)
-        POINTLESS_LIST="${PREFIX}/etc/apt/sources.list.d/pointless.list"
-        [[ ! -s ${POINTLESS_LIST} ]] || do_you_want_to_continue
-        cd ${TMPDIR}
-        curl -Lo .setup-pointless-repo.sh https://its-pointless.github.io/setup-pointless-repo.sh
-        if [ $(command -v bat) ]; then
-            bat -ppn .setup-pointless-repo.sh
-        else
-            cat .setup-pointless-repo.sh
-        fi
-        do_you_want_to_continue
-        bash .setup-pointless-repo.sh
-        rm -fv .setup-pointless-repo.sh
-        [[ ! -s ${POINTLESS_LIST} ]] || cat ${POINTLESS_LIST}
-        press_enter_to_return
-        worldwide_mirror_station
-        ;;
-    esac
-    ######################################
-    modify_android_termux_mirror_sources_list
-    press_enter_to_return
-    worldwide_mirror_station
-}
-############
 check_tmoe_sources_list_backup_file() {
     SOURCES_LIST_PATH="${PREFIX}/etc/apt/"
     SOURCES_LIST_FILE="${PREFIX}/etc/apt/sources.list"
@@ -156,9 +118,6 @@ mirror_sources_station_download_speed_test() {
     download_termux_clang
     SOURCE_MIRROR_STATION_NAME='腾讯云'
     SOURCE_MIRROR_STATION='mirrors.cloud.tencent.com/termux'
-    download_termux_clang
-    SOURCE_MIRROR_STATION_NAME='official'
-    SOURCE_MIRROR_STATION='packages.termux.org'
     download_termux_clang
     ###此处一定要将SOURCE_MIRROR_STATION赋值为空
     SOURCE_MIRROR_STATION=""
@@ -236,12 +195,11 @@ tmoe_sources_list_manager() {
         whiptail --title "software-sources tmoe-manager" --menu \
             "Do you want to switch the mirror source?" 0 50 0 \
             "1" "清华,北外,中科大,腾讯云镜像站" \
-            "2" "extra:额外源" \
-            "3" "enable/disable repo(启用/禁用仓库)" \
-            "4" "speed(镜像站下载速度测试)" \
-            "5" "edit list manually(手动编辑)" \
-            "6" "delete invalid rows(去除无效行)" \
-            "7" "restore to default(恢复默认源)" \
+            "2" "enable/disable repo(启用/禁用仓库)" \
+            "3" "speed(镜像站下载速度测试)" \
+            "4" "edit list manually(手动编辑)" \
+            "5" "delete invalid rows(去除无效行)" \
+            "6" "restore to default(恢复默认源)" \
             "0" "🌚 Back 返回" \
             3>&1 1>&2 2>&3
     )
@@ -249,12 +207,11 @@ tmoe_sources_list_manager() {
     case "${SOURCES_LIST}" in
     0 | "") ${RETURN_TO_MENU} ;;
     1) china_university_mirror_station ;;
-    2) worldwide_mirror_station ;;
-    3) termux_repo_manager ;;
-    4) mirror_sources_station_download_speed_test ;;
-    5) edit_sources_list_manually ;;
-    6) delete_sources_list_invalid_rows ;;
-    7) restore_default_sources_list ;;
+    2) termux_repo_manager ;;
+    3) mirror_sources_station_download_speed_test ;;
+    4) edit_sources_list_manually ;;
+    5) delete_sources_list_invalid_rows ;;
+    6) restore_default_sources_list ;;
     esac
     ##########
     press_enter_to_return
@@ -268,14 +225,19 @@ edit_sources_list_manually() {
     fi
 }
 #########
+old_system_warning() {
+    cat <<-'EOVERSION'
+Your current Android system version is lower than 7.
+旧版Android可能无法使用本功能。
+Unfortunately, it does not support Android 6 or lower.
+EOVERSION
+}
 check_android_version() {
     ANDROID_6_FILE="${CONFIG_FOLDER}/android6_termux"
     if [ "${LINUX_DISTRO}" = 'Android' ] && [ ! -e "${ANDROID_6_FILE}" ]; then
-        if (("${ANDROID_VERSION}" < 7)); then
-            printf "%s\n" "检测到您当前的安卓系统版本低于7,请勿使用本工具进行换源。" >${ANDROID_6_FILE}
-            sed -n p ${ANDROID_6_FILE}
-            printf "%s\n" "Your current Android system version is lower than 7."
-            printf "%s\n" "旧版Android可能无法使用本功能。"
+        if ((ANDROID_VERSION < 7)); then
+            printf "%s\n" "检测到您当前的安卓系统版本低于7,请勿使用本工具进行换源。" | tee ${ANDROID_6_FILE}
+            old_system_warning
             press_enter_to_continue
         fi
     fi

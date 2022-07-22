@@ -80,6 +80,13 @@ switch_android_termux_mirror_to_bfsu() {
     fi
 }
 ################
+fix_openssl_old_version() {
+    if (! dpkg-query -s openssl-1.1 &>/dev/null); then
+        # issue: https://github.com/2moe/tmoe/issues/191
+        apt install openssl-1.1
+    fi
+}
+
 android_termux() {
     DEPENDENCIES=""
     # busybox
@@ -95,6 +102,7 @@ android_termux() {
     if [ ! "$(command -v lsof)" ]; then
         if ((ANDROID_VERSION < 7)); then
             DEPENDENCIES="${DEPENDENCIES} busybox"
+            apt install lsof
         else
             DEPENDENCIES="${DEPENDENCIES} lsof"
         fi
@@ -103,6 +111,7 @@ android_termux() {
     if [[ -z "$(command -v whiptail)" ]]; then
         if ((ANDROID_VERSION < 7)); then
             DEPENDENCIES="${DEPENDENCIES} dialog"
+            apt install whiptail
         else
             DEPENDENCIES="${DEPENDENCIES} whiptail"
         fi
@@ -141,6 +150,7 @@ android_termux() {
         apt update
         apt dist-upgrade
         apt install -y ${DEPENDENCIES}
+        fix_openssl_old_version
         case ${TERMUX_STORAGE} in
         false) termux-setup-storage ;;
         esac
