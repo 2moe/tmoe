@@ -449,7 +449,10 @@ components: main contrib non-free
 `enabled` ：是否需要啓用這個源，可選 yes 或 no  
 `types`: 類型，一般情況下用 **deb**, 若有獲取源代碼的要求，就用 **deb deb-src**
 
-除了上面介紹到的內容外，deb822-style 還支持其他的 key 。
+除了上面介紹到的內容外，deb822-style 還支持其他的 keys(鍵)。
+
+> key: value  
+> 左為鍵，右為值  
 
 例如:
 
