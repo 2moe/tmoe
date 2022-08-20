@@ -76,10 +76,10 @@ graph TD
 
 - 方法 2
   - 工具: curl
-  - 平台: gitee
+  - 平台: gitmoe
   - 條件: 您無法訪問 **github**
   - 命令
-  - `curl -LO https://l.tmoe.me/2.awk; awk -f 2.awk`
+    - `curl -LO https://l.tmoe.me/2.awk; awk -f 2.awk`
 - 方法 3
   - 工具: curl
   - 平台: gitee
