@@ -10,7 +10,6 @@
   - [iOS、旅馆与 manjaro+goland](#ios旅馆与-manjarogoland)
   - [其他场景](#其他场景)
 - [题外话](#题外话)
-  - [关于之前的文档](#关于之前的文档)
 
 > 下文将用“本书”来代指“本手册”。
 
@@ -248,14 +247,7 @@ rebuild：
 - 2.搜索 rebuild
 - 3.选择 Codespaces: Rebuild container
 
-> 您也可以手动选择“远程资源管理器”，再选择 Codespace, 最后点击 rebuild container 的 图标。
-
-上面已经做了 docker in docker 的配置。  
-如果需要在里面跑 docker 的话，那就执行以下操作：
-
-- 安装 docker： `sudo pacman -Syu docker`
-- 将 ddk 用户加入到 docker 用户组： `sudo usermod -aG docker ddk`
-
+> 您也可以手动选择“远程资源管理器”，再选择 Codespace, 最后点击 rebuild container 的 图标。  
 > `ddk` 可以修改为其他用户名。
 > 关于上述命名的来源，详见“题外话”
 
@@ -320,31 +312,3 @@ A: 这是理想气体状态方程。
 哎呀，这孩子物理应该学得还不错吧！
 
 > 这只是标题吸引人而已，好孩子不要去看。
-
-### 关于之前的文档
-
-之前的文档使用了下面这种风格来描述。  
-现在正在逐步“改进”。
-
-<div style="display:none">
-```mermaid
-graph TD
-    A[出门买东西] --> |走在路上| B{看到一只小猫咪}
-    B --> C{修猫咪,嘿嘿,我的修猫咪}
-    B --> D{哦,是猫呀}
-    B --> E{什么东西?}
-    B --> F(与我无关)
-    F --> G(默默路过)
-    D --> H{注意到猫咪受伤了}
-    C --> H
-    E --> H
-```
-</div>
-
-![cat](assets/prologue_cat.svg)
-
-上述流程图换成短篇漫画可能会更好。  
-开发者只是希望用户不要冷眼旁观，有问题要及时反馈。
-
-咱是知道有人在骂的，可是他并没有反馈。  
-就像是这篇文档，写得不好也可以改呀！

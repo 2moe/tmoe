@@ -66,44 +66,30 @@ graph TD
 ![tmm_installation](assets/tmm_installation.svg)
 
 - 方法 1
+
   - 工具: curl
   - 平台: github
-  - 条件: 您已经安装了 `curl`,并且可以访问 **github**
-  - 以下命令任选一个
-    - 命令 1
-      - `. <(curl -L l.tmoe.me/hub/sh)`
-    - 命令 2
-      - `. <(curl -L git.io/linux.sh)`
-    - 命令 3
-      - `curl -LO l.tmoe.me/hub/sh; sh sh`
-    - 命令 4
-      - `curl -LO git.io/linux.sh; sh linux.sh`
-    - 注：[Git.io deprecation](https://github.blog/changelog/2022-04-25-git-io-deprecation)
+  - 条件: 您已经安装了 `curl`, 并且 ~~记忆力惊人,~~ 可以访问 **github**
+  - 命令:
+    - `curl -LO --compressed https://raw.githubusercontent.com/2moe/tmoe/2/2.awk`
+    - `awk -f 2.awk`
+
 - 方法 2
-  - 工具: curl
-  - 平台: gitmoe
+  - 工具: wget 或 curl
   - 条件: 您无法访问 **github**
-  - 以下命令任选一个
-    - 命令 1
-      - `. <(curl -L l.tmoe.me/m/sh)`
-    - 命令 2
-      - `curl -LO l.tmoe.me/ee/sh; sh sh`
+  - `curl -LO https://l.tmoe.me/2.awk; awk -f 2.awk`
 - 方法 3
   - 工具: curl
   - 平台: gitee
   - 条件：以上方法都出错了
-  - 以下命令任选一个
-    - 命令 1
-      - `curl -LO l.tmoe.me/ee/sh; sh sh`
-    - 命令 2
-      - `curl -LO gitee.com/mo2/linux/raw/2/2; sh 2`
+  - 命令
+    - `curl -LO https://gitee.com/mo2/linux/raw/2/2.awk; awk -f 2.awk`
 
 ## 3. 关于容器环境
 
-天萌管理器提供了相当全面的配置选项。  
-如果您觉得它的问题比其他“更优秀的管理器”更多，那么大概率是配置的问题。
+如果您觉得天萌管理器的问题比其他“更优秀的管理器”更多，那么大概率是配置的问题。
 
-天萌管理器的配置选项可能并不会比其他项目更少，您需要进行合理的配置，才能更好地使用。
+您需要进行合理的配置，才能更好地使用。
 
 ### 3.1. 配置与环境
 
