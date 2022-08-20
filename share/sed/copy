@@ -1,7 +1,7 @@
 #!/usr/bin/env dash
 #------------------
-GITEE_LINUX="${HOME}/data/git/ee/gitee-tmoe-master"
-GITHUB_LINUX="${HOME}/data/git/hub/github-tmoe-master"
+GITEE_LINUX="${HOME}/data/git/ee/tmoe"
+GITHUB_LINUX="${HOME}/data/git/hub/tmoe"
 OLD_VERSION_DIR="${GITEE_LINUX}/share/old-version"
 
 # COUNT=$(curl -L https://gitee.com/mo2/linux | awk '/commit/' | grep '\ commits' | head -n 1 | awk '{print $1}')

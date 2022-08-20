@@ -1,198 +1,238 @@
 #!/usr/bin/env sh
-# POSIX sh
-#-----------------
-show_package_info() {
-    get_uname
-    set_extra_deps
-    # Architecture: amd64, i386, arm64, armhf, mipsel, riscv64, ppc64el, s390x
-    cat <<-EndOfShow
-		Package: tmoe-linux-manager
-		Version: 1.4989.46
-		Priority: optional
-		Section: admin
-		Maintainer: 2moe <25324935+2moe@users.noreply.github.com>
-		Depends: aria2 (>= 1.30.0), binutils (>= 2.28-5), coreutils (>= 8.26-3), curl (>= 7.52.1-5), findutils (>= 4.6.0), git (>= 1:2.11.0-3), grep, lsof (>= 4.89), micro (>= 2.0.6-2) | nano (>= 2.7.4-1), proot (>= 5.1.0), procps (>= 2:3.3.12), sed, sudo (>= 1.8.19p1-2.1), tar (>= 1.29b-1.1),  util-linux (>= 2.29.2-1), whiptail (>= 0.52.19), xz-utils (>= 5.2.2), zstd (>= 1.1.2)${EXTRA_DEPS}
-		Recommends: bat, busybox, debootstrap, eatmydata, gzip, less, lz4, pulseaudio, pv, qemu-user-static, systemd-container
-		Suggests: lolcat, zsh
-		Homepage: https://github.com/2moe/linux
-		Tag: interface::TODO, interface::text-mode, system::cloud, system::virtual, role::program, works-with::archive, works-with::software:package, works-with::text
-		Description: Easily manage containers and system. Just type "tmoe" to enjoy it.
-	EndOfShow
-}
-#-----------------
-get_uname_o() {
-    case "$(uname -o)" in
-    Android) OS=android ;;
-    illumos) OS=illum ;;
-    esac
-}
+# This is a posix sh file which will actually download an awk file and run it.
+# You can download that awk file directly without running this posix sh file.
+# ---------------
+#
+# Older versions of posix sh do not support setting local variables with `local`.
+# So, for compatibility, please do not use `local`
+#
+# ---------------
+# Set the uri of the awk file. You have to specify the source.
+# Options: ee, m or gh
+#
+# Example
+#
+# ```sh
+#   URI=$(get_awk_uri gh)
+#
+#   curl -v $URI
+# ```
+#
+# get_awk_uri(_uri_src: string) -> string
+get_awk_uri() {
+    _uri_src=$1
+    _uri_protocol="https://"
+    _uri_gitee_base="gitee.com"
+    _uri_gitmoe_base="gi.tmoe.me"
+    _uri_gh_raw="raw.githubusercontent.com"
+    _gitmoe_repo="m/tmoe"
+    _gh_repo="2moe/tmoe"
+    _gitee_repo="mo2/linux"
+    _awk_file="2/2.awk"
 
-get_uname() {
-    # todo: pub const OS :&'static str = "redox";
-    case "$(uname -s)" in
-    Darwin) OS=mac ;;
-    *Linux | *linux)
-        OS=linux
-        get_uname_o
-        ;;
-    SunOS)
-        OS=sun
-        get_uname_o
-        ;;
-    FreeBSD) OS=freebsd ;;
-    NetBSD) OS=netbsd ;;
-    DragonFly) OS=dragonfly ;;
-    MINGW* | MSYS* | CYGWIN*) OS=win ;;
+    case $_uri_src in
+    ee | gitee) pln "${_uri_protocol}${_uri_gitee_base}/${_gitee_repo}/raw/${_awk_file}" ;;
+    m | moe | gitmoe) pln "${_uri_protocol}${_uri_gitmoe_base}/${_gitmoe_repo}/raw/branch/${_awk_file}" ;;
+    gh | github | "") pln "${_uri_protocol}${_uri_gh_raw}/${_gh_repo}/${_awk_file}" ;;
+    *) 
+        panic "Error! Invalid arguments." \
+            "Name: get_awk_uri()" \
+            "Description: Takes a string and returns a uri (string)." \
+            "Error analysis: Only the specified argument will be parsed."
+            ;;
     esac
+    unset _uri_src _uri_protocol _uri_gitee_base _uri_gitmoe_base _uri_gh_raw _gitmoe_repo _gh_repo _gitee_repo _awk_file
 }
-
-set_extra_deps() {
-    case $OS in
-    android) EXTRA_DEPS=", dialog, termux-api, termux-tools" ;;
-    esac
-}
-#-----------------
+# ---------------
 pln() {
     printf "%s\n" "$@"
 }
-#-----------------
-set_colour() {
-    RED="$(printf '\033[31m')"
-    GREEN="$(printf '\033[32m')"
-    YELLOW="$(printf '\033[33m')"
-    BLUE="$(printf '\033[34m')"
-    PURPLE="$(printf '\033[35m')"
-    CYAN="$(printf '\033[36m')"
-    RESET="$(printf '\033[m')"
-    BOLD="$(printf '\033[1m')"
+# ---------------
+# If the program has a non-recoverable error, a panic will occur and the error message will be output to stderr.
+# After printing the error message, the program will exit abnormally.
+#
+# Example
+# 
+#```sh
+#    panic "msg1" "msg2" "msg3"
+#```
+#
+panic() {
+    pln "$@" >/dev/stderr
+    exit 1
 }
+# ---------------
+# Options: xdg or bsd
+# get_tmoe_dir(_dir_src: string) -> string 
+get_tmoe_dir() {
+    _dir_src=$1
+    _xdg_data_home="${HOME}/.local/share"
+    _bsd_cfg_dir="/usr/local/etc"
+    _tmoe_dir_name="tmoe-linux/git"
 
-set_path_and_url() {
-    TMOE_MANAGER="share/old-version/share/app/manager"
-    TMOE_URL="https://raw.githubusercontent.com/2moe/tmoe/master/${TMOE_MANAGER}"
-    TMOE_URL_02="https://cdn.jsdelivr.net/gh/2moe/tmoe@master/${TMOE_MANAGER}"
-    TMOE_GIT_DIR="${HOME}/.local/share/tmoe-linux/git"
-    TMOE_GIT_DIR_02="/usr/local/etc/tmoe-linux/git"
-    TEMP_FILE=".tmoe-linux.sh"
-}
-
-set_tmp_dir() {
-    if [ -z "${TMPDIR}" ]; then
-        for i in /tmp "${HOME}"; do
-            if [ -e "${i}" ]; then
-                TMPDIR="${i}/.cache"
-                mkdir -p "${TMPDIR}"
-                break
-            fi
-        done
-    fi
-}
-
-set_env() {
-    set_colour
-    set_path_and_url
-    set_tmp_dir
-    unset EXTRA_DEPS MANAGER_FILE
-}
-#-----------------
-do_you_want_to_continue() {
-    pln \
-        "${YELLOW}Do you want to ${BLUE}continue?${PURPLE}[Y/n]${RESET}" \
-        "Press ${GREEN}enter${RESET} to ${BLUE}continue${RESET}, type ${YELLOW}n${RESET} to ${PURPLE}exit${RESET}." \
-        "按${GREEN}回车键${BLUE}继续${RESET}，输${YELLOW}n${PURPLE}退出${RESET}"
-
-    case "$OS" in
-    linux | android) ;;
-    *)
-        pln \
-            "${RED}Unfortunately, ${GREEN}tmoe ${PURPLE}does not support ${CYAN}your ${BLUE}${OS} OS${YELLOW} at this time${RESET}." \
-            "Please press ${GREEN}Ctrl + C${RESET} to ${RED}abort${RESET}"
-        ;;
+    case $_dir_src in
+    xdg) pln "${_xdg_data_home}/${_tmoe_dir_name}" ;;
+    bsd) pln "${_bsd_cfg_dir}/${_tmoe_dir_name}" ;;
     esac
-
-    read -r opt
-    case "$opt" in
-    n* | N*)
-        pln "${PURPLE}skipped${RESET}."
-        exit 1
-        ;;
-    *) ;;
-    esac
+    unset _dir_src _xdg_data_home _bsd_cfg_dir _tmoe_dir_name
 }
-#-----------
-# fn check_command(cmd_name: &str, sleep_time: u8, exit_code: u8)
-check_command() {
-    cmd_name=$1
-    sleep_time=$2
-    exit_code=$3
-    if [ -z "$(command -v "$cmd_name")" ]; then
-        pln \
-            "${RED}${BOLD}ERROR" \
-            "${CYAN}Please install ${GREEN}""$cmd_name""${RESET} first"
+# ---------------
+# If an older edition of the file is found, it will skip running the awk file.
+# Note: this function will need to be removed after the new edition is released.
+#
+# run_old_file() -> int
+run_old_file() {
+    (is_cmd_exists bash) || return 1
 
-        sleep "$sleep_time"
-        exit "$exit_code"
-    fi
-}
+    _tmoe_old_manager="share/old-version/share/app/manager"
 
-# fn curl_file(timeout: u8, url: &str) -> bool
-curl_file() {
-    timeout_u8=$1
-    url_str=$2
-
-    curl \
-        --connect-timeout "$timeout_u8" \
-        -Lvo \
-        "${TEMP_FILE}" \
-        "$url_str" ||
-        false
-}
-
-download_temp_file() {
-    check_command curl 2 127
-    cd "${TMPDIR}" || exit 1
-
-    # todo: Allows different architectures & systems to obtain different URLs.
-    if (! curl_file 7 "${TMOE_URL}"); then
-        pln \
-            "${BLUE}Connection ${RED}timeout" \
-            "${GREEN}Retrying${RESET} ..."
-
-        curl_file 20 "${TMOE_URL_02}" ||
-            pln \
-                "${PURPLE}Unfortunately, ${CYAN}download ${RED}failed${RESET}." \
-                "Please ${YELLOW}press ${GREEN}Ctrl+C ${PURPLE}to abort${RESET}"
-    fi
-}
-
-exec_temp_file() {
-    check_command bash 3 127
-    [ ! -s .tmoe-linux.sh ] || bash .tmoe-linux.sh
-}
-#-----------
-show_info_and_run_the_temp_file() {
-    show_package_info
-    do_you_want_to_continue
-    download_temp_file
-    exec_temp_file
-}
-check_manager_file() {
-    unset MANAGER_FILE
-    for i in "${TMOE_GIT_DIR}/${TMOE_MANAGER}" "${TMOE_GIT_DIR_02}/${TMOE_MANAGER}"; do
-        if [ -s "${i}" ]; then
-            MANAGER_FILE="${i}"
-            break
+    for i in xdg bsd; do
+        _tmoe_dir=$(get_tmoe_dir $i)
+        _tmoe_old_file="$_tmoe_dir/$_tmoe_old_manager"
+        if [ -s "$_tmoe_old_file" ]; then
+            bash "$_tmoe_old_file"
+            return 0
         fi
     done
-    case "${MANAGER_FILE}" in
-    "") show_info_and_run_the_temp_file ;;
-    *) bash "${MANAGER_FILE}" ;;
-    esac
+
+    unset _tmoe_old_manager _tmoe_dir _tmoe_old_file
+    return 1
 }
-#----------------
+# ---------------
+# Get temporary dir & file name
+# 
+get_temp_file() {
+    # If `mktemp` exists => Use mktemp to generate the temporary file.
+    (is_cmd_exists mktemp) && mktemp && return 0
+
+    # `TMPDIR` from the environment variable
+    for i in "${TMPDIR}" /tmp "${HOME}"; do
+        [ -d "$i" ] && _tmp_dir="$i/.cache" && break
+    done
+
+    mkdir -p "$_tmp_dir"
+    pln "$_tmp_dir/.tmoe-old.sh"
+    unset _tmp_dir
+}
+# ---------------
+# If the cmd exists -> 0
+# Otherwise -> 1
+#
+# [[Arg, Usage]; [cmd_name, "(is_cmd_exists seq)&& pln 'seq exists'"]]
+#
+# ╭───┬──────────┬────────────────────────────────────────╮
+# │ # │   Arg    │                 Usage                  │
+# ├───┼──────────┼────────────────────────────────────────┤
+# │ 0 │ cmd_name │ (is_cmd_exists seq)&& pln 'seq exists' │
+# ╰───┴──────────┴────────────────────────────────────────╯
+#
+# is_cmd_exists(_cmd_name: string) -> int
+is_cmd_exists() {
+    _cmd_name=$1
+
+    (command -v "$_cmd_name" >/dev/null) && return 0
+    return 1
+}
+# ----------------
+# ╭───┬──────╮
+# │ # │ awk  │
+# ├───┼──────┤
+# │ 0 │ gawk │
+# │ 1 │ mawk │
+# │ 2 │ nawk │
+# ╰───┴──────╯
+#
+get_awk_cmd() {
+    # Priority: gawk > mawk > nawk
+    # If `mawk` wasn't so problematic, then I would give it a higher priority. Because it runs faster.
+    for i in gawk mawk nawk; do
+        (is_cmd_exists $i) && pln $i && return 0
+    done
+
+    pln awk
+}
+# ----------------
+# dl_file_with_curl(_connect_timeout: int, _tmp_uri: string) -> int
+dl_file_with_curl() {
+    _connect_timeout=$1
+    _tmp_uri=$2
+
+    pln "$_tmp_uri" "$_tmp_awk_file"
+
+    curl \
+        --connect-timeout "$_connect_timeout" \
+        --compressed \
+        -L \
+        "$_tmp_uri" \
+        -o "$_tmp_awk_file" || return 1
+}
+# ---------------
+dl_file_with_wget() {
+    _connect_timeout=$1
+    _tmp_uri=$2
+    # pln "$_tmp_uri" "$_tmp_awk_file"
+    pln "$_tmp_awk_file"
+    
+    wget \
+        --timeout="$_connect_timeout" \
+        "$_tmp_uri" \
+        -O "$_tmp_awk_file" || return 1
+}
+# ---------------
+# Get(Download) the awk file
+get_awk_file() {
+    for _dler in wget curl; do
+        if (is_cmd_exists $_dler); then
+            if (! "dl_file_with_$_dler" 10 "$_tmp_awk_uri"); then
+                for i in gh ee m; do
+                    ("dl_file_with_$_dler" 20 "$(get_awk_uri $i)") && break
+                done
+            else
+                break
+            fi
+        fi
+    done
+}
+# ---------------
+# If the awk file <= 4KiB after downloading, then the download may have failed.
+check_file_size_with_stat() {
+    _awk_file_size=$(stat --format=%s "$_tmp_awk_file")
+}
+check_file_size() {
+    (is_cmd_exists stat) || return 1
+
+    check_file_size_with_stat
+    # For POSIX sh compatibility, use `[]` instead of `(())`
+    if [ "$_awk_file_size" -le 4096 ]; then
+        pln "file-size: $_awk_file_size"
+        pln "Unfortunately, the file is less than or equal to 4 KiB." \
+            "This means that the download may have failed." \
+            "Trying again..."
+        dl_file_with_curl 30 "$(get_awk_uri m)"
+    else
+        unset _awk_file_size
+        return 0
+    fi
+
+    # check again
+    check_file_size_with_stat
+    pln "new-size: $_awk_file_size"
+    [ "$_awk_file_size" -le 4096 ] && panic "You are unable to continue with the operation and are welcome to report an issue."
+}
+# ----------------
+run_awk_program() {
+    _awk_cmd=$(get_awk_cmd)
+    "$_awk_cmd" -f "$_tmp_awk_file"
+}
+# ----------------
 main() {
-    set_env
-    check_manager_file
+    if (! run_old_file); then
+        _tmp_awk_file=$(get_temp_file)
+        _tmp_awk_uri=$(get_awk_uri gh)
+        get_awk_file
+        check_file_size
+        run_awk_program
+    fi
 }
 #----------------
 main "${@}"

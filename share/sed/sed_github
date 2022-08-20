@@ -37,6 +37,7 @@ sed -e 's@gitee.com/mo2/zsh/raw/master/@raw.githubusercontent.com/2cd/zsh/master
 
 sed -e 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe/master/@g' \
     -e 's!cdn.jsdelivr.net/gh/2moe/archive@master/tmoe/!raw.githubusercontent.com/2moe/tmoe/master/!g' \
+    -e 's@get_awk_uri ee)@get_awk_uri gh)@' \
     -i ../../debian.sh
 # -e 's!gitee.com/mo2/linux/raw/master/share/old-version/share/app/!raw.githubusercontent.com/2moe/tmoe/master/share/old-version/share/app/!g' \
 #    -e 's!cdn.jsdelivr.net/gh/2moe/tmoe-zsh@master/.mirror/zsh!raw.githubusercontent.com/2moe/tmoe-zsh/master/zsh.sh!g' \
