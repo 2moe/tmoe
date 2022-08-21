@@ -48,7 +48,8 @@ Obviously, the above is a character encoding issue.
 
 You can specify `lang` as English: `awk -f 2.awk -v lang=en-us`  
 You can also switch the encoding of the current environment to UTF-8: `cmd /K chcp 65001`
-Incidentally, it does not support windows at the moment.  
+
+Incidentally, it is not planned to support windows for some time to come.  
 Please **do not** run it on windows now!  
 Although you can use it on WSL, win already has WSLg.  
 So, you know, you probably don't need it.
