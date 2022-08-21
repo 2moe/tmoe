@@ -707,11 +707,15 @@ function about_new_and_old_edition() {
     print sty["bu"] sty["_"]"Tag:", sty[0] "interface::TODO, interface::text-mode, system::cloud, system::virtual, role::program, works-with::archive, works-with::software:package, works-with::text"
     print sty["bu"] sty["_"]"Description:", sty[0] "Easily manage containers and system. Just type `tmoe` to enjoy it."
 
-    print "\n"
-    print sty["bu"] "I want to provide you with", sty["gn"] "better tools", sty[0] "and", sty["gn"] "better service." sty[0]
-    print sty["de"] sty[1] "You can choose " sty[1] sty["u"] sty["_"] sty["gn"] "no" sty[0] ". "sty["bu"] "And I hope to " sty["yl"] "see you next time soon."
-    print sty[0]"If you don't know which one to choose,", sty["yl"]"type", sty[1] sty["bu"] sty["u"] "n" sty[0]", and " sty["gn"]"press enter."sty[0]
-    # print "\n"
+    print "\n" 
+    print  sty["gn"] "With this, I offer my " sty["bu"]"best wishes."
+    print sty["yl"] "Thank you for your choice and for running it."
+    print sty["yl"] "Thank you for being kind and lovely." sty["0"]
+    # print "\n" 
+    print "I wish I could offer you a better service but unfortunately there are some current problems."
+    print "You can choose " sty["gn"] sty["u"]"no"sty[0] ", and I look forward to seeing you next time."
+
+
     if (!do_you_want_to_continue(false)) {
         print sty["cn"] "See you next time" sty[0]
         exit 0
