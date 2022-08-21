@@ -7,7 +7,7 @@
 # So, for compatibility, please do not use `local`
 #
 # ---------------
-# Set the uri of the awk file. You have to specify the source.
+# Get the uri of the awk file. You have to specify the source.
 # Options: ee, m or gh
 #
 # Example

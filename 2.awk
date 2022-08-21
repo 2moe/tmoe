@@ -241,9 +241,9 @@ function parse_os_name(uname_cmd, os_name, os, _, os_lower, release, release_fil
 function get_os_language(_, cmd, full, language) {
     cmd = "getprop"
 
-    # Default locale: en_US
+    # Default locale: en_us
     I18N["lang"] = "en"
-    I18N["region"] = "US"
+    I18N["region"] = "us"
 
     # `lang` from user incoming data
     # awk -f a.awk -v lang=en_us
@@ -637,8 +637,8 @@ function run_old_edition(_, home_dir, dl_status, file1, file2) {
     GIT["dir"] = home_dir "/.local/share/tmoe-linux/git"
     GIT["dir2"] = "/usr/local/etc/tmoe-linux/git"
     
-    file1 = GIT["dir"] GIT["manager_file"]
-    file2 = GIT["dir2"] GIT["manager_file"]
+    file1 = GIT["dir"] "/" GIT["manager_file"]
+    file2 = GIT["dir2"] "/" GIT["manager_file"]
 
     run_old_file(file1, file2)
 
@@ -681,7 +681,7 @@ function about_new_and_old_edition() {
     print sty["cn"] "│ 1 │ "sty["mn"] "install deb as root" sty["cn"] " │" sty["mn"] " sudo apt install ./neko.deb     " sty["yl"]"│"
     print sty["cn"] "│ 2 │ "sty["bu"] "update index       " sty["cn"] " │" sty["bu"] " sudo apt update                 " sty["yl"]"│"
     print sty["cn"] "│ 3 │ "sty["yl"] "install tmm        " sty["cn"] " │" sty["yl"] " sudo apt install tmm            " sty["yl"]"│"
-    print sty["cn"] "│ 4 │ "sty["wh"] "remove deb file    " sty["cn"] " │" sty["wh"] " rm neko.deb                     " sty["yl"]"│"
+    print sty["cn"] "│ 4 │ "sty["de"] "remove deb file    " sty["cn"] " │" sty["de"] " rm neko.deb                     " sty["yl"]"│"
     print sty["cn"] "╰───┴─"sty["cn"] "───────────────────" sty["cn"] "─┴" sty["yl"] "─────────────────────────────────" sty["yl"]"╯"
     print sty[0]
 
@@ -987,6 +987,8 @@ function run_old_file(file1, file2) {
         sty["gn"] "Let's look forward to the new edition! See you soon."
         exit 1
     }
+
+    # print "debug::run_old_file" file1, file2
 
     if (is_file_exists(file1)) {
         if (system("bash" SPACE file1))
