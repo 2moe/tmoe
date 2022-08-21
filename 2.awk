@@ -694,8 +694,7 @@ function about_new_and_old_edition() {
     print "For the other tools, I should write it in another language."
     print "To be honest, I really like rust."
     print "But due to my poor knowledge of the underlying operating system, and my lack of familiarity with rust asynchronous and unsafe. So I'm not ready yet."
-    print "In fact, the old edition had many problems."
-    print "Perhaps I should rewrite it quickly in `nu` and then rewrite it again in `rust`."
+    print sty["~"]"Perhaps I should rewrite it quickly in `nu` and then rewrite it again in `rust`." sty["/~"]
     print "In fact, I don't have that much time."
     print "I am sorry that I did not fulfil your expectations."
     print "\n"
