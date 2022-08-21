@@ -247,7 +247,7 @@ function get_os_language(_, cmd, full, language) {
 
     # `lang` from user incoming data
     # awk -f a.awk -v lang=en_us
-    if (!is_empty(lang) && lang ~ /[\-_]/)
+    if (!is_empty(lang) && lang ~ /[_-]/)
         full = lang
     else if (OS["name"] == "android" && check_cmd(cmd))
         full = get_cmd_out(cmd ",persist.sys.locale")
@@ -298,7 +298,7 @@ function parse_os_language(lang, i18n, _, lang_arr1, lang_arr1_len, lang_arr2, l
     if (lang_arr1_len == 2)
         i18n["encoding"] = lang_arr1[2]
 
-    lang_arr2_len = split(lang_arr1[1], lang_arr2, /[\-_]/)
+    lang_arr2_len = split(lang_arr1[1], lang_arr2, /[_-]/)
     
     i18n["lang"] = lang_arr2[1]
 
