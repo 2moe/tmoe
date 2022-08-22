@@ -39,7 +39,7 @@ Q: I have a garbled code problem, what should I do?
 
 ![non-utf8](assets/about-awk/non-utf-8-environment.jpg)
 
-If it's not a human-readable word or sentence, it's probably a character encoding or font issue.  
+If the "garbled content" is not a human-readable word or sentence, this may be a character encoding or font issue.  
 If you see something in a foreign language that you don't understand, it may be a problem with an older version of i18n.  
 I'm sorry that I didn't handle i18n well.  
 But, the new **edition** released later may do better.
