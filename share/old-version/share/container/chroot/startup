@@ -127,6 +127,38 @@ cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 
 	MOUNT_GITSTATUS=true
 	GITSTATUS_DIR="${CONFIG_FOLDER}/gitstatus"
+
+	# [[enabled, "source", "mount point", "read only"];["mount[]", "mount_src[]", "mount_dst[]", "mount_ro[]"], ["true or false", "src_dir(e.g. /system)", dst_dir, "true or false"]] 
+	#
+	# ╭───┬───────────────┬─────────────────┬─────────────┬───────────────╮
+	# │ # │    enabled    │     source      │ mount point │   read only   │
+	# ├───┼───────────────┼─────────────────┼─────────────┼───────────────┤
+	# │ 0 │ mount[]       │ mount_src[]     │ mount_dst[] │ mount_ro[]    │
+	# │ 1 │ true or false │ src_dir(e.g.    │ dst_dir     │ true or false │
+	# │   │               │ /system)        │             │               │
+	# ╰───┴───────────────┴─────────────────┴─────────────┴───────────────╯
+	#
+    # true or false
+	mount[0]=false
+
+	# src: source
+	mount_src[0]="/system"
+
+	# dst: destination
+	# To avoid problems when unmounting, dst(mount point) is a maximum of 2 subdirectories. i.e. You can use "/system" or "/media/system", but not "/media/aa/system/bb".
+	# This is a bad design. It is not expected that this constraint will be used in the next edition.
+	mount_dst[0]="/system"
+
+	# ro: read only
+	mount_ro[0]=true
+
+	#  Mounting the "/data" directory is dangerous and may cause problems with the container.
+	mount[1]=false
+	mount_src[1]="/data"
+	mount_dst[1]="/media/data"
+	mount_ro[1]=false
+
+	# You can also manually add mount[2] , mount[3] ...
 	################
 	# shells
 	# let mut shells: Vec<&str> = vec!["zsh", "fish", "bash", "ash", "su"];
@@ -272,17 +304,29 @@ cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 	    #########
 	    detect_mount() {
 	        MOUNT_DIR="\$1"
-	        if \$(grep -q " \${MOUNT_DIR%/} " /proc/mounts); then
-	            return 0
-	        else
-	            return 1
-	        fi
+	        \$(grep -q " \${MOUNT_DIR%/} " /proc/mounts) && return 0
+	        return 1
 	    }
 	    mount_01() {
 	        su -c "\${TMOE_MOUNT} -o bind /\${i} \${ROOTFS_DIR}/\${i}"
 	    }
+	    mount_ro_or_rw() {
+	        local ro_bool=\$1
+	        local src_dir=\$2
+	        local dst_dir=\$3
+
+	        if (\$(\$ro_bool)); then
+	            su -c "\${TMOE_MOUNT} -o bind,ro /\${src_dir} \${ROOTFS_DIR}/\${dst_dir}"
+	        else
+	            su -c "\${TMOE_MOUNT} -o bind /\${src_dir} \${ROOTFS_DIR}/\${dst_dir}"
+	        fi
+	    }
 	    mkdir_01() {
 	        [[ -e "/\${i}" ]] || su -c "mkdir -pv /\${i}"
+	    }
+	    mkdir_dst() {
+	        local dst=\$1
+	        [[ -e "\${dst}" ]] || su -c "mkdir -pv \${dst}"
 	    }
 	    ########
 	    # arch mounts itself
@@ -292,7 +336,7 @@ cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 	            su -c "\${TMOE_MOUNT} -o remount,exec,suid,relatime,dev \${ROOTFS_DIR}"
 	        fi
 	    fi
-		### tmp
+	    ### tmp
 	    if [[ \${MOUNT_TMP} = true ]]; then
 	        if ! detect_mount "\${ROOTFS_DIR}\${TMP_MOUNT_POINT}"; then
 	            su -c "\${TMOE_MOUNT} -o bind \${TMP_SOURCE_DIR} \${ROOTFS_DIR}\${TMP_MOUNT_POINT}"
@@ -333,6 +377,30 @@ cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 	            etc/gitstatus) [[ \${MOUNT_GITSTATUS} != true ]] || su -c "\${TMOE_MOUNT} -o bind \${GITSTATUS_DIR} \${ROOTFS_DIR}/\${i}" ;;
 	            esac
 	        fi
+	    done
+
+
+	    # mount[1]=false
+	    # mount_src[1]="/data"
+	    # mount_dst[1]="/data"
+	    # mount_ro[1]=false
+	    for k in "\${!mount[@]}"; do
+	        local mount_bool=\${mount[\$k]}
+	        local mount_dst=\${mount_dst[\$k]}
+	        local mount_src=\${mount_src[\$k]}
+	        local mount_ro=\${mount_ro[\$k]}
+
+	        (\$(\$mount_bool)) || continue 
+
+	        (awk -v dst=\$mount_dst 'BEGIN { slash_len = split(dst, dst_arr, "/"); if (slash_len >= 4) exit 1}') || continue
+	        
+	        local dst_dir="\${ROOTFS_DIR}\$mount_dst"
+
+	        if ! detect_mount "\$dst_dir"; then
+	            mkdir_dst \$dst_dir
+	            mount_ro_or_rw \$mount_ro \$mount_src \$mount_dst
+	        fi
+
 	    done
 	    ########
 	    if [[ \${FIX_DEV_LINK} = true ]]; then
@@ -501,10 +569,10 @@ cat >"${TMP_FILE}" <<-ENDOFTMOECHROOT
 	    # LOGIN SHELL
 	    case \${TMOE_SHELL} in
 	    */pwsh| */nushell| */nu) 
-	         case \${LOGIN_SHELL_ARG} in
-	         "-l") LOGIN_SHELL_ARG="" ;;
-	         esac
-	         ;;
+	        case \${LOGIN_SHELL_ARG} in
+	        "-l") LOGIN_SHELL_ARG="" ;;
+	        esac
+	        ;;
 		esac
 
 	    if [[ \${CHROOT_USER} = root || ! -f \${ROOTFS_DIR}/usr/bin/sudo ]]; then
