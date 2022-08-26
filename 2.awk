@@ -787,11 +787,11 @@ function do_you_want_to_continue(b, _, opt, a_map, y_n, language) {
 
     # български
     a_map["do_you", "bg"] = "Искате ли да "
-    a_map["cont", "bg"] = "jätkata?"
+    a_map["cont", "bg"] = "продължите?"
 
     # dansk
-    a_map["do_you", "bg"] = "Ønsker du at "
-    a_map["cont", "bg"] = "fortsætte?"
+    a_map["do_you", "da"] = "Ønsker du at "
+    a_map["cont", "da"] = "fortsætte?"
 
     # latviešu
     a_map["do_you", "lv"] = "Vai vēlaties "
