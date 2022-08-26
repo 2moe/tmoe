@@ -774,8 +774,8 @@ function do_you_want_to_continue(b, _, opt, a_map, y_n, language) {
     a_map["do_you", "ja"] = "しますか?"
 
     # 한국어
-    a_map["cont", "ko"] = "계속하시"
-    a_map["do_you", "ko"] = "겠습니까?"
+    a_map["cont", "ko"] = "계속하"
+    a_map["do_you", "ko"] = "시겠습니까?"
 
     # čeština
     a_map["do_you", "cs"] = "Chcete "
