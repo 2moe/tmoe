@@ -24,13 +24,13 @@ across_architectures_container() {
 	true)
 		case ${LINUX_DISTRO} in
 		Android)
-			if [[ ! -e /proc/sys/fs/binfmt_misc ]]; then
+			# if [[ ! -e /proc/sys/fs/binfmt_misc ]]; then
 				getprop ro.product.model 2>/dev/null
-				printf "%s %s\n" "部分Android系统无${BLUE}/proc/sys/fs/binfmt_misc${RESET}, 故本工具未对Android开放此功能。" "如需跨架构运行chroot容器，则请换用GNU/Linux系统，或自行加载${YELLOW}内核模块${RESET}。"
+				# printf "%s %s\n" "部分Android系统无${BLUE}/proc/sys/fs/binfmt_misc${RESET}, 故本工具未对Android开放此功能。" "如需跨架构运行chroot容器，则请换用GNU/Linux系统，或自行加载${YELLOW}内核模块${RESET}。"
 				printf "%s\n" "Sorry, you are using Android system, please ${GREEN}modprobe ${BLUE}binfmt_misc${RESET} kernel module manually."
 				press_enter_to_return
 				list_tmoe_containers
-			fi
+			# fi
 			;;
 		esac
 		;;

@@ -1623,11 +1623,11 @@ debootstrap_ubuntu_distro() {
 }
 #############
 ubuntu_distro_x64_model() {
+    # -e 's@(ARCH_TYPE)\}/default@\1\}/cloud@' \
     bash -c "$(sed -n p \
         ${TMOE_SHARE_DIR}/container/install |
         sed -E \
             -e "s/focal/${DISTRO_CODE}/g" \
-            -e 's@(ARCH_TYPE)\}/default@\1\}/cloud@' \
             -e "s/debian (container)/${DISTRO_NAME} \1/g" \
             -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
             -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
@@ -1640,7 +1640,6 @@ ubuntu_distro_arm_model() {
         ${TMOE_SHARE_DIR}/container/install |
         sed -E \
             -e "s/focal/${DISTRO_CODE}/g" \
-            -e 's@(ARCH_TYPE)\}/default@\1\}/cloud@' \
             -e "s/debian (container)/${DISTRO_NAME} \1/g" \
             -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
             -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
@@ -1652,7 +1651,6 @@ ubuntu_distro_x64_model_02() {
         ${TMOE_SHARE_DIR}/container/install |
         sed -E \
             -e "s/focal/${DISTRO_CODE}/g" \
-            -e 's@(ARCH_TYPE)\}/default@\1\}/cloud@' \
             -e "s/debian (container)/${DISTRO_NAME} \1/g" \
             -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
             -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
@@ -1667,7 +1665,6 @@ ubuntu_distro_arm_model_02() {
         ${TMOE_SHARE_DIR}/container/install |
         sed -E \
             -e "s/focal/${DISTRO_CODE}/g" \
-            -e 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' \
             -e "s/debian container/${DISTRO_NAME} container/g" \
             -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
             -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
@@ -1692,7 +1689,6 @@ linux_distro_common_model_02() {
         ${TMOE_SHARE_DIR}/container/install |
         sed -E \
             -e "s/debian container/${DISTRO_NAME} container/g" \
-            -e 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' \
             -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
             -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE_02}:g" \
             -e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"
@@ -1706,7 +1702,6 @@ linux_distro_common_model_04() {
         ${TMOE_SHARE_DIR}/container/install |
         sed -E \
             -e "s/debian container/${DISTRO_NAME} container/g" \
-            -e 's@ARCH_TYPE\}/default@ARCH_TYPE\}/cloud@' \
             -e "s:debian-sid:${DISTRO_NAME}-${DISTRO_CODE}:g" \
             -e "s:debian/sid:${DISTRO_NAME}/${DISTRO_CODE}:g" \
             -e "s:Debian GNU/Linux:${DISTRO_NAME} GNU/Linux:g")"

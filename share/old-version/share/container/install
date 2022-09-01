@@ -1047,7 +1047,9 @@ esac
 ############
 #curl -Lo '.profile' 'https://raw.githubusercontent.com/2moe/tmoe/master/profile.sh'
 #chmod u+x .profile
-#不要将profile转换为外部脚本，否则将影响sed
+
+# It was so confusing that I wanted to rewrite it.
+
 cat >'.profile' <<-'ENDOFbashPROFILE'
 	RED=$(printf '\033[31m')
 	GREEN=$(printf '\033[32m')
@@ -1405,8 +1407,11 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	#勿删上面那条注释
 	 [[ -e /etc/apt/sources.list ]] && sed -i 's/^deb/# &/g;s/^##deb/deb/g' /etc/apt/sources.list 2>/dev/null
 	##dns
-	[[ ! -e /etc/apt/sources.list ]] || grep -v proposed /etc/apt/sources.list
-	rm -f /etc/resolv.conf
+
+	regen_dns_conf() {
+	[[ -e /etc/apt/sources.list ]] && apt-get autoremove --purge -y systemd-resolved 2>/dev/null
+
+	rm -f /etc/resolv.conf 2>/dev/null
 	cat >/etc/resolv.conf <<-'EndOfFile'
 		nameserver 1.0.0.1
 		nameserver 114.114.115.115
@@ -1421,6 +1426,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    cp -f ${TMOE_TMP_DIR}/resolv.conf /tmp
 	fi
 	chmod -v 644 /etc/resolv.conf
+	}
+
+    regen_dns_conf
 	cat /etc/resolv.conf
 	printf "%s\n" ""
 	######################
@@ -2202,9 +2210,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        sed -i -E 's@^(gpgcheck)=.*@\1=0@g' /etc/yum.repos.d/*.repo
 	    fi
 
-	    if [[ ! -e /tmp/resolv.conf ]]; then
-	        cp -f /etc/resolv.conf /tmp
-	    fi
+	    regen_dns_conf
+
 	    if ((${FEDORA_VERSION} >= 32)); then
 	        if ! grep -q '=rawhide' /etc/os-release; then
 	            [[ ${TMOE_CHROOT} != true ]] || fedora_rpmfusion_repo
@@ -2218,11 +2225,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    fi
 	    [[ $(command -v hostname) ]] || dnf install -y hostname
 	    [[ $(command -v systemctl) ]] || dnf install -y systemd
-	    if [[ -s /tmp/resolv.conf ]]; then
-	        rm -f /etc/resolv.conf
-	        #更新系统后，dns解析文件会被systemd的配置所覆盖
-	        cp -f /tmp/resolv.conf /etc
-	    fi
+	    regen_dns_conf
 	    [[ $(command -v ip) ]] || dnf install -y iproute
 	    [[ $(command -v sudo) ]] || dnf install -y sudo
 
@@ -2287,6 +2290,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    bash zsh.sh
 	}
 	################
+	regen_dns_conf
+
 	if ! grep -Eq 'debian|ubuntu' '/etc/os-release'; then
 	    note_of_non_debian
 	else
