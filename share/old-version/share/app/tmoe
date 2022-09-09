@@ -305,9 +305,9 @@ check_container_login_file_01() {
 ########
 chmod_777_temporary_file_01() {
     if [[ -n $(command -v bat) ]]; then
-        sed '/\/tmp\/.tmoe_container_temporary/d' "${TEMP_FILE}" | bat -ppn
+        sed '/\/tmp\/.tmoe_container_temporary/d' "${TEMP_FILE}" | bat -pp
     elif [[ -n $(command -v batcat) ]]; then
-        sed '/\/tmp\/.tmoe_container_temporary/d' "${TEMP_FILE}" | batcat -ppn
+        sed '/\/tmp\/.tmoe_container_temporary/d' "${TEMP_FILE}" | batcat -pp
     else
         sed '/\/tmp\/.tmoe_container_temporary/d' "${TEMP_FILE}" | cat
     fi

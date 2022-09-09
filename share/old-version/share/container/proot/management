@@ -616,9 +616,9 @@ switch_container_login_user() {
 }
 readme_of_env_var_and_autostartup_script() {
     if [ $(command -v bat) ]; then
-        bat -ppn ${TMOE_SHARE_DIR}/container/README.md
+        bat -pp ${TMOE_SHARE_DIR}/container/README.md
     elif [ $(command -v bat) ]; then
-        bat -ppn ${TMOE_SHARE_DIR}/container/README.md
+        bat -pp ${TMOE_SHARE_DIR}/container/README.md
     else
         ${TMOE_SHARE_DIR}/container/README.md
     fi
@@ -767,9 +767,9 @@ kill_chroot_container_process_gnu_linux() {
     #EXEC_LSOF=$(su -c "lsof")
     su -c "lsof ${DEBIAN_CHROOT%/}" >${LSOF_TEMP_FILE}.02
     if [[ $(command -v batcat) ]]; then
-        batcat -ppn -l ruby ${LSOF_TEMP_FILE}.02
+        batcat -pp -l ruby ${LSOF_TEMP_FILE}.02
     elif [[ $(command -v bat) ]]; then
-        bat -ppn -l ruby ${LSOF_TEMP_FILE}.02
+        bat -pp -l ruby ${LSOF_TEMP_FILE}.02
     else
         cat ${LSOF_TEMP_FILE}.02
     fi
@@ -808,9 +808,9 @@ kill_chroot_container_process() {
     su -c "lsof ${DEBIAN_CHROOT%/}" | awk '{print $2}' | sed 1d | uniq | sed "s@^@kill -9 @g" >${LSOF_TEMP_FILE}.02
     chmod 777 ${LSOF_TEMP_FILE}.02
     if [[ $(command -v batcat) ]]; then
-        batcat -ppn -l ruby ${LSOF_TEMP_FILE}.02
+        batcat -pp -l ruby ${LSOF_TEMP_FILE}.02
     elif [[ $(command -v bat) ]]; then
-        bat -ppn -l ruby ${LSOF_TEMP_FILE}.02
+        bat -pp -l ruby ${LSOF_TEMP_FILE}.02
     else
         cat ${LSOF_TEMP_FILE}.02
     fi
@@ -904,9 +904,9 @@ readme_of_gnu_linux_distro() {
     if [ "$(ls ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/docs/README.* 2>/dev/null)" ]; then
         for i in ${DEBIAN_CHROOT}/usr/local/etc/tmoe-linux/docs/README.*; do
             if [ $(command -v bat) ]; then
-                bat -ppn ${i}
+                bat -pp ${i}
             elif [ $(command -v batcat) ]; then
-                batcat -ppn ${i}
+                batcat -pp ${i}
             else
                 cat ${i}
             fi
@@ -1227,9 +1227,9 @@ install_new_tmoe_gnu_linux_distro() {
 bat_build_latest_txt() {
     if [[ -e ${BUILD_LATEST_TXT} ]]; then
         if [[ $(command -v bat) ]]; then
-            bat -ppn -l toml ${BUILD_LATEST_TXT}
+            bat -pp -l toml ${BUILD_LATEST_TXT}
         elif [[ $(command -v batcat) ]]; then
-            batcat -ppn -l toml ${BUILD_LATEST_TXT}
+            batcat -pp -l toml ${BUILD_LATEST_TXT}
         else
             cat ${BUILD_LATEST_TXT}
         fi
@@ -1364,9 +1364,9 @@ network_node_menu_03() {
 # 		for i in ${TMOE_GIT_DIR}/share/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/README.*; do
 # 			printf "%s\n" "${YELLOW}------------------------${RESET}"
 # 			if [ "$(command -v bat)" ]; then
-# 				bat -ppn ${i}
+# 				bat -pp ${i}
 # 			elif [ "$(command -v batcat)" ]; then
-# 				batcat -ppn ${i}
+# 				batcat -pp ${i}
 # 			else
 # 				cat ${i}
 # 			fi
@@ -1441,9 +1441,9 @@ install_weekly_build_container() {
     # DOCKERFILE="${TMOE_GIT_DIR}/share/docker-build/${ARCH_TYPE}/${DISTRO_NAME_02}/${DESKTOP}/Dockerfile"
     # printf "%s\n" "${BLUE}${DOCKERFILE}${RESET}"
     # if [ $(command -v bat) ]; then
-    # 	bat -ppn "${DOCKERFILE}"
+    # 	bat -pp "${DOCKERFILE}"
     # elif [ $(command -v batcat) ]; then
-    # 	batcat -ppn "${DOCKERFILE}"
+    # 	batcat -pp "${DOCKERFILE}"
     # else
     # 	cat "${DOCKERFILE}"
     # fi
