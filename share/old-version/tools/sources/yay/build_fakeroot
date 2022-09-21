@@ -90,6 +90,11 @@ add_arch_for_edu_repo_mirror() {
     if [[ -s /etc/pacman.conf.bak ]]; then
         cp -fv /etc/pacman.conf.bak /etc/pacman.conf
     fi
+
+    case $(uname -m) in
+    armv7*) return 1 ;;
+    esac
+
     if ! grep -q 'arch4edu' /etc/pacman.conf; then
         cat >>/etc/pacman.conf <<-'Endofpacman'
 					[arch4edu]
@@ -105,6 +110,11 @@ add_arch_for_edu_repo_mirror() {
 }
 add_arch_for_edu_repo() {
     cp -fv /etc/pacman.conf /etc/pacman.conf.bak
+
+    case $(uname -m) in
+    armv7*) return 1 ;;
+    esac
+
     if ! grep -q 'arch4edu' /etc/pacman.conf; then
         cat >>/etc/pacman.conf <<-'Endofpacman'
 					[arch4edu]
@@ -124,52 +134,51 @@ add_arch_for_edu_repo() {
 create_paru_script() {
     cat >paru <<-'EOF'
 #!/usr/bin/env bash
-if [ -e /usr/bin/paru ];then
-	/usr/bin/paru $@
+if (command -v paru >/dev/null); then
+    paru "$@"
 else
-	/opt/bin/paru $@
+    /opt/bin/paru "$@"
 fi
 EOF
 
     cat >yay <<-'EOFyay'
 #!/usr/bin/env bash
-if [ -e /usr/bin/yay ];then
-	/usr/bin/yay $@
+if (command -v yay >/dev/null); then
+    yay "$@"
 else
-	paru $@
+    paru "$@"
 fi
 EOFyay
     install -Dm755 paru /usr/local/bin
     install -Dm755 yay /usr/local/bin
 }
 install_paru() {
-    # pacman-key --populate archlinuxcn
-    # archlinux-keyring archlinuxcn-keyring
-    # pacman -Syu --noconfirm arch4edu/paru ||
-    # pacman -Syu --noconfirm paru
-    # for i in paru gawk; do
-    #     printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
-    #     pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i} || pacman -Sy --noconfirm ${i}
-    # done
-    for i in arch4edu-keyring paru; do
-        printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy ${PURPLE}--noconfirm --needed ${BLUE}${i}${RESET}"
-        pacman -Sy --noconfirm --needed ${i}
-    done
+    printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy ${PURPLE}--noconfirm --needed ${BLUE}paru${RESET}"
+    pacman -Sy --noconfirm --needed paru
+
     if [[ ! $(command -v paru) ]]; then
+        declare -A paru
+        paru[file]="paru.tar.zst"
+        paru[proxy]="paru-arm64"
+
         case $(uname -m) in
-        armv7* | armv8l) ;;
-        aarch64 | armv8* | armv9*)
-            cd /tmp || exit 1
-            PARU_FILE="paru.tar.zst"
-            curl -Lo "$PARU_FILE" https://l.tmoe.me/paru-arm64-github || curl -Lo "$PARU_FILE" https://l.tmoe.me/paru-arm64
-            ls -lh "$PARU_FILE"
-            tar -xvf "$PARU_FILE"
-            mkdir -p /opt/bin
-            install -Dm755 paru /opt/bin
-            create_paru_script
-            ;;
+        armv7* | armv8l) paru[proxy]="paru-armv7" ;;
+        aarch64 | armv8* | armv9*) paru[proxy]="paru-arm64" ;;
+        *) return 1 ;;
         esac
+
+        paru[gh]=${paru[proxy]}"-github"
+        paru[uri]="https://l.tmoe.me/"
+        cd /tmp || exit 1
+
+        curl -Lo "${paru[file]}" "${paru[uri]}${paru[gh]}" || curl -Lo "${paru[file]}" "${paru[uri]}${paru[proxy]}"
+
+        ls -lh "${paru[file]}"
+        tar -xvf "${paru[file]}"
+        mkdir -p /opt/bin
+        install -Dm755 paru /opt/bin
+        create_paru_script
     fi
 }
 ###################
-install_paru_main $@
+install_paru_main "$@"

@@ -1289,8 +1289,8 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 					#deb http://mirrors.huaweicloud.com/kali/ kali-last-snapshot main contrib non-free
 					#kali-experimental (Packages which are under testing - often used with the rolling repository)​
 					#deb http://http.kali.org/kali kali-experimental main non-free contrib
-					#deb http://mirrors.ustc.edu.cn/kali/ kali-rolling main non-free contrib
-					deb http://mirrors.neusoft.edu.cn/kali/ kali-rolling main non-free contrib
+					deb http://mirrors.ustc.edu.cn/kali/ kali-rolling main non-free contrib
+					#deb http://mirrors.neusoft.edu.cn/kali/ kali-rolling main non-free contrib
 					#deb http://mirrors.huaweicloud.com/debian/ stable main contrib non-free
 				EndOfSourcesList
 	    #注意：kali-rolling添加debian testing源后，可能会破坏系统依赖关系，可以添加stable源（暂未发现严重影响）
@@ -1511,11 +1511,9 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	        fi
 	    done
 
-	    # for i in arch4edu-keyring fakeroot-tcp; do
 	    i=fakeroot-tcp
 	    printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
 	    pacman -Sy --noconfirm ${i}
-	    # done
 	    cd ${HOME}
 	}
 	############
@@ -1531,6 +1529,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 						Server = https://mirrors.tencent.com/arch4edu/$arch
 						SigLevel = Never
 					Endofpacman
+			pacman -Sy --noconfirm arch4edu-keyring
 	    fi
 	}
 	add_archlinuxcn_repo() {
@@ -1549,18 +1548,19 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	create_paru_script(){
 		cat>paru<<-'EOFparu'
 	#!/usr/bin/env bash
-	if [ -e /usr/bin/paru ];then
-		/usr/bin/paru $@
+	if (command -v paru >/dev/null); then
+		paru "$@"
 	else
-		/opt/bin/paru $@
+		/opt/bin/paru "$@"
 	fi
 	EOFparu
-	cat>yay<<-'EOFyay'
+
+		cat>yay<<-'EOFyay'
 	#!/usr/bin/env bash
-	if [ -e /usr/bin/yay ];then
-	/usr/bin/yay $@
+	if (command -v yay >/dev/null); then
+		yay "$@"
 	else
-	paru $@
+		paru "$@"
 	fi
 	EOFyay
 	install -Dm755 paru /usr/local/bin
@@ -1569,35 +1569,37 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	arch_linux_paru() {
 		# pacman-key --populate archlinuxcn
 		# archlinux-keyring archlinuxcn-keyring
-	    for i in arch4edu-keyring paru; do
-	        printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy ${PURPLE}--noconfirm --needed ${BLUE}${i}${RESET}"
-	        pacman -Sy --noconfirm --needed ${i}
-	    done
+	    printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy ${PURPLE}--noconfirm --needed ${BLUE}paru${RESET}"
+	    pacman -Sy --noconfirm --needed paru
 		if [[ ! $(command -v paru) ]]; then
 			get_arch_paru
 		fi
 	}
 	get_arch_paru() {
+		declare -A paru
+		paru[file]="paru.tar.zst"
+		paru[proxy]="paru-arm64"
+
 		case $(uname -m) in
-		x86_64) pacman -Sy --noconfirm --needed paru ;;
-		armv7* | armv8l) 
-		printf "%s\n" \
-			"You should install ${GREEN}paru ${BLUE}manually${RESET}" \
-			"${GREEN}git ${YELOW}clone --depth=1 ${BLUE}https://aur.archlinux.org/paru.git${RESET}" \
-			"cd paru" \
-			"makepkg -Si"
+		armv7* | armv8l) paru[proxy]="paru-armv7" ;;
+		aarch64 | armv8* | armv9*) paru[proxy]="paru-arm64" ;;
+		*) 
+			cd ~
+			pacman -Sy --noconfirm --needed paru
+			return 0
 		;;
-	    aarch64 | armv8* | armv9*)
-		cd /tmp
-		curl -Lo paru.tar.zst l.tmoe.me/paru-arm64 || curl -Lvo paru.tar.zst l.tmoe.me/paru-arm64-github
-		tar -xvf paru.tar.zst
+		esac
+		paru[gh]=${paru[proxy]}"-github"
+		paru[uri]="https://l.tmoe.me/"
+		cd /tmp || exit 		
+		curl -Lo "${paru[file]}" "${paru[uri]}${paru[gh]}" || curl -Lo "${paru[file]}" "${paru[uri]}${paru[proxy]}"
+		tar -xvf "${paru[file]}"
 		mkdir -p /opt/bin
 		install -Dm755 paru /opt/bin
 		create_paru_script
+
 		printf "%s\n" \
 		"You should run ${GREEN}paru -Sy ${BLUE}paru-bin${RESET} to upgrade it."
-		;;
-		esac
 		cd ~
 	}
 	#################
@@ -1633,7 +1635,10 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	if [[ -e "/etc/pacman.conf" && $(command -v grep) ]]; then
 		sed -i.bak -E "s@^#(Color)@\1@" /etc/pacman.conf
 	    if [[ ${WEEKLY_BUILD_CONTAINER} != true ]]; then
-	        add_arch_for_edu_repo
+            case $(uname -m) in
+            armv7*|armv8l) ;;
+            *) add_arch_for_edu_repo ;;
+            esac
 	        add_archlinuxcn_repo
 	        arch_linux_paru
 	        cat /etc/pacman.conf
