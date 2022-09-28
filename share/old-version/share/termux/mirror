@@ -44,7 +44,7 @@ china_university_mirror_station() {
     SOURCE_MIRROR_STATION=""
     RETURN_TO_WHERE='china_university_mirror_station'
     SOURCES_LIST=$(
-        whiptail --title "软件源列表" --menu \
+        "${TUI_BIN:-dialog}" --title "软件源列表" --menu \
             "您想要切换为哪个镜像源呢？" 0 50 0 \
             "1" "北京外国语大学mirrors.bfsu.edu.cn" \
             "2" "腾讯云mirrors.cloud.tencent.com" \
@@ -147,7 +147,7 @@ check_termux_repo() {
 ##########
 enable_or_disable_termux_repo() {
     check_termux_repo
-    if (whiptail --title "您想要对${TERMUX_REPO}小可爱做什么" --yes-button "enable启用" --no-button "disable禁用" --yesno "Do you want to enable or disable it?\n您是想要启用${TERMUX_REPO}-repo还是禁用呢？♪(^∇^*)\n${TERMUX_REPO_ENABLED_STATUS}" 9 50); then
+    if ("${TUI_BIN:-dialog}" --title "您想要对${TERMUX_REPO}小可爱做什么" --yes-button "enable启用" --no-button "disable禁用" --yesno "Do you want to enable or disable it?\n您是想要启用${TERMUX_REPO}-repo还是禁用呢？♪(^∇^*)\n${TERMUX_REPO_ENABLED_STATUS}" 9 50); then
         apt update
         apt install -y ${TERMUX_REPO}-repo
         apt list | grep "/${TERMUX_REPO}"
@@ -161,7 +161,7 @@ enable_or_disable_termux_repo() {
 termux_repo_manager() {
     RETURN_TO_WHERE='termux_repo_manager'
     SOURCES_LIST=$(
-        whiptail --title "TERMUX REPO" --menu \
+        "${TUI_BIN:-dialog}" --title "TERMUX REPO" --menu \
             "Which repo do you want to enable?" 0 50 0 \
             "1" "game:游戏" \
             "2" "root:适用于已root设备" \
@@ -192,7 +192,7 @@ tmoe_sources_list_manager() {
     SOURCE_MIRROR_STATION=""
     RETURN_TO_WHERE='tmoe_sources_list_manager'
     SOURCES_LIST=$(
-        whiptail --title "software-sources tmoe-manager" --menu \
+        "${TUI_BIN:-dialog}" --title "software-sources tmoe-manager" --menu \
             "Do you want to switch the mirror source?" 0 50 0 \
             "1" "清华,北外,中科大,腾讯云镜像站" \
             "2" "enable/disable repo(启用/禁用仓库)" \

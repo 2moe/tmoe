@@ -41,7 +41,7 @@ across_architectures_container() {
 #############
 proot_container_menu_multi_langs() {
 	proot_container_menu_en() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} container" --menu "The current architecture is ${TRUE_ARCH_TYPE}." 0 50 0 \
+		SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "${CONTAINER_TYPE} container" --menu "The current architecture is ${TRUE_ARCH_TYPE}." 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE} distros list" \
 			"2" "📑 List installed" \
 			"3" "⚔️ cross-architecture" \
@@ -51,7 +51,7 @@ proot_container_menu_multi_langs() {
 			3>&1 1>&2 2>&3)
 	}
 	proot_container_menu_cn() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE}容器" --menu "The current architecture is ${TRUE_ARCH_TYPE}\n您是想要运行${TRUE_ARCH_TYPE}架构的容器,还是跨架构呢？\n除向下兼容外,跨架构运行的效率可能偏低" 0 50 0 \
+		SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "${CONTAINER_TYPE}容器" --menu "The current architecture is ${TRUE_ARCH_TYPE}\n您是想要运行${TRUE_ARCH_TYPE}架构的容器,还是跨架构呢？\n除向下兼容外,跨架构运行的效率可能偏低" 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE}发行版列表" \
 			"2" "📑 List installed 当前已安装容器列表" \
 			"3" "⚔️ cross-architecture 跨CPU架构" \
@@ -102,7 +102,7 @@ systemd_nspawn_is_true_or_false() {
 	# fi
 }
 switch_chroot_default_mode() {
-	if (whiptail --title "CHROOT MODE" --yes-button "systemd" --no-button "normal" --yesno "It is recommended to use the systemd mode.\nIf you want to use systemctl in the container,\nyou also need to enable the boot mode of nspawn.\nIf you cannot use the systemd mode,\nthen switch it back to the normal mode." 13 50); then
+	if ("${TUI_BIN:-dialog}" --title "CHROOT MODE" --yes-button "systemd" --no-button "normal" --yesno "It is recommended to use the systemd mode.\nIf you want to use systemctl in the container,\nyou also need to enable the boot mode of nspawn.\nIf you cannot use the systemd mode,\nthen switch it back to the normal mode." 13 50); then
 		systemd_nspawn_is_true
 	else
 		systemd_nspawn_is_false
@@ -144,7 +144,7 @@ check_chroot_mode() {
 }
 chroot_container_menu_multi_langs() {
 	chroot_container_menu_en() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE} container" --menu "Chroot in normal mode is not suitable for production environment,\nit is recommended to use the systemd mode.\n${TMOE_TIPS_04}" 0 50 0 \
+		SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "${CONTAINER_TYPE} container" --menu "Chroot in normal mode is not suitable for production environment,\nit is recommended to use the systemd mode.\n${TMOE_TIPS_04}" 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE} distros list" \
 			"2" "📑 List installed" \
 			"3" "🥛 beta:switch chroot mode(systemd/normal)" \
@@ -155,7 +155,7 @@ chroot_container_menu_multi_langs() {
 			3>&1 1>&2 2>&3)
 	}
 	chroot_container_menu_cn() {
-		SELECTED_GNU_LINUX=$(whiptail --title "${CONTAINER_TYPE}容器" --menu "由于普通模式的chroot在umount时可能会产生bug,\n故只适用于恢复环境,不适用于生产环境,建议您使用systemd模式。\n${TMOE_TIPS_04}" 0 50 0 \
+		SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "${CONTAINER_TYPE}容器" --menu "由于普通模式的chroot在umount时可能会产生bug,\n故只适用于恢复环境,不适用于生产环境,建议您使用systemd模式。\n${TMOE_TIPS_04}" 0 50 0 \
 			"1" "💠 ${TRUE_ARCH_TYPE}发行版列表" \
 			"2" "📑 List installed 当前已安装容器列表" \
 			"3" "🥛 beta公测:切换chroot默认模式(systemd/normal)" \

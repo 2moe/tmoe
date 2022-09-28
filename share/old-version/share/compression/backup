@@ -22,7 +22,7 @@ backup_filename() {
     else
         BAK_FILE_PREFIX_03="${DEBIAN_FOLDER}+${BAK_FILE_PREFIX_02}"
     fi
-    TARGET_BACKUP_FILE_NAME=$(whiptail --inputbox "请自定义备份的文件名称,若留空\n则将自动命名为${BAK_FILE_PREFIX_03}\nPlease type the filename." 10 50 --title "FILENAME" 3>&1 1>&2 2>&3)
+    TARGET_BACKUP_FILE_NAME=$("${TUI_BIN:-dialog}" --inputbox "请自定义备份的文件名称,若留空\n则将自动命名为${BAK_FILE_PREFIX_03}\nPlease type the filename." 10 50 --title "FILENAME" 3>&1 1>&2 2>&3)
     TARGET_BACKUP_FILE_NAME="$(printf '%s\n' "${TARGET_BACKUP_FILE_NAME}" | head -n 1 | cut -d ' ' -f 1)"
     printf "%s\n" "${TARGET_BACKUP_FILE_NAME}"
     if [ -z ${TARGET_BACKUP_FILE_NAME} ]; then
@@ -59,7 +59,7 @@ backup_system() {
     #check_zstd
     RETURN_TO_WHERE='backup_system'
     backup_system_menu_en() {
-        OPTION=$(whiptail --title "BACKUP ${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to backup the container?(๑´ڡ\`๑)" 0 50 0 \
+        OPTION=$("${TUI_BIN:-dialog}" --title "BACKUP ${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to backup the container?(๑´ڡ\`๑)" 0 50 0 \
             "1" "Clean up garbage and private data" \
             "2" "Backup ${DEBIAN_FOLDER} container" \
             "3" "Backup container to sd/tf card (only for termux)" \
@@ -67,7 +67,7 @@ backup_system() {
             3>&1 1>&2 2>&3)
     }
     backup_system_menu_cn() {
-        OPTION=$(whiptail --title "BACKUP ${DEBIAN_FOLDER_CAPITAL}" --menu "您想要备份${DEBIAN_FOLDER}容器数据么？(๑´ڡ\`๑)" 0 50 0 \
+        OPTION=$("${TUI_BIN:-dialog}" --title "BACKUP ${DEBIAN_FOLDER_CAPITAL}" --menu "您想要备份${DEBIAN_FOLDER}容器数据么？(๑´ڡ\`๑)" 0 50 0 \
             "1" "清理${DEBIAN_FOLDER}容器垃圾和隐私数据" \
             "2" "备份${DEBIAN_FOLDER} ${CONTAINER_TYPE}容器" \
             "3" "备份容器至外置sd/tf(仅限termux)" \
@@ -151,7 +151,7 @@ backup_gnu_linux_container() {
         [[ ! -e ${i} ]] || BACKUP_FOLDER="${BACKUP_FOLDER} ${i}"
     done
 
-    if (whiptail --title "Select compression type 选择压缩类型 " --yes-button "tar.zst" --no-button "tar.xz" --yesno "tar.zst在速度和压缩率之间保持平衡\ntar.xz压缩率高,但速度慢\ntar.zst compresses faster.\ntar.xz has a higher compression ration, but is slower." 11 50); then
+    if ("${TUI_BIN:-dialog}" --title "Select compression type 选择压缩类型 " --yes-button "tar.zst" --no-button "tar.xz" --yesno "tar.zst在速度和压缩率之间保持平衡\ntar.xz压缩率高,但速度慢\ntar.zst compresses faster.\ntar.xz has a higher compression ration, but is slower." 11 50); then
         printf "${BLOD}%s${RESET} ${BLUE}%s${RESET}\n" "将备份以下文件/目录：" "${BACKUP_FOLDER}"
         printf "%s\n" "您选择了tar.zst,即将为您备份至${CONTAINER_BACKUP_PATH}/${CONTAINER_BACKUP_FILE_NAME}.tar.zst"
         printf "%s\n" "${YELLOW}按回车键开始备份。Press Enter to start the backup.${RESET} "

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #######################################
 have_you_encountered_signal9() {
-    if (whiptail --title "Android 12(signal9)" --yesno "Have you encountered this problem:\n [Process completed (signal 9) - press Enter]?" 0 50); then
+    if ("${TUI_BIN:-dialog}" --title "Android 12(signal9)" --yesno "Have you encountered this problem:\n [Process completed (signal 9) - press Enter]?" 0 50); then
         check_adb_command
         connect_to_adb_device
     else
@@ -33,7 +33,7 @@ type_adb_address() {
     *) local _Description="Please enable the adb wireless debugging\n on your android device\n and type the adb address here.\nIf left blank use 127.0.0.1:5555" ;;
     esac
 
-    ADB_ADDRESS=$(whiptail --inputbox "$_Description" 0 50 --title "ADB address" 3>&1 1>&2 2>&3)
+    ADB_ADDRESS=$("${TUI_BIN:-dialog}" --inputbox "$_Description" 0 50 --title "ADB address" 3>&1 1>&2 2>&3)
     if [ "$?" != "0" ]; then
         printf "%s\n" "${YELLOW}Unknown ${RED}ERROR${RESET}"
         press_enter_to_return
@@ -96,7 +96,7 @@ are_you_using_samsung_device() {
         ;;
     esac
 
-    if (whiptail --title "SAMSUNG" --yes-button "$_Yes" --no-button "$_No" --yesno "$_Description" 0 50); then
+    if ("${TUI_BIN:-dialog}" --title "SAMSUNG" --yes-button "$_Yes" --no-button "$_No" --yesno "$_Description" 0 50); then
         unset TMOE_ADB_PREFIX
         do_you_want_to_restart_adb_server && do_you_want_to_change_the_adb_server_tcp_port
     else
@@ -132,7 +132,7 @@ adb_pair_or_connect() {
         ;;
     esac
 
-    if (whiptail --title "Pair/connect" --yes-button "$_Yes" --no-button "$_No" --yesno "If you are connecting for the first time and it provides a pairing code, then use \"pair\"\n${_Description}" 0 50); then
+    if ("${TUI_BIN:-dialog}" --title "Pair/connect" --yes-button "$_Yes" --no-button "$_No" --yesno "If you are connecting for the first time and it provides a pairing code, then use \"pair\"\n${_Description}" 0 50); then
         type_adb_address
         adb_pair_and_connect
     else
@@ -157,7 +157,7 @@ adb_pair_and_connect() {
         ;;
     esac
 
-    if (whiptail --title "pairing address = normal address?" --yes-button "$_Yes" --no-button "$_No" --yesno "${_Description_2}" 0 50); then
+    if ("${TUI_BIN:-dialog}" --title "pairing address = normal address?" --yes-button "$_Yes" --no-button "$_No" --yesno "${_Description_2}" 0 50); then
         pleae_type_your_normal_adb_address
         adb_connect_address
     else
@@ -168,7 +168,7 @@ adb_pair_and_connect() {
 pleae_type_your_normal_adb_address() {
     local _Description="Please type the normal adb address"
 
-    NORMAL_ADB_ADDRESS=$(whiptail --inputbox "$_Description" 0 50 --title "NORMAL ADB address" 3>&1 1>&2 2>&3)
+    NORMAL_ADB_ADDRESS=$("${TUI_BIN:-dialog}" --inputbox "$_Description" 0 50 --title "NORMAL ADB address" 3>&1 1>&2 2>&3)
     if [ -n "${NORMAL_ADB_ADDRESS}" ]; then
         ADB_ADDRESS=${NORMAL_ADB_ADDRESS}
     fi
@@ -179,7 +179,7 @@ adb_connect_address() {
     ${TMOE_ADB_PREFIX} adb devices -l || adb devices -l
 }
 do_you_want_to_restart_adb_server() {
-    if (whiptail --title "adb kill-server" --yesno "Do you want to restart the adb server?" 0 50); then
+    if ("${TUI_BIN:-dialog}" --title "adb kill-server" --yesno "Do you want to restart the adb server?" 0 50); then
         printf "%s\n" "${PURPLE}pkill ${GREEN}adb${RESET}"
         pkill adb
         printf "%s\n" "${GREEN}adb ${PURPLE}kill-server${RESET}"
@@ -190,10 +190,10 @@ do_you_want_to_restart_adb_server() {
     fi
 }
 do_you_want_to_change_the_adb_server_tcp_port() {
-    if (whiptail --title "adb server tcp port" --yesno "Do you want to set the adb server port to \"50377\"?\nNote: The adb server port is not the adb device port.\nThe default adb server port is 5037.\nBut in tmoe, it is 50377." 0 50); then
+    if ("${TUI_BIN:-dialog}" --title "adb server tcp port" --yesno "Do you want to set the adb server port to \"50377\"?\nNote: The adb server port is not the adb device port.\nThe default adb server port is 5037.\nBut in tmoe, it is 50377." 0 50); then
         ANDROID_ADB_SERVER_PORT=50377
     else
-        ANDROID_ADB_SERVER_PORT=$(whiptail --inputbox "Please type a tcp port(1024~65535)" 0 50 --title "ADB SERVER PORT" 3>&1 1>&2 2>&3)
+        ANDROID_ADB_SERVER_PORT=$("${TUI_BIN:-dialog}" --inputbox "Please type a tcp port(1024~65535)" 0 50 --title "ADB SERVER PORT" 3>&1 1>&2 2>&3)
         if [ "$?" != "0" ]; then
             printf "%s\n" "${YELLOW}Unknown ${RED}ERROR${RESET}"
             ANDROID_ADB_SERVER_PORT=50378

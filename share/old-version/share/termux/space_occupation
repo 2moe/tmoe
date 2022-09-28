@@ -3,7 +3,7 @@
 space_occupation_menu() {
     cd ${HOME}/..
     #15 60 4
-    OPTION=$(whiptail --title "Query space occupation ranking" --menu "查询空间占用排行" 0 0 0 \
+    OPTION=$("${TUI_BIN:-dialog}" --title "Query space occupation ranking" --menu "查询空间占用排行" 0 0 0 \
         "0" "🌚 Back返回" \
         "1" "termux各目录" \
         "2" "termux文件" \

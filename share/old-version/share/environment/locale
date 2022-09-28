@@ -4,7 +4,7 @@ locale_gen_or_choose_container_locale() {
     # case ${SET_TMOE_LOCALE} in
     # true) TMOE_LOCALE_GEN=false ;;
     # *)
-    #     if (whiptail --title "CONTAINER OR HOST" --yes-button "set default locale" --no-button "locale-gen" --yesno "Do you want to set the default locale or generate the localhost system locale?♪(^∇^*) " 8 60); then
+    #     if ("${TUI_BIN:-dialog}" --title "CONTAINER OR HOST" --yes-button "set default locale" --no-button "locale-gen" --yesno "Do you want to set the default locale or generate the localhost system locale?♪(^∇^*) " 8 60); then
     #         TMOE_LOCALE_GEN=false
     #     else
     #         TMOE_LOCALE_GEN=true
@@ -27,7 +27,7 @@ tmoe_locale_menu() {
     fi
     #######################
     CONTAINER_LOCALE=$(
-        whiptail --title "LOCALE SETTING" \
+        "${TUI_BIN:-dialog}" --title "LOCALE SETTING" \
             --menu "${TMOE_LOCALE_STATUS}" 0 0 0 \
             "0" "🌚 Back" \
             "1" "Edit manually" \

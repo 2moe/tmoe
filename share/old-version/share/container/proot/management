@@ -13,7 +13,7 @@ proot_management_menu() {
     check_chroot_conf
     # 🥤
     proot_management_menu_en() {
-        SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFor non-special circumstances,please do not run rm -rf \${CONTAINER_DIR} manually." 0 50 0 \
+        SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "${DEBIAN_FOLDER_CAPITAL}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFor non-special circumstances,please do not run rm -rf \${CONTAINER_DIR} manually." 0 50 0 \
             "1" "🌱 start ${DEBIAN_FOLDER}" \
             "2" "⏹️ kill process" \
             "3" "🐯 start gui(remote desktop)" \
@@ -29,7 +29,7 @@ proot_management_menu() {
             3>&1 1>&2 2>&3)
     }
     proot_management_menu_cn() {
-        SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "容器路径为${DEBIAN_CHROOT_MIN}\n非特殊情况下,请在本工具内正常移除容器,请勿手动rm -rf \${容器路径}${TMOE_TIPS_02}" 0 50 0 \
+        SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "${DEBIAN_FOLDER_CAPITAL}" --menu "容器路径为${DEBIAN_CHROOT_MIN}\n非特殊情况下,请在本工具内正常移除容器,请勿手动rm -rf \${容器路径}${TMOE_TIPS_02}" 0 50 0 \
             "1" "🌱 启动${CONTAINER_TYPE} ${DEBIAN_FOLDER}" \
             "2" "⏹️ 停止容器进程" \
             "3" "🐯 启动gui: x11/tiger vnc" \
@@ -45,7 +45,7 @@ proot_management_menu() {
             3>&1 1>&2 2>&3)
     }
     proot_management_menu_de() {
-        SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFühren Sie rm -rf \${CONTAINER_DIR} unter nicht besonderen Umständen nicht manuell aus." 0 50 0 \
+        SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "${DEBIAN_FOLDER_CAPITAL}" --menu "CONTAINER_DIR=${DEBIAN_CHROOT_MIN}\nFühren Sie rm -rf \${CONTAINER_DIR} unter nicht besonderen Umständen nicht manuell aus." 0 50 0 \
             "1" "🌱 start ${DEBIAN_FOLDER}" \
             "2" "⏹️ Tötungsprozess" \
             "3" "🐯 start gui(remote desktop)" \
@@ -138,7 +138,7 @@ environment_variables_and_automatic_startup_script_management() {
     OPT_17="fake cap_last_cap"
     RETURN_TO_WHERE="environment_variables_and_automatic_startup_script_management"
     environment_variables_and_automatic_startup_script_management_menu_en() {
-        ENV_VAR_AND_SCRIPT=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "You can manage login items and environment variables" 0 50 0 \
+        ENV_VAR_AND_SCRIPT=$("${TUI_BIN:-dialog}" --title "${DEBIAN_FOLDER_CAPITAL}" --menu "You can manage login items and environment variables" 0 50 0 \
             "1" "switch login user" \
             "2" "Global environment variables" \
             "3" "Entrypoint" \
@@ -161,7 +161,7 @@ environment_variables_and_automatic_startup_script_management() {
     }
     environment_variables_and_automatic_startup_script_management_menu_zh_cn() {
         ENV_VAR_AND_SCRIPT=$(
-            whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "您可以此处管理登录项和环境变量" 0 50 0 \
+            "${TUI_BIN:-dialog}" --title "${DEBIAN_FOLDER_CAPITAL}" --menu "您可以此处管理登录项和环境变量" 0 50 0 \
                 "1" "切换登录用户" \
                 "2" "Global env var(全局环境变量)" \
                 "3" "Entrypoint(入口点)" \
@@ -272,7 +272,7 @@ about_cap_last_cap() {
     YES_BUTTON="enable"
     NO_BUTTON="disable"
     ARG_1="MOUNT_CAP_LAST_CAP"
-    if (whiptail --title "/dev/null:/proc/sys/kernel/cap_last_cap" --yes-button "$YES_BUTTON" --no-button "$NO_BUTTON" --yesno "${TMOE_TIPS_03}\n${TMOE_TIPS_04}" 0 50); then
+    if ("${TUI_BIN:-dialog}" --title "/dev/null:/proc/sys/kernel/cap_last_cap" --yes-button "$YES_BUTTON" --no-button "$NO_BUTTON" --yesno "${TMOE_TIPS_03}\n${TMOE_TIPS_04}" 0 50); then
         ARG_2="true"
         modify_the_bool_var
     else
@@ -317,7 +317,7 @@ about_dot_net_6_compatible_mode() {
         ;;
     esac
 
-    if (whiptail --title "DOTNET6 COMP MODE" --yes-button "$YES_BUTTON" --no-button "$NO_BUTTON" --yesno "${TMOE_TIPS_03}\n${TMOE_TIPS_04}" 0 50); then
+    if ("${TUI_BIN:-dialog}" --title "DOTNET6 COMP MODE" --yes-button "$YES_BUTTON" --no-button "$NO_BUTTON" --yesno "${TMOE_TIPS_03}\n${TMOE_TIPS_04}" 0 50); then
         ${TMOE_PREFIX} sed -E -i "s@^(DOT_NET_6_COMPATIBLE_MODE=).*@\1false@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
     else
         ${TMOE_PREFIX} sed -E -i "s@^(DOT_NET_6_COMPATIBLE_MODE=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
@@ -350,7 +350,7 @@ switch_to_chroot_or_unshare() {
     *) TMOE_TIPS_03="ERROR, cannot switch at this time.You may be using an old version, or non-normal chroot mode" ;;
     esac
 
-    if (whiptail --title "CHROOT OR UNSHARE" --yes-button "chroot" --no-button "unshare" --yesno "${TMOE_TIPS_03}" 8 50); then
+    if ("${TUI_BIN:-dialog}" --title "CHROOT OR UNSHARE" --yes-button "chroot" --no-button "unshare" --yesno "${TMOE_TIPS_03}" 8 50); then
         ${TMOE_PREFIX} sed -E -i "s@^(UNSHARE_ENABLED=).*@\1false@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
     else
         ${TMOE_PREFIX} sed -E -i "s@^(UNSHARE_ENABLED=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
@@ -375,7 +375,7 @@ switch_container_engine_bin_file() {
         CURRENT_BIN=$(grep -E '^CHROOT_BIN=|^PROOT_BIN=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}' | head -n 1)
     fi
     [[ -n ${CURRENT_BIN} ]] || TMOE_TIPS_05="default. ERROR, you may be using a container installed by an older version of tmoe manager.\n您需要使用v1.4652.0或更新版本的容器。"
-    ENV_VAR_AND_SCRIPT=$(whiptail --title "${TMOE_TIPS_03}" --menu "${TMOE_TIPS_04}\nThe current bin is ${CURRENT_BIN} ${TMOE_TIPS_05}" 0 50 0 \
+    ENV_VAR_AND_SCRIPT=$("${TUI_BIN:-dialog}" --title "${TMOE_TIPS_03}" --menu "${TMOE_TIPS_04}\nThe current bin is ${CURRENT_BIN} ${TMOE_TIPS_05}" 0 50 0 \
         "1" "system(default)" \
         "2" "termux/\$PREFIX" \
         "3" "customize" \
@@ -397,7 +397,7 @@ switch_container_engine_bin_file() {
     switch_container_engine_bin_file
 }
 please_type_the_container_engine_bin_file_path() {
-    TARGET=$(whiptail --inputbox "Please type the path.\nFor example, ${PREFIX}/bin/chroot" 10 50 --title "The absolute path of the binary file" 3>&1 1>&2 2>&3)
+    TARGET=$("${TUI_BIN:-dialog}" --inputbox "Please type the path.\nFor example, ${PREFIX}/bin/chroot" 10 50 --title "The absolute path of the binary file" 3>&1 1>&2 2>&3)
     CHROOT_BIN="$(printf '%s\n' "${TARGET}" | head -n 1)"
     if [ -z "${CHROOT_BIN}" ]; then
         printf "%s\n" "Sorry,the value is empty."
@@ -407,7 +407,7 @@ please_type_the_container_engine_bin_file_path() {
 }
 change_the_mount_point() {
     CURRENT_PATH=$(grep "^${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
-    TARGET=$(whiptail --inputbox "Please type the path.\nThe current mount point is ${CURRENT_PATH}" 10 50 --title "MOUNT POINT" 3>&1 1>&2 2>&3)
+    TARGET=$("${TUI_BIN:-dialog}" --inputbox "Please type the path.\nThe current mount point is ${CURRENT_PATH}" 10 50 --title "MOUNT POINT" 3>&1 1>&2 2>&3)
     MOUNT_POINT="$(printf '%s\n' "${TARGET}" | head -n 1)"
     if [ -z "${MOUNT_POINT}" ]; then
         printf "%s\n" "Sorry,the value is empty."
@@ -418,7 +418,7 @@ change_the_mount_point() {
 }
 change_the_mount_source_dir() {
     CURRENT_PATH=$(grep "^${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
-    TARGET=$(whiptail --inputbox "Please type the path.\nThe current source dir is ${CURRENT_PATH}" 10 50 --title "SOURCE DIR" 3>&1 1>&2 2>&3)
+    TARGET=$("${TUI_BIN:-dialog}" --inputbox "Please type the path.\nThe current source dir is ${CURRENT_PATH}" 10 50 --title "SOURCE DIR" 3>&1 1>&2 2>&3)
     MOUNT_DIR="$(printf '%s\n' "${TARGET}" | head -n 1)"
     if [ -z "${MOUNT_DIR}" ]; then
         printf "%s\n" "Sorry,the value is empty."
@@ -433,7 +433,7 @@ change_the_mount_source_dir() {
     do_you_want_to_continue
 }
 do_you_want_to_change_the_mount_source_dir() {
-    if (whiptail --title "SOURCE DIR" --yesno "Do you change the source dir?" 8 50); then
+    if ("${TUI_BIN:-dialog}" --title "SOURCE DIR" --yesno "Do you change the source dir?" 8 50); then
         change_the_mount_source_dir
     else
         grep -E --color=auto "^[^#]*${MOUNT_SOURCE_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
@@ -447,7 +447,7 @@ mount_dir_to_container() {
         CURRENT_MOUNT_POINT=default
     fi
     [[ -n ${CURRENT_STATUS} ]] || CURRENT_STATUS=false
-    if (whiptail --title "${MOUNT_VAR}" --yes-button "true" --no-button "false" --yesno "The current status is ${CURRENT_STATUS},\nsource dir is ${CURRENT_MOUNT_SOURCE},\nmount point is ${CURRENT_MOUNT_POINT}" 10 50); then
+    if ("${TUI_BIN:-dialog}" --title "${MOUNT_VAR}" --yes-button "true" --no-button "false" --yesno "The current status is ${CURRENT_STATUS},\nsource dir is ${CURRENT_MOUNT_SOURCE},\nmount point is ${CURRENT_MOUNT_POINT}" 10 50); then
         ${TMOE_PREFIX} sed -i -E "s@^(${MOUNT_VAR}=).*@\1true@" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
         case ${MOUNT_VAR} in
         MOUNT_SD | MOUNT_TERMUX | MOUNT_TMP) do_you_want_to_change_the_mount_source_dir ;;
@@ -455,7 +455,7 @@ mount_dir_to_container() {
         case ${TMOE_CHROOT} in
         true) ;;
         *)
-            if (whiptail --title "MOUNT POINT" --yesno "Do you want to change the mount point?" 8 50); then
+            if ("${TUI_BIN:-dialog}" --title "MOUNT POINT" --yesno "Do you want to change the mount point?" 8 50); then
                 change_the_mount_point
             else
                 grep -E --color=auto "^[^#]*${MOUNT_POINT_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
@@ -480,7 +480,7 @@ switch_login_shell() {
     CURRENT_SHELL=$(grep "^${LOGIN_SHELL_VAR}=" ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')
     local PWSH="/usr/local/powershell/pwsh"
     local NUSH="/usr/local/cargo/bin/nu"
-    ENV_VAR_AND_SCRIPT=$(whiptail --title "You can switch the default login shell" --menu "The current login shell is ${CURRENT_SHELL}, default is zsh." 0 50 0 \
+    ENV_VAR_AND_SCRIPT=$("${TUI_BIN:-dialog}" --title "You can switch the default login shell" --menu "The current login shell is ${CURRENT_SHELL}, default is zsh." 0 50 0 \
         "1" "zsh" \
         "2" "fish" \
         "3" "pwsh:$PWSH" \
@@ -531,7 +531,7 @@ switch_nspawn_boot_mode() {
             esac
             ;;
         esac
-        if (whiptail --title "BOOT MODE" --yes-button "enable" --no-button "disable" --yesno "Do you want to enable or disable it?\n${TMOE_TIPS_04}" 10 50); then
+        if ("${TUI_BIN:-dialog}" --title "BOOT MODE" --yes-button "enable" --no-button "disable" --yesno "Do you want to enable or disable it?\n${TMOE_TIPS_04}" 10 50); then
             ${TMOE_PREFIX} sed -i -E 's@^(SYSTEMD_BOOT=).*@\1true@' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
         else
             ${TMOE_PREFIX} sed -i -E 's@^(SYSTEMD_BOOT=).*@\1false@' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE}
@@ -590,7 +590,7 @@ switch_container_login_user() {
     grep -Ev 'nologin|halt|shutdown' ${DEBIAN_CHROOT}/etc/passwd | awk -F ':' '{ print $3"|"$4 }' >.tmoe-linux_cache.02
     TMOE_USER_LIST=$(paste -d ' ' .tmoe-linux_cache.01 .tmoe-linux_cache.02 | sed ":a;N;s/\n/ /g;ta")
     rm -f .tmoe-linux_cache.0*
-    TMOE_USER_NAME=$(whiptail --title "USER LIST" --menu \
+    TMOE_USER_NAME=$("${TUI_BIN:-dialog}" --title "USER LIST" --menu \
         "The login user of the current container is $(grep -E '^PROOT_USER=|^CHROOT_USER=' ${TMOE_GNU_LINUX_CONTAINER_STARTUP_FILE} | awk -F '=' '{print $2}')\nPlease choose a user." 0 0 0 \
         ${TMOE_USER_LIST} \
         "0" "🌚 Back/zurück/返回" \
@@ -600,12 +600,12 @@ switch_container_login_user() {
     esac
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8)
-        if (whiptail --title "DEFAULT USER" --yesno "Do you want to set ${TMOE_USER_NAME} as the default user?\n请问您是否想要将${TMOE_USER_NAME}设置为默认用户?" 0 0); then
+        if ("${TUI_BIN:-dialog}" --title "DEFAULT USER" --yesno "Do you want to set ${TMOE_USER_NAME} as the default user?\n请问您是否想要将${TMOE_USER_NAME}设置为默认用户?" 0 0); then
             set_tmoe_user_as_the_default_user
         fi
         ;;
     *)
-        if (whiptail --title "DEFAULT USER" --yesno "Do you want to set ${TMOE_USER_NAME} as the default user?" 0 0); then
+        if ("${TUI_BIN:-dialog}" --title "DEFAULT USER" --yesno "Do you want to set ${TMOE_USER_NAME} as the default user?" 0 0); then
             set_tmoe_user_as_the_default_user
         fi
         ;;
@@ -626,7 +626,7 @@ readme_of_env_var_and_autostartup_script() {
 ##############################
 start_gui_menu() {
     start_gui_menu_en() {
-        SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to start vnc or x11?" 0 50 0 \
+        SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to start vnc or x11?" 0 50 0 \
             "1" "🐯 startvnc(tiger/tight)" \
             "2" "⚔️ startx11vnc" \
             "3" "⚒️ startxsdl" \
@@ -637,7 +637,7 @@ start_gui_menu() {
             3>&1 1>&2 2>&3)
     }
     start_gui_menu_cn() {
-        SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "是否需要启动远程桌面？" 0 50 0 \
+        SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "${DEBIAN_FOLDER_CAPITAL}" --menu "是否需要启动远程桌面？" 0 50 0 \
             "1" "🐯 startvnc:启动tiger/tightvnc" \
             "2" "⚔️ startx11vnc:启动x11vnc" \
             "3" "⚒️ startxsdl:启动xsdl/VcXsrv" \
@@ -648,7 +648,7 @@ start_gui_menu() {
             3>&1 1>&2 2>&3)
     }
     start_gui_menu_de() {
-        SELECTED_GNU_LINUX=$(whiptail --title "${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to start vnc or x11?" 0 50 0 \
+        SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "${DEBIAN_FOLDER_CAPITAL}" --menu "Do you want to start vnc or x11?" 0 50 0 \
             "1" "🐯 startvnc (tiger/tight)" \
             "2" "⚔️ startx11vnc" \
             "3" "⚒️ startxsdl" \
@@ -696,7 +696,7 @@ edit_container_startup_script() {
 #####################
 create_a_new_container() {
     unset NEW_DISTRO_CODE
-    TARGET=$(whiptail --inputbox "Please type the container name." 9 50 --title "CONTAINER NAME" 3>&1 1>&2 2>&3)
+    TARGET=$("${TUI_BIN:-dialog}" --inputbox "Please type the container name." 9 50 --title "CONTAINER NAME" 3>&1 1>&2 2>&3)
     NEW_DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
     if [ -z "${NEW_DISTRO_CODE}" ]; then
         printf "%s\n" "Sorry,the value is empty."
@@ -1246,7 +1246,7 @@ bat_build_latest01_txt() {
 }
 ########################
 network_node_menu_01_cn() {
-    NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node\n请选择网络节点" 0 50 0 \
+    NETWORK_NODE=$("${TUI_BIN:-dialog}" --title "NETWORK NODE" --menu "Please choose a network node\n请选择网络节点" 0 50 0 \
         "1" "Azure_CN" \
         "2" "Tmoe_US" \
         "3" "Azure_US" \
@@ -1269,7 +1269,7 @@ network_node_menu_01_cn() {
     esac
 }
 network_node_menu_01_en() {
-    NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node" 0 50 0 \
+    NETWORK_NODE=$("${TUI_BIN:-dialog}" --title "NETWORK NODE" --menu "Please choose a network node" 0 50 0 \
         "1" "Azure" \
         "2" "Tmoe_US" \
         "3" "Azure_CN" \
@@ -1293,7 +1293,7 @@ network_node_menu_01_en() {
 }
 
 network_node_menu_02_cn() {
-    NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node\n请选择网络节点" 0 50 0 \
+    NETWORK_NODE=$("${TUI_BIN:-dialog}" --title "NETWORK NODE" --menu "Please choose a network node\n请选择网络节点" 0 50 0 \
         "1" "Azure_CN" \
         "2" "Azure_US" \
         3>&1 1>&2 2>&3)
@@ -1311,7 +1311,7 @@ network_node_menu_02_cn() {
     esac
 }
 network_node_menu_02_en() {
-    NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "Please choose a network node" 0 50 0 \
+    NETWORK_NODE=$("${TUI_BIN:-dialog}" --title "NETWORK NODE" --menu "Please choose a network node" 0 50 0 \
         "1" "Azure" \
         "2" "Azure_CN" \
         3>&1 1>&2 2>&3)
@@ -1342,7 +1342,7 @@ network_node_menu_03_en() {
 }
 
 network_node_menu_03() {
-    NETWORK_NODE=$(whiptail --title "NETWORK NODE" --menu "${MENU}" 0 50 0 \
+    NETWORK_NODE=$("${TUI_BIN:-dialog}" --title "NETWORK NODE" --menu "${MENU}" 0 50 0 \
         "1" "Tmoe" \
         "2" "Azure" \
         3>&1 1>&2 2>&3)
@@ -1520,7 +1520,7 @@ install_weekly_build_container() {
     do_you_want_to_continue
     if [[ -s ${CONFIG_FOLDER}/build-latest01.txt ]]; then
         if grep -q 'STATUS=completed' ${CONFIG_FOLDER}/build-latest01.txt; then
-            if (whiptail --title "VERSION" --yes-button "${ROOTFS_VERSION}" --no-button "${ROOTFS_VERSION_02}" --yesno "Please choose a version.\n最新版为${ROOTFS_VERSION}" 8 50); then
+            if ("${TUI_BIN:-dialog}" --title "VERSION" --yes-button "${ROOTFS_VERSION}" --no-button "${ROOTFS_VERSION_02}" --yesno "Please choose a version.\n最新版为${ROOTFS_VERSION}" 8 50); then
                 printf "%s\n" "${YELLOW}${ROOTFS_VERSION}${RESET}"
             else
                 ROOTFS_VERSION=${ROOTFS_VERSION_02}

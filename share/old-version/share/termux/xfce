@@ -69,7 +69,7 @@ tmoe_modify_vnc_conf() {
 termux_original_system_gui_menu() {
     RETURN_TO_WHERE='termux_original_system_gui_menu'
     termux_original_system_gui_menu_en() {
-        OPTION=$(whiptail --title "Termux" --menu "Termux native GUI has fewer software packages.It is recommended to install a container." 0 50 0 \
+        OPTION=$("${TUI_BIN:-dialog}" --title "Termux" --menu "Termux native GUI has fewer software packages.It is recommended to install a container." 0 50 0 \
             "1" "modify termux-vnc conf" \
             "2" "install termux-lxqt" \
             "3" "🐹 install termux-xfce4" \
@@ -79,7 +79,7 @@ termux_original_system_gui_menu() {
     }
     termux_original_system_gui_menu_cn() {
         #\n这里是termux原系统的配置区域,不是GNU/Linux容器的哦！\nThe following options only apply to termux original system.
-        OPTION=$(whiptail --title "Termux" --menu "Termux原系统GUI可玩性较低,建议您安装GNU/Linux(proot/chroot)容器" 0 50 0 \
+        OPTION=$("${TUI_BIN:-dialog}" --title "Termux" --menu "Termux原系统GUI可玩性较低,建议您安装GNU/Linux(proot/chroot)容器" 0 50 0 \
             "1" "编辑配置 edit vnc conf" \
             "2" "安装 termux-lxqt" \
             "3" "🐹 安装 termux-xfce4" \
@@ -135,14 +135,14 @@ modify_android_termux_vnc_config() {
     fi
     CURRENTTERMUXVNCRES=$(grep '^VNC_RESOLUTION=' $(command -v startvnc) | awk -F '=' '{print $2}')
     #CURRENTTERMUXVNCRES=$(sed -n 7p "$(command -v startvnc)" | cut -d 'y' -f 2 | cut -d '-' -f 1)
-    if (whiptail --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪项配置信息？Which configuration do you want to modify?" 9 50); then
+    if ("${TUI_BIN:-dialog}" --title "modify vnc configuration" --yes-button '分辨率resolution' --no-button '其它other' --yesno "您想要修改哪项配置信息？Which configuration do you want to modify?" 9 50); then
         if grep -q 'debian_' "$(command -v startvnc)"; then
             printf "%s\n" "您当前使用的startvnc配置为Linux容器系统专用版，请输debian进入容器后再输tmoe t修改"
             printf "%s\n" "本选项仅适用于termux原系统。"
             press_enter_to_return
             android_termux_tmoe_menu
         fi
-        TARGET=$(whiptail --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,1440x720,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为720x1440,当前为${CURRENTTERMUXVNCRES}。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
+        TARGET=$("${TUI_BIN:-dialog}" --inputbox "Please enter a resolution,请输入分辨率,例如2880x1440,2400x1200,1920x1080,1920x960,1440x720,1280x1024,1280x960,1280x720,1024x768,800x680等等,默认为720x1440,当前为${CURRENTTERMUXVNCRES}。分辨率可自定义，但建议您根据屏幕比例来调整，输入完成后按回车键确认，修改完成后将自动停止VNC服务。注意：x为英文小写，不是乘号。Press Enter after the input is completed." 16 50 --title "请在方框内输入 水平像素x垂直像素 (数字x数字) " 3>&1 1>&2 2>&3)
         #此处termux的whiptail跟debian不同，必须截取Error前的字符。
         #TRUETARGET="$(printf '%s\n' "${TARGET}" | cut -d 'E' -f 1)"
         TRUETARGET="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"

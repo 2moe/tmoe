@@ -50,7 +50,7 @@ check_tmoe_command() {
     else
         TMOE_TIPS_01="tmoe"
     fi
-    TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.49,type ${TMOE_TIPS_01} to start it."
+    TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.50,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -138,28 +138,34 @@ auto_check() {
     Android)
         LINUX_DISTRO='Android'
         TERMUX_STORAGE=true
+        TUI_BIN="dialog"
         tmoe_manager_android_env
-        check_android_termux_whiptail
+        check_android_tui_bin
         ;;
     *)
+        TUI_BIN="whiptail"
         tmoe_manager_gnu_linux_env
         check_gnu_linux_distro
         ;;
     esac
 }
 ################
-install_android_whiptail() {
-    RETURN_TO_WHERE='exit'
-    printf "${YELLOW}%s${RESET} ${PURPLE}%s${RESET}\n" "Do you want to install" "whiptail?"
-    printf "${GREEN}%s${RESET} ${BLUE}%s${RESET}\n" "apt install -y" "whiptail"
-    do_you_want_to_continue
-    apt update
-    # for android6(termux), whiptail -> dialog
-    [[ -e ${PREFIX}/bin/whiptail ]] || apt install -y whiptail
-    [[ -e ${PREFIX}/bin/whiptail ]] || apt install -y dialog
-}
-check_android_termux_whiptail() {
-    [[ -e ${PREFIX}/bin/whiptail ]] || install_android_whiptail
+# install_android_whiptail() {
+#     # RETURN_TO_WHERE='exit'
+#     # printf "${YELLOW}%s${RESET} ${PURPLE}%s${RESET}\n" "Do you want to install" "whiptail?"
+#     # printf "${GREEN}%s${RESET} ${BLUE}%s${RESET}\n" "apt install -y" "whiptail"
+#     # do_you_want_to_continue
+#     apt update
+#     # for android6(termux), whiptail -> dialog
+#     # [[ -e ${PREFIX}/bin/whiptail ]] || apt install -y whiptail
+#     [[ -e ${PREFIX}/bin/dialog ]] || apt install -y dialog
+# }
+check_android_tui_bin() {
+#     [[ -e ${PREFIX}/bin/whiptail ]] || install_android_whiptail
+    if [[ ! -e ${PREFIX}/bin/dialog ]]; then
+        apt update
+        apt install -y dialog
+    fi
 }
 ############
 check_gnu_linux_git_and_whiptail() {
@@ -423,25 +429,25 @@ check_gnu_linux_distro() {
     }
     ##########
     choose_manager_or_tool_zh() {
-        if (whiptail --title "您想要对这个小可爱做什么" --yes-button "Tools" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}\n您是想要启动software安装工具，\n还是system管理器？\nDo you want to start the software installation tools\nor the system manager? ♪(^∇^*) " 0 50); then
+        if ("${TUI_BIN:-dialog}" --title "您想要对这个小可爱做什么" --yes-button "Tools" --no-button "Manager" --yesno "检测到您使用的是${OSRELEASE} ${WSL}\n您是想要启动software安装工具，\n还是system管理器？\nDo you want to start the software installation tools\nor the system manager? ♪(^∇^*) " 0 50); then
             curl_tmoe_linux_tool_sh
             exit 0
         fi
     }
     choose_manager_or_tool_ja() {
-        if (whiptail --title "どちらを選びますか" --yes-button "Tools" --no-button "Manager" --yesno "${OSRELEASE}を使用しています ${WSL}\nツールまたはマネージャーを起動しますか？♪(^∇^*) " 0 50); then
+        if ("${TUI_BIN:-dialog}" --title "どちらを選びますか" --yes-button "Tools" --no-button "Manager" --yesno "${OSRELEASE}を使用しています ${WSL}\nツールまたはマネージャーを起動しますか？♪(^∇^*) " 0 50); then
             curl_tmoe_linux_tool_sh
             exit 0
         fi
     }
     choose_manager_or_tool_en() {
-        if (whiptail --title "Which one do you want to choose?" --yes-button "Tools" --no-button "Manager" --yesno "You are using ${OSRELEASE} ${WSL}\nDo you want to start the software installation tool\nor the system manager? ♪(^∇^*) " 0 50); then
+        if ("${TUI_BIN:-dialog}" --title "Which one do you want to choose?" --yes-button "Tools" --no-button "Manager" --yesno "You are using ${OSRELEASE} ${WSL}\nDo you want to start the software installation tool\nor the system manager? ♪(^∇^*) " 0 50); then
             curl_tmoe_linux_tool_sh
             exit 0
         fi
     }
     choose_manager_or_tool_de() {
-        if (whiptail --title "Welches möchten Sie wählen?" --yes-button "Tools" --no-button "Manager" --yesno "Sie verwenden ${OSRELEASE} ${WSL}\nMöchten Sie das Softwareinstallationstools \noder den Systemmanager starten? ♪(^∇^*) " 0 50); then
+        if ("${TUI_BIN:-dialog}" --title "Welches möchten Sie wählen?" --yes-button "Tools" --no-button "Manager" --yesno "Sie verwenden ${OSRELEASE} ${WSL}\nMöchten Sie das Softwareinstallationstools \noder den Systemmanager starten? ♪(^∇^*) " 0 50); then
             curl_tmoe_linux_tool_sh
             exit 0
         fi
@@ -678,7 +684,7 @@ choose_tmoe_locale_env() {
     set_locale_title_and_desc
 
     CONTAINER_LOCALE=$(
-        whiptail --title "${TITLE}" \
+        "${TUI_BIN:-dialog}" --title "${TITLE}" \
             --menu "${DESCRIPTION}\nPlease select your \$LANG" 0 0 0 \
             "1" "${MENU}" \
             "2" "English_United States" \
@@ -1445,7 +1451,7 @@ git_clone_tmoe_manager() {
     tmoe_manager_main_menu
 }
 termux_font_menu() {
-    TMOE_OPTION=$(whiptail --title "FONTS" --menu "Your font file does not exist,please choose a font.\n请选择终端字体,若您跳过选择字体,则部分字符可能无法正常显示" 0 50 0 \
+    TMOE_OPTION=$("${TUI_BIN:-dialog}" --title "FONTS" --menu "Your font file does not exist,please choose a font.\n请选择终端字体,若您跳过选择字体,则部分字符可能无法正常显示" 0 50 0 \
         "1" "Inconsolata-go(粗)" \
         "2" "Iosevka(细)" \
         "3" "Iosevka Term Bold Italic(斜)" \
@@ -1473,7 +1479,7 @@ termux_font_menu() {
     esac
 }
 termux_color_scheme_menu() {
-    TMOE_OPTION=$(whiptail --title "COLOR SCHEMES" --menu "Your colors.properties is empty,please choose color scheme of termux.\n请选择终端配色" 0 50 0 \
+    TMOE_OPTION=$("${TUI_BIN:-dialog}" --title "COLOR SCHEMES" --menu "Your colors.properties is empty,please choose color scheme of termux.\n请选择终端配色" 0 50 0 \
         "1" "neon" \
         "2" "monokai.dark" \
         "3" "material(Cyan)" \
@@ -1513,7 +1519,7 @@ choose_termux_color_scheme() {
 
     printf "%s\n" "set-default-termux-color-scheme-and-font" >"${CONFIG_FOLDER}/v1.1beta"
     if [[ ! -s "termux.properties" ]] || grep -q '# extra-keys-style = default' termux.properties; then
-        if (whiptail --title "termux.properties" --yesno "Your extra-keys-style is default,do you want to configure it? It will modify the keyboard layout.\n是否需要创建termux.properties？这将会修改小键盘布局。" 10 50); then
+        if ("${TUI_BIN:-dialog}" --title "termux.properties" --yesno "Your extra-keys-style is default,do you want to configure it? It will modify the keyboard layout.\n是否需要创建termux.properties？这将会修改小键盘布局。" 10 50); then
             cp -vf termux.properties termux.properties.bak
             aria2c --console-log-level=warn --no-conf --allow-overwrite=true -o "termux.properties.02" 'https://raw.githubusercontent.com/2cd/zsh/master/share/termux.properties'
             sed -i -E 's@# (extra-keys-style)@#\1@g;s@^[^#]@#&@g;1r termux.properties.02' termux.properties
@@ -1530,7 +1536,7 @@ tmoe_manager_main_menu() {
     RETURN_TO_MENU="${RETURN_TO_WHERE}"
     tmoe_manager_main_menu_ja() {
         TMOE_MANAGER_MAIN_OPTION=$(
-            whiptail --title "Tmoe manager running on ${OSRELEASE}" \
+            "${TUI_BIN:-dialog}" --title "Tmoe manager running on ${OSRELEASE}" \
                 --backtitle "Type tmoe m to start the manager" \
                 --menu "${TMOE_TIPS_00}\nエンターキーと矢印キーを使用して操作してください" 0 50 0 \
                 "1" "🍀 proot コンテナ(๑•̀ㅂ•́)و✧" \
@@ -1549,7 +1555,7 @@ tmoe_manager_main_menu() {
     }
     tmoe_manager_main_menu_en() {
         TMOE_MANAGER_MAIN_OPTION=$(
-            whiptail --title "Tmoe manager running on ${OSRELEASE}" \
+            "${TUI_BIN:-dialog}" --title "Tmoe manager running on ${OSRELEASE}" \
                 --backtitle "Type tmoe m to start the manager" \
                 --menu "${TMOE_TIPS_00}\nPlease use the touch screen or enter + arrow keys to operate." 0 50 0 \
                 "1" "🍀 proot container(๑•̀ㅂ•́)و✧" \
@@ -1568,7 +1574,7 @@ tmoe_manager_main_menu() {
     }
     tmoe_manager_main_menu_zh_cn() {
         TMOE_MANAGER_MAIN_OPTION=$(
-            whiptail --title "Tmoe manager running on ${OSRELEASE}" \
+            "${TUI_BIN:-dialog}" --title "Tmoe manager running on ${OSRELEASE}" \
                 --backtitle "Type tmoe m to start the manager" \
                 --menu "${TMOE_TIPS_00}\n请使用触摸屏或方向键+回车键进行操作" 0 50 0 \
                 "1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
@@ -1587,7 +1593,7 @@ tmoe_manager_main_menu() {
     }
     tmoe_manager_main_menu_zh_tw() {
         TMOE_MANAGER_MAIN_OPTION=$(
-            whiptail --title "Tmoe manager running on ${OSRELEASE}" \
+            "${TUI_BIN:-dialog}" --title "Tmoe manager running on ${OSRELEASE}" \
                 --backtitle "Type tmoe m to start the manager" \
                 --menu "${TMOE_TIPS_00}\n您可以使用方向鍵和回車鍵進行操作" 0 50 0 \
                 "1" "🍀 proot容器(๑•̀ㅂ•́)و✧" \
@@ -1606,7 +1612,7 @@ tmoe_manager_main_menu() {
     }
     tmoe_manager_main_menu_de() {
         TMOE_MANAGER_MAIN_OPTION=$(
-            whiptail --title "Tmoe manager running on ${OSRELEASE}" \
+            "${TUI_BIN:-dialog}" --title "Tmoe manager running on ${OSRELEASE}" \
                 --backtitle "Geben Sie tmoe m ein, um den Manager zu starten." \
                 --menu "${TMOE_TIPS_00}\nBitte benutzen Sie die Pfeiltasten, um zu bedienen." 0 50 0 \
                 "1" "🍀 proot container(๑•̀ㅂ•́)و✧" \
@@ -1625,7 +1631,7 @@ tmoe_manager_main_menu() {
     }
     tmoe_manager_main_menu_ru() {
         TMOE_MANAGER_MAIN_OPTION=$(
-            whiptail --title "Tmoe manager running on ${OSRELEASE}" \
+            "${TUI_BIN:-dialog}" --title "Tmoe manager running on ${OSRELEASE}" \
                 --backtitle "Type tmoe m to start the manager" \
                 --menu "${TMOE_TIPS_00}\nВы можете использовать клавиши со стрелками и клавишу ввода для работы." 0 50 0 \
                 "1" "🍀 proot контейнер(๑•̀ㅂ•́)و✧" \
