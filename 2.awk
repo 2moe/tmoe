@@ -994,6 +994,22 @@ function run_old_file(file1, file2) {
     # print "debug::run_old_file" file1, file2
 
     if (is_file_exists(file1)) {
+        if (!(match(read_to_string(file1), /TUI_BIN/))) {
+            git_dir = GIT["dir"]
+            if (match(git_dir, "/tmoe-linux/git") && is_file_exists(git_dir)) {
+                print "You have already installed an older version, which has serious problems and will be removed automatically. You will need to re-run this awk file."
+
+                print "Press enter to remove the old git dir"
+
+                rm_cmd = "rm -rfv" SPACE git_dir
+                print sty["rd"] rm_cmd sty[0]
+                if (do_you_want_to_continue(true)) {
+                    system(rm_cmd)
+                    print sty["mn"] "Please re-run this awk file" sty[0]
+                }
+                exit 1
+            }
+        }
         if (system("bash" SPACE file1))
             exit 1
         else
