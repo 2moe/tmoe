@@ -1460,8 +1460,7 @@ install_ubuntu_gnu_linux_distro() {
     }
     install_ubuntu_gnu_linux_distro_menu() {
         BETA_SYSTEM=$(
-            whiptail \
-                --title "${TITLE}" \
+            "${TUI_BIN:-dialog}" --title "${TITLE}" \
                 --menu "${MENU}" 0 50 0 \
                 "1" "${OPT_1}" \
                 "2" "${OPT_2}" \
