@@ -535,7 +535,9 @@ EOF
     do_you_want_to_continue
     case ${LINUX_DISTRO} in
     debian)
-        printf "%s\n" "If you want to remove the gpg key and source list, then type ${RED}rm -fv ${BLUE}/usr/share/keyrings/microsoft-archive-keyring.gpg /etc/apt/sources.list.d/microsoft-edge-dev.list${RESET}"
+        printf "%s\n" \
+            "gpg-key: /etc/apt/trusted.gpg.d/microsoft.gpg" \
+            "If you want to remove the source list, then type ${RED}rm -fv ${BLUE}/etc/apt/sources.list.d/microsoft-edge-dev.list${RESET}"
         install_microsoft_edge_debian
         ;;
     redhat) install_microsoft_edge_redhat ;;
