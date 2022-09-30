@@ -483,11 +483,17 @@ install_vivaldi_browser() {
         do_you_want_to_close_the_sandbox_mode
         do_you_want_to_continue
         sed -i 's@Exec=/usr/bin/vivaldi-stable@& --no-sandbox@g' vivaldi-stable.desktop
-        cat vivaldi-stable.desktop | grep --color=auto 'no-sandbox'
+        grep --color=auto 'no-sandbox' vivaldi-stable.desktop
     fi
 }
 #############
+is_cmd_exists() {
+    local cmd_name=$1
+    (command -v "$cmd_name" >/dev/null) && return 0
+    return 1
+}
 install_microsoft_edge_debian() {
+    (is_cmd_exists gpg) || sudo apt install gpg
     cd /tmp
     curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >microsoft.gpg
     sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
