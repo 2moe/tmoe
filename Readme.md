@@ -66,8 +66,9 @@ It's time to experience the mysterious magic of the moon!
 ## Documentation
 
 [doc.tmoe.me](https://doc.tmoe.me)
+
 Unfortunately, the documentation is far from complete.  
-And, as I am designing and rewriting the new edition, some of it may need to be revised.
+And, as I am designing the new edition, some of it may need to be revised.
 
 ## Quick Start
 
