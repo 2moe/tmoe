@@ -21,7 +21,7 @@ I may rewrite some of the modules in a more powerful language and gradually inte
 
 #### Fixed
 
-Temporary fix for tui-related issues on debian-sid.  
+Temporary fix for tui-related issues on debian-sid and fedora-rawhide.  
 Note: this is only a temporary fix.  
 Waiting for upstream updates is the way to go.
 
@@ -74,7 +74,9 @@ And, as I am designing the new edition, some of it may need to be revised.
 
 Just focus on steps 1 and 2.
 
-| Step          | Description           | command                                        |
+<!-- cargo r -- -t '[[Step, Description, Command]; [0(optional), "access to tmp dir"]]' -->
+
+| Step          | Description           | Command                                        |
 | ------------- | --------------------- | ---------------------------------------------- |
 | 0(optional)   | access to tmp dir     | `cd /tmp` \|\| `cd $TMPDIR`                    |
 | 1             | get awk file          | `curl -LO https://l.tmoe.me/2.awk`             |

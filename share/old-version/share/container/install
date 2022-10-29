@@ -2258,6 +2258,25 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #glibc-all-langpacks
 	    #dnf install -y --skip-broken glibc-minimal-langpack.aarch64 "glibc-langpack-${TMOE_LANG_QUATER}*"
 	    [[ $(command -v whiptail) ]] || dnf install --skip-broken -y newt
+
+        is_whiptail_0_52=$(LANG=C rpm -qi newt | awk '/^Version/ {if (match($3, /0.52.21/)) print "true"}')
+        $is_whiptail_0_52 && {
+            _file="wrapper.tar.gz"
+            case $(uname -m) in
+            amd64|x86_64) _arch=amd64;;
+            armv7*|armv8l) _arch=armhf;;
+            aarch64|arm64|armv9*|armv8*) _arch=arm64;;
+            pcc64*) _arch=ppc64el;;
+            mips64*) _arch=misp64el;;
+            misp*) _arch=mipsel;;
+            s390*) _arch=s390x;;
+            esac
+            curl -Lo $_file "https://packages.tmoe.me/patch/debian/w/whiptail/whiptail-wrapper_0.52.21_$_arch.tar.gz"
+            tar -zxvf $_file -C /
+            /usr/local/sbin/whiptail-wrapper --init
+            unlink $_file
+        }
+
 	elif grep -Eq 'CentOS|Rocky Linux|rhel' /etc/os-release; then
 	    [[ ! -e /etc/yum.repos.d/CentOS-Base.repo ]] || cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
 	    #curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo
