@@ -11,7 +11,7 @@ The current edition has a lot of bugs.
 In the next, if I have time, I will improve it step by step.  
 For now it is only suitable for running in container environment.
 
-Modifying tens of thousands of lines of POSIX-compliant & bash shell scripts is killing me, especially since a lot of this stuff was written years ago.
+Modifying tens of thousands of lines of POSIX-compliant sh & bash scripts is killing me, especially since a lot of this stuff was written years ago.
 
 I may rewrite some of the modules in a more powerful language and gradually integrate them in. Finally, a complete rewrite!
 
@@ -53,7 +53,7 @@ apt update
 apt dist-upgrade
 ```
 
-<img src="./assets/changelog/20221029/ubuntu lunar src list.jpg" height="50%" width="70%" />
+<img src="./assets/changelog/20221029/ubuntu lunar src list.jpg" height="25%" width="50%" />
 
 It's time to experience the mysterious magic of the moon!
 
