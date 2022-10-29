@@ -1,0 +1,142 @@
+<!-- <svg viewBox="0 0 780 270"  -->
+<svg viewBox="0 0 920 280" xmlns="http://www.w3.org/2000/svg" class="w-screen h-screen leading-none markmap mm-i0h190-1"
+    style="">
+    <style>
+        .markmap {
+            font: 300 16px/20px sans-serif
+        }
+
+        .markmap-link {
+            fill: none
+        }
+
+        .markmap-node&gt;
+
+        circle {
+            cursor: pointer
+        }
+
+        .markmap-foreign {
+            display: inline-block
+        }
+
+        .markmap-foreign a {
+            color: #0097e6
+        }
+
+        .markmap-foreign a:hover {
+            color: #00a8ff
+        }
+
+        .markmap-foreign code {
+            background-color: #f0f0f0;
+            border-radius: 2px;
+            color: #555;
+            font-size: calc(1em - 2px)
+        }
+
+        .markmap-foreign :not(pre)&gt;
+
+        code {
+            padding: .2em .4em
+        }
+
+        .markmap-foreign del {
+            text-decoration: line-through
+        }
+
+        .markmap-foreign em {
+            font-style: italic
+        }
+
+        .markmap-foreign strong {
+            font-weight: bolder
+        }
+
+        .markmap-foreign mark {
+            background: #ffeaa7
+        }
+
+        .markmap-foreign pre,
+        .markmap-foreign pre[class*=language-] {
+            margin: 0;
+            padding: .2em .4em
+        }
+
+        svg {
+            background-color: white;
+            color-scheme: light dark;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            svg {
+                background-color: black;
+            }
+        }
+    </style>
+    <g transform="translate(-123.75465159447003,122.94535171720116) scale(1.7002550053779772)">
+        <path class="markmap-link" data-depth="1" data-path="1.2" d="M186,10C226,10,226,-27.5,266,-27.5"
+            stroke="rgb(255, 127, 14)" stroke-width="2"></path>
+        <path class="markmap-link" data-depth="1" data-path="1.3" d="M186,10C226,10,226,-2.5,266,-2.5"
+            stroke="rgb(148, 103, 189)" stroke-width="2"></path>
+        <path class="markmap-link" data-depth="1" data-path="1.4" d="M186,10C226,10,226,22.5,266,22.5"
+            stroke="rgb(140, 86, 75)" stroke-width="2"></path>
+        <path class="markmap-link" data-depth="1" data-path="1.5" d="M186,10C226,10,226,67.5,266,67.5"
+            stroke="rgb(44, 160, 44)" stroke-width="2"></path>
+        <path class="markmap-link" data-depth="2" data-path="1.5.6" d="M383,67.5C423,67.5,423,55.5,463,55.5"
+            stroke="rgb(227, 119, 194)" stroke-width="1.5"></path>
+        <path class="markmap-link" data-depth="2" data-path="1.5.7" d="M383,67.5C423,67.5,423,81.5,463,81.5"
+            stroke="rgb(140, 86, 75)" stroke-width="1.5"></path>
+        <g data-depth="2" data-path="1.5.7" transform="translate(463, 60.5)" class="markmap-node markmap-fold">
+            <line x1="-1" x2="97" y1="21" y2="21" stroke="rgb(140, 86, 75)" stroke-width="1.5"></line>
+            <foreignObject class="markmap-foreign" x="8" y="0" width="79" height="21" style="opacity: 1;">
+                <div xmlns="http://www.w3.org/1999/xhtml">②: <font size="2," color="Green"><i>gawk <font
+                                color="DarkCyan">-f <font color="Orchid">2</font>
+                            </font></i></font>
+                </div>
+            </foreignObject>
+        </g>
+        <g data-depth="2" data-path="1.5.6" transform="translate(463, 13.5)" class="markmap-node markmap-fold">
+            <line x1="-1" x2="119" y1="42" y2="42" stroke="rgb(227, 119, 194)" stroke-width="1.5"></line>
+            <foreignObject class="markmap-foreign" x="8" y="0" width="101" height="42" style="opacity: 1;">
+                <div xmlns="http://www.w3.org/1999/xhtml">①: <font size="2," color="Green"><i>wget <font color="Orchid">
+                                l.tmoe.me/2.awk</font></i></font>
+                </div>
+            </foreignObject>
+        </g>
+        <g data-depth="1" data-path="1.5" transform="translate(266, 27.5)" class="markmap-node">
+            <line x1="-1" x2="119" y1="40" y2="40" stroke="rgb(44, 160, 44)" stroke-width="2"></line>
+            <circle stroke-width="1.5" cx="117" cy="40" r="6" stroke="rgb(44, 160, 44)" fill="rgb(255, 255, 255)">
+            </circle>
+            <foreignObject class="markmap-foreign" x="8" y="0" width="101" height="40" style="opacity: 1;">
+                <div xmlns="http://www.w3.org/1999/xhtml">🛫 Quick Start</div>
+            </foreignObject>
+        </g>
+        <g data-depth="1" data-path="1.4" transform="translate(266, 2.5)" class="markmap-node">
+            <line x1="-1" x2="76" y1="20" y2="20" stroke="rgb(140, 86, 75)" stroke-width="2"></line>
+            <foreignObject class="markmap-foreign" x="8" y="0" width="58" height="20" style="opacity: 1;">
+                <div xmlns="http://www.w3.org/1999/xhtml">📖 <a href="https://doc.tmoe.me">Doc</a></div>
+            </foreignObject>
+        </g>
+        <g data-depth="1" data-path="1.3" transform="translate(266, -22.5)" class="markmap-node">
+            <line x1="-1" x2="104" y1="20" y2="20" stroke="rgb(148, 103, 189)" stroke-width="2"></line>
+            <foreignObject class="markmap-foreign" x="8" y="0" width="86" height="20" style="opacity: 1;">
+                <div xmlns="http://www.w3.org/1999/xhtml">🖼️ Preview</div>
+            </foreignObject>
+        </g>
+        <g data-depth="1" data-path="1.2" transform="translate(266, -67.5)" class="markmap-node">
+            <line x1="-1" x2="119" y1="40" y2="40" stroke="rgb(255, 127, 14)" stroke-width="2"></line>
+            <foreignObject class="markmap-foreign" x="8" y="0" width="101" height="40" style="opacity: 1;">
+                <div xmlns="http://www.w3.org/1999/xhtml">🔖 Change Log</div>
+            </foreignObject>
+        </g>
+        <g data-depth="0" data-path="1" transform="translate(80,-10)" class="markmap-node">
+            <line x1="-1" x2="108" y1="20" y2="20" stroke="rgb(31, 119, 180)" stroke-width="4"></line>
+            <circle stroke-width="1.5" cx="106" cy="20" r="6" stroke="rgb(31, 119, 180)" fill="rgb(255, 255, 255)">
+            </circle>
+            <foreignObject class="markmap-foreign" x="8" y="0" width="90" height="20" style="opacity: 1;">
+                <div xmlns="http://www.w3.org/1999/xhtml">📄 Readme</div>
+            </foreignObject>
+        </g>
+    </g>
+</svg>

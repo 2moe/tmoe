@@ -2,15 +2,70 @@
 
 TMOE, More Optional Environments.
 
-## Documentation
+![index](./assets/map/readme_index.svg)
 
-[doc.tmoe.me](https://doc.tmoe.me)
+## foreword
+
+Sorry, guys.  
+The current edition has a lot of bugs.  
+In the next, if I have time, I will improve it step by step.  
+For now it is only suitable for running in container environment.
+
+Modifying tens of thousands of lines of POSIX-compliant & bash shell scripts is killing me, especially since a lot of this stuff was written years ago.
+
+I may rewrite some of the modules in a more powerful language and gradually integrate them in. Finally, a complete rewrite!
+
+## ChangeLog
+
+### 2022-10-29
+
+#### Fixed
+
+Temporary fix for tui-related issues on debian-sid.  
+Note: this is only a temporary fix.  
+Waiting for upstream updates is the way to go.
+
+Half a month ago, debian-sid updated `libpopt0` to `1.19`, which caused a problem with TUI-related parts.  
+This was not the fault of `libpopt0`, they fixed a memory leak.  
+However, the use of the new version of `libpopt0` for the TUI-related libraries leads to invalid pointers.
+
+Perhaps we should not discuss pointers and memory safety in changlog.
+
+But this is an important issue for debian, and it affects the configuration package functionality of `dpkg`.
+
+Although we are free to choose the front end of `debconf`, it is by default the TUI front end.
+
+#### Features
+
+Unfortunately, no new features have been added this time.
+
+But there is good news, the version number for ubuntu 23.04 is out!  
+That's Lunar Lobster (🌙🦞).  
+As per usual, I would have added it and happily written it in the commit log.
+However, given the stability issues, I'll probably wait a while before adding it in.
+
+Fortunately, you can manually change the src to 23.04.  
+You can use the latest 22.10 container, then run the following cmds as root.
+
+```sh
+sed -i 's@ kinetic@ lunar@g' /etc/apt/sources.list
+apt update
+apt dist-upgrade
+```
+
+It's time to experience the mysterious magic of the moon!
 
 ## Preview
 
 ![locale](assets/preview/2022-05-12_16-29-43.png)  
 ![container menu](assets/preview/2022-05-12_16-31-26.png)  
 ![debian-xfce](assets/preview/2022-05-12_16-32-09.png)
+
+## Documentation
+
+[doc.tmoe.me](https://doc.tmoe.me)
+Unfortunately, the documentation is far from complete.  
+And, as I am designing and rewriting the new edition, some of it may need to be revised.
 
 ## Quick Start
 
