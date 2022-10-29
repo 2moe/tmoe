@@ -4,7 +4,7 @@ TMOE, More Optional Environments.
 
 ![index](./assets/map/readme_index.svg)
 
-## foreword
+## Foreword
 
 Sorry, guys.  
 The current edition has a lot of bugs.  
@@ -39,7 +39,7 @@ Although we are free to choose the front end of `debconf`, it is by default the 
 
 Unfortunately, no new features have been added this time.
 
-But there is good news, the version number for ubuntu 23.04 is out!  
+But there is good news, the ubuntu 23.04 version codename is out!  
 That's Lunar Lobster (🌙🦞).  
 As per usual, I would have added it and happily written it in the commit log.
 However, given the stability issues, I'll probably wait a while before adding it in.
@@ -52,6 +52,8 @@ sed -i 's@ kinetic@ lunar@g' /etc/apt/sources.list
 apt update
 apt dist-upgrade
 ```
+
+<img src="./assets/changelog/20221029/ubuntu lunar src list.jpg" height="50%" width="70%" />
 
 It's time to experience the mysterious magic of the moon!
 
