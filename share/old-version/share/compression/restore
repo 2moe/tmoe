@@ -138,13 +138,13 @@ restore_the_latest_backup_file() {
 }
 #########################
 file_directory_selection() {
-    #	if ("${TUI_BIN:-dialog}" --title "FILE PATH" --yes-button '自动auto' --no-button '手动manually' --yesno "您想要手动指定文件目录还是自动选择?\nDo you want to automatically select the file d#		select_file_manually
+    #	if ("${TUI_BIN:-whiptail}" --title "FILE PATH" --yes-button '自动auto' --no-button '手动manually' --yesno "您想要手动指定文件目录还是自动选择?\nDo you want to automatically select the file d#		select_file_manually
     manually_select_the_file_directory
     select_file_manually
 }
 ###################
 manually_select_the_file_directory() {
-    TARGET_BACKUP_FILE_PATH=$("${TUI_BIN:-dialog}" --inputbox "请输入文件路径(精确到目录名称)，默认为${CONTAINER_BACKUP_PATH}\nPlease type the file path." 10 50 --title "FILEPATH" 3>&1 1>&2 2>&3)
+    TARGET_BACKUP_FILE_PATH=$("${TUI_BIN:-whiptail}" --inputbox "请输入文件路径(精确到目录名称)，默认为${CONTAINER_BACKUP_PATH}\nPlease type the file path." 10 50 --title "FILEPATH" 3>&1 1>&2 2>&3)
     START_DIR="$(printf '%s\n' "${TARGET_BACKUP_FILE_PATH}" | head -n 1 | cut -d ' ' -f 1)"
     printf "%s\n" "${START_DIR}"
     if [ -z ${START_DIR} ]; then
@@ -158,7 +158,7 @@ manually_select_the_file_directory() {
 }
 ###############
 normally_restore_tmoe_container() {
-    if ("${TUI_BIN:-dialog}" --title "RESTORE FILE" --yes-button '最新latest' --no-button 'select manually' --yesno "您是想要还原最新文件，还是手动选择备份文件\nDo you want to restore the latest file or select the file manually?" 9 50); then
+    if ("${TUI_BIN:-whiptail}" --title "RESTORE FILE" --yes-button '最新latest' --no-button 'select manually' --yesno "您是想要还原最新文件，还是手动选择备份文件\nDo you want to restore the latest file or select the file manually?" 9 50); then
         #RESTORE=$(ls -lth ./*debian*tar* | grep ^- | head -n 1 | cut -d '/' -f 2)
         RESTORE=$(ls -lth ./*-rootfs_bak.tar* | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')
         restore_the_latest_backup_file
@@ -175,7 +175,7 @@ restore_gnu_linux_container() {
     check_container_external_backup_path
     START_DIR=${CONTAINER_BACKUP_PATH}
     #13 55 5
-    TMOE_OPTION=$("${TUI_BIN:-dialog}" --title "Restore ${CONTAINER_TYPE} container" --menu "你想要恢复哪个小可爱到之前的备份状态\nDo you want to restore the container?" 0 0 0 \
+    TMOE_OPTION=$("${TUI_BIN:-whiptail}" --title "Restore ${CONTAINER_TYPE} container" --menu "你想要恢复哪个小可爱到之前的备份状态\nDo you want to restore the container?" 0 0 0 \
         "1" "Normal mode 常规模式" \
         "2" "Restore from sd/tf 从外置tf中恢复" \
         "3" "Select path manually手动选择路径" \

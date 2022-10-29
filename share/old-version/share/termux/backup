@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #######################################
 backup_filename() {
-    TARGET_BACKUP_FILE_NAME=$("${TUI_BIN:-dialog}" --inputbox "请自定义备份的文件名称\nPlease type the filename." 9 50 --title "FILENAME" 3>&1 1>&2 2>&3)
+    TARGET_BACKUP_FILE_NAME=$("${TUI_BIN:-whiptail}" --inputbox "请自定义备份的文件名称\nPlease type the filename." 9 50 --title "FILENAME" 3>&1 1>&2 2>&3)
     TARGET_BACKUP_FILE_NAME=$(printf "%s\n" "${TARGET_BACKUP_FILE_NAME}" | head -n 1 | cut -d ' ' -f 1)
     printf '%s\n' "${TARGET_BACKUP_FILE_NAME}"
     if [ -z ${TARGET_BACKUP_FILE_NAME} ]; then
@@ -15,7 +15,7 @@ backup_termux_system() {
     #check_zstd
     source ${TMOE_SHARE_DIR}/removal/umount
     RETURN_TO_WHERE='backup_termux_system'
-    OPTION=$("${TUI_BIN:-dialog}" --title "Backup System" --menu "Choose your option" 0 50 0 \
+    OPTION=$("${TUI_BIN:-whiptail}" --title "Backup System" --menu "Choose your option" 0 50 0 \
         "0" "🌚 Back 返回" \
         "1" "备份Termux" \
         "2" "使用Timeshift备份宿主机系统" \
@@ -67,14 +67,14 @@ termux_backup_pre() {
 backup_termux() {
     #15 60 4
     backup_termux_menu_en() {
-        TERMUX_BACKUP=$("${TUI_BIN:-dialog}" --title "multiple choices" --checklist \
+        TERMUX_BACKUP=$("${TUI_BIN:-whiptail}" --title "multiple choices" --checklist \
             "Which directory do you want to backup? \nPress space key to select and press Enter to confirm." 0 0 0 \
             "home" "Termux Home dir, mainly used to save user files" ON \
             "usr" "Save software,commands,and other things" OFF \
             3>&1 1>&2 2>&3)
     }
     backup_termux_menu_cn() {
-        TERMUX_BACKUP=$("${TUI_BIN:-dialog}" --title "多项选择题" --checklist \
+        TERMUX_BACKUP=$("${TUI_BIN:-whiptail}" --title "多项选择题" --checklist \
             "您想要备份哪个目录？按空格键选择，*为选中状态，回车键确认。" 0 0 0 \
             "home" "Termux主目录,主要用来保存用户文件" ON \
             "usr" "保存软件、命令和其它东西" OFF \
@@ -94,7 +94,7 @@ backup_termux() {
     ########################
     termux_backup_pre
     TERMUX_TAR_FILE_NAME="${TARGET_BACKUP_FILE_NAME}_${BACKUP_TIME}-termux_bak"
-    if ("${TUI_BIN:-dialog}" --title "Select compression type 选择压缩类型 " --yes-button "tar.zst" --no-button "tar.xz" --yesno "tar.zst在速度和压缩率之间保持平衡\ntar.xz压缩率高,但速度慢\ntar.zst compresses faster.\ntar.xz has a higher compression ration, but is slower." 11 50); then
+    if ("${TUI_BIN:-whiptail}" --title "Select compression type 选择压缩类型 " --yes-button "tar.zst" --no-button "tar.xz" --yesno "tar.zst在速度和压缩率之间保持平衡\ntar.xz压缩率高,但速度慢\ntar.zst compresses faster.\ntar.xz has a higher compression ration, but is slower." 11 50); then
         BACKUP_TYPE='tar.zst'
     else
         BACKUP_TYPE='tar.xz'

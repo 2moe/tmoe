@@ -28,14 +28,14 @@ remove_termux_linux_manager() {
 tmoe_linux_remove_menu() {
     RETURN_TO_WHERE='tmoe_linux_remove_menu'
     tmoe_linux_remove_menu_en() {
-        OPTION=$("${TUI_BIN:-dialog}" --title "Removable items" --menu "Which item do you want to remove?" 0 50 0 \
+        OPTION=$("${TUI_BIN:-whiptail}" --title "Removable items" --menu "Which item do you want to remove?" 0 50 0 \
             "0" "🌚 Back to the main menu" \
             "1" "Tmoe-linux manager" \
             "2" "Container (old version before v1.10 beta)" \
             3>&1 1>&2 2>&3)
     }
     tmoe_linux_remove_menu_zh() {
-        OPTION=$("${TUI_BIN:-dialog}" --title "Removable items" --menu "您想要移除哪个项目？\nWhich item do you want to remove?" 0 50 0 \
+        OPTION=$("${TUI_BIN:-whiptail}" --title "Removable items" --menu "您想要移除哪个项目？\nWhich item do you want to remove?" 0 50 0 \
             "0" "🌚 Back to the main menu 返回主菜单" \
             "1" "Tmoe-linux manager" \
             "2" "Container (仅限v1.10 beta之前的旧版)容器" \

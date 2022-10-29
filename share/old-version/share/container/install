@@ -1994,18 +1994,30 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
         DEBIAN_FRONTEND=noninteractive dpkg-reconfigure debconf
     }
 	if [[ $(command -v apt-get) ]]; then
-        dpkg_reconfigure_deb_frontend
 	    if [[ ! $(command -v apt-extracttemplates) ]]; then
 	        printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}apt-utils${RESET}"
 	        eatmydata apt install -y apt-utils 2>/dev/null || apt install -y apt-utils 2>/dev/null
 	    fi
 
-	    for i in curl sudo; do
+	    for i in curl sudo whiptail; do
 	        if [[ ! $(command -v ${i}) ]]; then
 	            printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}${i}${RESET}"
 	            eatmydata apt install -y ${i} || apt install -y ${i}
 	        fi
 	    done
+
+        is_whiptail_0_52=$(dpkg -s whiptail | awk '/^Version/ { if (match($2, /^0.52.21/)) print "true"}')
+        is_libpopt0_1_19=$(dpkg -s libpopt0 | awk '/^Version/ { if (match($2, /^1.19/)) print "true"}')
+
+        ($is_whiptail_0_52 && $is_libpopt0_1_19) && {
+            _file="wrapper.tar.gz"
+            curl -Lo $_file "https://packages.tmoe.me/patch/debian/w/whiptail/whiptail-wrapper_0.52.21_$(dpkg --print-architecture).tar.gz"
+            tar -zxvf $_file -C /
+            /usr/local/sbin/whiptail-wrapper --init
+            unlink $_file
+        }
+
+        dpkg_reconfigure_deb_frontend
 	    if [[ ! -e /usr/sbin/update-ca-certificates ]]; then
 	        printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}ca-certificates${RESET}"
 	        eatmydata apt install -y ca-certificates 2>/dev/null || apt install -y ca-certificates 2>/dev/null

@@ -76,10 +76,13 @@ tmoe_global_env() {
     ROOTFS_NAME=$(printf "%s\n" "${DEBIAN_FOLDER}" | cut -d '_' -f 1)
     CURRENT_DIR=$(pwd)
 
-    TUI_BIN="whiptail"
+    TUI_BIN=whiptail
+    [[ -n $TMOE_TUI_BIN ]] && {
+        TUI_BIN=$TMOE_TUI_BIN
+    }
     if [[ $(uname -o) = 'Android' ]]; then
+        [[ -z $TMOE_TUI_BIN ]] && TUI_BIN=dialog
         LINUX_DISTRO='Android'
-        TUI_BIN="dialog"
     elif [ "$(uname -r | cut -d '-' -f 3)" = "Microsoft" ] || [ "$(uname -r | cut -d '-' -f 2)" = "microsoft" ]; then
         WINDOWS_DISTRO='WSL'
     fi
@@ -268,28 +271,28 @@ list_installed_tmoe_containers() {
     #%s后有空格
 
     list_installed_tmoe_containers_menu_ja() {
-        TMOE_CONTAINER_LIST=$("${TUI_BIN:-dialog}" --title "CONTAINER LIST" --menu \
+        TMOE_CONTAINER_LIST=$("${TUI_BIN:-whiptail}" --title "CONTAINER LIST" --menu \
             "コンテナを選択する必要があります" 0 0 0 \
             $(sed -n p ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null) \
             "Back" "🌚 戻る" \
             3>&1 1>&2 2>&3)
     }
     list_installed_tmoe_containers_menu_en() {
-        TMOE_CONTAINER_LIST=$("${TUI_BIN:-dialog}" --title "CONTAINER LIST" --menu \
+        TMOE_CONTAINER_LIST=$("${TUI_BIN:-whiptail}" --title "CONTAINER LIST" --menu \
             "Please choose a container." 0 0 0 \
             $(sed -n p ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null) \
             "Back" "🌚" \
             3>&1 1>&2 2>&3)
     }
     list_installed_tmoe_containers_menu_de() {
-        TMOE_CONTAINER_LIST=$("${TUI_BIN:-dialog}" --title "CONTAINER LIST" --menu \
+        TMOE_CONTAINER_LIST=$("${TUI_BIN:-whiptail}" --title "CONTAINER LIST" --menu \
             "Bitte wählen Sie einen Behälter." 0 0 0 \
             $(sed -n p ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null) \
             "Back" "🌚 Zurück" \
             3>&1 1>&2 2>&3)
     }
     list_installed_tmoe_containers_menu_zh() {
-        TMOE_CONTAINER_LIST=$("${TUI_BIN:-dialog}" --title "CONTAINER LIST" --menu \
+        TMOE_CONTAINER_LIST=$("${TUI_BIN:-whiptail}" --title "CONTAINER LIST" --menu \
             "您想要选择哪个容器？" 0 0 0 \
             $(sed -n p ${TMPDIR}/.tmoe-linux_cache.01 2>/dev/null) \
             "Back" "🌚 返回" \

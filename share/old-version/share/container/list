@@ -60,7 +60,7 @@ choose_which_gnu_linux_distro() {
         OPT_12="🍓 Experimental:RaspiOS,Gentoo,Archcraft"
     }
     choose_which_gnu_linux_distro_menu() {
-        SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "${TITLE}" --menu "${MENU}" 0 50 0 \
+        SELECTED_GNU_LINUX=$("${TUI_BIN:-whiptail}" --title "${TITLE}" --menu "${MENU}" 0 50 0 \
             "1" "$OPT_1" \
             "2" "$OPT_2" \
             "3" "$OPT_3" \
@@ -140,14 +140,14 @@ set_service_container_env() {
 }
 #####################
 choose_latest_or_alpine() {
-    if ("${TUI_BIN:-dialog}" --title "TAGS" --yes-button "latest" --no-button "alpine" --yesno "In general, alpine is more streamlined" 8 50); then
+    if ("${TUI_BIN:-whiptail}" --title "TAGS" --yes-button "latest" --no-button "alpine" --yesno "In general, alpine is more streamlined" 8 50); then
         DESKTOP="latest"
     else
         DESKTOP="alpine"
     fi
 }
 choose_dde_or_nogui() {
-    if ("${TUI_BIN:-dialog}" --title "TAGS" --yes-button "dde" --no-button "nogui" --yesno "dde(deepin desktop environment).\nIn general, nogui is more streamlined." 8 50); then
+    if ("${TUI_BIN:-whiptail}" --title "TAGS" --yes-button "dde" --no-button "nogui" --yesno "dde(deepin desktop environment).\nIn general, nogui is more streamlined." 8 50); then
         DESKTOP="dde"
     else
         DESKTOP="base"
@@ -172,7 +172,7 @@ cloud_server_distro_menu() {
         ;;
     esac
     DESKTOP="base"
-    SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "$TITLE" --menu "$MENU" 0 50 0 \
+    SELECTED_GNU_LINUX=$("${TUI_BIN:-whiptail}" --title "$TITLE" --menu "$MENU" 0 50 0 \
         "1" "$OPT_1" \
         "2" "$OPT_2" \
         "3" "$OPT_3" \
@@ -200,7 +200,7 @@ cloud_server_distro_menu() {
 }
 install_tmoe_moonthly_build_edition() {
     choose_service_en() {
-        INSTALLDESKTOP=$("${TUI_BIN:-dialog}" --title "CONTAINERS" --menu \
+        INSTALLDESKTOP=$("${TUI_BIN:-whiptail}" --title "CONTAINERS" --menu \
             "Except docker, tmoe/azure server will automatically build and release the latest container every 2 weeks" 0 0 0 \
             "1" "🦀 Rust(Blazingly fast and memory-efficient)" \
             "2" "🐹 Go (Makes it easy to build simple&reliable app)" \
@@ -322,7 +322,7 @@ install_tmoe_weekly_build_edition() {
     choose_de_en() {
         # MENU="Sorry, this feature will not be updated for a long time to come."
         MENU="TMOE/Azure Server will automatically build and release the latest DE container every week/month"
-        INSTALLDESKTOP=$("${TUI_BIN:-dialog}" --title "Desktop environment" --menu \
+        INSTALLDESKTOP=$("${TUI_BIN:-whiptail}" --title "Desktop environment" --menu \
             "${MENU}" 0 0 0 \
             "1" "🐭 xfce(elegant, high compatibility)" \
             "2" "🦖 kde plasma5(beautiful and modern)" \
@@ -337,7 +337,7 @@ install_tmoe_weekly_build_edition() {
     choose_de_zh() {
         # MENU="抱歉，由于某些原因, 此功能将在接下来很长一段时间停更"
         MENU="tmoe/azure服务器每周都会自动构建并发布最新版,少部分发行版为每月更新"
-        INSTALLDESKTOP=$("${TUI_BIN:-dialog}" --title "Desktop environment" --menu \
+        INSTALLDESKTOP=$("${TUI_BIN:-whiptail}" --title "Desktop environment" --menu \
             "${MENU}" 0 0 0 \
             "1" "🐭 xfce(elegant, high compatibility)" \
             "2" "🦖 kde plasma5(风格华丽的桌面环境)" \
@@ -537,7 +537,7 @@ choose_mate_distro() {
     OPT_4="🌉 Arch-latest(arm64, x64)"
     OPT_5="🏔️ Alpine-edge(arm64, armhf, i386, x64)"
     #
-    SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "MATE DISTROS" --menu "${MENU}" 0 50 0 \
+    SELECTED_GNU_LINUX=$("${TUI_BIN:-whiptail}" --title "MATE DISTROS" --menu "${MENU}" 0 50 0 \
         "1" "$OPT_1" \
         "2" "$OPT_2" \
         "3" "$OPT_3" \
@@ -597,7 +597,7 @@ choose_mate_distro() {
     esac
 }
 choose_lxde_distro() {
-    SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "LXDE DISTROS" --menu "对于LXDE桌面,开发者仅配置了i386和armhf的自动构建任务" 0 50 0 \
+    SELECTED_GNU_LINUX=$("${TUI_BIN:-whiptail}" --title "LXDE DISTROS" --menu "对于LXDE桌面,开发者仅配置了i386和armhf的自动构建任务" 0 50 0 \
         "1" "🍥 Debian-sid(i386,armhf)" \
         "0" "🌚 Return to previous menu" \
         3>&1 1>&2 2>&3)
@@ -615,7 +615,7 @@ choose_lxde_distro() {
     esac
 }
 choose_lxqt_distro() {
-    SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "LXQT DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
+    SELECTED_GNU_LINUX=$("${TUI_BIN:-whiptail}" --title "LXQT DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
         "1" "🍛 Ubuntu-dev(arm64,x64)" \
         "2" "👒 Fedora-rawhide(arm64,x64)" \
         "0" "🌚 Return to previous menu" \
@@ -643,7 +643,7 @@ choose_lxqt_distro() {
     esac
 }
 choose_xfce_distro() {
-    SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "XFCE DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
+    SELECTED_GNU_LINUX=$("${TUI_BIN:-whiptail}" --title "XFCE DISTROS" --menu "Which distribution do you want to install?" 0 50 0 \
         "1" "🐉 Kali-rolling(arm64, armhf, x64)" \
         "2" "🌉 Arch-latest(arm64, armhf, x64)" \
         "3" "🍥 Debian-sid(arm64, x64)" \
@@ -741,7 +741,7 @@ choose_ukui_distro() {
     esac
 }
 choose_kde_distro() {
-    SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "KDE PLASMA DISTROS" --menu "Plasma 5 is built using Qt 5 and KDE Frameworks 5, predominantly plasma-framework." 0 50 0 \
+    SELECTED_GNU_LINUX=$("${TUI_BIN:-whiptail}" --title "KDE PLASMA DISTROS" --menu "Plasma 5 is built using Qt 5 and KDE Frameworks 5, predominantly plasma-framework." 0 50 0 \
         "1" "🍛 Ubuntu(arm64, x64, armhf)" \
         "2" "🌉 Arch(arm64, x64)" \
         "3" "🍥 Debian sid(arm64, x64)" \
@@ -802,7 +802,7 @@ choose_kde_distro() {
     esac
 }
 choose_zsh_distro() {
-    SELECTED_GNU_LINUX=$("${TUI_BIN:-dialog}" --title "ZSH CONTAINERS" --menu "The following containers have built-in zsh" 0 50 0 \
+    SELECTED_GNU_LINUX=$("${TUI_BIN:-whiptail}" --title "ZSH CONTAINERS" --menu "The following containers have built-in zsh" 0 50 0 \
         "1" "🌉 Arch(arm64,armhf,x64)" \
         "2" "🦛 Ubuntu devel(arm64,x64)" \
         "3" "🍥 Debian sid(arm64,armhf,x64,i386)" \
@@ -985,7 +985,7 @@ install_chroot_exclusive_containers() {
     CLOUD_ROOTFS=false
     #\nThe developer only maintains the chroot container in the following list.
     ALPHA_SYSTEM=$(
-        "${TUI_BIN:-dialog}" --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
+        "${TUI_BIN:-whiptail}" --title "chroot exclusive containers" --menu "虽然您仍可以使用proot运行以下容器,但开发者仅维护了chroot容器。" 0 55 0 \
             "1" "opensuse tumbleweed(小蜥蜴风滚草)" \
             "2" "deepin深度(x86,x64)" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
@@ -1073,7 +1073,7 @@ git_clone_deepin_distro() {
 install_deepin_linux_distro() {
     RETURN_TO_WHERE='install_deepin_linux_distro'
     ALPHA_SYSTEM=$(
-        "${TUI_BIN:-dialog}" --title "DEEPIN" --menu "deepin20正式版采取统一的设计风格,从桌面环境\n和应用进行重新设计,带来焕然一新的视觉感受" 0 50 0 \
+        "${TUI_BIN:-whiptail}" --title "DEEPIN" --menu "deepin20正式版采取统一的设计风格,从桌面环境\n和应用进行重新设计,带来焕然一新的视觉感受" 0 50 0 \
             "1" "deepin20 apricot(x64,i386) 大小45M" \
             "2" "deepin15.5 camel(arm64) 大小84M" \
             "0" "🌚 Back 返回" \
@@ -1140,7 +1140,7 @@ install_alpha_containers() {
 
     install_alpha_containers_menu() {
         ALPHA_SYSTEM=$(
-            "${TUI_BIN:-dialog}" --title "${TITLE}" --menu "${MENU}" 0 55 0 \
+            "${TUI_BIN:-whiptail}" --title "${TITLE}" --menu "${MENU}" 0 55 0 \
                 "1" "${OPT_1}" \
                 "2" "${OPT_2}" \
                 "3" "${OPT_3}" \
@@ -1331,7 +1331,7 @@ install_beta_containers() {
     CLOUD_ROOTFS=false
     install_beta_containers_zh() {
         BETA_SYSTEM=$(
-            "${TUI_BIN:-dialog}" --title "CONTAINERS" --menu "Some interesting containers" 0 55 0 \
+            "${TUI_BIN:-whiptail}" --title "CONTAINERS" --menu "Some interesting containers" 0 55 0 \
                 "1" "🏔️ Alpine(基于musl libc和busybox,超精简系统)" \
                 "2" "CentOS(基于红帽的社区企业操作系统)" \
                 "3" "Rocky(arm64,x64,enterprise-grade, production-ready)" \
@@ -1346,7 +1346,7 @@ install_beta_containers() {
     }
     install_beta_containers_ja() {
         BETA_SYSTEM=$(
-            "${TUI_BIN:-dialog}" --title "CONTAINERS" --menu "Some interesting containers" 0 55 0 \
+            "${TUI_BIN:-whiptail}" --title "CONTAINERS" --menu "Some interesting containers" 0 55 0 \
                 "1" "🏔️ Alpine:セキュリティ・シンプルさ・リソース効率を重視するパワーユーザー向けに設計されている" \
                 "2" "CentOS:RHELと機能的に互換性があることを目指したフリーのLinuxディストリビューションである" \
                 "3" "Rocky(arm64,x64, enterprise-grade, production-ready)" \
@@ -1361,7 +1361,7 @@ install_beta_containers() {
     }
     install_beta_containers_en() {
         BETA_SYSTEM=$(
-            "${TUI_BIN:-dialog}" --title "CONTAINERS" --menu "Some interesting containers" 0 55 0 \
+            "${TUI_BIN:-whiptail}" --title "CONTAINERS" --menu "Some interesting containers" 0 55 0 \
                 "1" "🏔️ Alpine:Small. Simple. Secure. Alpine Linux is a security-oriented, lightweight Linux distribution based on musl libc and busybox" \
                 "2" "CentOS is a community-driven free software effort focused on delivering a robust open source ecosystem around a Linux platform" \
                 "3" "Rocky(arm64,x64, enterprise-grade, production-ready)" \
@@ -1416,16 +1416,16 @@ install_ubuntu_gnu_linux_distro() {
     RETURN_TO_WHERE='install_ubuntu_gnu_linux_distro'
     COMPATIBILITY_MODE=false
     TITLE="Which version do you want to install?"
-    OPT_1="🐐 22.10(dev) Kinetic Kudu"
-    OPT_2="22.04(LTS,stable) Jammy Jellyfish"
+    OPT_1="🐐 22.10 Kinetic Kudu"
+    OPT_2="22.04(LTS) Jammy Jellyfish"
     # OPT_3="🐒 21.10(oldstable) Impish Indri"
     # OPT_3="🦛 21.04 Hirsute Hippo"
     OPT_5="18.04(LTS) Bionic Beaver"
     OPT_6="🐿️ 16.04(LTS) Xenial Xerus"
     install_ubuntu_gnu_linux_distro_zh() {
         MENU="2022至2027年的长期支持版为jammy 22.04(2022年4月正式发布)\n设x=当前年份,若x>=2024,则请手动输入版本代号"
-        OPT_1="🐐 22.10(dev) 動力羚羊 Kinetic Kudu"
-        OPT_2="22.04(LTS,stable) 果酱水母 Jammy Jellyfish"
+        OPT_1="🐐 22.10 動力羚羊 Kinetic Kudu"
+        OPT_2="22.04(LTS) 果酱水母 Jammy Jellyfish"
         # OPT_3="🐒 21.10(oldstable) 頑皮大狐猴 Impish Indri"
         # OPT_3="🦛 21.04 多毛河馬 Hirsute Hippo"
         OPT_4="🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa"
@@ -1450,7 +1450,7 @@ install_ubuntu_gnu_linux_distro() {
     }
     install_ubuntu_gnu_linux_distro_en() {
         MENU="The long-term support version between 2022 and 2027 is jammy(22.04).\nLet x = current year, if x>=2024,then customize the version code"
-        OPT_4="🐱 20.04(LTS)Focal Fossa"
+        OPT_4="🐱 20.04(LTS) Focal Fossa"
         OPT_7="Compatibility mode"
         OPT_8="Manually build"
         OPT_9="Latest"
@@ -1460,7 +1460,7 @@ install_ubuntu_gnu_linux_distro() {
     }
     install_ubuntu_gnu_linux_distro_menu() {
         BETA_SYSTEM=$(
-            "${TUI_BIN:-dialog}" --title "${TITLE}" \
+            "${TUI_BIN:-whiptail}" --title "${TITLE}" \
                 --menu "${MENU}" 0 50 0 \
                 "1" "${OPT_1}" \
                 "2" "${OPT_2}" \
@@ -1552,7 +1552,7 @@ check_ubuntu_distro_code() {
 ##############
 custom_ubuntu_version() {
     #12 50
-    TARGET=$("${TUI_BIN:-dialog}" --inputbox "请输入ubuntu版本代号，例如focal(英文小写)\nPlease type the ubuntu version code." 9 50 --title "UBUNTU CODE" 3>&1 1>&2 2>&3)
+    TARGET=$("${TUI_BIN:-whiptail}" --inputbox "请输入ubuntu版本代号，例如focal(英文小写)\nPlease type the ubuntu version code." 9 50 --title "UBUNTU CODE" 3>&1 1>&2 2>&3)
     #[[ "$?" = 0 ]] || ${RETURN_TO_WHERE} #此處不要判斷退出狀態
     DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
     if [ -z "${DISTRO_CODE}" ]; then
@@ -1585,7 +1585,7 @@ debootstrap_ubuntu_distro() {
         DEB_BOOT_STRAP=true
         printf "%s\n" "${DEBIAN_CHROOT}"
         link_debootstrap_script
-        if ("${TUI_BIN:-dialog}" --title "UBUNTU URL" --yes-button "BFSU MIRROR" --no-button "UBUNTU OFFICIAL" --yesno "Which url do you want to choose?" 8 50); then
+        if ("${TUI_BIN:-whiptail}" --title "UBUNTU URL" --yes-button "BFSU MIRROR" --no-button "UBUNTU OFFICIAL" --yesno "Which url do you want to choose?" 8 50); then
             case ${ARCH_TYPE} in
             amd64 | i386) UBUNTU_MIRROR_URL="http://mirrors.bfsu.edu.cn/ubuntu" ;;
             *) UBUNTU_MIRROR_URL="http://mirrors.bfsu.edu.cn/ubuntu-ports" ;;
@@ -1776,7 +1776,7 @@ before_going_to_proot_menu() {
     go_to_proot_management
 }
 which_version_do_you_want_to_install() {
-    if ("${TUI_BIN:-dialog}" --title "${DISTRO_NAME} VERSION" --yes-button "${DISTRO_CODE}" --no-button "${OLD_STABLE_VERSION}" --yesno "您想要安装哪个版本？Which version do you want to install?检测到当前的最新版本(latest version)为${DISTRO_CODE}" 9 50); then
+    if ("${TUI_BIN:-whiptail}" --title "${DISTRO_NAME} VERSION" --yes-button "${DISTRO_CODE}" --no-button "${OLD_STABLE_VERSION}" --yesno "您想要安装哪个版本？Which version do you want to install?检测到当前的最新版本(latest version)为${DISTRO_CODE}" 9 50); then
         before_going_to_proot_menu
         case_cloud_rootfs_01_04
     else
@@ -1827,7 +1827,7 @@ install_void_linux_distro() {
 }
 ##########################
 custom_rocky_version() {
-    TARGET=$("${TUI_BIN:-dialog}" --inputbox "请输入rocky版本代号，例如8\nPlease type the rocky version code." 9 50 --title "ROCKY CODE" 3>&1 1>&2 2>&3)
+    TARGET=$("${TUI_BIN:-whiptail}" --inputbox "请输入rocky版本代号，例如8\nPlease type the rocky version code." 9 50 --title "ROCKY CODE" 3>&1 1>&2 2>&3)
     DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
     if [ -z "${DISTRO_CODE}" ]; then
         printf "%s\n" "检测到您取消了操作"
@@ -1845,7 +1845,7 @@ install_rocky_linux_distro() {
     arm64 | amd64)
         OLD_STABLE_VERSION='8'
         DISTRO_NAME='rockylinux'
-        if ("${TUI_BIN:-dialog}" --title "ROCKY VERSION" --yes-button "${OLD_STABLE_VERSION}" --no-button "customize" --yesno "Which version do you want to install?" 9 50); then
+        if ("${TUI_BIN:-whiptail}" --title "ROCKY VERSION" --yes-button "${OLD_STABLE_VERSION}" --no-button "customize" --yesno "Which version do you want to install?" 9 50); then
             DISTRO_CODE="${OLD_STABLE_VERSION}"
         else
             custom_rocky_version
@@ -1879,7 +1879,7 @@ install_gentoo_linux_distro() {
     DISTRO_NAME='gentoo'
     TMOE_LINUX_CONTAINER_DISTRO='gentoo'
 
-    if ("${TUI_BIN:-dialog}" --title "init" --yes-button "openrc" --no-button "systemd" --yesno "gentoo" 7 40); then
+    if ("${TUI_BIN:-whiptail}" --title "init" --yes-button "openrc" --no-button "systemd" --yesno "gentoo" 7 40); then
         DISTRO_CODE='openrc'
     else
         DISTRO_CODE='systemd'
@@ -1943,7 +1943,7 @@ install_raspios_linux_distro() {
     esac
     create_container_edition_txt
     go_to_proot_management
-    if ("${TUI_BIN:-dialog}" --title "RASPIOS" --yes-button "FULL" --no-button "LITE" --yesno "您想要安装哪个版本的raspios？Full版约1.9G,lite版约274M" 9 50); then
+    if ("${TUI_BIN:-whiptail}" --title "RASPIOS" --yes-button "FULL" --no-button "LITE" --yesno "您想要安装哪个版本的raspios？Full版约1.9G,lite版约274M" 9 50); then
         install_raspios_rootfs full
     else
         install_raspios_rootfs lite
@@ -1987,7 +1987,7 @@ distro_does_not_support() {
 ##############
 choose_ubuntu_budgie_or_cinnamon() {
     DESKTOP_NAME=$(
-        "${TUI_BIN:-dialog}" --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
+        "${TUI_BIN:-whiptail}" --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
             "1" "🐭 xfce" \
             "2" "👣 cinnamon" \
             "3" "budgie" \
@@ -2007,7 +2007,7 @@ choose_ubuntu_budgie_or_cinnamon() {
 }
 choose_ubuntu_xfce_or_cinnamon() {
     DESKTOP_NAME=$(
-        "${TUI_BIN:-dialog}" --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
+        "${TUI_BIN:-whiptail}" --title "${DISTRO_NAME}" --menu "In addition to cli and minimal, every container has a built-in desktop environment\n除cli和minimal版外,以下容器已预装桌面,每个镜像大小为1~2G" 0 50 0 \
             "1" "🐭 xfce" \
             "2" "👣 cinnamon" \
             "3" "cli(nogui)" \
@@ -2025,7 +2025,7 @@ choose_ubuntu_xfce_or_cinnamon() {
 }
 choose_debian_xfce_or_cinnamon() {
     DESKTOP_NAME=$(
-        "${TUI_BIN:-dialog}" --title "${DISTRO_NAME}" --menu "In addition to cli and minimal,\nevery container has a built-in desktop environment" 0 50 0 \
+        "${TUI_BIN:-whiptail}" --title "${DISTRO_NAME}" --menu "In addition to cli and minimal,\nevery container has a built-in desktop environment" 0 50 0 \
             "1" "🐭 xfce" \
             "2" "cli(nogui)" \
             "3" "minimal(nogui)" \
@@ -2043,7 +2043,7 @@ install_armbian_linux_distro() {
     RETURN_TO_WHERE='install_armbian_linux_distro'
     DISTRO_NAME='armbian'
     BETA_SYSTEM=$(
-        "${TUI_BIN:-dialog}" --title "ARMBIAN" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统\nArmbian is a Debian & Ubuntu based computer OS for ARM development boards." 0 50 0 \
+        "${TUI_BIN:-whiptail}" --title "ARMBIAN" --menu "armbian是专为ARM开发板(例如nanopi,rock64,pine64等)打造的debian/ubuntu系统\nArmbian is a Debian & Ubuntu based computer OS for ARM development boards." 0 50 0 \
             "1" "Jammy(ubuntu 22.04)" \
             "2" "🐱 Focal(ubuntu 20.04)" \
             "3" "🐎 Bullseye(debian 11)" \
@@ -2147,7 +2147,7 @@ install_armbian_testing_via_tuna() {
 }
 ###########
 custom_armbian_version() {
-    TARGET=$("${TUI_BIN:-dialog}" --inputbox "请输入armbian版本代号，例如bullseye(英文小写)\nPlease type the armbian version code." 9 50 --title "ARMBIAN CODE" 3>&1 1>&2 2>&3)
+    TARGET=$("${TUI_BIN:-whiptail}" --inputbox "请输入armbian版本代号，例如bullseye(英文小写)\nPlease type the armbian version code." 9 50 --title "ARMBIAN CODE" 3>&1 1>&2 2>&3)
     DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
     if [ -z "${DISTRO_CODE}" ]; then
         printf "%s\n" "检测到您取消了操作"
@@ -2186,7 +2186,7 @@ which_linux_mint_distro() {
     RETURN_TO_WHERE='which_linux_mint_distro'
     DISTRO_NAME='mint'
     BETA_SYSTEM=$(
-        "${TUI_BIN:-dialog}" --title "mint" --menu "您想要安装哪个Mint版本？\nWhich version do you want to install?\nIf you are using i386,then choose tricia." 0 0 0 \
+        "${TUI_BIN:-whiptail}" --title "mint" --menu "您想要安装哪个Mint版本？\nWhich version do you want to install?\nIf you are using i386,then choose tricia." 0 0 0 \
             "1" "Auto check 自动检测版本" \
             "2" "Custom code手动输入版本代号" \
             "0" "🌚 Return to previous menu 返回上级菜单" \
@@ -2207,7 +2207,7 @@ which_linux_mint_distro() {
 }
 #########################
 custom_mint_version() {
-    TARGET=$("${TUI_BIN:-dialog}" --inputbox "请输入mint版本代号，例如ulyana(英文小写)\n Please enter the mint version code." 12 50 --title "MINT CODE" 3>&1 1>&2 2>&3)
+    TARGET=$("${TUI_BIN:-whiptail}" --inputbox "请输入mint版本代号，例如ulyana(英文小写)\n Please enter the mint version code." 12 50 --title "MINT CODE" 3>&1 1>&2 2>&3)
     DISTRO_CODE="$(printf '%s\n' "${TARGET}" | head -n 1 | cut -d ' ' -f 1)"
     if [ -z "${DISTRO_CODE}" ]; then
         printf "%s\n" "检测到您取消了操作"

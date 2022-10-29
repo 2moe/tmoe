@@ -5,7 +5,7 @@ source ${TMOE_SHARE_DIR}/compression/restore
 START_DIR="/sdcard/Download/backup/termux"
 printf "%s\n" "${START_DIR}"
 cd "${START_DIR}"
-if ("${TUI_BIN:-dialog}" --title "RESTORE FILE" --yes-button '最新latest' --no-button 'select manually' --yesno "您是想要还原最新文件，还是手动选择备份文件\nDo you want to restore the latest file or select the file manually?" 9 50); then
+if ("${TUI_BIN:-whiptail}" --title "RESTORE FILE" --yes-button '最新latest' --no-button 'select manually' --yesno "您是想要还原最新文件，还是手动选择备份文件\nDo you want to restore the latest file or select the file manually?" 9 50); then
     #RESTORE=$(ls -lth ./termux*tar* | grep ^- | head -n 1 | cut -d '/' -f 2)
     RESTORE=$(ls -lth ./*-termux*bak.tar* | grep ^- | head -n 1 | awk -F ' ' '$0=$NF')
     restore_the_latest_backup_file

@@ -3,7 +3,7 @@
 tmoe_qemu_user_static() {
     RETURN_TO_WHERE='tmoe_qemu_user_static'
     BETA_SYSTEM=$(
-        "${TUI_BIN:-dialog}" --title "qemu_user_static" --menu "QEMU的user模式跨架构运行的效率可能比system模式更高，但存在更多的局限性" 0 50 0 \
+        "${TUI_BIN:-whiptail}" --title "qemu_user_static" --menu "QEMU的user模式跨架构运行的效率可能比system模式更高，但存在更多的局限性" 0 50 0 \
             "1" "chart架构支持表格" \
             "2" "install/upgrade(安装/更新)" \
             "3" "remove(移除/卸载)" \
@@ -306,7 +306,7 @@ tmoe_qemu_user_manager() {
     RETURN_TO_WHERE='tmoe_qemu_user_manager'
     tmoe_qemu_user_manager_zh() {
         BETA_SYSTEM=$(
-            "${TUI_BIN:-dialog}" --title "跨架构运行容器" --menu "您想要(模拟)运行哪个架构？\nWhich architecture do you want to simulate?" 0 50 0 \
+            "${TUI_BIN:-whiptail}" --title "跨架构运行容器" --menu "您想要(模拟)运行哪个架构？\nWhich architecture do you want to simulate?" 0 50 0 \
                 "0" "🌚 Return to previous menu 返回上级菜单" \
                 "00" "qemu-user-static管理(跨架构模拟所需的基础依赖)" \
                 "1" "x64/amd64(64位架构,应用于pc和服务器）" \
@@ -324,7 +324,7 @@ tmoe_qemu_user_manager() {
     }
     tmoe_qemu_user_manager_ja() {
         BETA_SYSTEM=$(
-            "${TUI_BIN:-dialog}" --title "cross-architecture" --menu "どのアーキテクチャをシミュレートしますか？" 0 50 0 \
+            "${TUI_BIN:-whiptail}" --title "cross-architecture" --menu "どのアーキテクチャをシミュレートしますか？" 0 50 0 \
                 "0" "🌚 戻る" \
                 "00" "qemu-user-static(基本的な依存関係)" \
                 "1" "x64/amd64:またはx86-64とは、x86アーキテクチャを64ビットに拡張した命令セットアーキテクチャ" \
@@ -342,7 +342,7 @@ tmoe_qemu_user_manager() {
     }
     tmoe_qemu_user_manager_en() {
         BETA_SYSTEM=$(
-            "${TUI_BIN:-dialog}" --title "cross-architecture" --menu "Which architecture do you want to simulate?" 0 50 0 \
+            "${TUI_BIN:-whiptail}" --title "cross-architecture" --menu "Which architecture do you want to simulate?" 0 50 0 \
                 "0" "🌚 Return to previous menu" \
                 "00" "qemu-user-static(Basic dependency)" \
                 "1" "x64/amd64:It defines a 64-bit virtual address format, of which the low-order 48 bits are used in current implementations." \

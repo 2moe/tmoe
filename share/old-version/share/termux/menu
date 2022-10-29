@@ -5,7 +5,7 @@ android_termux_tmoe_menu() {
     RETURN_TO_WHERE='android_termux_tmoe_menu'
     #17 60 6
     android_termux_tmoe_menu_zh() {
-        OPTION=$("${TUI_BIN:-dialog}" --title "Termux" --menu "您可以通过VNC客户端来连接GNU/Linux(proot/chroot)容器的桌面,\n并在此处修改termux音频服务端的配置\nYou can use vncviewer to connect container DE." 0 50 0 \
+        OPTION=$("${TUI_BIN:-whiptail}" --title "Termux" --menu "您可以通过VNC客户端来连接GNU/Linux(proot/chroot)容器的桌面,\n并在此处修改termux音频服务端的配置\nYou can use vncviewer to connect container DE." 0 50 0 \
             "1" "🍳 mirror sources镜像源(北外,腾讯)" \
             "2" "🎶 configure LAN audio局域网音频传输" \
             "3" "🍅 query space occupation查询空间占用" \
@@ -14,7 +14,7 @@ android_termux_tmoe_menu() {
             3>&1 1>&2 2>&3)
     }
     android_termux_tmoe_menu_ja() {
-        OPTION=$("${TUI_BIN:-dialog}" --title "Termux" --menu "You can use vncviewer to connect container DE." 0 50 0 \
+        OPTION=$("${TUI_BIN:-whiptail}" --title "Termux" --menu "You can use vncviewer to connect container DE." 0 50 0 \
             "1" "🍳 mirror sources" \
             "2" "🎶 LANオーディオ送信を設定する" \
             "3" "🍅 クエリスペースの占有" \
@@ -23,7 +23,7 @@ android_termux_tmoe_menu() {
             3>&1 1>&2 2>&3)
     }
     android_termux_tmoe_menu_en() {
-        OPTION=$("${TUI_BIN:-dialog}" --title "Termux" --menu "You can use vncviewer to connect container DE." 0 50 0 \
+        OPTION=$("${TUI_BIN:-whiptail}" --title "Termux" --menu "You can use vncviewer to connect container DE." 0 50 0 \
             "1" "🍳 mirror sources" \
             "2" "🎶 configure LAN audio" \
             "3" "🍅 query space occupation" \
@@ -81,7 +81,7 @@ termux_pulse_audio_lan() {
         LANPULSE='检测到您未启用局域网音频传输，默认仅允许本机传输,you have disabled LAN audio transmission'
     fi
     #10 50
-    if ("${TUI_BIN:-dialog}" --title "请问您是需要启用还是禁用此功能呢？(｡･∀･)ﾉﾞ" --yes-button 'yes(*￣▽￣*)o' --no-button 'no(っ °Д °)' --yesno "${LANPULSE},请选择您需要执行的操作！\nDo you want to enable LAN audio transmission?" 11 50); then
+    if ("${TUI_BIN:-whiptail}" --title "请问您是需要启用还是禁用此功能呢？(｡･∀･)ﾉﾞ" --yes-button 'yes(*￣▽￣*)o' --no-button 'no(っ °Д °)' --yesno "${LANPULSE},请选择您需要执行的操作！\nDo you want to enable LAN audio transmission?" 11 50); then
         sed -i '/auth-ip-acl/d;/module-native-protocol-tcp/d' default.pa
         sed -i '$ a\load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1;192.168.0.0/16;172.16.0.0/12 auth-anonymous=1' default.pa
     else

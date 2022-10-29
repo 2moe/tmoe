@@ -23,7 +23,7 @@ configure_tmoe_container() {
         ;;
     esac
 
-    TMOE_OPTION=$("${TUI_BIN:-dialog}" --title "CONF AND MANUAL" --menu "You can view the manual or modify the config here." 0 50 0 \
+    TMOE_OPTION=$("${TUI_BIN:-whiptail}" --title "CONF AND MANUAL" --menu "You can view the manual or modify the config here." 0 50 0 \
         "1" "$OPT_1" \
         "2" "$OPT_2" \
         "3" "$OPT_3" \
@@ -58,7 +58,7 @@ rootless_container_mount_conf() {
     container_mount_dir_menu
 }
 rootless_or_rootful() {
-    if ("${TUI_BIN:-dialog}" --title "rootless or rootful" --yes-button "rootless" --no-button "rootful" --yesno "rootless: proot, podman\n rootful: chroot, unshare, nspawn" 8 50); then
+    if ("${TUI_BIN:-whiptail}" --title "rootless or rootful" --yes-button "rootless" --no-button "rootful" --yesno "rootless: proot, podman\n rootful: chroot, unshare, nspawn" 8 50); then
         rootless_container_mount_conf
     else
         rootful_container_mount_conf
@@ -81,7 +81,7 @@ do_you_want_to_share_tf() {
     zh_*UTF-8) local _Title="在容器中共享宿主的TF卡/外置存储" ;;
     *) local _Title="external storage" ;;
     esac
-    if ("${TUI_BIN:-dialog}" --title "$_Title" --yesno "Do you want to share the ~/storage/external-1?" 8 50); then
+    if ("${TUI_BIN:-whiptail}" --title "$_Title" --yesno "Do you want to share the ~/storage/external-1?" 8 50); then
         echo "MOUNT_TF=true" >"${TF_CONF}"
     else
         echo "MOUNT_TF=false" >"${TF_CONF}"
@@ -97,7 +97,7 @@ do_you_want_to_share_storage() {
         zh_*UTF-8) local _Title="共享 /storage 目录" ;;
         *) local _Title="Shared dir: /storage" ;;
         esac
-        if ("${TUI_BIN:-dialog}" --title "$_Title" --yesno "Do you want to share the /storage directory?" 8 50); then
+        if ("${TUI_BIN:-whiptail}" --title "$_Title" --yesno "Do you want to share the /storage directory?" 8 50); then
             echo "MOUNT_STORAGE=true" >"${STORAGE_CONF}"
         else
             echo "MOUNT_STORAGE=false" >"${STORAGE_CONF}"
@@ -134,7 +134,7 @@ container_mount_termux_conf() {
         local SD_DIR_2="/opt"
     fi
 
-    TMOE_OPTION=$("${TUI_BIN:-dialog}" --title "$_Title" --menu "$_Description" 0 50 0 \
+    TMOE_OPTION=$("${TUI_BIN:-whiptail}" --title "$_Title" --menu "$_Description" 0 50 0 \
         "1" "${HOME}" \
         "2" "$OPT_2" \
         "3" "${SD_DIR_2}" \
@@ -217,7 +217,7 @@ container_mount_sd_conf() {
         ;;
     esac
 
-    TMOE_OPTION=$("${TUI_BIN:-dialog}" --title "$_Title" --menu "$_Description" 0 50 0 \
+    TMOE_OPTION=$("${TUI_BIN:-whiptail}" --title "$_Title" --menu "$_Description" 0 50 0 \
         "1" "${SD_DIR_1}/Download" \
         "2" "$OPT_2" \
         "3" "${SD_DIR_1}" \
@@ -285,7 +285,7 @@ customize_your_sd_dir() {
     zh_*UTF-8) local _Description2="请在下方输入一个绝对路径，支持使用\${HOME}变量" ;;
     *) local _Description2="Please enter an absolute path" ;;
     esac
-    S_DIR=$("${TUI_BIN:-dialog}" --inputbox "$_Description2" 0 50 --title "ABS PATH" 3>&1 1>&2 2>&3)
+    S_DIR=$("${TUI_BIN:-whiptail}" --inputbox "$_Description2" 0 50 --title "ABS PATH" 3>&1 1>&2 2>&3)
     if [[ "$?" != "0" ]]; then
         printf "%s\n" "${RED}ERROR${RESET}"
         press_enter_to_return
@@ -299,7 +299,7 @@ customize_your_sd_dir() {
 container_mount_dir_menu() {
     RETURN_TO_WHERE='container_mount_dir_menu'
     RETURN_TO_MENU='tmoe_container_shared_dir'
-    TMOE_OPTION=$("${TUI_BIN:-dialog}" --title "SHARED DIR" --menu "You can either disable the shared directory or change it" 0 50 0 \
+    TMOE_OPTION=$("${TUI_BIN:-whiptail}" --title "SHARED DIR" --menu "You can either disable the shared directory or change it" 0 50 0 \
         "1" "sd" \
         "2" "storage" \
         "3" "HOME" \
@@ -377,7 +377,7 @@ tmoe_container_dns() {
         ;;
     esac
 
-    TMOE_OPTION=$("${TUI_BIN:-dialog}" --title "DNS(Domain Name System)" --menu "${_Description}" 0 50 0 \
+    TMOE_OPTION=$("${TUI_BIN:-whiptail}" --title "DNS(Domain Name System)" --menu "${_Description}" 0 50 0 \
         "1" "$_Opt_1" \
         "2" "$_Opt_2" \
         "3" "[2001:4860:4860::8888](Google)" \
@@ -423,14 +423,14 @@ manually_edit_dns_conf() {
 }
 ##############
 is_your_timezone_gmt9() {
-    if ("${TUI_BIN:-dialog}" --title "Is your timezone UTC+9" --yesno "UTC+9 = 東9區\nあなたのタイムゾーンは UTC +9 ですか" 9 50); then
+    if ("${TUI_BIN:-whiptail}" --title "Is your timezone UTC+9" --yesno "UTC+9 = 東9區\nあなたのタイムゾーンは UTC +9 ですか" 9 50); then
         TIMEZONE="GMT-9"
     else
         tmoe_container_timezone
     fi
 }
 is_your_timezone_utc() {
-    if ("${TUI_BIN:-dialog}" --title "Is your timezone ${TIME_ZONE}" --yesno "${DESCRIPTION}" 0 50); then
+    if ("${TUI_BIN:-whiptail}" --title "Is your timezone ${TIME_ZONE}" --yesno "${DESCRIPTION}" 0 50); then
         TIMEZONE="${TIME_ZONE}"
     else
         tmoe_container_timezone
@@ -490,7 +490,7 @@ tmoe_container_timezone() {
     unset TIMEZONE IMPORTANT_TIPS_03
     check_time_zone_file
     [[ -z ${TIMEZONE} ]] || IMPORTANT_TIPS_03="Current timzone of container is ${TIMEZONE}"
-    TMOE_OPTION=$("${TUI_BIN:-dialog}" --title "TIMEZONE" --menu "UTC is the time standard commonly used across the world.\n${IMPORTANT_TIPS_03}" 0 50 0 \
+    TMOE_OPTION=$("${TUI_BIN:-whiptail}" --title "TIMEZONE" --menu "UTC is the time standard commonly used across the world.\n${IMPORTANT_TIPS_03}" 0 50 0 \
         "0" "🌚 Back" \
         "1" "UTC+1" \
         "2" "UTC+2" \
@@ -700,7 +700,7 @@ install_fortunes_mod() {
 }
 ##############
 do_you_want_to_enable_hitokoto() {
-    if ("${TUI_BIN:-dialog}" --title "HITOKOTO AND FORTUNE" --yesno "DO YOU WANT TO ENABLE HITOKOTO?\n是否需要启用一言？♪(^∇^*) " 9 50); then
+    if ("${TUI_BIN:-whiptail}" --title "HITOKOTO AND FORTUNE" --yesno "DO YOU WANT TO ENABLE HITOKOTO?\n是否需要启用一言？♪(^∇^*) " 9 50); then
         cat >${CONFIG_FOLDER}/hitokoto.conf <<-EOF
 			TMOE_CONTAINER_FORTUNE=true
 			TMOE_CONTAINER_HITOKOTO=true
