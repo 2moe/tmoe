@@ -50,7 +50,7 @@ check_tmoe_command() {
     else
         TMOE_TIPS_01="tmoe"
     fi
-    TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.52,type ${TMOE_TIPS_01} to start it."
+    TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.53,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -133,6 +133,25 @@ press_enter_to_continue() {
     read
 }
 ###################################
+get_android_libpopt() {
+    [[ -e $LIB_POPT ]] && return 0
+    local uri file bin_dir exe_file
+    uri="https://packages.tmoe.me/patch/termux/libp/libpopt0_1.18_$(uname -m).tar.gz"
+    file=libpopt.tar.gz
+    curl -Lo $file "$uri"
+    tar -zxvf $file -C "$TMOE_LINUX_DIR"
+    rm $file
+    [[ -e $LIB_POPT ]] || {
+        TUI_BIN=dialog
+        return 1
+    }
+    bin_dir="$TMOE_LINUX_DIR/usr/bin"
+    exe_file="$bin_dir/whiptail-wrapper"
+    mkdir -p "$bin_dir"
+    echo "env LD_PRELOAD=$LIB_POPT whiptail \"\$@\"" >"$exe_file"
+    chmod -v +x "$exe_file"
+}
+
 auto_check() {
     TUI_BIN="whiptail"
     [[ -n $TMOE_TUI_BIN ]] && {
@@ -141,11 +160,21 @@ auto_check() {
 
     case "$(uname -o)" in
     Android)
-        [[ -z $TMOE_TUI_BIN ]] && TUI_BIN=dialog
         LINUX_DISTRO='Android'
         TERMUX_STORAGE=true
         tmoe_manager_android_env
         check_android_tui_bin
+        [[ -z $TMOE_TUI_BIN ]] && {
+            is_libnewt_0_52_21=$(LANG=C dpkg-query -W libnewt 2>/dev/null | awk '{b = match($2, /0\.52\.21([+\-.~]+)?$/)} END{print (b)?"true":"false"}' 2>/dev/null)
+            case $is_libnewt_0_52_21 in
+            true)
+                LIB_POPT="$TMOE_LINUX_DIR/usr/lib/popt0/0.so"
+                TUI_BIN="$TMOE_LINUX_DIR/usr/bin/whiptail-wrapper"
+                get_android_libpopt
+                ;;
+            false) TUI_BIN=dialog ;;
+            esac
+        }
         ;;
     *)
         tmoe_manager_gnu_linux_env

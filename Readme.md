@@ -17,7 +17,16 @@ I may rewrite some of the modules in a more powerful language and gradually inte
 
 ## ChangeLog
 
+### 2022-10-30
+
+#### Fixed
+
+Fixed a fatal issue with TUI on Android 7.  
+If you still have related issues, feel free to give feedback.
+
 ### 2022-10-29
+
+<details>
 
 #### Fixed
 
@@ -34,6 +43,23 @@ Perhaps we should not discuss pointers and memory safety in changlog.
 But this is an important issue for debian, and it affects the configuration package functionality of `dpkg`.
 
 Although we are free to choose the front end of `debconf`, it is by default the TUI front end.
+
+For tmoe's container environment, it will apply the patch automatically.  
+If you are using a virtual machine, then you will need to fix it manually.
+
+You can use `dpkg-query -W libnewt0.52 libpopt0` to check the version.  
+If `libnewt0.52` is **0.52.21-6**, and `libpopt0` is **1.19+dfsg-1**, then you can run the following commands.
+
+```sh
+  _file="wrapper.tar.gz"
+  _arch=$(dpkg --print-architecture)
+  curl -Lo $_file "https://packages.tmoe.me/patch/debian/w/whiptail/whiptail-wrapper_0.52.21_$_arch.tar.gz"
+  sudo tar -zxvf $_file -C /
+  sudo /usr/local/sbin/whiptail-wrapper --init
+  unlink $_file
+```
+
+ps: You can run `sudo /usr/local/sbin/whiptail-wrapper --remove` to remove it.
 
 #### Features
 
@@ -53,15 +79,20 @@ apt update
 apt dist-upgrade
 ```
 
-<img src="./assets/changelog/20221029/ubuntu lunar src list.jpg" height="25%" width="50%" />
+<img src="./assets/changelog/20221029/ubuntu lunar src list.jpg"/>
 
 It's time to experience the mysterious magic of the moon!
 
+</details>
+
 ## Preview
 
-![locale](assets/preview/2022-05-12_16-29-43.png)  
-![container menu](assets/preview/2022-05-12_16-31-26.png)  
-![debian-xfce](assets/preview/2022-05-12_16-32-09.png)
+<details>
+<img src="assets/preview/2022-05-12_16-29-43.png" tag="locale"/>
+<img src="assets/preview/2022-05-12_16-31-26.png" tag="container menu"/>
+<img src="assets/preview/2022-05-12_16-32-09.png" tag="debian-xfce"/>
+
+</details>
 
 ## Documentation
 
