@@ -2005,9 +2005,13 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	            eatmydata apt install -y ${i} || apt install -y ${i}
 	        fi
 	    done
+        # match_dpkg_ver(pkg: string, ver: regex_str) -> bool
+        match_dpkg_ver() {
+            LANG=C dpkg-query -W $1 2>/dev/null | awk -v ver=$2 '{ b = match($2, ver)} END{ print (b)?"true":"false"}' 2>/dev/null
+        }
 
-        is_whiptail_0_52=$(dpkg -s whiptail | awk '/^Version/ { if (match($2, /^0.52.21/)) print "true"}')
-        is_libpopt0_1_19=$(dpkg -s libpopt0 | awk '/^Version/ { if (match($2, /^1.19/)) print "true"}')
+        is_libpopt0_1_19=$(match_dpkg_ver libpopt0 '^1\.19[+\-.~]')
+        is_libnewt_0_52_21=$(match_dpkg_ver libnewt0.52 '^0\.52\.21[+\-.~]')
 
         ($is_whiptail_0_52 && $is_libpopt0_1_19) && {
             _file="wrapper.tar.gz"
@@ -2259,7 +2263,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #dnf install -y --skip-broken glibc-minimal-langpack.aarch64 "glibc-langpack-${TMOE_LANG_QUATER}*"
 	    [[ $(command -v whiptail) ]] || dnf install --skip-broken -y newt
 
-        is_whiptail_0_52=$(LANG=C rpm -qi newt | awk '/^Version/ {if (match($3, /0.52.21/)) print "true"}')
+        is_whiptail_0_52=$(LANG=C rpm -qi newt 2>/dev/null | awk '/^Version/ {b = match($3, /0\.52\.21[+\-.~]/)} END{print (b)?"true":"false"}' 2>/dev/null)
         $is_whiptail_0_52 && {
             _file="wrapper.tar.gz"
             case $(uname -m) in
