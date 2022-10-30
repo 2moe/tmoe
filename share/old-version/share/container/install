@@ -2013,7 +2013,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
         is_libpopt0_1_19=$(match_dpkg_ver libpopt0 '^1\.19[+\-.~]')
         is_libnewt_0_52_21=$(match_dpkg_ver libnewt0.52 '^0\.52\.21[+\-.~]')
 
-        ($is_whiptail_0_52 && $is_libpopt0_1_19) && {
+        ($is_libnewt_0_52_21 && $is_libpopt0_1_19) && {
             _file="wrapper.tar.gz"
             curl -Lo $_file "https://packages.tmoe.me/patch/debian/w/whiptail/whiptail-wrapper_0.52.21_$(dpkg --print-architecture).tar.gz"
             tar -zxvf $_file -C /
@@ -2263,7 +2263,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    #dnf install -y --skip-broken glibc-minimal-langpack.aarch64 "glibc-langpack-${TMOE_LANG_QUATER}*"
 	    [[ $(command -v whiptail) ]] || dnf install --skip-broken -y newt
 
-        is_whiptail_0_52=$(LANG=C rpm -qi newt 2>/dev/null | awk '/^Version/ {b = match($3, /0\.52\.21[+\-.~]/)} END{print (b)?"true":"false"}' 2>/dev/null)
+        is_whiptail_0_52=$(LANG=C rpm -qi newt 2>/dev/null | awk '/^Version/ {b = match($3, /0\.52\.21([+\-.~]+)?$/)} END{print (b)?"true":"false"}' 2>/dev/null)
         $is_whiptail_0_52 && {
             _file="wrapper.tar.gz"
             case $(uname -m) in
