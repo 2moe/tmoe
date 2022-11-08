@@ -131,27 +131,6 @@ add_arch_for_edu_repo() {
     printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy --noconfirm ${BLUE}${i}${RESET}"
     pacman -Sy --noconfirm ${i} || pacman -Syu --noconfirm ${i}
 }
-create_paru_script() {
-    cat >paru <<-'EOF'
-#!/usr/bin/env bash
-if (command -v paru >/dev/null); then
-    paru "$@"
-else
-    /opt/bin/paru "$@"
-fi
-EOF
-
-    cat >yay <<-'EOFyay'
-#!/usr/bin/env bash
-if (command -v yay >/dev/null); then
-    yay "$@"
-else
-    paru "$@"
-fi
-EOFyay
-    install -Dm755 paru /usr/local/bin
-    install -Dm755 yay /usr/local/bin
-}
 install_paru() {
     printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy ${PURPLE}--noconfirm --needed ${BLUE}paru${RESET}"
     pacman -Sy --noconfirm --needed paru
@@ -175,9 +154,7 @@ install_paru() {
 
         ls -lh "${paru[file]}"
         tar -xvf "${paru[file]}"
-        mkdir -p /opt/bin
-        install -Dm755 paru /opt/bin
-        create_paru_script
+        install -Dm755 paru /usr/bin
     fi
 }
 ###################

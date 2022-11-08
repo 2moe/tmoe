@@ -1545,27 +1545,6 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    printf "%s\n" "${GREEN}pacman ${YELLOW}-Syyu ${PURPLE}--noconfirm${RESET}"
 	    pacman -Syyu --noconfirm
 	}
-	create_paru_script(){
-		cat>paru<<-'EOFparu'
-	#!/usr/bin/env bash
-	if (command -v paru >/dev/null); then
-		paru "$@"
-	else
-		/opt/bin/paru "$@"
-	fi
-	EOFparu
-
-		cat>yay<<-'EOFyay'
-	#!/usr/bin/env bash
-	if (command -v yay >/dev/null); then
-		yay "$@"
-	else
-		paru "$@"
-	fi
-	EOFyay
-	install -Dm755 paru /usr/local/bin
-	install -Dm755 yay /usr/local/bin
-	}
 	arch_linux_paru() {
 		# pacman-key --populate archlinuxcn
 		# archlinux-keyring archlinuxcn-keyring
@@ -1594,9 +1573,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		cd /tmp || exit 		
 		curl -Lo "${paru[file]}" "${paru[uri]}${paru[gh]}" || curl -Lo "${paru[file]}" "${paru[uri]}${paru[proxy]}"
 		tar -xvf "${paru[file]}"
-		mkdir -p /opt/bin
-		install -Dm755 paru /opt/bin
-		create_paru_script
+		install -Dm755 paru /usr/bin
 
 		printf "%s\n" \
 		"You should run ${GREEN}paru -Sy ${BLUE}paru-bin${RESET} to upgrade it."
