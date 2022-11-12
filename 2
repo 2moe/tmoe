@@ -255,11 +255,19 @@ get_awk_file() {
 # ---------------
 # If the awk file <= 4KiB after downloading, then the download may have failed.
 check_file_size_with_stat() {
-    _awk_file_size=$(stat --format=%s "$_tmp_awk_file")
+    _awk_file_size=$(eval "$_stat_cmd")
 }
+
 check_file_size() {
+    _stat_cmd="stat -c %s \"$_tmp_awk_file\""
+
     # If the `stat` command is not available, then skip the following process.
     is_cmd_exists stat || return 1
+
+    eval "$_stat_cmd" || {
+        pln "Syntax error, skip the file size detection."
+        return 1
+    }
 
     check_file_size_with_stat
     # if awk_file_size > 4096 -> 0
