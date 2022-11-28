@@ -86,9 +86,9 @@ tmoe_global_env() {
             case $is_libnewt_0_52_21 in
             true)
                 TUI_BIN="$TMOE_LINUX_DIR/usr/bin/whiptail-wrapper"
-                [[ -e $TUI_BIN ]] || TUI_BIN=dialog
+                [[ -e $TUI_BIN ]] || TUI_BIN=whiptail
                 ;;
-            false) TUI_BIN=dialog ;;
+            false) TUI_BIN=whiptail ;;
             esac
         }
         LINUX_DISTRO='Android'

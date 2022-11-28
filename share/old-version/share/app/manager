@@ -50,7 +50,7 @@ check_tmoe_command() {
     else
         TMOE_TIPS_01="tmoe"
     fi
-    TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.54,type ${TMOE_TIPS_01} to start it."
+    TMOE_TIPS_00="Welcome to tmoe linux manager v1.4989.55,type ${TMOE_TIPS_01} to start it."
 }
 #########################
 tmoe_manager_env() {
@@ -142,7 +142,7 @@ get_android_libpopt() {
     tar -zxvf $file -C "$TMOE_LINUX_DIR"
     rm $file
     [[ -e $LIB_POPT ]] || {
-        TUI_BIN=dialog
+        TUI_BIN=whiptail
         return 1
     }
     bin_dir="$TMOE_LINUX_DIR/usr/bin"
@@ -172,7 +172,7 @@ auto_check() {
                 TUI_BIN="$TMOE_LINUX_DIR/usr/bin/whiptail-wrapper"
                 get_android_libpopt
                 ;;
-            false) TUI_BIN=dialog ;;
+            false) TUI_BIN=whiptail ;;
             esac
         }
         ;;
