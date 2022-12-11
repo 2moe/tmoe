@@ -1,61 +1,50 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <script type="text/javascript">
-      const lang = navigator.language || navigator.languages[0];
-      switch (lang) {
-        case "zh-HK":
-          var language = "zh-HK";
-          break;
-        case "zh-TW":
-          var language = "zh-TW";
-          break;
-        case (lang.match(/^zh/) || {}).input:
-          var language = "zh";
-          break;
-        case (lang.match(/^de/) || {}).input:
-          var language = "de";
-          break;
-        case "ja":
-        case "ja-JP":
-          var language = "ja";
-          break;
-        case (lang.match(/^es/) || {}).input:
-          var language = "es";
-          break;
-        case (lang.match(/^fr/) || {}).input:
-          var language = "fr";
-          break;
-        case (lang.match(/^it/) || {}).input:
-          var language = "it";
-          break;
-        case (lang.match(/^ko/) || {}).input:
-          var language = "ko";
-          break;
-        case (lang.match(/^ru/) || {}).input:
-          var language = "ru";
-          break;
-        case (lang.match(/^id/) || {}).input:
-          var language = "id";
-          break;
-        case (lang.match(/^pl/) || {}).input:
-          var language = "pl";
-          break;
-        case (lang.match(/^pt/) || {}).input:
-          var language = "pt";
-          break;
-        case (lang.match(/^cs/) || {}).input:
-          var language = "cs";
-          break;
-        default:
-          var language = "en";
-          break;
+
+<head>
+  <script type="text/javascript">
+    const LANGUAGE = navigator.language || navigator.languages[0]
+    const lang_slice = LANGUAGE.slice(0, 2).toLowerCase()
+
+    let lang
+
+    switch (lang_slice) {
+      case "zh":
+      case "de":
+      case "ja":
+      case "es":
+      case "fr":
+      case "it":
+      case "ko":
+      case "ru":
+      case "id":
+      case "pl":
+      case "pt":
+      case "cs":
+        lang = lang_slice
+        break
+      default:
+        lang = "en"
+        break
+    }
+
+    if (lang === "zh") {
+      switch (LANGUAGE.slice(0, 5).toLowerCase()) {
+        case "zh_tw":
+        case "zh-tw":
+          lang = "zh-TW"
+          break
+        case "zh-hk":
+        case "zh_hk":
+          lang = "zh-HK"
+          break
       }
-      let new_url = window.location.origin + "/" + language + "/prologue.html";
-      // window.location.pathname +
-      // window.location.search +
-      // window.location.hash;
-      window.location.replace(new_url);
-    </script>
-  </head>
+    }
+
+    const new_url = `${window.location.origin}/${lang}/prologue.html`
+
+    window.location.replace(new_url)
+  </script>
+</head>
+
 </html>
