@@ -1,5 +1,6 @@
 # blacklist
 /*
+
 # /book
 book
 test
@@ -15,6 +16,7 @@ test
 !/Copyright
 !/share
 !/book.toml
+!/rome.json
 
 # cache
 # target

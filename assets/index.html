@@ -3,16 +3,29 @@
 
 <head>
   <script type="text/javascript">
-    const LANGUAGE = navigator.language || navigator.languages[0]
-    const lang_slice = LANGUAGE.slice(0, 2).toLowerCase()
+    const language = navigator.language || navigator.languages[0]
+    const lang_slice = language.slice(0, 2).toLowerCase()
 
     let lang
 
+    const match_zh = () => {
+      const slice = language.slice(-2).toUpperCase()
+      switch (slice) {
+        case "HK":
+        case "TW":
+          return `zh-${slice}`
+        default:
+          return "zh"
+      }
+    }
+
     switch (lang_slice) {
       case "zh":
+        lang = match_zh()
+        break
       case "de":
-      case "ja":
       case "es":
+      case "ja":
       case "fr":
       case "it":
       case "ko":
@@ -28,21 +41,7 @@
         break
     }
 
-    if (lang === "zh") {
-      switch (LANGUAGE.slice(0, 5).toLowerCase()) {
-        case "zh_tw":
-        case "zh-tw":
-          lang = "zh-TW"
-          break
-        case "zh-hk":
-        case "zh_hk":
-          lang = "zh-HK"
-          break
-      }
-    }
-
     const new_url = `${window.location.origin}/${lang}/prologue.html`
-
     window.location.replace(new_url)
   </script>
 </head>
