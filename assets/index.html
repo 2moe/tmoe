@@ -4,10 +4,10 @@
 <head>
   <script type="text/javascript">
     const match_region = (lang, slice) => {
-      if (slice !== "zh")
-        return slice
+      if (slice !== "zh") return slice
 
       const region = lang.slice(-2).toUpperCase()
+
       switch (region) {
         case "HK":
         case "MO":
@@ -23,26 +23,22 @@
       const language = navigator.language || navigator.languages[0]
       const slice = language.slice(0, 2).toLowerCase()
 
-      const ava_lang = {
-        zh: 1,
-        de: 1,
-        es: 1,
-        ja: 1,
-        fr: 1,
-        it: 1,
-        ko: 1,
-        ru: 1,
-        id: 1,
-        pl: 1,
-        pt: 1,
-        cs: 1,
-        default: "en",
-      }
+      const ava_lang = new Set([
+        "zh",
+        "de",
+        "es",
+        "ja",
+        "fr",
+        "it",
+        "ko",
+        "ru",
+        "id",
+        "pl",
+        "pt",
+        "cs",
+      ])
 
-      return `${ava_lang[slice] === 1
-        ? match_region(language, slice)
-        : ava_lang["default"]
-        }`
+      return `${ava_lang.has(slice) ? match_region(language, slice) : "en"}`
     }
 
     const loc = self.location

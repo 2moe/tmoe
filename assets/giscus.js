@@ -107,7 +107,7 @@ const initAll = () => {
     const language = navigator.language || navigator.languages[0]
 
     // [test]
-    // const language = "de"
+    // const language = "de-CH"
 
     const lang_slice = language.slice(0, 2).toLowerCase()
 
@@ -134,8 +134,6 @@ const initAll = () => {
 
     const get_region = () => language.slice(-2).toUpperCase()
 
-    let lang
-
     const match_zh = () => {
         const region = get_region()
         switch (region) {
@@ -147,6 +145,8 @@ const initAll = () => {
                 return "zh-CN"
         }
     }
+
+    let lang
 
     switch (lang_slice) {
         case "zh":
