@@ -150,7 +150,7 @@ const initAll = () => {
 
     switch (lang_slice) {
         case "zh":
-            lang = match_zh(lang_slice)
+            lang = match_zh()
             break
         case "de":
         case "gsw":
