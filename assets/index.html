@@ -3,46 +3,48 @@
 
 <head>
   <script type="text/javascript">
-    const language = navigator.language || navigator.languages[0]
-    const lang_slice = language.slice(0, 2).toLowerCase()
+    const match_lang_slice = (lang, slice) => {
+      if (slice !== "zh")
+        return slice
 
-    let lang
-
-    const match_zh = () => {
-      const slice = language.slice(-2).toUpperCase()
-      switch (slice) {
+      const region = lang.slice(-2).toUpperCase()
+      switch (region) {
         case "HK":
         case "TW":
-          return `zh-${slice}`
+          return `${slice}-${region}`
         default:
-          return "zh"
+          return slice
       }
     }
 
-    switch (lang_slice) {
-      case "zh":
-        lang = match_zh()
-        break
-      case "de":
-      case "es":
-      case "ja":
-      case "fr":
-      case "it":
-      case "ko":
-      case "ru":
-      case "id":
-      case "pl":
-      case "pt":
-      case "cs":
-        lang = lang_slice
-        break
-      default:
-        lang = "en"
-        break
+    const get_lang = () => {
+      const language = navigator.language || navigator.languages[0]
+      const slice = language.slice(0, 2).toLowerCase()
+
+      const ava_lang = {
+        zh: 1,
+        de: 1,
+        es: 1,
+        ja: 1,
+        fr: 1,
+        it: 1,
+        ko: 1,
+        ru: 1,
+        id: 1,
+        pl: 1,
+        pt: 1,
+        cs: 1,
+        default: "en",
+      }
+
+      return `${ava_lang[slice] === 1
+        ? match_lang_slice(language, slice)
+        : ava_lang["default"]
+        }`
     }
 
-    const new_url = `${window.location.origin}/${lang}/prologue.html`
-    window.location.replace(new_url)
+    const loc = self.location
+    loc.replace(`${loc.origin}/${get_lang()}/prologue.html`)
   </script>
 </head>
 

@@ -10,6 +10,7 @@ const initAll = () => {
             const iframe = document.querySelector(".giscus-frame")
 
             if (!iframe) return
+
             let theme
             if (e.target.className === "theme") {
                 theme = e.target.id
@@ -127,9 +128,7 @@ const initAll = () => {
     // 'zh-CN': '简体中文',
     // 'zh-TW': '繁體中文',
 
-    const get_region = () => {
-        return language.slice(-2).toUpperCase()
-    }
+    const get_region = () => language.slice(-2).toUpperCase()
 
     let lang
 
