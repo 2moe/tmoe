@@ -105,6 +105,10 @@ const initAll = () => {
     script.setAttribute("data-theme", theme)
 
     const language = navigator.language || navigator.languages[0]
+
+    // [test]
+    // const language = "de"
+
     const lang_slice = language.slice(0, 2).toLowerCase()
 
     // availableLanguages： https://github.com/giscus/giscus/blob/main/lib/i18n.tsx
@@ -132,24 +136,17 @@ const initAll = () => {
 
     let lang
 
-    const match_zh = (slice) => {
+    const match_zh = () => {
         const region = get_region()
         switch (region) {
             case "HK":
+            case "MO":
             case "TW":
-                return `${slice}-${region}`
+                return "zh-TW"
             default:
-                return slice
+                return "zh-CN"
         }
     }
-
-    // const match_de = () => {
-    //     if (get_region() === "CH") {
-    //         return "gsw"
-    //     } else {
-    //         return "de"
-    //     }
-    // }
 
     switch (lang_slice) {
         case "zh":
@@ -157,7 +154,6 @@ const initAll = () => {
             break
         case "de":
         case "gsw":
-            // lang = match_de()
             lang = "de"
             break
         case "ar":

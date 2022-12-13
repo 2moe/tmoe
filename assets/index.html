@@ -3,13 +3,15 @@
 
 <head>
   <script type="text/javascript">
-    const match_lang_slice = (lang, slice) => {
+    const match_region = (lang, slice) => {
       if (slice !== "zh")
         return slice
 
       const region = lang.slice(-2).toUpperCase()
       switch (region) {
         case "HK":
+        case "MO":
+          return `${slice}-HK`
         case "TW":
           return `${slice}-${region}`
         default:
@@ -38,7 +40,7 @@
       }
 
       return `${ava_lang[slice] === 1
-        ? match_lang_slice(language, slice)
+        ? match_region(language, slice)
         : ava_lang["default"]
         }`
     }
