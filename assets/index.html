@@ -38,7 +38,7 @@
         "cs",
       ])
 
-      return `${ava_lang.has(slice) ? match_region(language, slice) : "en"}`
+      return ava_lang.has(slice) ? match_region(language, slice) : "en"
     }
 
     const loc = self.location
