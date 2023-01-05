@@ -1,0 +1,490 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js ayu">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>toml - 天萌参考手册</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/css/style-20220514.css">
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "ayu";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('ayu')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="prologue.html">序章</a></li><li class="spacer"></li><li class="chapter-item expanded "><a href="repo.html"><strong aria-hidden="true">1.</strong> 仓库</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="add-repo.html"><strong aria-hidden="true">1.1.</strong> 添加仓库</a></li><li class="chapter-item expanded "><a href="mirror-repo.html"><strong aria-hidden="true">1.2.</strong> 更换镜像源</a></li></ol></li><li class="chapter-item expanded "><a href="container.html"><strong aria-hidden="true">2.</strong> 容器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="docker-container.html"><strong aria-hidden="true">2.1.</strong> docker</a></li><li class="chapter-item expanded "><a href="android.html"><strong aria-hidden="true">2.2.</strong> android</a></li></ol></li><li class="chapter-item expanded "><a href="configuration.html"><strong aria-hidden="true">3.</strong> 配置</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="toml.html" class="active"><strong aria-hidden="true">3.1.</strong> toml</a></li></ol></li><li class="chapter-item expanded "><a href="env.html"><strong aria-hidden="true">4.</strong> 环境</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="editor.html"><strong aria-hidden="true">4.1.</strong> 编辑器</a></li></ol></li><li class="chapter-item expanded "><a href="appendix.html"><strong aria-hidden="true">5.</strong> 附录</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="appendix_region-code.html"><strong aria-hidden="true">5.1.</strong> 区域代号</a></li><li class="chapter-item expanded "><a href="appendix_todo.html"><strong aria-hidden="true">5.2.</strong> todo</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu (default)</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">天萌参考手册</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/2moe/tmoe/tree/doc" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                    <!-- Page table of contents -->
+                    <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <h1 id="toml"><a class="header" href="#toml">toml</a></h1>
+<ul>
+<li><a href="#1-%E5%8F%AA%E8%AF%BB%E9%85%8D%E7%BD%AE">1. 只读配置</a>
+<ul>
+<li><a href="#11-%E6%A6%82%E5%BF%B5%E8%A7%A3%E8%AF%BB">1.1. 概念解读</a></li>
+<li><a href="#12-%E5%88%86%E6%9E%90">1.2. 分析</a></li>
+</ul>
+</li>
+<li><a href="#2-toml">2. toml</a>
+<ul>
+<li><a href="#21-%E4%BB%80%E4%B9%88%E6%98%AF-toml">2.1. 什么是 toml</a></li>
+<li><a href="#22-toml-%E4%B8%8E-json">2.2. toml 与 json</a></li>
+<li><a href="#23-toml-%E7%9A%84%E7%AE%80%E5%8D%95%E7%94%A8%E6%B3%95">2.3. toml 的简单用法</a>
+<ul>
+<li><a href="#231-%E8%A1%A8%E6%95%B0%E7%BB%84">2.3.1. 表数组</a></li>
+<li><a href="#232-%E5%AD%97%E7%AC%A6%E4%B8%B2">2.3.2. 字符串</a></li>
+<li><a href="#233-%E6%95%B4%E6%95%B0">2.3.3. 整数</a></li>
+<li><a href="#234-%E6%B5%AE%E7%82%B9%E6%95%B0">2.3.4. 浮点数</a></li>
+<li><a href="#235-%E5%B8%83%E5%B0%94%E5%80%BC">2.3.5. 布尔值</a></li>
+<li><a href="#236-rfc3339">2.3.6. rfc3339</a></li>
+<li><a href="#237-%E6%95%B0%E7%BB%84">2.3.7. 数组</a></li>
+<li><a href="#238-%E6%A0%87%E5%87%86%E8%A1%A8">2.3.8. 标准表</a></li>
+<li><a href="#239-%E5%86%85%E8%81%94%E8%A1%A8">2.3.9. 内联表</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#3-%E5%8F%AF%E5%86%99%E9%85%8D%E7%BD%AE">3. 可写配置</a>
+<ul>
+<li><a href="#31-%E6%A6%82%E5%BF%B5%E8%A7%A3%E8%AF%BB">3.1. 概念解读</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<p>二萌当初在写本章时，本来是打算给 edition 2022 准备的。<br />
+实际上，有部分内容已经下放给 edition 2021 了。</p>
+<p>在之后的新版中，对于面向用户的配置，toml 会出现得更加频繁。</p>
+<hr />
+<p>在天萌中，配置文件分为两种。<br />
+一种是只能看的，另一种则是可以写的。</p>
+<table><thead><tr><th>只读</th><th>可读可写</th></tr></thead><tbody>
+<tr><td>一般是软件包发行信息或数据索引信息</td><td>真正意义上的程序配置文件</td></tr>
+</tbody></table>
+<h2 id="1-只读配置"><a class="header" href="#1-只读配置">1. 只读配置</a></h2>
+<h3 id="11-概念解读"><a class="header" href="#11-概念解读">1.1. 概念解读</a></h3>
+<p>天萌的“容器属性信息”就是只读配置。<br />
+此处所指的只读配置并不是文件权限的 &quot;read only&quot;，而是逻辑上的只读。<br />
+实际上，您可以直接修改该文件的内容，只是不应该手动去修改。<br />
+举个例子：<br />
+假如您看到了版本号为&quot;1.57.0&quot;。<br />
+心想：“这版本号也忒低了吧！咱把它改成 114514.999.9 吧！”<br />
+于是，您很开心地修改了它本身的属性。<br />
+从主观的角度来看：您收获了快乐。这很棒！因为快乐是一种积极的生活态度。<br />
+从客观的角度来看：您修复了版本号过低的问题。这也不错！<br />
+从原开发者的角度来看：啊这。。。<br />
+于是乎，只有原开发者受伤的世界达成了。(ó﹏ò｡)</p>
+<p>注：以上修改的内容不会生效。<br />
+对于只读配置，如果修改真的生效了，那么容器在安装或使用过程中可能会出现问题。<br />
+我相信您能在下一小节中找到原因。</p>
+<h3 id="12-分析"><a class="header" href="#12-分析">1.2. 分析</a></h3>
+<p>本节将对“容器属性信息”进行分析。</p>
+<p>天萌每周构建容器输出的只读配置如下：<br />
+（之后可能会发生变更）</p>
+<pre><code class="language-toml">[main]
+name = &quot;rust&quot;
+tag = [&quot;nightly&quot;, &quot;unstable&quot;]
+os = &quot;debian&quot;
+release = &quot;sid&quot;
+arch = &quot;arm64&quot;
+syntax_version = &quot;0.0.1&quot;
+
+[file]
+name = &quot;rust-nightly-arm64_2021-09-17_20-39.tar.zst&quot;
+
+# 这个值可以用来校验文件的完整性
+# 举个例子：假设存在两个同名文件,它们都叫a.tar.zst,大小也相同，只是所在目录不同: A/a.tar.zst, B/a.tar.zst
+# 您可能无法直接判断它们是否属于同一个文件
+# 这时候可以通过对比两者的 sha256 校验值来检测它们是否为同一个文件，若 sha256 值相同，则文件相同，反之不同。
+# 注：此处忽略了哈希碰撞等问题。
+sha256 = &quot;acc668db456e94053322f7049469995ba20e9fe6dcb297367226dca4553b633e&quot;
+
+[file.size]
+# Installed size ≈ tar-size
+# 安装大小 约等于 tar文件的大小
+# tar大小就是容器镜像打包后的大小，解包后占用的空间可能会比tar本身略大一点
+# 具体大小与文件簇有关，而文件簇又与 file system（文件系统）有关。
+tar = &quot;1.6G&quot;
+tar-bytes = 1717986919
+
+# Space occupied ≈ tar-size + zstd-size
+# You will need to prepare a large enough space before installation.
+# Download size: zstd-size
+# 在tar打包完成后，开发者还对镜像进行了压缩。
+# 您需要下载的文件大小就是zstd的大小，准确来说是tar.zst文件的大小
+# 在安装一个容器前，您需要考虑预留一定的空间：
+# 1.压缩包文件的大小，2.压缩包解压后的大小, 3.容器的初始化过程也需要占用一点空间。
+zstd = &quot;216M&quot;
+zstd-bytes = 226492416
+
+# 对于2022版，用户只需要看版本号就能知道镜像的先后顺序了,知道哪个比较新哪个比较旧。
+# 开发者忽然想到了天萌存在一个自动判断时间先后顺序的功能，就算是旧版也有这个功能。
+# 其实time(时间)是给开发者看的，普通用户不需要了解服务器在构建镜像过程中的某个流程究竟花了多少时间。
+# 如果您感兴趣的话，那我可以说一下流程。
+# 1. 服务器构建完成镜像后,需要对镜像进行打包和压缩。
+# 2. start-zstd指的是开始进行zstd压缩的时间点
+# 3. 在压缩完成后,需要将文件传输到另一个节点。
+# 3-1. 对于天萌的每周构建，并不是所有节点都从零开始构建，而是其中一个节点完成构建后，就把相关文件同步到另一个节点。
+[time]
+begin = 2021-09-17T20:08:33.801113258Z
+start-zstd = 20:14:20
+start-sync_0 = 20:39:22
+start-sync_1 = 20:41:33
+end = 2021-09-17T20:44:32.392018144Z
+
+[server]
+name = &quot;tmoe-us&quot;
+node = 2
+available = [1, 2, 3, 4]
+
+# Environment variables inside the container.
+# 容器内部的环境变量会影响容器内的环境，~~听君一席话，如听一席话~~（●＞ω＜●）
+[env]
+PATH = &quot;/usr/local/cargo/bin${PATH:+:${PATH}}&quot;
+RUSTUP_HOME= &quot;/usr/local/rustup&quot;
+CARGO_HOME = &quot;/usr/local/cargo&quot;
+
+[version]
+rustup = 'rustup 1.24.3 (ce5817a94 2021-05-31)'
+cargo = 'cargo 1.56.0-nightly (e515c3277 2021-09-08)'
+rustc = 'rustc 1.57.0-nightly (e4828d5b7 2021-09-16)'
+</code></pre>
+<p><strong>toml</strong> 是一种优秀的配置文件格式。<br />
+接下来，我们将会介绍 <strong>toml</strong> 的理念以及常见用法。<br />
+最后，我们将简单了解“可写配置”的概念与用法。</p>
+<h2 id="2-toml"><a class="header" href="#2-toml">2. toml</a></h2>
+<h3 id="21-什么是-toml"><a class="header" href="#21-什么是-toml">2.1. 什么是 toml</a></h3>
+<blockquote>
+<p>Tom's Obvious, Minimal Language.<br />
+Tom 的（语义）明显、（配置）最小化的语言。<br />
+TOML 旨在成为一个语义明显且易于阅读的最小化配置文件格式。<br />
+TOML 被设计成可以无歧义地映射为哈希表。<br />
+TOML 应该能很容易地被解析成各种语言中的数据结构。</p>
+</blockquote>
+<p>以上说明来自于 toml 的<a href="https://toml.io">官网</a>，您可以在里面找到一些详细的说明。</p>
+<h3 id="22-toml-与-json"><a class="header" href="#22-toml-与-json">2.2. toml 与 json</a></h3>
+<p>谈到 <strong>toml</strong>，很多人都会提及到 <strong>json</strong><br />
+为什么不用<strong>json</strong>呢？ 它跟<strong>json</strong> 比有什么优势吗？</p>
+<p>github 上 toml-lang/toml 的第 2 条 issue 就跟这个话题有关。</p>
+<blockquote>
+<p><a href="https://github.com/toml-lang/toml/issues/2">&quot;No, JSON doesn't count. You know why.&quot;</a></p>
+</blockquote>
+<p>But I don't know why too.</p>
+<h3 id="23-toml-的简单用法"><a class="header" href="#23-toml-的简单用法">2.3. toml 的简单用法</a></h3>
+<p>本小节的内容将为<a href="#43-%E5%8F%AF%E5%86%99%E9%85%8D%E7%BD%AE">(#4.3-可写配置)</a> 打下基础。<br />
+在天萌容器的配置中,可能会涉及到以下知识点：</p>
+<ul>
+<li>字符串</li>
+<li>整数</li>
+<li>浮点数</li>
+<li>布尔值</li>
+<li>rfc3339</li>
+<li>数组</li>
+<li>标准表</li>
+<li>内联表</li>
+</ul>
+<p>其实这些也是 <strong>toml</strong> 本身的常见值类型。</p>
+<p>很少涉及到的知识点是:</p>
+<ul>
+<li>表数组</li>
+</ul>
+<h4 id="231-表数组"><a class="header" href="#231-表数组">2.3.1. 表数组</a></h4>
+<p>表数组的话，虽然很好用，但是天萌的开发者 <del>(想要偷懒)</del> 由于某种原因就不用这种类型了。</p>
+<p>其实是表数组解析起来稍微要麻烦一点。<br />
+举个简单的例子：</p>
+<pre><code class="language-toml">[[bin]]
+name = &quot;tmm&quot;
+
+[[bin]]
+name = &quot;value&quot;
+
+[[bin]]
+name = &quot;tmoe&quot;
+</code></pre>
+<p>全删<code>[[bin]]</code> 或者是追加写入一个新的<code>[[bin]]</code> 都很简单。<br />
+但是呢！要修改包含指定&quot;value&quot;的数据，还得要再处理一下。<br />
+不像标准表，直接键值对操作，多简单啊！</p>
+<h4 id="232-字符串"><a class="header" href="#232-字符串">2.3.2. 字符串</a></h4>
+<p>字符串可能是天萌容器的配置文件里最常见的类型了。</p>
+<p>比如说</p>
+<pre><code class="language-toml">str = &quot;value&quot;
+</code></pre>
+<p>toml 的字符串类型既可以用双引号，也可以用单引号。<br />
+这跟 rust 不一样，在 rust 中，如果您使用单引号，并且没有指明类型，那么编译器默认会推断该值为 char 类型（单个字符）。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let c = 'c';
+<span class="boring">}
+</span></code></pre></pre>
+<p>回到 toml，你如果需要输入多个引号的话，那就这样子写吧！</p>
+<pre><code class="language-toml">str = &quot;&quot;&quot;我有'''''5个单引号,还有两个&quot;&quot;双引号&quot;&quot;&quot;
+</code></pre>
+<p>前面和后面都有三个引号。</p>
+<h4 id="233-整数"><a class="header" href="#233-整数">2.3.3. 整数</a></h4>
+<p>整数的话，就不需要引号了！<br />
+举个字符串的例子：</p>
+<pre><code class="language-toml">int1 = &quot;233&quot;
+</code></pre>
+<p>在上面的式子中，int 的值将被识别为字符串, 而不是整数。<br />
+再举个整数的例子：</p>
+<pre><code class="language-toml">int2 = 233
+</code></pre>
+<p>举个负整数的例子：</p>
+<pre><code class="language-toml">int3 = -233
+</code></pre>
+<p>toml 可以接受的整数范围是 i64 (从 −2^63 到 2^63−1)。<br />
+跟 rust 一样，对于特别大的数字，您可以用 <strong>_</strong> 来增强可读性。</p>
+<pre><code class="language-toml">int4 = 114_514_233
+</code></pre>
+<p>上面那条式子等于下面那条</p>
+<pre><code class="language-toml">int4 = 114514233
+</code></pre>
+<p>举个二进制、八进制和十六进制整数的例子:</p>
+<pre><code class="language-toml"># 二进制的0b11011111101010010等于十进制的114514
+bin = 0b11011111101010010
+# 0o开头的值是八进制的数字，猜猜看这是哪个数
+oct1 = 0o337522
+# 0x开头是十六进制喔
+hex1 = 0x1BF52
+</code></pre>
+<h4 id="234-浮点数"><a class="header" href="#234-浮点数">2.3.4. 浮点数</a></h4>
+<p>浮点数也不能加引号哦！</p>
+<p>用小数和指数形式举个几个例子吧！</p>
+<pre><code class="language-toml">f1 = 3.14159265
+f2 = -3.14159265
+f3 = 314e-2
+f4 = 0.1145e+4
+</code></pre>
+<h4 id="235-布尔值"><a class="header" href="#235-布尔值">2.3.5. 布尔值</a></h4>
+<p>布尔值只有两个值: <strong>true</strong> 和 <strong>false</strong></p>
+<p>true 为真，false 为假<br />
+true ✓<br />
+false X</p>
+<pre><code class="language-toml">bool1 = true
+bool2 = false
+</code></pre>
+<h4 id="236-rfc3339"><a class="header" href="#236-rfc3339">2.3.6. rfc3339</a></h4>
+<p>rfc3339 是一种时间格式。</p>
+<pre><code class="language-toml"># 您可以只写时间
+time1 = 01:25:57
+time2 = 01:25:00.247810421
+# 也可以只写日期
+date1 = 2021-09-29
+# 也可以都写
+time3 = 2021-09-29T01:25:57Z
+# 您可以把上面那个拆开来，并且无需加引号
+time4 = 2021-09-29 01:25:57Z
+# 末尾的Z代表的是UTC, 您可以换成+00:00
+# 下面以纳秒级别来输出东八区的某一时间点。那么问题来了，您知道为什么是这个时间点吗？
+time5 = 2021-09-29 01:29:13.598811802+08:00
+</code></pre>
+<p><del>因为开发者写文档写到很晚，都写到这个点啦！很辛苦的说。</del></p>
+<h4 id="237-数组"><a class="header" href="#237-数组">2.3.7. 数组</a></h4>
+<p>简单来说，数组就是一个方括号，然后里面有 0 个或多个值。</p>
+<pre><code class="language-toml"># 您可以换行写
+array1 = [233,
+22,
+33]
+# 也可以不换行写
+array2 = [ &quot;你好&quot;, &quot;世界&quot; ]
+</code></pre>
+<h4 id="238-标准表"><a class="header" href="#238-标准表">2.3.8. 标准表</a></h4>
+<p>标准表也被称为哈希表。</p>
+<p>举个 Cargo 里面的例子</p>
+<pre><code class="language-toml">[dependencies]
+nom = &quot;7.0.0&quot;
+</code></pre>
+<p>您可以把上面的表写成下面的格式</p>
+<pre><code class="language-toml">[dependencies.nom]
+version = &quot;7.0.0&quot;
+</code></pre>
+<h4 id="239-内联表"><a class="header" href="#239-内联表">2.3.9. 内联表</a></h4>
+<p>内联表可以把多行写成一行。</p>
+<p>先举个标准表的例子</p>
+<pre><code class="language-toml">[dependencies.tokio]
+version = &quot;1.11.0&quot;
+features = [&quot;macros&quot;, &quot;tcp&quot;, &quot;dns&quot;, &quot;io-util&quot;]
+</code></pre>
+<p>再举个内联表的例子</p>
+<pre><code class="language-toml">[dependencies]
+tokio = { version = &quot;1.11.0&quot;, features = [&quot;macros&quot;, &quot;tcp&quot;, &quot;dns&quot;, &quot;io-util&quot;] }
+</code></pre>
+<p>怎么样？您喜欢标准表还是内联表呢？</p>
+<h2 id="3-可写配置"><a class="header" href="#3-可写配置">3. 可写配置</a></h2>
+<h3 id="31-概念解读"><a class="header" href="#31-概念解读">3.1. 概念解读</a></h3>
+<p>咕咕咕，这个部分还没有开始写呢!</p>
+
+                        <div id="giscus-container"></div>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="configuration.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="env.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="configuration.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="env.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+        var pagePath = "toml.md"
+        </script>
+
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="assets/giscus.js"></script>
+    </body>
+</html>

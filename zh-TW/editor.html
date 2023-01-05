@@ -1,0 +1,411 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js ayu">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>編輯器 - 天萌參考手冊 正體中文版</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/css/style-20220514.css">
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "ayu";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('ayu')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="prologue.html">序章</a></li><li class="spacer"></li><li class="chapter-item expanded "><a href="repo.html"><strong aria-hidden="true">1.</strong> 倉庫</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="add-repo.html"><strong aria-hidden="true">1.1.</strong> 新增倉庫</a></li><li class="chapter-item expanded "><a href="mirror-repo.html"><strong aria-hidden="true">1.2.</strong> 更換映象源</a></li></ol></li><li class="chapter-item expanded "><a href="container.html"><strong aria-hidden="true">2.</strong> 容器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="docker-container.html"><strong aria-hidden="true">2.1.</strong> docker</a></li><li class="chapter-item expanded "><a href="android.html"><strong aria-hidden="true">2.2.</strong> android</a></li></ol></li><li class="chapter-item expanded "><a href="configuration.html"><strong aria-hidden="true">3.</strong> 配置</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="toml.html"><strong aria-hidden="true">3.1.</strong> toml</a></li></ol></li><li class="chapter-item expanded "><a href="env.html"><strong aria-hidden="true">4.</strong> 環境</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="editor.html" class="active"><strong aria-hidden="true">4.1.</strong> 編輯器</a></li></ol></li><li class="chapter-item expanded "><a href="appendix.html"><strong aria-hidden="true">5.</strong> 附錄</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="appendix_region-code.html"><strong aria-hidden="true">5.1.</strong> 區域代號</a></li><li class="chapter-item expanded "><a href="appendix_todo.html"><strong aria-hidden="true">5.2.</strong> todo</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu (default)</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">天萌參考手冊 正體中文版</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/2moe/tmoe/tree/doc" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                    <!-- Page table of contents -->
+                    <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <h1 id="編輯器"><a class="header" href="#編輯器">編輯器</a></h1>
+<blockquote>
+<p>子曰：“工欲善其事，必先利其器。居是邦也，事其大夫之賢者，友其士之仁者。”<br />
+———《論語·衛靈公》</p>
+</blockquote>
+<ul>
+<li><a href="#1-visual-studio-code">1. Visual Studio Code</a>
+<ul>
+<li><a href="#11-%E7%B0%A1%E4%BB%8B">1.1. 簡介</a></li>
+<li><a href="#12-%E5%BF%AB%E6%8D%B7%E9%8D%B5">1.2. 快捷鍵</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="1-visual-studio-code"><a class="header" href="#1-visual-studio-code">1. Visual Studio Code</a></h2>
+<p>雖然 tmm 裡面有預裝 code-server（web 網頁伺服器）的容器，但是本節將主要講桌面版的 vscode。</p>
+<p>對於本專案的使用者，您之後可以用 <code>apt install code-no-sandbox</code> 來安裝，它將包含兩個啟動圖示。(現在還而沒有打包啦)</p>
+<blockquote>
+<p>除了 code-server 之外，目前比較流行的網頁版 vscode 還有 2 個。</p>
+<ol>
+<li>官方的 <a href="https://vscode.dev">vscode.dev</a></li>
+<li>github dev, 假設某倉庫為 github.com/xx/yy, 將 com 修改為 dev：（github.dev/xx/yy）。</li>
+</ol>
+</blockquote>
+<h3 id="11-簡介"><a class="header" href="#11-簡介">1.1. 簡介</a></h3>
+<p>vscode 是由微軟（Microsoft）主導開發的一款開源編輯器。</p>
+<blockquote>
+<p>Why is vscode？</p>
+</blockquote>
+<p>有很多人都喜歡 <strong>JetBrains</strong> 家的 IDE(s), 還有 <strong>vscode</strong> 的老大哥 <strong>Visual Studio</strong>。<br />
+在本節中，我們並不會討論 vscode 相較於其它編輯器或整合開發環境的優劣。</p>
+<p>正如《周易·繫辭（上）》中所言：“仁者見之謂之仁，智者見之謂之智。”</p>
+<p>對於相同問題，不同使用者站在不同角度有不同的看法。<br />
+您如果不喜歡 vscode 的話，那可以跳過本節的內容。</p>
+<hr />
+<p>如果您對它感興趣的話，那讓我們帶著愉快的心情，一起去了解 vscode 吧！</p>
+<h3 id="12-快捷鍵"><a class="header" href="#12-快捷鍵">1.2. 快捷鍵</a></h3>
+<p>瞭解一款軟體的快捷鍵，在某些方面能極大程度地提高您的效率。</p>
+<p>以下表格是開發者根據 <a href="https://code.visualstudio.com/docs/getstarted/keybindings#_keyboard-shortcuts-reference">官方文件</a> 整理出來的。<br />
+網上有很多基於官方文件的表格，但是應該很少有人將 <strong>windows</strong> 、<strong>linux</strong> &amp; <strong>macos</strong> 三者的 vscode 整合在一起並進行比較吧？</p>
+<p>截止 2021-10-23，以下表格會比官方的 pdf 文件多一些內容，之後 vscode 可能會進行更新, 具體內容請以官方文件為主。</p>
+<p>對於 <strong>Linux</strong> 和 <strong>Windows</strong> 中相同的快捷鍵，<strong>Win</strong> 處留空。<br />
+對於衝突快捷鍵，或者是預設為空鍵位的地方，使用 🤔️。<br />
+例如： ctrl+alt+方向鍵：（Move editor into next/previous group） 與 cinnamon 的切換工作區(switch work space) 快捷鍵衝突。</p>
+<p>其實正確的做法，不是看這個表格。<br />
+而是先按下 <kbd>ctrl</kbd> + K 組合鍵，再按下 <kbd>ctrl</kbd> + S, 最後進行搜尋。<br />
+不管怎麼說，只要能幫到您，開發者就覺得很開心了。</p>
+<hr />
+<!-- <kbd>ctrl</kbd> -->
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>General</strong></th><th>一般操作</th></tr></thead><tbody>
+<tr><td>Ctrl+Shift+P, F1</td><td></td><td>⇧⌘P, F1</td><td>Show Command Palette</td><td>顯示命令選項板</td></tr>
+<tr><td>Ctrl+P</td><td></td><td>⌘P</td><td>Quick Open, Go to File…</td><td>快速開啟</td></tr>
+<tr><td>Ctrl+Shift+N</td><td></td><td>⇧⌘N</td><td>New window/instance</td><td>新視窗/例項</td></tr>
+<tr><td>Ctrl+W</td><td>Ctrl+Shift+W</td><td>⌘W</td><td>Close window/instance</td><td>關閉視窗/例項</td></tr>
+<tr><td>Ctrl+,</td><td></td><td>⌘,</td><td>User Settings</td><td>使用者設定</td></tr>
+<tr><td>Ctrl+K Ctrl+S</td><td></td><td>⌘K ⌘S</td><td>Keyboard Shortcuts</td><td>鍵盤快捷鍵</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Basic editing</strong></th><th>基礎編輯</th></tr></thead><tbody>
+<tr><td>Ctrl+X</td><td></td><td>⌘X</td><td>Cut (if empty selection, cut line)</td><td>剪下（若為空白則剪下整行，若非空則剪下選中內容）</td></tr>
+<tr><td>Ctrl+C</td><td></td><td>⌘C</td><td>Copy (if empty selection, copy line)</td><td>複製 （若為空白則複製整行，若非空則複製選中內容）</td></tr>
+<tr><td>Ctrl+V</td><td></td><td>⌘V</td><td>Paste</td><td>貼上</td></tr>
+<tr><td>Ctrl+Z</td><td></td><td>⌘Z</td><td>Undo</td><td>撤銷（回退到上一步）</td></tr>
+<tr><td>Ctrl+Y, Ctrl+Shift+Z</td><td></td><td>⇧⌘Z</td><td>Redo</td><td>重做/反撤銷/恢復</td></tr>
+<tr><td><code>Alt+ ↓</code> / <code>Alt+ ↑</code></td><td></td><td>⌥↓ / ⌥↑</td><td>Move line down/up</td><td>移動行（向下/上）</td></tr>
+<tr><td><code>Shift+Alt+ ↓</code> / <code>Shift+Alt+ ↑</code></td><td></td><td>⇧⌥↓ / ⇧⌥↑</td><td>Copy line down/up</td><td>複製行（向下/上）</td></tr>
+<tr><td>Ctrl+Shift+K</td><td></td><td>⇧⌘K</td><td>Delete line</td><td>刪除行</td></tr>
+<tr><td><code>Ctrl+Enter</code> / <code>Ctrl+Shift+Enter</code></td><td></td><td>⌘Enter / ⇧⌘Enter</td><td>Insert line below/above</td><td>插入行（下方/上方）</td></tr>
+<tr><td>Ctrl+Shift+\</td><td></td><td>⇧⌘\</td><td>Jump to matching bracket</td><td>跳到匹配的括號內</td></tr>
+<tr><td><code>Ctrl+]</code> / <code>Ctrl+[</code></td><td></td><td>⌘] / ⌘[</td><td>Indent/outdent line</td><td>縮排/縮出（取消縮排）行</td></tr>
+<tr><td>Home / End</td><td></td><td>Home / End</td><td>Go to beginning/end of line</td><td>轉到行首/行尾</td></tr>
+<tr><td><code>Ctrl+ Home</code> / <code>Ctrl+ End</code></td><td></td><td>⌘↑ / ⌘↓</td><td>Go to beginning/end of file</td><td>轉到檔案的開頭/結尾處</td></tr>
+<tr><td><code>Ctrl+ ↑</code> / <code>Ctrl+ ↓</code></td><td></td><td>⌃PgUp / ⌃PgDn</td><td>Scroll line up/down</td><td>滾動行（向上/下）</td></tr>
+<tr><td><code>Alt+ PgUp</code> / <code>Alt+ PgDn</code></td><td></td><td>⌘PgUp /⌘PgDn</td><td>Scroll page up/down</td><td>滾動頁面（向上/下）</td></tr>
+<tr><td><code>Ctrl+Shift+ [</code> / <code>Ctrl+Shift+ ]</code></td><td></td><td>⌥⌘[ / ⌥⌘]</td><td>Fold/unfold region</td><td>摺疊/展開（解除摺疊）區域（程式碼塊）</td></tr>
+<tr><td><code>Ctrl+K Ctrl+ [</code> / <code>Ctrl+K Ctrl+ ]</code></td><td></td><td>⌘K ⌘[ / ⌘K ⌘]</td><td>Fold/unfold all subregions</td><td>摺疊/展開所有子區域</td></tr>
+<tr><td><code>Ctrl+K Ctrl+0</code> / <code>Ctrl+K Ctrl+J</code></td><td></td><td>⌘K ⌘0 / ⌘K ⌘J</td><td>Fold/unfold all regions</td><td>摺疊/展開所有區域</td></tr>
+<tr><td>Ctrl+K Ctrl+C</td><td></td><td>⌘K ⌘C</td><td>Add line comment</td><td>新增行註釋</td></tr>
+<tr><td>Ctrl+K Ctrl+U</td><td></td><td>⌘K ⌘U</td><td>Remove line comment</td><td>刪除行註釋</td></tr>
+<tr><td>Ctrl+/</td><td></td><td>⌘/</td><td>Toggle line comment</td><td>切換行註釋(註釋或取消註釋)</td></tr>
+<tr><td>Ctrl+Shift+A</td><td>Shift+Alt+A</td><td>⇧⌥A</td><td>Toggle block comment</td><td>切換塊註釋</td></tr>
+<tr><td>Alt+Z</td><td></td><td>⌥Z</td><td>Toggle word wrap</td><td>切換自動換行</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Multi-cursor and selection</strong></th><th>多游標與選擇（主要：列塊編輯）</th></tr></thead><tbody>
+<tr><td>Alt+Click</td><td></td><td>⌥ + click</td><td>Insert cursor</td><td>插入游標</td></tr>
+<tr><td>Shift+Alt+↑</td><td>Ctrl+Alt+↑</td><td>⌥⌘↑</td><td>Insert cursor above</td><td>在上方插入游標</td></tr>
+<tr><td>Shift+Alt+↓</td><td>Ctrl+Alt+↓</td><td>⌥⌘↓</td><td>Insert cursor below</td><td>在下方插入游標</td></tr>
+<tr><td>Ctrl+U</td><td></td><td>⌘U</td><td>Undo last cursor operation</td><td>撤銷上一次游標操作</td></tr>
+<tr><td>Shift+Alt+I</td><td></td><td>⇧⌥I</td><td>Insert cursor at end of each line selected</td><td>在選中行的末尾插入游標</td></tr>
+<tr><td>Ctrl+L</td><td></td><td>⌘L</td><td>Select current line</td><td>選擇當前行</td></tr>
+<tr><td>Ctrl+Shift+L</td><td></td><td>⇧⌘L</td><td>Select all occurrences of current selection</td><td>選擇當前選中項的所有匹配項</td></tr>
+<tr><td>Ctrl+F2</td><td></td><td>⌘F2</td><td>Select all occurrences of current word</td><td>選擇當前詞的所有匹配項</td></tr>
+<tr><td><code>Shift+Alt+ →</code> / <code>Shift+Alt+ ←</code></td><td></td><td>⌃⇧⌘→ / ←</td><td>Expand / shrink selection</td><td>擴大/縮小選擇</td></tr>
+<tr><td>Shift+Alt + drag mouse</td><td></td><td>⇧⌥ + drag mouse</td><td>Column (box) selection</td><td>列塊選擇（先按住 shift+alt，再按住滑鼠左鍵，最後拖拽滑鼠選中指定列塊）</td></tr>
+<tr><td>🤔️</td><td><code>Ctrl+Shift+Alt+ ↑</code> / <code>Ctrl+Shift+Alt+ ↓</code></td><td>⇧⌥⌘↑ / ↓</td><td>Column (box) selection up/down</td><td>列塊選擇（向上/向下）</td></tr>
+<tr><td>🤔️</td><td><code>Ctrl+Shift+Alt+ ←</code> / <code>Ctrl+Shift+Alt+ →</code></td><td>⇧⌥⌘← / →</td><td>Column (box) selection left/right</td><td>列塊選擇（左/右）</td></tr>
+<tr><td>🤔️</td><td><code>Ctrl+Shift+Alt+ PgUp</code>/ <code>Ctrl+Shift+Alt+ PgDn</code></td><td>⇧⌥⌘PgUp / PgDn</td><td>Column (box) selection page up/down</td><td>列塊選擇（頁面 上/下 移）</td></tr>
+<tr><td>Ctrl+A</td><td></td><td>⌘A</td><td>Select all</td><td>全選</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Search and replace</strong></th><th>搜尋與替換</th></tr></thead><tbody>
+<tr><td>Ctrl+F</td><td></td><td>⌘F</td><td>Find</td><td>查詢</td></tr>
+<tr><td>Ctrl+H</td><td></td><td>⌥⌘F</td><td>Replace</td><td>替換</td></tr>
+<tr><td><code>F3</code> / <code>Shift+F3</code></td><td></td><td>⌘G / ⇧⌘G</td><td>Find next/previous</td><td>查詢下一個/上一個</td></tr>
+<tr><td>Alt+Enter</td><td></td><td>⌥Enter</td><td>Select all occurrences of Find match</td><td>選擇所有匹配項</td></tr>
+<tr><td>Ctrl+D</td><td></td><td>⌘D</td><td>Add selection to next Find match</td><td>選擇下一個匹配項</td></tr>
+<tr><td>Ctrl+K Ctrl+D</td><td></td><td>⌘K ⌘D</td><td>Move last selection to next Find match</td><td>跳過當前選擇項</td></tr>
+<tr><td><code>Alt+C</code> / <code>Alt+R</code> / <code>Alt+W</code></td><td></td><td>⌥⌘C/⌥⌘R/⌥⌘W</td><td>Toggle case-sensitive / regex / whole word</td><td>切換 區分大小寫/正則表示式/全字匹配</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Rich languages editing</strong></th><th>富文字編輯</th></tr></thead><tbody>
+<tr><td>Ctrl+Space, Ctrl+I</td><td></td><td>⌃Space, ⌘I</td><td>Trigger suggestion</td><td>觸發建議</td></tr>
+<tr><td>Ctrl+Shift+Space</td><td></td><td>⇧⌘Space</td><td>Trigger parameter hints</td><td>觸發引數提示</td></tr>
+<tr><td>Ctrl+Shift+I</td><td>Shift+Alt+F</td><td>⇧⌥F</td><td>Format document</td><td>格式化文件</td></tr>
+<tr><td>Ctrl+K Ctrl+F</td><td></td><td>⌘K ⌘F</td><td>Format selection</td><td>格式化所選部分</td></tr>
+<tr><td>F12</td><td></td><td>F12</td><td>Go to Definition</td><td>轉到定義</td></tr>
+<tr><td>Ctrl+Shift+F10</td><td>Alt+F12</td><td>⌥F12</td><td>Peek Definition</td><td>速覽定義</td></tr>
+<tr><td>Ctrl+K F12</td><td></td><td>⌘K F12</td><td>Open Definition to the side</td><td>在側邊顯示定義</td></tr>
+<tr><td>Ctrl+.</td><td></td><td>⌘.</td><td>Quick Fix</td><td>快速修復</td></tr>
+<tr><td>Shift+F12</td><td></td><td>⇧F12</td><td>Show References</td><td>顯示引用</td></tr>
+<tr><td>F2</td><td></td><td>F2</td><td>Rename Symbol</td><td>重新命名符號</td></tr>
+<tr><td>Ctrl+K Ctrl+X</td><td></td><td>⌘K ⌘X</td><td>Trim trailing whitespace</td><td>裁剪尾隨空格</td></tr>
+<tr><td>Ctrl+K M</td><td></td><td>⌘K M</td><td>Change file language</td><td>更改檔案語言</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Navigation</strong></th><th>導航</th></tr></thead><tbody>
+<tr><td>Ctrl+T</td><td></td><td>⌘T</td><td>Show all Symbols</td><td>顯示所有符號</td></tr>
+<tr><td>Ctrl+G</td><td></td><td>⌃G</td><td>Go to Line...</td><td>轉到指定行...</td></tr>
+<tr><td>Ctrl+P</td><td></td><td>⌘P</td><td>Go to File...</td><td>轉到檔案...</td></tr>
+<tr><td>Ctrl+Shift+O</td><td></td><td>⇧⌘O</td><td>Go to Symbol...</td><td>轉到符號...</td></tr>
+<tr><td>Ctrl+Shift+M</td><td></td><td>⇧⌘M</td><td>Show Problems panel</td><td>顯示問題面板</td></tr>
+<tr><td><code>F8</code>/<code>Shift+F8</code></td><td></td><td>F8 / ⇧F8</td><td>Go to next/previous error or warning</td><td>轉到下一個/上一個錯誤或警告</td></tr>
+<tr><td>Ctrl+Shift+Tab</td><td></td><td>⌃⇧Tab</td><td>Navigate editor group history</td><td>在編輯器組（視窗）歷史記錄間進行導航（先按住 Ctrl+Shift，再按 tab 切換）</td></tr>
+<tr><td><code>Ctrl+Alt+ -</code>/<code>Ctrl+Shift+ -</code></td><td><code>Alt+ ←</code> / <code>Alt+ →</code></td><td>⌃- / ⌃⇧-</td><td>Go back/forward</td><td>後退/前進</td></tr>
+<tr><td>Ctrl+M</td><td></td><td>⌃⇧M</td><td>Toggle Tab moves focus</td><td>切換 tab 鍵移動焦點（先按下 ⌃⇧M / Ctrl+M，再多按幾次 tab 鍵 移動焦點 ）</td></tr>
+<tr><td>Ctrl+Shift+B</td><td></td><td>⌃⇧B</td><td>Run build task</td><td>執行生成(構建)任務</td></tr>
+<tr><td>🤔️</td><td><!-- 可以自定義為 ctrl+win+B --></td><td></td><td>Run task</td><td>執行任務，預設為空，您可以自定義為 ⌃⌘B</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Editor management</strong></th><th>編輯器管理</th></tr></thead><tbody>
+<tr><td>Ctrl+W</td><td>Ctrl+F4, Ctrl+W</td><td>⌘W</td><td>Close editor（file/tag)</td><td>關閉編輯器（檔案/標籤頁)</td></tr>
+<tr><td>Ctrl+K F</td><td></td><td>⌘K F</td><td>Close folder</td><td>關閉資料夾</td></tr>
+<tr><td>Ctrl+\</td><td></td><td>⌘\</td><td>Split editor</td><td>拆分編輯器視窗</td></tr>
+<tr><td><code>Ctrl+1</code> / <code>Ctrl+2</code> / <code>Ctrl+3</code></td><td></td><td>⌘1 / ⌘2 / ⌘3</td><td>Focus into 1st, 2nd, 3rd editor group</td><td>聚焦（切換）到第 1、第 2 或 第 3 個編輯組(視窗)</td></tr>
+<tr><td><code>Ctrl+K Ctrl+←</code> / <code>Ctrl+K Ctrl+→</code></td><td></td><td>⌘K ⌘← / ⌘K ⌘→</td><td>Focus into previous/next editor group</td><td>切換到上一個/下一個視窗</td></tr>
+<tr><td><code>Ctrl+Shift+PgUp</code> / <code>Ctrl+Shift+PgDn</code></td><td></td><td>⌘K ⇧⌘← / ⌘K ⇧⌘→</td><td>Move editor left/right</td><td>向左/右移動編輯器</td></tr>
+<tr><td><code>Ctrl+K ←</code> / <code>Ctrl+K →</code></td><td></td><td>⌘K ← / ⌘K →</td><td>Move active editor group</td><td>向左/右移動正在使用（活動中）的視窗</td></tr>
+<tr><td><code>Ctrl+PgUp</code> / <code>Ctrl+PgDn</code></td><td></td><td>⌥⌘←/⌥⌘→</td><td>Focus into previous/next editor</td><td>切換到上一個/下一個編輯器</td></tr>
+<tr><td>🤔️</td><td><code>Ctrl+Alt+ →</code> / <code>Ctrl+Alt+ ←</code></td><td>⌃⌘→/⌃⌘←</td><td>Move editor into next/previous group</td><td>將編輯器移動到下一組/上一組</td></tr>
+<tr><td>Alt+F4</td><td></td><td>⌘Q</td><td>Quit vscode</td><td>退出 vscode</td></tr>
+</tbody></table>
+<!-- ctrl+alt+方向鍵 與 cinnamon 的切換工作區 快捷鍵衝突 -->
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>File management</strong></th><th>檔案管理</th></tr></thead><tbody>
+<tr><td>Ctrl+N</td><td></td><td>⌘N</td><td>New file</td><td>新檔案</td></tr>
+<tr><td>Ctrl+O</td><td></td><td>⌘O</td><td>Open file...</td><td>開啟檔案...</td></tr>
+<tr><td>Ctrl+S</td><td></td><td>⌘S</td><td>Save</td><td>儲存</td></tr>
+<tr><td>Ctrl+Shift+S</td><td></td><td>⇧⌘S</td><td>Save as...</td><td>另存為...</td></tr>
+<tr><td>🤔️</td><td>Ctrl+K S</td><td>⌥⌘S</td><td>Save all</td><td>全部儲存</td></tr>
+<tr><td>Ctrl+W</td><td>Ctrl+F4</td><td>⌘W</td><td>Close</td><td>關閉</td></tr>
+<tr><td>Ctrl+K Ctrl+W</td><td></td><td>⌘K ⌘W</td><td>Close all</td><td>全部關閉</td></tr>
+<tr><td>Ctrl+Shift+T</td><td></td><td>⇧⌘T</td><td>Reopen closed editor</td><td>重新開啟關閉的編輯器</td></tr>
+<tr><td>Ctrl+K Enter</td><td></td><td>⌘K Enter</td><td>Keep preview mode editor open</td><td>保持預覽模式下的編輯器處於開啟狀態</td></tr>
+<tr><td><code>Ctrl+Tab</code> / <code>Ctrl+Shift+Tab</code></td><td></td><td>⌃Tab / ⌃⇧Tab</td><td>Open next / previous</td><td>開啟下一個/上一個</td></tr>
+<tr><td>Ctrl+K P</td><td></td><td>⌘K P</td><td>Copy path of active file</td><td>複製活動檔案的路徑</td></tr>
+<tr><td>Ctrl+K R</td><td></td><td>⌘K R</td><td>Reveal active file in File Explorer</td><td>在檔案管理器中顯示活動檔案</td></tr>
+<tr><td>Ctrl+K O</td><td></td><td>⌘K O</td><td>Show active file in new window/instance</td><td>在新視窗/例項中顯示活動檔案</td></tr>
+<tr><td>Space, Enter</td><td></td><td>Space</td><td>Open file in explorer</td><td>先按下 ⇧⌘E 開啟資源管理器,然後按方向鍵選擇檔案,最後按下空格開啟檔案</td></tr>
+<tr><td>Ctrl+Enter</td><td></td><td>⌃Enter</td><td>Open file to the side</td><td>在側邊開啟檔案</td></tr>
+<tr><td>F2</td><td></td><td>Enter</td><td>Rename file in explorer</td><td>在資源管理器中重新命名檔案</td></tr>
+<tr><td>Delete</td><td></td><td>⌘Backspace</td><td>delete file in explorer</td><td>在資源管理器中刪除檔案</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Display</strong></th><th>顯示</th></tr></thead><tbody>
+<tr><td>F11</td><td></td><td>⌃⌘F</td><td>Toggle full screen</td><td>切換全屏</td></tr>
+<tr><td>Shift+Alt+0</td><td></td><td>⌥⌘0</td><td>Toggle editor layout (horizontal/vertical)</td><td>切換編輯器佈局（水平/垂直）</td></tr>
+<tr><td><code>Ctrl+ =</code> / <code>Ctrl+ -</code></td><td></td><td>⌘= / ⇧⌘-</td><td>Zoom in/out</td><td>放大/縮小</td></tr>
+<tr><td>Ctrl+B</td><td></td><td>⌘B</td><td>Toggle Sidebar visibility</td><td>切換側邊欄的可見性（開啟/關閉側邊欄）</td></tr>
+<tr><td>Ctrl+Shift+E</td><td></td><td>⇧⌘E</td><td>Show Explorer / Toggle focus</td><td>顯示資源管理器/切換焦點</td></tr>
+<tr><td>Ctrl+Shift+F</td><td></td><td>⇧⌘F</td><td>Show Search</td><td>顯示搜尋</td></tr>
+<tr><td>Ctrl+Shift+G</td><td></td><td>⌃⇧G</td><td>Show Source Control</td><td>顯示原始碼控制</td></tr>
+<tr><td>Ctrl+Shift+D</td><td></td><td>⇧⌘D</td><td>Show Debug</td><td>顯示除錯</td></tr>
+<tr><td>Ctrl+Shift+X</td><td></td><td>⇧⌘X</td><td>Show Extensions</td><td>顯示擴充套件</td></tr>
+<tr><td>Ctrl+Shift+H</td><td></td><td>⇧⌘H</td><td>Replace in files</td><td>替換檔案中的內容</td></tr>
+<tr><td>Ctrl+Shift+J</td><td></td><td>⇧⌘J</td><td>Toggle Search details</td><td>切換搜尋詳情</td></tr>
+<tr><td>Ctrl+K Ctrl+H</td><td>Ctrl+Shift+U</td><td>⇧⌘U</td><td>Show Output panel</td><td>顯示輸出面板</td></tr>
+<tr><td>Ctrl+Shift+V</td><td></td><td>⇧⌘V</td><td>Open Markdown preview</td><td>開啟 markdown 預覽</td></tr>
+<tr><td>Ctrl+K V</td><td></td><td>⌘K V</td><td>Open Markdown preview to the side</td><td>在側邊開啟 markdown 預覽</td></tr>
+<tr><td>Ctrl+K Z</td><td></td><td>⌘K Z</td><td>Zen Mode (Esc to exit)</td><td>禪模式（按 Esc 退出）</td></tr>
+<tr><td>Ctrl+Shift+C</td><td></td><td>⇧⌘C</td><td>Open new command prompt/terminal</td><td>開啟新的命令提示符/終端</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Debug</strong></th><th>除錯</th></tr></thead><tbody>
+<tr><td>F9</td><td></td><td>F9</td><td>Toggle breakpoint</td><td>切換斷點</td></tr>
+<tr><td>F5</td><td></td><td>F5</td><td>Start/Continue</td><td>開始/繼續</td></tr>
+<tr><td><code>F11</code> / <code>Shift+F11</code></td><td></td><td>F11 / ⇧F11</td><td>Step into/ out</td><td>單步除錯：進入/跳出</td></tr>
+<tr><td>F10</td><td></td><td>F10</td><td>Step over</td><td>單步跳過</td></tr>
+<tr><td>Shift+F5</td><td></td><td>⇧F5</td><td>Stop</td><td>停止</td></tr>
+<tr><td>Ctrl+K Ctrl+I</td><td></td><td>⌘K ⌘I</td><td>Show hover</td><td>顯示懸停</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Integrated terminal</strong></th><th>整合終端</th></tr></thead><tbody>
+<tr><td>Ctrl+`</td><td></td><td>⌃`</td><td>Show integrated terminal</td><td>顯示整合（內建）終端</td></tr>
+<tr><td>Ctrl+Shift+`</td><td></td><td>⌃⇧`</td><td>Create new terminal</td><td>建立新的終端</td></tr>
+<tr><td>Ctrl+C</td><td></td><td></td><td>Interrupt foreground process</td><td>中斷執行中的前臺程序</td></tr>
+<tr><td>Ctrl+Shift+C</td><td>Ctrl+C</td><td>⌘C</td><td>Copy selection</td><td>先用滑鼠選中，再按下“指定按鍵”進行復制</td></tr>
+<tr><td>Ctrl+Shift+V</td><td>Ctrl+V</td><td>⌘V</td><td>Paste into active terminal</td><td>貼上</td></tr>
+<tr><td><code>Ctrl+Shift+ ↑</code> / <code>Ctrl+Shift+ ↓</code></td><td><code>Ctrl+Alt+PgUp</code> / <code>Ctrl+Alt+PgDn</code></td><td>⌘↑ / ↓</td><td>Scroll up/down</td><td>向上/向下滾動（行）</td></tr>
+<tr><td><code>Shift+ PgUp</code> / <code>Shift+ PgDn</code></td><td></td><td>PgUp / PgDn</td><td>Scroll page up/down</td><td>向上/向下滾動（頁）</td></tr>
+<tr><td><code>Shift+ Home</code> / <code>Shift+ End</code></td><td><code>Ctrl+ Home</code> / <code>Ctrl+ End</code></td><td>⌘Home / End</td><td>Scroll to top/bottom</td><td>滾動到頂部/底部</td></tr>
+<tr><td><code>Ctrl+Shift+5</code></td><td></td><td>⌘\ , ⌃⇧5</td><td>Split terminal</td><td>拆分終端</td></tr>
+<tr><td><code>Ctrl+PgUp</code> / <code>Ctrl+PgDn</code></td><td></td><td>⇧⌘[ / ]</td><td>Focus previous/next terminal</td><td>聚焦（切換）上/下 一個 終端</td></tr>
+<tr><td><code>Alt+ ↑</code> / <code>Alt+ ↓</code></td><td></td><td>⌥⌘↑ / ↓</td><td>Focus previous/next terminal in group</td><td>在終端組中切換 上/下 一個終端</td></tr>
+<tr><td><code>Ctrl+Shift+ ←</code> / <code>Ctrl+Shift+ →</code></td><td>🤔️</td><td>⌃⌘← / →</td><td>Resize terminal left/right</td><td>調整終端大小（左/右）</td></tr>
+<tr><td>🤔️</td><td></td><td>⌃⌘↑ / ↓</td><td>Resize terminal up/down</td><td>調整終端大小（上/下）</td></tr>
+</tbody></table>
+<hr />
+
+                        <div id="giscus-container"></div>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="env.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="appendix.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="env.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="appendix.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+        var pagePath = "editor.md"
+        </script>
+
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="assets/giscus.js"></script>
+    </body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js ayu">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>更换镜像源 - 天萌参考手册</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/css/style-20220514.css">
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "ayu";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('ayu')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="prologue.html">序章</a></li><li class="spacer"></li><li class="chapter-item expanded "><a href="repo.html"><strong aria-hidden="true">1.</strong> 仓库</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="add-repo.html"><strong aria-hidden="true">1.1.</strong> 添加仓库</a></li><li class="chapter-item expanded "><a href="mirror-repo.html" class="active"><strong aria-hidden="true">1.2.</strong> 更换镜像源</a></li></ol></li><li class="chapter-item expanded "><a href="container.html"><strong aria-hidden="true">2.</strong> 容器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="docker-container.html"><strong aria-hidden="true">2.1.</strong> docker</a></li><li class="chapter-item expanded "><a href="android.html"><strong aria-hidden="true">2.2.</strong> android</a></li></ol></li><li class="chapter-item expanded "><a href="configuration.html"><strong aria-hidden="true">3.</strong> 配置</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="toml.html"><strong aria-hidden="true">3.1.</strong> toml</a></li></ol></li><li class="chapter-item expanded "><a href="env.html"><strong aria-hidden="true">4.</strong> 环境</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="editor.html"><strong aria-hidden="true">4.1.</strong> 编辑器</a></li></ol></li><li class="chapter-item expanded "><a href="appendix.html"><strong aria-hidden="true">5.</strong> 附录</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="appendix_region-code.html"><strong aria-hidden="true">5.1.</strong> 区域代号</a></li><li class="chapter-item expanded "><a href="appendix_todo.html"><strong aria-hidden="true">5.2.</strong> todo</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu (default)</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">天萌参考手册</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/2moe/tmoe/tree/doc" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                    <!-- Page table of contents -->
+                    <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <h1 id="镜像源"><a class="header" href="#镜像源">镜像源</a></h1>
+<ul>
+<li><a href="#1-debian-based">1. debian-based</a>
+<ul>
+<li><a href="#11-%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B">1.1. 快速上手</a></li>
+<li><a href="#12-%E8%AF%A6%E7%BB%86%E8%A7%A3%E6%9E%90">1.2. 详细解析</a>
+<ul>
+<li><a href="#121-set-src-list">1.2.1. set-src-list</a></li>
+<li><a href="#122-region-code-repo">1.2.2. region-code-repo</a></li>
+<li><a href="#123-%E8%BD%AF%E4%BB%B6%E5%8C%85%E8%A7%A3%E6%9E%90">1.2.3. 软件包解析</a></li>
+<li><a href="#124-set-src-link">1.2.4. set-src-link</a>
+<ul>
+<li><a href="#1241-region--link">1.2.4.1. region &amp; link</a></li>
+<li><a href="#1242-unlink">1.2.4.2. unlink</a></li>
+</ul>
+</li>
+<li><a href="#125-%E6%BA%90%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90">1.2.5. 源文件解析</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr />
+<p>您若在使用发行版的官方镜像源时，体验不佳，那不妨试试本项目的“更换发行版镜像源”功能。</p>
+<h2 id="1-debian-based"><a class="header" href="#1-debian-based">1. debian-based</a></h2>
+<p>开发者为每一个镜像源都打了一个 deb 包。</p>
+<p>对于 debian 和 ubuntu 通用的源的 deb 包，开发者把它们放到了 neko 仓库。</p>
+<div style="display:none">
+```mermaid
+graph TD
+    A(debian) --> D(toy-repo)
+    A(debian) --> C(neko-repo)
+    B(ubuntu) --> C
+    B(ubuntu) --> E(uuu-repo)
+```
+</div>
+<p><img src="assets/mirror-repo_neko-toy-and-uuu.svg" alt="mirror-repo_neko-toy-and-uuu.svg" /></p>
+<p>缺陷：</p>
+<ul>
+<li>尽管您可以在 kali 和 mint 上使用，但是并非所有镜像源都支持它们，提供 ubuntu 镜像源的网站不一定会同时提供 mint 源。</li>
+<li>目前，由于 debian-ports 的镜像源过于稀少，因此本功能未对 riscv64 等架构进行适配。</li>
+</ul>
+<h3 id="11-快速上手"><a class="header" href="#11-快速上手">1.1. 快速上手</a></h3>
+<p>如果您不明白下面的命令的具体意义，那么请不要直接运行。<br />
+在下一小节中，我们将会对其进行解析。</p>
+<pre><code class="language-sh">sudo set-src-list dis
+sudo apt update
+sudo apt install ustc-linux-user-group-cn-repo
+sudo apt update
+</code></pre>
+<h3 id="12-详细解析"><a class="header" href="#12-详细解析">1.2. 详细解析</a></h3>
+<h4 id="121-set-src-list"><a class="header" href="#121-set-src-list">1.2.1. set-src-list</a></h4>
+<blockquote>
+<p><code>set-src-list</code> 由 <code>neko-repo</code> 提供</p>
+</blockquote>
+<p>首先，运行 <code>set-src-list</code><br />
+它输出的内容为：</p>
+<pre><code class="language-sh">-d | dis | disable: disable src list
+-e | en | enable: enable src list
+
+Note: This is a dangerous operation.
+If you run &quot;set-src-list dis&quot;, then it will move your &quot;/etc/apt/sources.list&quot; to &quot;/etc/apt/sources.list.bak&quot;
+If you run &quot;set-src-list en&quot;, then it will move your &quot;sources.list.bak&quot; to &quot;sources.list&quot;
+</code></pre>
+<p>这个工具非常简单，简单到您会怀疑它是否能被称为“工具”。</p>
+<p>以 root 身份执行 <code>set-src-list dis</code> , 它将 <strong>/etc/apt/</strong> 目录下的 &quot;sources.list&quot; 重命名为 &quot;sources.list.bak&quot;。<br />
+<code>set-src-list en</code> 与上面执行相反的操作。</p>
+<blockquote>
+<p>作用：在换源前禁用原来的软件源。</p>
+</blockquote>
+<h4 id="122-region-code-repo"><a class="header" href="#122-region-code-repo">1.2.2. region-code-repo</a></h4>
+<blockquote>
+<p>如果您不知道具体区域代号是什么，那么请翻阅“附录”中的“区域代号”章节。</p>
+</blockquote>
+<p>使用 <code>apt</code> 搜索您所在国家或地区的镜像仓库。</p>
+<p>&quot;United States&quot;: US</p>
+<pre><code class="language-sh">apt search us-repo$
+</code></pre>
+<p>&quot;Germany&quot;: DE</p>
+<pre><code class="language-sh">apt search de-repo$
+</code></pre>
+<p>&quot;China&quot;: CN</p>
+<pre><code class="language-sh">apt search &quot;cn-repo|tw-repo|hk-repo&quot;
+</code></pre>
+<pre><code class="language-log editable">alibaba-cloud-computing-cn-repo/neko 0.0.1-2 all
+  阿里云镜像源(China)
+
+bjtu-cn-repo/neko 0.0.1-2 all
+  北京交通大学镜像源(China)
+
+blendbyte-inc-tw-repo/neko 0.0.1-2 all
+  Blendbyte Inc.(Taiwan)
+
+capital-online-data-service-cn-repo/neko 0.0.1-2 all
+  Capital Online Data Service(China)
+
+china-open-source-mirror-alliance-cn-repo/neko 0.0.1-2 all
+  China open source mirror Alliance(China)
+
+chongqing-university-cn-repo/neko 0.0.1-2 all
+  重庆大学镜像源(China)
+
+cn99-cn-repo/neko 0.0.1-2 all
+  CN99(China)
+
+dalian-university-of-technology-cn-repo/neko 0.0.1-2 all
+  Dalian University of Technology 大连理工学院镜像源(China)
+
+debian-cs-nctu-edu-tw-repo/toy 0.0.1-3 all
+  debian.cs.nctu.edu.tw(Taiwan)
+
+debian-csie-ncku-edu-tw-repo/toy 0.0.1-3 all
+  debian.csie.ncku.edu.tw(Taiwan)
+
+debian-csie-ntu-edu-tw-repo/toy 0.0.1-3 all
+  debian.csie.ntu.edu.tw(Taiwan)
+
+dongguan-university-of-technology-gnu-linux-association-cn-repo/neko 0.0.1-2 all
+  Dongguan University of Technology GNU/Linux Association 东莞理工学院镜像源(China)
+
+escience-center-nanjing-university-cn-repo/neko 0.0.1-2 all
+  eScience Center, Nanjing University 南京大学镜像源(China)
+
+ftp-cn-debian-org-cn-repo/neko 0.0.1-2 all
+  ftp.cn.debian.org(China)
+
+ftp-hk-debian-org-hk-repo/neko 0.0.1-2 all
+  ftp.hk.debian.org(Hong Kong)
+
+ftp-tw-debian-org-tw-repo/neko 0.0.1-2 all
+  ftp.tw.debian.org(Taiwan)
+
+harbin-institute-of-technology-cn-repo/neko 0.0.1-2 all
+  哈尔滨工业大学镜像源 Harbin Institute of Technology(China)
+
+huawei-cloud-cn-repo/neko 0.0.1-2 all
+  Huawei Cloud 华为云镜像源(China)
+
+institute-of-network-development-national-taiwan-ocean-university-tw-repo/neko 0.0.1-2 all
+  Institute of Network Development, National Taiwan Ocean University(Taiwan)
+
+lanzhou-university-open-source-society-cn-repo/neko 0.0.1-2 all
+  Lanzhou University Open Source Society 兰州大学镜像源(China)
+
+mirrors-163-com-cn-repo/neko 0.0.1-2 all
+  网易镜像源(China)
+
+mirrors-bfsu-edu-cn-repo/neko 0.0.1-2 all
+  北京外国语大学镜像源(China)
+
+mirrors-neusoft-edu-cn-repo/neko 0.0.1-2 all
+  大连东软信息学院镜像源(China)
+
+mirrors-pku-edu-cn-repo/neko 0.0.1-2 all
+  北京大学镜像源(China)
+
+mirrors-tuna-tsinghua-edu-cn-repo/neko 0.0.1-2 all
+  清华大学镜像源(China)
+
+nchc-taiwan-tw-repo/neko 0.0.1-2 all
+  NCHC, Taiwan(Taiwan)
+
+nic-beijing-university-of-posts-and-telecommunications-cn-repo/neko 0.0.1-2 all
+  NIC, Beijing University of Posts and Telecommunications 北京邮电大学镜像源(China)
+
+njuptmirrorsgroup-cn-repo/neko 0.0.1-2 all
+  南京邮电大学镜像源(China)
+
+opensource-nchc-org-tw-repo/neko 0.0.1-2 all
+  opensource.nchc.org.tw(Taiwan)
+
+opentuna-cn-repo/neko 0.0.1-2 all
+  OpenTUNA(China)
+
+shanghai-jiaotong-university-cn-repo/neko 0.0.1-2 all
+  Shanghai Jiaotong University 上海交通大学镜像源(China)
+
+sohu-cn-repo/neko 0.0.1-2 all
+  搜狐镜像源(China)
+
+tencent-cloud-cn-repo/neko 0.0.1-2 all
+  Tencent Cloud 腾讯云镜像源(China)
+
+tku-tamkanguniversity-tw-repo/neko 0.0.1-2 all
+  TKU-TamKangUniversity(Taiwan)
+
+ustc-linux-user-group-cn-repo/neko 0.0.1-2 all
+  中国科学技术大学镜像源(China)
+
+xi-an-jiaotong-university-cn-repo/neko 0.0.1-2 all
+  Xi'an Jiaotong University(China)
+
+xtom-hk-repo/neko 0.0.1-2 all
+  xTom(Hong Kong)
+</code></pre>
+<blockquote>
+<p>实际上，0.0.1-4 修复了 debian (old-stable) 的一些小细节问题，这里还是 0.0.1-2<br />
+在下文介绍源文件时，将会提到相关内容，因此不更新也没关系。</p>
+</blockquote>
+<p>然后我们以 root 权限运行 <code>apt</code> 来安装软件包。</p>
+<pre><code class="language-sh">apt install opentuna-cn-repo
+</code></pre>
+<h4 id="123-软件包解析"><a class="header" href="#123-软件包解析">1.2.3. 软件包解析</a></h4>
+<p>先拆开来看看</p>
+<pre><code class="language-log editable">├── control
+│   ├── conffiles
+│   ├── control
+│   ├── md5sums
+│   ├── postinst
+│   └── postrm
+└── data
+    ├── etc
+    │   └── tmoe
+    │       └── repo
+    │           └── src
+    │               ├── debian
+    │               │   ├── opentuna-cn-repo_old.sources
+    │               │   ├── opentuna-cn-repo_sid.sources
+    │               │   └── opentuna-cn-repo_stable.sources
+    │               └── ubuntu
+    │                   ├── opentuna-cn-repo_ports.sources
+    │                   └── opentuna-cn-repo.sources
+    └── usr
+        └── share
+            └── doc
+                └── opentuna-cn-repo
+                    └── changelog.Debian.gz
+</code></pre>
+<p><code>postinst</code> 调用了 <code>set-src-link</code> 去创建软链接。<br />
+<code>postrm</code> 调用了 <code>set-src-link</code> 的 <code>unlink</code> 子命令去删除软链接。<br />
+假如您的系统是 ubuntu jammy (amd64), 那么它会将 <strong>opentuna-cn-repo.sources</strong> 修改为 jammy 的源，并将其软链接到 &quot;/etc/apt/sources.list.d/cn-mirror.sources&quot;。<br />
+如果您用的是 linuxmint vanessa， 那么它会自动合并 ubuntu 和 vanessa 的源，并将源文件软链接到 &quot;/etc/apt/sources.list.d/cn-mirror.sources&quot;。</p>
+<p>如果您使用的是 us-repo, 而不是 cn-repo, 那么它就会将源文件软链接到 &quot;/etc/apt/sources.list.d/us-mirror.sources&quot;。</p>
+<p>相同区域的镜像包会被上一个安装的包覆盖掉，不同区域的不会。</p>
+<p>比如说，您现在安装了 <code>mirrors-bfsu-edu-cn-repo</code>， 那么现在的 cn 源是 bfsu。<br />
+您再安装了 <code>shanghai-jiaotong-university-cn-repo</code>，那么 cn 源就变成了 sjtu。<br />
+此时，您再安装了 <code>xtom-de-repo</code>，<strong>/etc/apt/sources.list.d/</strong> 会多出一个 de 源，它跟 cn 源并不冲突。</p>
+<p>在一般情况下，您只需要安装您的服务器/pc 所在区域的镜像源即可。<br />
+除非您有充分的理由，否则请不要在一台设备上安装不同区域的镜像源。</p>
+<h4 id="124-set-src-link"><a class="header" href="#124-set-src-link">1.2.4. set-src-link</a></h4>
+<p>在上一小节中，我们提到了 <code>set-src-link</code>，在本小节中，我们将对其进行深入解析。</p>
+<p>在您安装或卸载镜像源 的 deb 包时， <code>set-src-link</code> 会被自动调用，您无需手动去调用它。</p>
+<p>简单来说，<code>set-src-link</code> 只做两件事。</p>
+<ul>
+<li>1.创建软链接
+<ul>
+<li>在创建前，它会自动判断您的发行版。对于 ubuntu, 它还会判断您的架构。</li>
+</ul>
+</li>
+<li>2.删除软链接</li>
+</ul>
+<p>运行 <code>set-src-link -h</code><br />
+输出的内容是：</p>
+<pre><code class="language-sh editable">set-src-link 0.0.1
+Set the symbolic link for the mirror source.
+
+Usage:
+ set-src-link [flags]&lt;string&gt;
+ set-src-link [flags] [flags]
+ set-src-link &lt;subcommand&gt; [flags]&lt;string&gt;
+
+Flags:
+ -n, --name &lt;mirror-name&gt;      set the mirror name
+ -r, --region &lt;iso-code&gt;       set the region &lt;ISO 3166-1 Alpha-2 code&gt;
+
+ -h, --help                    display help information
+ -V, --version                 display version
+
+Subcommand:
+    unlink
+
+Example:
+ set-src-link -n -h
+ set-src-link --region --help
+ set-src-link unlink -r us
+</code></pre>
+<blockquote>
+<p><code>set-src-link</code> 需要以 root 身份运行，否则将无法修改 <code>/etc/apt/sources.list.d/*-mirror.sources</code></p>
+</blockquote>
+<h5 id="1241-region--link"><a class="header" href="#1241-region--link">1.2.4.1. region &amp; link</a></h5>
+<p>获取 region 的帮助信息</p>
+<pre><code class="language-sh">set-src-link -r -h
+</code></pre>
+<p><code>-n</code> 后面接的是 deb 包的包名。</p>
+<p>创建软链接</p>
+<pre><code class="language-sh">set-src-link -r cn -n opentuna-cn-repo
+# os: debian
+# code: sid
+# '/etc/apt/sources.list.d/cn-mirror.sources' -&gt; '/etc/tmoe/repo/src/debian/opentuna-cn-repo_sid.sources'
+
+set-src-link -r us -n opentuna-cn-repo
+# os: debian
+# code: sid
+# '/etc/apt/sources.list.d/us-mirror.sources' -&gt; '/etc/tmoe/repo/src/debian/opentuna-cn-repo_sid.sources'
+</code></pre>
+<h5 id="1242-unlink"><a class="header" href="#1242-unlink">1.2.4.2. unlink</a></h5>
+<pre><code class="language-sh">set-src-link unlink
+</code></pre>
+<p>输出了以下内容</p>
+<pre><code class="language-sh">Error, you should add &quot;--region&quot; to specify your region
+</code></pre>
+<p>只要指定区域就能解决了</p>
+<pre><code class="language-sh">set-src-link unlink -r cn
+# unlink /etc/apt/sources.list.d/cn-mirror.sources
+
+set-src-link unlink -r de
+# unlink /etc/apt/sources.list.d/de-mirror.sources
+
+set-src-link unlink -r us
+# unlink /etc/apt/sources.list.d/us-mirror.sources
+</code></pre>
+<h4 id="125-源文件解析"><a class="header" href="#125-源文件解析">1.2.5. 源文件解析</a></h4>
+<p>您如果之前曾有过手动更换 debian/ubuntu 源的经历，那么应该会知道 debian 传统的 one-line-style 源格式。</p>
+<pre><code class="language-list">deb http://mirrors.bfsu.edu.cn/debian/ sid main non-free contrib
+</code></pre>
+<p>与传统的 one-line-style 不同，本项目的“镜像源”功能使用的是更现代化的 deb822-style。<br />
+此格式要求 apt 的版本 &gt;= 1.1.0。<br />
+因此它在默认情况下不兼容 debian 8(Jessie)。</p>
+<p>让我们来看看里面有什么吧！</p>
+<p>以 debian buster （old-stable）为例。<br />
+实际上，buster 的 suites 和 bullseye 是有区别的。<br />
+除了 security 源的区别外，backports 也应该使用不同的源。<br />
+不能简单地将 &quot;stable-backports&quot; 替换为 &quot;old-stabe-backports&quot;</p>
+<p>此外，如果这个镜像源不包含 &quot;debian-security&quot; 镜像，那么它默认会启用官方的 security 源，并禁用镜像 security 源。<br />
+如果它不支持 https, 那么 uris 那里显示的是 <strong>http://</strong> 开头的 uri 。<br />
+在使用 neko-repo 的镜像源 deb 包的情况下，您无需手动去判断它支不支持 <code>https</code> 等东西。</p>
+<pre><code class="language-sh">cat /etc/apt/sources.list.d/cn-mirror.sources
+</code></pre>
+<pre><code class="language-yaml">name: Debian
+# yes or no
+enabled: yes
+# types: deb deb-src
+types: deb
+uris: https://mirrors.bfsu.edu.cn/debian/
+suites: buster
+components: main contrib non-free
+# architectures: amd64 arm64 armhf i386 ppc64el s390x mipsel mips64el
+# --------------------------------
+
+name: Debian updates
+enabled: yes
+# types: deb deb-src
+types: deb
+uris: https://mirrors.bfsu.edu.cn/debian/
+suites: buster-updates
+components: main contrib non-free
+# --------------------------------
+
+name: Debian backports
+enabled: yes
+# types: deb deb-src
+types: deb
+uris: https://mirrors.bfsu.edu.cn/debian/
+# For debian old-stable, you should use &quot;old-stable-backports-sloppy&quot;, instead of &quot;old-stable-backports&quot;.
+# https://backports.debian.org/Instructions/#:~:text=Old-stable-sloppy
+# suites: buster-backports
+suites: buster-backports-sloppy
+components: main contrib non-free
+# --------------------------------
+
+name: Debian security
+enabled: yes
+# types: deb deb-src
+types: deb
+uris: https://mirrors.bfsu.edu.cn/debian-security/
+suites: buster/updates
+components: main contrib non-free
+# --------------------------------
+
+name: Official security
+enabled: no
+# types: deb deb-src
+types: deb
+uris: https://deb.debian.org/debian-security/
+suites: buster/updates
+components: main contrib non-free
+# --------------------------------
+
+name: Proposed updates
+enabled: no
+# types: deb deb-src
+types: deb
+uris: https://mirrors.bfsu.edu.cn/debian/
+suites: buster-proposed-updates
+components: main contrib non-free
+# --------------------------------
+</code></pre>
+<p><code>enabled</code> ：是否需要启用这个源，可选 yes 或 no<br />
+<code>types</code>: 类型，一般情况下用 <strong>deb</strong>, 若有获取源代码的要求，就用 <strong>deb deb-src</strong></p>
+<p>除了上面介绍到的内容外，deb822-style 还支持其他的 keys(键)。</p>
+<blockquote>
+<p>key: value<br />
+左为键，右为值</p>
+</blockquote>
+<p>例如:</p>
+<p>使用 signed-by 指定 OpenPGP 公钥。</p>
+<pre><code class="language-yaml">signed-by: /usr/share/keyrings/tmoe-archive-keyring.gpg
+</code></pre>
+
+                        <div id="giscus-container"></div>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="add-repo.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="container.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="add-repo.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="container.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+        var pagePath = "mirror-repo.md"
+        </script>
+
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="assets/giscus.js"></script>
+    </body>
+</html>

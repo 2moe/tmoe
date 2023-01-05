@@ -1,0 +1,3038 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js ayu">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>The TMoe Reference</title>
+        <meta name="robots" content="noindex" />
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/css/style-20220514.css">
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "ayu";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('ayu')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="prologue.html">序章</a></li><li class="spacer"></li><li class="chapter-item expanded "><a href="repo.html"><strong aria-hidden="true">1.</strong> 倉庫</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="add-repo.html"><strong aria-hidden="true">1.1.</strong> 添加倉庫</a></li><li class="chapter-item expanded "><a href="mirror-repo.html"><strong aria-hidden="true">1.2.</strong> 更換鏡像源</a></li></ol></li><li class="chapter-item expanded "><a href="container.html"><strong aria-hidden="true">2.</strong> 容器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="docker-container.html"><strong aria-hidden="true">2.1.</strong> docker</a></li><li class="chapter-item expanded "><a href="android.html"><strong aria-hidden="true">2.2.</strong> android</a></li></ol></li><li class="chapter-item expanded "><a href="configuration.html"><strong aria-hidden="true">3.</strong> 配置</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="toml.html"><strong aria-hidden="true">3.1.</strong> toml</a></li></ol></li><li class="chapter-item expanded "><a href="env.html"><strong aria-hidden="true">4.</strong> 環境</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="editor.html"><strong aria-hidden="true">4.1.</strong> 編輯器</a></li></ol></li><li class="chapter-item expanded "><a href="appendix.html"><strong aria-hidden="true">5.</strong> 附錄</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="appendix_region-code.html"><strong aria-hidden="true">5.1.</strong> 區域代號</a></li><li class="chapter-item expanded "><a href="appendix_todo.html"><strong aria-hidden="true">5.2.</strong> todo</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu (default)</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">天萌參考手冊 繁體中文版</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/2moe/tmoe/tree/doc" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                    <!-- Page table of contents -->
+                    <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <h1 id="序章"><a class="header" href="#序章">序章</a></h1>
+<p>中文 | <a href="https://doc.tmoe.me/en/prologue.html">English</a></p>
+<ul>
+<li><a href="prologue.html#%E8%81%B2%E6%98%8E">聲明</a></li>
+<li><a href="prologue.html#%E5%A6%82%E4%BD%95%E9%96%B2%E8%AE%80%E9%80%99%E6%9C%AC%E6%9B%B8">如何閲讀這本書</a></li>
+<li><a href="prologue.html#%E4%BD%BF%E7%94%A8%E5%A0%B4%E6%99%AF">使用場景</a>
+<ul>
+<li><a href="prologue.html#%E6%9C%89%E6%84%8F%E7%BE%A9%E8%88%87%E5%90%A6">有意義與否</a></li>
+<li><a href="prologue.html#android-%E5%9C%96%E6%9B%B8%E9%A4%A8%E8%88%87-latex">android 、圖書館與 LaTex</a></li>
+<li><a href="prologue.html#ios%E6%97%85%E9%A4%A8%E8%88%87-manjarogoland">iOS、旅館與 manjaro+goland</a></li>
+<li><a href="prologue.html#%E5%85%B6%E4%BB%96%E5%A0%B4%E6%99%AF">其他場景</a></li>
+</ul>
+</li>
+<li><a href="prologue.html#%E9%A1%8C%E5%A4%96%E8%A9%B1">題外話</a></li>
+</ul>
+<blockquote>
+<p>下文將用“本書”來代指“本手冊”。</p>
+</blockquote>
+<h2 id="聲明"><a class="header" href="#聲明">聲明</a></h2>
+<p>對於普通用户來説，本項目自身沒有任何價值。<br />
+本書亦是如此。<br />
+這裏沒有輕小説中“劍與魔法”的奇幻異世界冒險歷程, 更沒有《詩經》中“墮山喬嶽，允猶翕河”般遼闊壯美的風景。<br />
+有的只是無聊透頂的內容。</p>
+<p>對於非普通用户來説，它的價值主要取決於使用場景。</p>
+<blockquote>
+<p>在本章的“使用場景”中，我們將簡單介紹相關內容。</p>
+</blockquote>
+<p>若在同一場景下，存在更優的替代品，那麼您不妨敞開胸懷，給本項目多提幾個 issues。<br />
+或許有一天，世界會變得更加美好呢！</p>
+<!--
+我們在很久之前，就已經知道了：多肽鏈的盤曲、摺疊方式及其形成的空間結構的千差萬別，這是蛋白質多樣性的原因之一。
+而結構的多樣性決定了功能的多樣性。
+類比本項目，由於本項目在架構設計上的不合理，因此對於 edition 2021，除了 android 外，開發者只建議您在容器環境中使用。
+-->
+<p>除了 android 外，對於某些功能或工具，本項目的開發者若未將其打成包（例如 deb 包），並且未在本書中對其進行詳細解析，那麼只建議您在容器中使用。<br />
+對於 android, 請翻閲 “容器/android”。</p>
+<blockquote>
+<p>old-version 的內容會被新版所替代，新版將會放在 dev 分支。<br />
+Trust us. 未來會更好的!</p>
+</blockquote>
+<h2 id="如何閲讀這本書"><a class="header" href="#如何閲讀這本書">如何閲讀這本書</a></h2>
+<p>在閲讀本書時，您需要了解的內容。</p>
+<blockquote>
+<p>本頁面由 <a href="https://github.com/rust-lang/mdBook">mdbook</a> 生成。</p>
+</blockquote>
+<ul>
+<li>左上角的三條槓 &quot;≡&quot;
+<ul>
+<li>點擊三條槓打開目錄</li>
+</ul>
+</li>
+<li>頁面最下方的評論區
+<ul>
+<li>您可以使用 github 帳號登錄，您發表的內容將與 &quot;github discussions&quot; 保持同步。</li>
+<li>同理，如果您在 discussions 中找到當前章節的討論頁面，並在裏面發表內容，那麼相關內容也會同步到下方的評論區。</li>
+</ul>
+</li>
+<li>左上角的畫筆 &quot;🖌️&quot;
+<ul>
+<li>先點擊畫筆，再選擇主題，最後完成切換</li>
+</ul>
+</li>
+<li>左下角的 &quot;&lt;&quot; 符號
+<ul>
+<li>點擊 &quot;&lt;&quot; 跳轉到上一頁</li>
+</ul>
+</li>
+<li>右下角的 &quot;&gt;&quot; 符號
+<ul>
+<li>點擊 &quot;&gt;&quot; 跳轉到下一頁</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>如果您的網頁（屏幕）顯示空間足夠寬，那麼&quot;&lt;&quot; 和 &quot;&gt;&quot; 將位於中間，而不是下方。</p>
+</blockquote>
+<h2 id="使用場景"><a class="header" href="#使用場景">使用場景</a></h2>
+<p>本項目存在的意義:</p>
+<ul>
+<li>在合適的場景下，您使用本項目去做一些有趣或有意義的事情。</li>
+</ul>
+<p>對您來説有意義的事情，對本項目而言，亦是如此。</p>
+<p>You can do something interesting or meaningful.</p>
+<h3 id="有意義與否"><a class="header" href="#有意義與否">有意義與否</a></h3>
+<p>有意義與否並非如 <code>bool</code> 類型那般非 <code>true</code> 即 <code>false</code>。<br />
+它是相對的，而非絕對。<br />
+在這裏我們並不想深入去探求哲學問題，簡而言之，這個問題的答案因人而異，沒有絕對的標準。</p>
+<blockquote>
+<p>問題：什麼是意義不大的事情呢？</p>
+</blockquote>
+<p>假設存在以下兩個場景：</p>
+<ul>
+<li>1.您在 arm64 設備上模擬 x64 環境，然後在上面打！遊！戲！</li>
+<li>2.您在 arm64 設備上遠程連接到 x64 windows 設備，然後運行 windows x64 平台的遊戲。</li>
+</ul>
+<p>前者花了一小時，而後者花了五分鐘。</p>
+<hr />
+<blockquote>
+<p>主觀回答 1：
+前者可能是有趣的，但是意義相較於後者而言，可能沒有那麼大。<br />
+時間是很寶貴的，我希望大家能把時間花在更有意義的事情上，而不是浪費時間。</p>
+</blockquote>
+<hr />
+<blockquote>
+<p>主觀回答 2：
+我既沒有電腦，也租不起 x64 虛擬專用服務器，更玩不起雲遊戲，在手機上體驗 windows 遊戲讓我感受到了快樂，我認為這是值得的，並且是有意義的。</p>
+</blockquote>
+<hr />
+<p>在下文中，我們將會假設幾個場景，您可以對其進行評價，判斷其是否有意義。</p>
+<h3 id="android-圖書館與-latex"><a class="header" href="#android-圖書館與-latex">android 、圖書館與 LaTex</a></h3>
+<ul>
+<li>地點：圖書館</li>
+<li>設備：android 手機/平板 (無 root)</li>
+<li>條件：無網絡，或網絡狀態不佳 (網速很慢)</li>
+</ul>
+<p><img src="./assets/latex_editor.png" alt="latex_editor" /></p>
+<ul>
+<li>描述：您在圖書館裏，帶着 android 手機/平板，在離線環境下，運行 gnome + LaTex 環境（texlive-full） + LaTex 編輯器，在上面用 LaTex 編輯器寫文章/排版。</li>
+</ul>
+<h3 id="ios旅館與-manjarogoland"><a class="header" href="#ios旅館與-manjarogoland">iOS、旅館與 manjaro+goland</a></h3>
+<ul>
+<li>地點：旅館、酒店、餐廳、銀行或電信營業廳（等網絡良好的場所）</li>
+<li>設備：iPhone/iPad (或其他帶有瀏覽器的設備)</li>
+<li>條件：網絡環境優秀（至少要良好）</li>
+<li>描述：您出門在外，只帶了 ios 設備。可是您做夢都想要用 <code>idea</code>, <code>clion</code> 和 <code>goland</code>。<br />
+github 的 codespace (在線版 vscode) 可以運行不同的環境，於是您將 tmoe 的 gui 容器直接作為 codespace 的 devcontainer。
+在上面跑 gui (xfce), 再跑 goland。</li>
+</ul>
+<blockquote>
+<p>在 vscode 上跑 jetbrains goland, 這何嘗不是一種 PV 呢？關於 PV 的説明，詳見本章的“題外話”。</p>
+</blockquote>
+<ul>
+<li>教程：
+<ul>
+<li>説明：
+<ul>
+<li>截至 2022-06-15, github 官方並沒有提供基於 manjaro 的 xfce 環境（容器鏡像）。</li>
+<li>儘管 github 的 codespace （vscode）插件自帶了生成配置的功能，但是之後本項目開發者可能會寫個類似功能的小工具。從而讓大家更省心一點。</li>
+</ul>
+</li>
+<li>準備：
+<ul>
+<li>您擁有一個支持 codespace 的 github 賬號</li>
+<li>若顯示區域不夠寬，則您可能需要將瀏覽器（如 safari）切換為桌面版網站（視圖）</li>
+</ul>
+</li>
+<li>開始：
+<ul>
+<li>成功連接到 codespace 後，打開 vscode 內置終端，並在項目目錄下執行以下操作</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-json">mkdir -p .devcontainer
+cd .devcontainer
+cat &gt;devcontainer.json&lt;&lt;-'EOFJSON'
+// For format details, see https://aka.ms/devcontainer.json.
+{
+    &quot;name&quot;: &quot;Manjaro&quot;,
+    &quot;dockerFile&quot;: &quot;Dockerfile&quot;,
+    &quot;runArgs&quot;: [
+        &quot;--cap-add=SYS_PTRACE&quot;,
+        &quot;--security-opt&quot;,
+        &quot;seccomp=unconfined&quot;
+    ],
+    // &quot;mounts&quot;: [
+    //     &quot;source=dind-var-lib-docker,target=/var/lib/docker,type=volume&quot;
+    // ],
+    &quot;mounts&quot;: [
+        &quot;source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind&quot;
+    ],
+    &quot;overrideCommand&quot;: false,
+    // Configure tool-specific properties.
+    &quot;customizations&quot;: {
+        // Configure properties specific to VS Code.
+        &quot;vscode&quot;: {
+            // Add the IDs of extensions you want installed when the container is created.
+            &quot;extensions&quot;: [
+                // &quot;MS-CEINTL.vscode-language-pack-zh-hans&quot;,
+                &quot;ms-azuretools.vscode-docker&quot;
+            ]
+        }
+    },
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    &quot;forwardPorts&quot;: [
+        5902
+    ],
+    // Use 'postCreateCommand' to run commands after the container is created.
+    // &quot;postCreateCommand&quot;: &quot;docker --version&quot;,
+    // Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+    // &quot;build&quot;: {
+    //     &quot;args&quot;: {
+    //         &quot;ENABLE_NONROOT_DOCKER&quot;: &quot;false&quot;
+    //     }
+    // },
+    &quot;remoteUser&quot;: &quot;ddk&quot;
+}
+EOFJSON
+
+cat &gt; Dockerfile&lt;&lt;-'EOFDKF'
+# syntax=docker/dockerfile:1
+#---------------------------
+# FROM cake233/manjaro-zsh-amd64
+
+FROM cake233/manjaro-xfce-amd64
+
+# set username &amp; group
+ARG USERNAME=ddk
+ARG GROUPNAME=ddk
+# ARG USER_UID=1001
+# ARG USER_GID=$USER_UID
+
+# rm cn mirrorlist
+RUN sed -e '/bfsu.edu.cn/d' \
+    -e '/tuna.tsinghua.edu.cn/d' \
+    -e '/opentuna.cn/d' \
+    -i /etc/pacman.conf
+
+# install dependencies
+# live server: https://docs.microsoft.com/en-us/visualstudio/liveshare/reference/linux#install-linux-prerequisites
+RUN pacman -Syu \
+    --noconfirm \
+    --needed \
+    base \
+    base-devel \
+    git \
+    lib32-gcc-libs \
+    lib32-glibc \
+    gcr \
+    liburcu \
+    openssl-1.0 \
+    krb5 \
+    icu \
+    zlib \
+    gnome-keyring \
+    libsecret \
+    desktop-file-utils \
+    xorg-xprop \
+    xdg-utils
+
+# locale: Chinese Simplified (China)
+ENV LANG=zh_CN.UTF-8
+
+# add new user
+RUN groupadd --force ${GROUPNAME} \
+    &amp;&amp; useradd --create-home --gid ${GROUPNAME} ${USERNAME} \
+    &amp;&amp; mkdir -p /etc/sudoers.d \
+    &amp;&amp; echo &quot;${USERNAME} ALL=(ALL) NOPASSWD:ALL&quot; &gt; /etc/sudoers.d/ddk \
+    &amp;&amp; chmod 400 /etc/sudoers.d/ddk
+
+WORKDIR [&quot;/home/$USERNAME&quot;]
+
+# clean cache
+RUN yes | pacman -Scc; \
+    rm -rf /var/cache/pacman/pkg/* \
+    /tmp/* \
+    2&gt;/dev/null
+
+# command: sleep infinity
+CMD [ &quot;sleep&quot;, &quot;inf&quot; ]
+EOFDKF
+</code></pre>
+<p>rebuild：</p>
+<ul>
+<li>1.按下 F1 或 Ctrl+Shift+P 或 cmd+shift+p</li>
+<li>2.搜索 rebuild</li>
+<li>3.選擇 Codespaces: Rebuild container</li>
+</ul>
+<blockquote>
+<p>您也可以手動選擇“遠程資源管理器”，再選擇 Codespace, 最後點擊 rebuild container 的 圖標。<br />
+<code>ddk</code> 可以修改為其他用户名。
+關於上述命名的來源，詳見“題外話”</p>
+</blockquote>
+<p>關於 vnc</p>
+<p>進入了 codespace 環境後，在內置終端裏執行以下操作</p>
+<ul>
+<li>運行 <code>tmoe</code></li>
+<li>先選擇語言環境，再選擇 tools</li>
+<li>接着選 software， 然後選 dev</li>
+<li>安裝 goland, clion 或其他 IDEs</li>
+<li>退出 tools</li>
+</ul>
+<p>由於此容器鏡像已經預裝了 xfce, 因此您無需重複安裝。</p>
+<p>對於網頁連接的 codespace:</p>
+<ul>
+<li>運行 <code>novnc</code>，設置密碼</li>
+<li>打開端口轉發處的 <code>36080</code> 對應的 local address</li>
+</ul>
+<p>對於本地 vscode 連接的 codespace：</p>
+<ul>
+<li>運行 <code>startvnc</code></li>
+<li>打開 vnc 客户端，輸入本地 vnc 地址(默認是 127.0.0.1:5902)。</li>
+</ul>
+<h3 id="其他場景"><a class="header" href="#其他場景">其他場景</a></h3>
+<p>序章中描述的內容是有限的，更多內容分佈於本書的其他章節。<br />
+對於其他場景，例如：您想要使用 github actions 來編譯不同架構的軟件，那麼可以去看看 “容器/docker”。</p>
+<h2 id="題外話"><a class="header" href="#題外話">題外話</a></h2>
+<p>注意：<br />
+題外話對您來説，可能是<strong>沒有意義</strong>的，甚至有可能會引起您的<strong>反感</strong>。<br />
+開發者建議您打開目錄，並跳轉至其他章節。</p>
+<hr />
+<p>Q: 為什麼是 <code>ddk</code></p>
+<p>A: 有個叫 <code>ddk</code> 的用户，給本項目提了個與 <code>codespace</code> 相關的 issue, 於是他就“青史留名”了。<br />
+(￣ ▽ ￣)
+其實非本項目相關的 Issue 發在 discussions 裏會更好。</p>
+<p>Q: 什麼是 <code>PV</code></p>
+<p>A: 這是理想氣體狀態方程。
+<code>PV=nTR</code></p>
+<ul>
+<li>解析：
+<ul>
+<li>P: 壓強</li>
+<li>V: 氣體體積</li>
+<li>n: 物質的量</li>
+<li>T: 熱力學温度</li>
+<li>R: 氣體常數</li>
+</ul>
+</li>
+</ul>
+<p>您可能不知道的冷知識：
+2moe 之前在某個漫畫網站上，看到過一本漫畫，它的標題是 <del>《wopd ybww bwpy qmbw PV levl, soyi yeyc PV qmbwde nvpgyz》</del></p>
+<!-- <font style="background: black"></font> -->
+<p>哎呀，這孩子物理應該學得還不錯吧！</p>
+<blockquote>
+<p>這只是標題吸引人而已，好孩子不要去看。</p>
+</blockquote>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="倉庫"><a class="header" href="#倉庫">倉庫</a></h1>
+<p>Welcome to TMOE.</p>
+<p>在瞭解完本項目的應用場景後，不知您是否會對本項目感興趣呢？</p>
+<p>在本章中，我們將瞭解以下內容。</p>
+<ul>
+<li>添加倉庫
+<ul>
+<li>通過軟件倉庫來安裝本項目自身，以及其他的工具。</li>
+</ul>
+</li>
+<li>鏡像源
+<ul>
+<li>為世界上大多數國家和地區的 debian/ubuntu 用户提供更優秀的服務。</li>
+</ul>
+</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="添加倉庫"><a class="header" href="#添加倉庫">添加倉庫</a></h1>
+<ul>
+<li><a href="add-repo.html#1-%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B">1. 快速上手</a>
+<ul>
+<li><a href="add-repo.html#11-apt">1.1. apt</a>
+<ul>
+<li><a href="add-repo.html#111-debian">1.1.1. debian</a></li>
+<li><a href="add-repo.html#112-ubuntu">1.1.2. ubuntu</a></li>
+<li><a href="add-repo.html#113-termux">1.1.3. termux</a></li>
+</ul>
+</li>
+<li><a href="add-repo.html#12-pacman">1.2. pacman</a></li>
+</ul>
+</li>
+<li><a href="add-repo.html#2-debian-based-ubuntu-mint-kali">2. Debian-based (ubuntu, mint, kali)</a>
+<ul>
+<li><a href="add-repo.html#21-%E9%80%9A%E7%94%A8">2.1. 通用</a>
+<ul>
+<li><a href="add-repo.html#211-%E8%A9%B3%E7%B4%B0%E8%AA%AC%E6%98%8E">2.1.1. 詳細説明</a></li>
+<li><a href="add-repo.html#212-neko-repo-%E8%A9%B3%E6%83%85">2.1.2. neko-repo 詳情</a></li>
+<li><a href="add-repo.html#213-%E6%9B%B4%E6%96%B0%E5%85%AC%E9%91%B0">2.1.3. 更新公鑰</a></li>
+</ul>
+</li>
+<li><a href="add-repo.html#22-toy-repo">2.2. toy-repo</a>
+<ul>
+<li><a href="add-repo.html#221-%E8%A9%B3%E6%83%85">2.2.1. 詳情</a></li>
+</ul>
+</li>
+<li><a href="add-repo.html#23-uuu-repo">2.3. uuu-repo</a>
+<ul>
+<li><a href="add-repo.html#231-%E8%AA%AC%E6%98%8E">2.3.1. 説明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="add-repo.html#3-android">3. Android</a>
+<ul>
+<li><a href="add-repo.html#31-termux">3.1. termux</a>
+<ul>
+<li><a href="add-repo.html#311-tinor">3.1.1. tinor</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="add-repo.html#4-%E9%A1%8C%E5%A4%96%E8%A9%B1">4. 題外話</a>
+<ul>
+<li><a href="add-repo.html#41-%E6%82%A8%E5%8F%AF%E8%83%BD%E4%B8%8D%E9%9C%80%E8%A6%81%E4%BA%86%E8%A7%A3%E7%9A%84%E7%9F%A5%E8%AD%98">4.1. 您可能不需要了解的知識</a></li>
+<li><a href="add-repo.html#42-doas-%E8%88%87-sudo">4.2. <code>doas</code> 與 <code>sudo</code></a></li>
+</ul>
+</li>
+</ul>
+<h2 id="1-快速上手"><a class="header" href="#1-快速上手">1. 快速上手</a></h2>
+<p>注意：
+目前，儘管本項目相關倉庫已經搭建完成，但是絕大多數軟件包仍處於未完成狀態。<br />
+之後，本項目的相關包名將可能會被命名為 <code>tmoe-2021</code>, <code>tmm</code> 和 <code>tmoe</code></p>
+<h3 id="11-apt"><a class="header" href="#11-apt">1.1. apt</a></h3>
+<h4 id="111-debian"><a class="header" href="#111-debian">1.1.1. debian</a></h4>
+<p><img src="assets/logo/debian.svg" alt="debian" /></p>
+<ul>
+<li>系統要求
+<ul>
+<li>支持
+<ul>
+<li>Debian GNU/Linux
+<ul>
+<li>目前支持的最低版本為 Debian 9 Stretch</li>
+<li>由於 Stretch 已經 EOL, 之後最低版本可能會升級至 Buster</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>不支持
+<ul>
+<li>Debian GNU/Hurd 和 kFreeBSD</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-sh">su -c &quot;apt update; apt install doas curl&quot;
+su -c &quot;echo 'permit nopass $(id -un) cmd apt' &gt;&gt; /etc/doas.conf&quot;
+
+curl -LO https://l.tmoe.me/neko.deb
+doas apt install ./neko.deb
+rm -v neko.deb
+doas apt update
+doas apt install toy-repo
+</code></pre>
+<blockquote>
+<p>在題外話中，本項目開發者將介紹：為什麼是 OpenBSD <code>doas</code> 而非 <code>sudo</code></p>
+</blockquote>
+<h4 id="112-ubuntu"><a class="header" href="#112-ubuntu">1.1.2. ubuntu</a></h4>
+<p><img src="assets/logo/ubuntu.svg" alt="ubuntu" /></p>
+<pre><code class="language-sh">sudo apt update
+sudo apt install -y wget
+wget l.tmoe.me/neko.deb
+sudo apt install ./neko.deb
+rm -v neko.deb
+sudo apt update
+sudo apt install uuu-repo
+</code></pre>
+<h4 id="113-termux"><a class="header" href="#113-termux">1.1.3. termux</a></h4>
+<img src="./assets/logo/termux.svg" width="128" height="128"/>
+<blockquote>
+<p>File: termux.svg<br />
+License: CC BY-SA 4.0<br />
+Origin: Termux.com - <a href="https://termux.com/">https://termux.com/</a></p>
+</blockquote>
+<pre><code class="language-sh">curl -LO l.tmoe.me/tinor.deb
+apt install ./tinor.deb
+apt update
+</code></pre>
+<h3 id="12-pacman"><a class="header" href="#12-pacman">1.2. pacman</a></h3>
+<p><img src="assets/logo/arch.svg" alt="arch" /></p>
+<p>開發者還在咕咕咕中 ...</p>
+<h2 id="2-debian-based-ubuntu-mint-kali"><a class="header" href="#2-debian-based-ubuntu-mint-kali">2. Debian-based (ubuntu, mint, kali)</a></h2>
+<p>從理論上説，您不應該混用 debian 和 ubuntu 的軟件源。<br />
+因為這會破壞系統的依賴關係。</p>
+<p>您如果之前一直都是這麼幹的，那麼需要多瞭解一下 debian。<br />
+您可以閲讀 <a href="https://www.debian.org/doc/manuals/debian-reference/">debian 參考手冊（Osamu Aoki 青木修 著）</a>。</p>
+<h3 id="21-通用"><a class="header" href="#21-通用">2.1. 通用</a></h3>
+<p>那麼問題來了。<br />
+既然混用源的問題這麼嚴重，那為什麼本項目還是有通用倉庫呢？</p>
+<p>答案是：</p>
+<ul>
+<li>靜態編譯</li>
+<li>低版本依賴</li>
+<li>以及 &quot;all&quot; 架構的軟件包。</li>
+</ul>
+<p>實際上，對於不能通用的包來説，開發者會為它們建立單獨的倉庫。</p>
+<p>對於 debian-based 發行版來説，本項目通用的倉庫名為 &quot;neko&quot;。</p>
+<h4 id="211-詳細説明"><a class="header" href="#211-詳細説明">2.1.1. 詳細説明</a></h4>
+<ul>
+<li>
+<p>要求：</p>
+<ul>
+<li>系統版本： debian 9 (stretch) &amp; ubuntu 16.04(xenial)
+<ul>
+<li>依賴: <code>apt-transport-https</code>, <code>ca-certificates</code></li>
+</ul>
+</li>
+<li>系統版本：debian 10 (buster), ubuntu 18.04 (bionic) 及其以上的系統
+<ul>
+<li>依賴: <code>ca-certificates</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>以下例子將使用 <code>curl</code><br />
+您也可以換用其他下載工具，例如 <code>wget2</code> 或 <code>aria2</code></p>
+<blockquote>
+<p>以下內容可以直接編輯</p>
+</blockquote>
+<pre><code class="language-sh editable">apt update
+apt install -y curl
+
+# 下載並安裝 tmoe 的 neko 倉庫
+curl -LO https://l.tmoe.me/neko.deb
+apt install ./neko.deb
+# 這個 deb 包對您的系統做了什麼呢？
+# 在 /etc/apt/sources.list.d/ 目錄下創建了源列表：
+# neko-repo.sources (權限為644,所屬為0:0)
+# 在本書的換源部分將介紹這種格式
+# 還有 OpenPGP(GnuPG) 公鑰：
+# /usr/share/keyrings/tmoe-archive-keyring.gpg (權限同上)
+# 並且在 /etc/apt/preferences.d/50-neko-repository 中調整了軟件包優先級
+# 注：此 deb 包不依賴 gnupg(完整版)， 只需要 apt 自身依賴的 gpgv(簡化版gnupg) 就可以了
+
+# 刪除 deb 包
+rm -fv ./neko.deb
+# 更新索引信息
+apt update
+</code></pre>
+<h4 id="212-neko-repo-詳情"><a class="header" href="#212-neko-repo-詳情">2.1.2. neko-repo 詳情</a></h4>
+<pre><code class="language-sh">apt show neko-repo
+</code></pre>
+<pre><code class="language-yaml">Package: neko-repo
+Version: 0.0.1-12
+Priority: standard
+Section: misc
+Maintainer: Moe Master &lt;m@tmoe.me&gt;
+Installed-Size: 30.7 kB
+Provides: set-src-list, update-neko-key
+Depends: apt (&gt;= 1.1.0)
+Recommends: ca-certificates
+Suggests: curl | wget
+Homepage: https://packages.tmoe.me/deb/dists/neko/
+Download-Size: 5,232 B
+APT-Manual-Installed: yes
+APT-Sources: https://packages.tmoe.me/deb neko/main amd64 Packages
+Description: Neko repository, QwQ
+  It includes some useful packages.
+  The minimum supported version of this repository is debian 9 (Stretch),
+  you should not install it on debian 8 (Jessie).
+</code></pre>
+<p>讓我們來看一下 <code>neko-repo</code> 提供了什麼東西</p>
+<ul>
+<li><code>set-src-list</code>
+<ul>
+<li>我們將會在“倉庫/更換鏡像源”中介紹到它</li>
+</ul>
+</li>
+<li><code>update-neko-key</code>
+<ul>
+<li>用於更新公鑰</li>
+</ul>
+</li>
+</ul>
+<h4 id="213-更新公鑰"><a class="header" href="#213-更新公鑰">2.1.3. 更新公鑰</a></h4>
+<p>在極其特殊的情況下，neko 倉庫的 OpenPGP 公鑰可能會失效。<br />
+在這種情況下，您就不能用 <code>apt-get install</code> 來更新 neko 倉庫的 keyring 了，而要用 <code>neko-repo</code> 自帶的一個命令。</p>
+<p>運行</p>
+<pre><code class="language-sh">update-neko-key
+</code></pre>
+<p>它會輸出以下內容</p>
+<pre><code class="language-sh">It can update the OpenPGP pub keyring: &quot;/usr/share/keyrings/tmoe-archive-keyring.gpg&quot;
+
+-d | --downloader: You can specify the downloader.
+
+For example, you can run &quot;update-neko-key -d curl&quot; to use curl.
+Run &quot;update-neko-key -d wget&quot; to use wget.
+</code></pre>
+<p>簡單來説，您需要手動指定一個下載器。<br />
+現在只支持</p>
+<ul>
+<li><code>curl</code></li>
+<li><code>wget</code></li>
+<li><code>wget2</code></li>
+<li><code>aria2c</code></li>
+</ul>
+<p>用法很簡單，以 root 身份運行 <code>update-neko-key -d curl</code>。</p>
+<blockquote>
+<p>如果沒有 root 權限，那麼它將無法修改 &quot;/usr/share/keyrings/tmoe-archive-keyring.gpg&quot;。</p>
+</blockquote>
+<p>這個工具的邏輯非常簡單。</p>
+<ul>
+<li>若您的系統已經安裝了 <code>gnupg</code>，那麼它將從相關倉庫獲取 <a href="https://salsa.debian.org/mm/repo/-/blob/master/src/deb/debian/repo/common/neko-repo/current/tmoe-archive-keyring.asc">ascii 格式的 OpenPGP 公鑰</a>，並將其轉換為二進制格式，最後覆蓋原來的公鑰。</li>
+<li>若您的系統沒有安裝 <code>gnupg</code>, 或者轉換過程出錯了，那麼它將直接從相關網站獲取二進制格式的公鑰。</li>
+</ul>
+<p>如果沒有意外的話，您可能十年都不需要調用此命令去更新公鑰。<br />
+至於開發者能不能為本項目用愛發電十年就是另一回事了。</p>
+<h3 id="22-toy-repo"><a class="header" href="#22-toy-repo">2.2. toy-repo</a></h3>
+<p>與 <strong>neko-repo</strong> 不同，<strong>toy-repo</strong> 並非完全通用的。
+它只能給 <strong>debian</strong> 用，不能給 <strong>ubuntu</strong> 用。</p>
+<h4 id="221-詳情"><a class="header" href="#221-詳情">2.2.1. 詳情</a></h4>
+<pre><code class="language-sh">apt show toy-repo
+</code></pre>
+<pre><code class="language-yaml">Package: toy-repo
+Version: 0.0.1-4
+Priority: optional
+Section: misc
+Maintainer: Moe Master &lt;m@tmoe.me&gt;
+Installed-Size: 19.5 kB
+Depends: apt (&gt;= 1.1.0), neko-repo
+Suggests: ca-certificates
+Homepage: https://packages.tmoe.me/deb/dists/toy
+Download-Size: 2,484 B
+APT-Manual-Installed: yes
+APT-Sources: https://packages.tmoe.me/deb neko/main amd64 Packages
+Description: A repository for debian only
+  Toy is a wonderful thing.
+  Let's keep our childishness and optimism!
+  Go after the good things in the toy-repo!
+  The source file will be placed in &quot;/etc/apt/sources.list.d/toy-repo.sources&quot;
+</code></pre>
+<p>遺憾的是，toy-repo(玩具倉庫)自身並沒有什麼有用的東西。<br />
+有用的東西都在倉庫裏面，您需要以 root 身份運行 <code>apt install</code> 來安裝您心儀的玩具。</p>
+<p>玩具是一個很美好的東西，開發者將其命名為 <strong>toy</strong>，並沒有抱着做“玩具項目” 這種消極的想法。<br />
+與 debian 的 玩具總動員系列的代號類似。<br />
+保持童真，以及積極向上的態度是非常重要的。<br />
+<strong>toy</strong> 這個詞還包含了開發者對美好生活的嚮往。<br />
+這個世界是非常複雜的，像孩童一樣追求着簡簡單單的快樂是一件非常非常幸福的事情。</p>
+<h3 id="23-uuu-repo"><a class="header" href="#23-uuu-repo">2.3. uuu-repo</a></h3>
+<p>與 <strong>neko-repo</strong> 和 <strong>toy-repo</strong> 都不同。<br />
+uuu 倉庫只能給 <strong>ubuntu</strong> 用，不能給 <strong>debian</strong> 用。</p>
+<h4 id="231-説明"><a class="header" href="#231-説明">2.3.1. 説明</a></h4>
+<p>uuu 倉庫對於 ubuntu 來説是通用的。</p>
+<p>本項目之後可能還會有 &quot;focal-repo&quot; 這種只能給單獨的版本使用的倉庫。</p>
+<h2 id="3-android"><a class="header" href="#3-android">3. Android</a></h2>
+<h3 id="31-termux"><a class="header" href="#31-termux">3.1. termux</a></h3>
+<h4 id="311-tinor"><a class="header" href="#311-tinor">3.1.1. tinor</a></h4>
+<p>TINOR Is Not Official Repository.</p>
+<p>把軟件包拆出來，看看裏面有什麼東西吧！</p>
+<pre><code class="language-tree  editable">├── control
+│   ├── conffiles
+│   ├── control
+│   ├── md5sums
+│   ├── postinst
+│   └── postrm
+└── data
+    └── data
+        └── data
+            └── com.termux
+                └── files
+                    └── usr
+                        ├── bin
+                        │   ├── set-src-list
+                        │   └── update-tinor-key
+                        ├── etc
+                        │   └── tmoe
+                        │       └── repo
+                        │           └── apt
+                        │               ├── preferences.d
+                        │               │   └── 50-tinor
+                        │               └── sources.list.d
+                        │                   └── tinor.sources
+                        └── share
+                            ├── doc
+                            │   └── tinor-repo
+                            │       ├── changelog.Debian
+                            │       └── copyright
+                            └── keyrings
+                                └── tmoe-archive-keyring.gpg
+</code></pre>
+<p>在安裝 deb 包，執行 <code>postinst</code> 的 <strong>configure</strong> 階段時， <code>postinst</code> 會在 <code>$PREFIX/etc/apt/sources.list.d</code> 和 <code>$PREFIX/etc/apt/preferences.d</code> 處創建與 <strong>tinor</strong> 相關的軟鏈接；<br />
+卸載軟件包，執行 <code>postrm</code> 的 <strong>purge</strong> 或 <strong>remove</strong> 階段時，<code>postrm</code> 會自動刪掉軟鏈接。</p>
+<p>可以看出來，它的結構與 <code>neko-repo</code> 是極其相似的，只是路徑不一樣。</p>
+<h2 id="4-題外話"><a class="header" href="#4-題外話">4. 題外話</a></h2>
+<h3 id="41-您可能不需要了解的知識"><a class="header" href="#41-您可能不需要了解的知識">4.1. 您可能不需要了解的知識</a></h3>
+<div style="display:none">
+```mermaid
+graph TD
+    D(錯誤示範)
+    A[A:glibc2.33] --> |使用| B
+    B[B:glibc2.35] --> |提供| b
+    A --> |安裝| b[c:依賴glibc]
+```
+</div>
+<p><img src="assets/add-repo_error-dep.svg" alt="add-repo_error-dep" /></p>
+<p>如果您一定要混用軟件源, 那麼請在高版本系統中使用低版本系統的源。<br />
+否則將出現以下的情況：<br />
+比如系統 A 的 glibc 版本是 2.33，B 是 2.35。<br />
+B 的某個軟件 b 依賴了 glibc。<br />
+如果您在 A 上用了 B 的源，然後又安裝了 b ，那麼 glibc 可能也被升到了 2.35。<br />
+這時候 A 上一大堆系統相關軟件要麼跟着升級，要麼可能會出現不可預料的“不穩定性”。</p>
+<p>如果您想要將一個系統完全變成另一個系統的模樣，那麼結論與上面完全相反，您得要像上面那張流程圖那樣做才行。<br />
+這樣做相當於從低版本系統升級到高版本。</p>
+<p>比如説您想要將 debian 更換為 kali 源，這時候應該用低版本的 debian stable 添加高版本的 kali rolling 源，而不能用高版本的 debian sid 來添加低版本 kali rolling 源。</p>
+<blockquote>
+<p>這裏的高低是相對而言的。</p>
+</blockquote>
+<p>在使用完 <code>apt dist-upgrade</code> 更新完所有軟件包後，您的系統的內部就已經變成 kali 的形狀了。<br />
+在沒有快照或備份的情況下，這麼做就已經回不了頭了。</p>
+<h3 id="42-doas-與-sudo"><a class="header" href="#42-doas-與-sudo">4.2. <code>doas</code> 與 <code>sudo</code></a></h3>
+<p>Q: 為什麼是 <code>doas</code>， 而非 <code>sudo</code>?</p>
+<p>A: 截至 2022-06-20，相較於 <code>sudo</code>, <code>doas</code> 的代碼量更少，出現安全漏洞的頻率也更低。</p>
+<p>從客觀的角度來看：因為用的人少，所以安全漏洞被揭露的可能性更低。<br />
+從 2moe 個人（主觀）的角度來看：OpenBSD 那邊對安全問題可能會更走心一點。</p>
+<blockquote>
+<p>The doas tool was originally written for OpenBSD by Ted Unangst.</p>
+</blockquote>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="鏡像源"><a class="header" href="#鏡像源">鏡像源</a></h1>
+<ul>
+<li><a href="mirror-repo.html#1-debian-based">1. debian-based</a>
+<ul>
+<li><a href="mirror-repo.html#11-%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B">1.1. 快速上手</a></li>
+<li><a href="mirror-repo.html#12-%E8%A9%B3%E7%B4%B0%E8%A7%A3%E6%9E%90">1.2. 詳細解析</a>
+<ul>
+<li><a href="mirror-repo.html#121-set-src-list">1.2.1. set-src-list</a></li>
+<li><a href="mirror-repo.html#122-region-code-repo">1.2.2. region-code-repo</a></li>
+<li><a href="mirror-repo.html#123-%E8%BB%9F%E4%BB%B6%E5%8C%85%E8%A7%A3%E6%9E%90">1.2.3. 軟件包解析</a></li>
+<li><a href="mirror-repo.html#124-set-src-link">1.2.4. set-src-link</a>
+<ul>
+<li><a href="mirror-repo.html#1241-region--link">1.2.4.1. region &amp; link</a></li>
+<li><a href="mirror-repo.html#1242-unlink">1.2.4.2. unlink</a></li>
+</ul>
+</li>
+<li><a href="mirror-repo.html#125-%E6%BA%90%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90">1.2.5. 源文件解析</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr />
+<p>您若在使用發行版的官方鏡像源時，體驗不佳，那不妨試試本項目的“更換髮行版鏡像源”功能。</p>
+<h2 id="1-debian-based"><a class="header" href="#1-debian-based">1. debian-based</a></h2>
+<p>開發者為每一個鏡像源都打了一個 deb 包。</p>
+<p>對於 debian 和 ubuntu 通用的源的 deb 包，開發者把它們放到了 neko 倉庫。</p>
+<div style="display:none">
+```mermaid
+graph TD
+    A(debian) --> D(toy-repo)
+    A(debian) --> C(neko-repo)
+    B(ubuntu) --> C
+    B(ubuntu) --> E(uuu-repo)
+```
+</div>
+<p><img src="assets/mirror-repo_neko-toy-and-uuu.svg" alt="mirror-repo_neko-toy-and-uuu.svg" /></p>
+<p>缺陷：</p>
+<ul>
+<li>儘管您可以在 kali 和 mint 上使用，但是並非所有鏡像源都支持它們，提供 ubuntu 鏡像源的網站不一定會同時提供 mint 源。</li>
+<li>目前，由於 debian-ports 的鏡像源過於稀少，因此本功能未對 riscv64 等架構進行適配。</li>
+</ul>
+<h3 id="11-快速上手"><a class="header" href="#11-快速上手">1.1. 快速上手</a></h3>
+<p>如果您不明白下面的命令的具體意義，那麼請不要直接運行。<br />
+在下一小節中，我們將會對其進行解析。</p>
+<pre><code class="language-sh">sudo set-src-list dis
+sudo apt update
+sudo apt install ustc-linux-user-group-cn-repo
+sudo apt update
+</code></pre>
+<h3 id="12-詳細解析"><a class="header" href="#12-詳細解析">1.2. 詳細解析</a></h3>
+<h4 id="121-set-src-list"><a class="header" href="#121-set-src-list">1.2.1. set-src-list</a></h4>
+<blockquote>
+<p><code>set-src-list</code> 由 <code>neko-repo</code> 提供</p>
+</blockquote>
+<p>首先，運行 <code>set-src-list</code><br />
+它輸出的內容為：</p>
+<pre><code class="language-sh">-d | dis | disable: disable src list
+-e | en | enable: enable src list
+
+Note: This is a dangerous operation.
+If you run &quot;set-src-list dis&quot;, then it will move your &quot;/etc/apt/sources.list&quot; to &quot;/etc/apt/sources.list.bak&quot;
+If you run &quot;set-src-list en&quot;, then it will move your &quot;sources.list.bak&quot; to &quot;sources.list&quot;
+</code></pre>
+<p>這個工具非常簡單，簡單到您會懷疑它是否能被稱為“工具”。</p>
+<p>以 root 身份執行 <code>set-src-list dis</code> , 它將 <strong>/etc/apt/</strong> 目錄下的 &quot;sources.list&quot; 重命名為 &quot;sources.list.bak&quot;。<br />
+<code>set-src-list en</code> 與上面執行相反的操作。</p>
+<blockquote>
+<p>作用：在換源前禁用原來的軟件源。</p>
+</blockquote>
+<h4 id="122-region-code-repo"><a class="header" href="#122-region-code-repo">1.2.2. region-code-repo</a></h4>
+<blockquote>
+<p>如果您不知道具體區域代號是什麼，那麼請翻閲“附錄”中的“區域代號”章節。</p>
+</blockquote>
+<p>使用 <code>apt</code> 搜索您所在國家或地區的鏡像倉庫。</p>
+<p>&quot;United States&quot;: US</p>
+<pre><code class="language-sh">apt search us-repo$
+</code></pre>
+<p>&quot;Germany&quot;: DE</p>
+<pre><code class="language-sh">apt search de-repo$
+</code></pre>
+<p>&quot;China&quot;: CN</p>
+<pre><code class="language-sh">apt search &quot;cn-repo|tw-repo|hk-repo&quot;
+</code></pre>
+<pre><code class="language-log editable">alibaba-cloud-computing-cn-repo/neko 0.0.1-2 all
+  阿里雲鏡像源(China)
+
+bjtu-cn-repo/neko 0.0.1-2 all
+  北京交通大學鏡像源(China)
+
+blendbyte-inc-tw-repo/neko 0.0.1-2 all
+  Blendbyte Inc.(Taiwan)
+
+capital-online-data-service-cn-repo/neko 0.0.1-2 all
+  Capital Online Data Service(China)
+
+china-open-source-mirror-alliance-cn-repo/neko 0.0.1-2 all
+  China open source mirror Alliance(China)
+
+chongqing-university-cn-repo/neko 0.0.1-2 all
+  重慶大學鏡像源(China)
+
+cn99-cn-repo/neko 0.0.1-2 all
+  CN99(China)
+
+dalian-university-of-technology-cn-repo/neko 0.0.1-2 all
+  Dalian University of Technology 大連理工學院鏡像源(China)
+
+debian-cs-nctu-edu-tw-repo/toy 0.0.1-3 all
+  debian.cs.nctu.edu.tw(Taiwan)
+
+debian-csie-ncku-edu-tw-repo/toy 0.0.1-3 all
+  debian.csie.ncku.edu.tw(Taiwan)
+
+debian-csie-ntu-edu-tw-repo/toy 0.0.1-3 all
+  debian.csie.ntu.edu.tw(Taiwan)
+
+dongguan-university-of-technology-gnu-linux-association-cn-repo/neko 0.0.1-2 all
+  Dongguan University of Technology GNU/Linux Association 東莞理工學院鏡像源(China)
+
+escience-center-nanjing-university-cn-repo/neko 0.0.1-2 all
+  eScience Center, Nanjing University 南京大學鏡像源(China)
+
+ftp-cn-debian-org-cn-repo/neko 0.0.1-2 all
+  ftp.cn.debian.org(China)
+
+ftp-hk-debian-org-hk-repo/neko 0.0.1-2 all
+  ftp.hk.debian.org(Hong Kong)
+
+ftp-tw-debian-org-tw-repo/neko 0.0.1-2 all
+  ftp.tw.debian.org(Taiwan)
+
+harbin-institute-of-technology-cn-repo/neko 0.0.1-2 all
+  哈爾濱工業大學鏡像源 Harbin Institute of Technology(China)
+
+huawei-cloud-cn-repo/neko 0.0.1-2 all
+  Huawei Cloud 華為雲鏡像源(China)
+
+institute-of-network-development-national-taiwan-ocean-university-tw-repo/neko 0.0.1-2 all
+  Institute of Network Development, National Taiwan Ocean University(Taiwan)
+
+lanzhou-university-open-source-society-cn-repo/neko 0.0.1-2 all
+  Lanzhou University Open Source Society 蘭州大學鏡像源(China)
+
+mirrors-163-com-cn-repo/neko 0.0.1-2 all
+  網易鏡像源(China)
+
+mirrors-bfsu-edu-cn-repo/neko 0.0.1-2 all
+  北京外國語大學鏡像源(China)
+
+mirrors-neusoft-edu-cn-repo/neko 0.0.1-2 all
+  大連東軟信息學院鏡像源(China)
+
+mirrors-pku-edu-cn-repo/neko 0.0.1-2 all
+  北京大學鏡像源(China)
+
+mirrors-tuna-tsinghua-edu-cn-repo/neko 0.0.1-2 all
+  清華大學鏡像源(China)
+
+nchc-taiwan-tw-repo/neko 0.0.1-2 all
+  NCHC, Taiwan(Taiwan)
+
+nic-beijing-university-of-posts-and-telecommunications-cn-repo/neko 0.0.1-2 all
+  NIC, Beijing University of Posts and Telecommunications 北京郵電大學鏡像源(China)
+
+njuptmirrorsgroup-cn-repo/neko 0.0.1-2 all
+  南京郵電大學鏡像源(China)
+
+opensource-nchc-org-tw-repo/neko 0.0.1-2 all
+  opensource.nchc.org.tw(Taiwan)
+
+opentuna-cn-repo/neko 0.0.1-2 all
+  OpenTUNA(China)
+
+shanghai-jiaotong-university-cn-repo/neko 0.0.1-2 all
+  Shanghai Jiaotong University 上海交通大學鏡像源(China)
+
+sohu-cn-repo/neko 0.0.1-2 all
+  搜狐鏡像源(China)
+
+tencent-cloud-cn-repo/neko 0.0.1-2 all
+  Tencent Cloud 騰訊雲鏡像源(China)
+
+tku-tamkanguniversity-tw-repo/neko 0.0.1-2 all
+  TKU-TamKangUniversity(Taiwan)
+
+ustc-linux-user-group-cn-repo/neko 0.0.1-2 all
+  中國科學技術大學鏡像源(China)
+
+xi-an-jiaotong-university-cn-repo/neko 0.0.1-2 all
+  Xi'an Jiaotong University(China)
+
+xtom-hk-repo/neko 0.0.1-2 all
+  xTom(Hong Kong)
+</code></pre>
+<blockquote>
+<p>實際上，0.0.1-4 修復了 debian (old-stable) 的一些小細節問題，這裏還是 0.0.1-2<br />
+在下文介紹源文件時，將會提到相關內容，因此不更新也沒關係。</p>
+</blockquote>
+<p>然後我們以 root 權限運行 <code>apt</code> 來安裝軟件包。</p>
+<pre><code class="language-sh">apt install opentuna-cn-repo
+</code></pre>
+<h4 id="123-軟件包解析"><a class="header" href="#123-軟件包解析">1.2.3. 軟件包解析</a></h4>
+<p>先拆開來看看</p>
+<pre><code class="language-log editable">├── control
+│   ├── conffiles
+│   ├── control
+│   ├── md5sums
+│   ├── postinst
+│   └── postrm
+└── data
+    ├── etc
+    │   └── tmoe
+    │       └── repo
+    │           └── src
+    │               ├── debian
+    │               │   ├── opentuna-cn-repo_old.sources
+    │               │   ├── opentuna-cn-repo_sid.sources
+    │               │   └── opentuna-cn-repo_stable.sources
+    │               └── ubuntu
+    │                   ├── opentuna-cn-repo_ports.sources
+    │                   └── opentuna-cn-repo.sources
+    └── usr
+        └── share
+            └── doc
+                └── opentuna-cn-repo
+                    └── changelog.Debian.gz
+</code></pre>
+<p><code>postinst</code> 調用了 <code>set-src-link</code> 去創建軟鏈接。<br />
+<code>postrm</code> 調用了 <code>set-src-link</code> 的 <code>unlink</code> 子命令去刪除軟鏈接。<br />
+假如您的系統是 ubuntu jammy (amd64), 那麼它會將 <strong>opentuna-cn-repo.sources</strong> 修改為 jammy 的源，並將其軟鏈接到 &quot;/etc/apt/sources.list.d/cn-mirror.sources&quot;。<br />
+如果您用的是 linuxmint vanessa， 那麼它會自動合併 ubuntu 和 vanessa 的源，並將源文件軟鏈接到 &quot;/etc/apt/sources.list.d/cn-mirror.sources&quot;。</p>
+<p>如果您使用的是 us-repo, 而不是 cn-repo, 那麼它就會將源文件軟鏈接到 &quot;/etc/apt/sources.list.d/us-mirror.sources&quot;。</p>
+<p>相同區域的鏡像包會被上一個安裝的包覆蓋掉，不同區域的不會。</p>
+<p>比如説，您現在安裝了 <code>mirrors-bfsu-edu-cn-repo</code>， 那麼現在的 cn 源是 bfsu。<br />
+您再安裝了 <code>shanghai-jiaotong-university-cn-repo</code>，那麼 cn 源就變成了 sjtu。<br />
+此時，您再安裝了 <code>xtom-de-repo</code>，<strong>/etc/apt/sources.list.d/</strong> 會多出一個 de 源，它跟 cn 源並不衝突。</p>
+<p>在一般情況下，您只需要安裝您的服務器/pc 所在區域的鏡像源即可。<br />
+除非您有充分的理由，否則請不要在一台設備上安裝不同區域的鏡像源。</p>
+<h4 id="124-set-src-link"><a class="header" href="#124-set-src-link">1.2.4. set-src-link</a></h4>
+<p>在上一小節中，我們提到了 <code>set-src-link</code>，在本小節中，我們將對其進行深入解析。</p>
+<p>在您安裝或卸載鏡像源 的 deb 包時， <code>set-src-link</code> 會被自動調用，您無需手動去調用它。</p>
+<p>簡單來説，<code>set-src-link</code> 只做兩件事。</p>
+<ul>
+<li>1.創建軟鏈接
+<ul>
+<li>在創建前，它會自動判斷您的發行版。對於 ubuntu, 它還會判斷您的架構。</li>
+</ul>
+</li>
+<li>2.刪除軟鏈接</li>
+</ul>
+<p>運行 <code>set-src-link -h</code><br />
+輸出的內容是：</p>
+<pre><code class="language-sh editable">set-src-link 0.0.1
+Set the symbolic link for the mirror source.
+
+Usage:
+ set-src-link [flags]&lt;string&gt;
+ set-src-link [flags] [flags]
+ set-src-link &lt;subcommand&gt; [flags]&lt;string&gt;
+
+Flags:
+ -n, --name &lt;mirror-name&gt;      set the mirror name
+ -r, --region &lt;iso-code&gt;       set the region &lt;ISO 3166-1 Alpha-2 code&gt;
+
+ -h, --help                    display help information
+ -V, --version                 display version
+
+Subcommand:
+    unlink
+
+Example:
+ set-src-link -n -h
+ set-src-link --region --help
+ set-src-link unlink -r us
+</code></pre>
+<blockquote>
+<p><code>set-src-link</code> 需要以 root 身份運行，否則將無法修改 <code>/etc/apt/sources.list.d/*-mirror.sources</code></p>
+</blockquote>
+<h5 id="1241-region--link"><a class="header" href="#1241-region--link">1.2.4.1. region &amp; link</a></h5>
+<p>獲取 region 的幫助信息</p>
+<pre><code class="language-sh">set-src-link -r -h
+</code></pre>
+<p><code>-n</code> 後面接的是 deb 包的包名。</p>
+<p>創建軟鏈接</p>
+<pre><code class="language-sh">set-src-link -r cn -n opentuna-cn-repo
+# os: debian
+# code: sid
+# '/etc/apt/sources.list.d/cn-mirror.sources' -&gt; '/etc/tmoe/repo/src/debian/opentuna-cn-repo_sid.sources'
+
+set-src-link -r us -n opentuna-cn-repo
+# os: debian
+# code: sid
+# '/etc/apt/sources.list.d/us-mirror.sources' -&gt; '/etc/tmoe/repo/src/debian/opentuna-cn-repo_sid.sources'
+</code></pre>
+<h5 id="1242-unlink"><a class="header" href="#1242-unlink">1.2.4.2. unlink</a></h5>
+<pre><code class="language-sh">set-src-link unlink
+</code></pre>
+<p>輸出了以下內容</p>
+<pre><code class="language-sh">Error, you should add &quot;--region&quot; to specify your region
+</code></pre>
+<p>只要指定區域就能解決了</p>
+<pre><code class="language-sh">set-src-link unlink -r cn
+# unlink /etc/apt/sources.list.d/cn-mirror.sources
+
+set-src-link unlink -r de
+# unlink /etc/apt/sources.list.d/de-mirror.sources
+
+set-src-link unlink -r us
+# unlink /etc/apt/sources.list.d/us-mirror.sources
+</code></pre>
+<h4 id="125-源文件解析"><a class="header" href="#125-源文件解析">1.2.5. 源文件解析</a></h4>
+<p>您如果之前曾有過手動更換 debian/ubuntu 源的經歷，那麼應該會知道 debian 傳統的 one-line-style 源格式。</p>
+<pre><code class="language-list">deb http://mirrors.bfsu.edu.cn/debian/ sid main non-free contrib
+</code></pre>
+<p>與傳統的 one-line-style 不同，本項目的“鏡像源”功能使用的是更現代化的 deb822-style。<br />
+此格式要求 apt 的版本 &gt;= 1.1.0。<br />
+因此它在默認情況下不兼容 debian 8(Jessie)。</p>
+<p>讓我們來看看裏面有什麼吧！</p>
+<p>以 debian buster （old-stable）為例。<br />
+實際上，buster 的 suites 和 bullseye 是有區別的。<br />
+除了 security 源的區別外，backports 也應該使用不同的源。<br />
+不能簡單地將 &quot;stable-backports&quot; 替換為 &quot;old-stabe-backports&quot;</p>
+<p>此外，如果這個鏡像源不包含 &quot;debian-security&quot; 鏡像，那麼它默認會啓用官方的 security 源，並禁用鏡像 security 源。<br />
+如果它不支持 https, 那麼 uris 那裏顯示的是 <strong>http://</strong> 開頭的 uri 。<br />
+在使用 neko-repo 的鏡像源 deb 包的情況下，您無需手動去判斷它支不支持 <code>https</code> 等東西。</p>
+<pre><code class="language-sh">cat /etc/apt/sources.list.d/cn-mirror.sources
+</code></pre>
+<pre><code class="language-yaml">name: Debian
+# yes or no
+enabled: yes
+# types: deb deb-src
+types: deb
+uris: https://mirrors.bfsu.edu.cn/debian/
+suites: buster
+components: main contrib non-free
+# architectures: amd64 arm64 armhf i386 ppc64el s390x mipsel mips64el
+# --------------------------------
+
+name: Debian updates
+enabled: yes
+# types: deb deb-src
+types: deb
+uris: https://mirrors.bfsu.edu.cn/debian/
+suites: buster-updates
+components: main contrib non-free
+# --------------------------------
+
+name: Debian backports
+enabled: yes
+# types: deb deb-src
+types: deb
+uris: https://mirrors.bfsu.edu.cn/debian/
+# For debian old-stable, you should use &quot;old-stable-backports-sloppy&quot;, instead of &quot;old-stable-backports&quot;.
+# https://backports.debian.org/Instructions/#:~:text=Old-stable-sloppy
+# suites: buster-backports
+suites: buster-backports-sloppy
+components: main contrib non-free
+# --------------------------------
+
+name: Debian security
+enabled: yes
+# types: deb deb-src
+types: deb
+uris: https://mirrors.bfsu.edu.cn/debian-security/
+suites: buster/updates
+components: main contrib non-free
+# --------------------------------
+
+name: Official security
+enabled: no
+# types: deb deb-src
+types: deb
+uris: https://deb.debian.org/debian-security/
+suites: buster/updates
+components: main contrib non-free
+# --------------------------------
+
+name: Proposed updates
+enabled: no
+# types: deb deb-src
+types: deb
+uris: https://mirrors.bfsu.edu.cn/debian/
+suites: buster-proposed-updates
+components: main contrib non-free
+# --------------------------------
+</code></pre>
+<p><code>enabled</code> ：是否需要啓用這個源，可選 yes 或 no<br />
+<code>types</code>: 類型，一般情況下用 <strong>deb</strong>, 若有獲取源代碼的要求，就用 <strong>deb deb-src</strong></p>
+<p>除了上面介紹到的內容外，deb822-style 還支持其他的 keys(鍵)。</p>
+<blockquote>
+<p>key: value<br />
+左為鍵，右為值</p>
+</blockquote>
+<p>例如:</p>
+<p>使用 signed-by 指定 OpenPGP 公鑰。</p>
+<pre><code class="language-yaml">signed-by: /usr/share/keyrings/tmoe-archive-keyring.gpg
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="容器"><a class="header" href="#容器">容器</a></h1>
+<p>在本篇中，我們將學習以下內容。</p>
+<ul>
+<li>docker
+<ul>
+<li>本項目提供了不同架構的預裝 GUI 的容器，您可以快速上手</li>
+</ul>
+</li>
+<li>android
+<ul>
+<li>我們將介紹如何在 android 設備上運行本項目，並使用容器</li>
+</ul>
+</li>
+<li>systemd-nspawn
+<ul>
+<li>哪些環境更適合 systemd 容器</li>
+</ul>
+</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="docker"><a class="header" href="#docker">docker</a></h1>
+<ul>
+<li><a href="docker-container.html#1-gui-%E5%AE%B9%E5%99%A8">1. GUI 容器</a>
+<ul>
+<li><a href="docker-container.html#11-%E8%A1%A8%E6%A0%BC">1.1. 表格</a></li>
+<li><a href="docker-container.html#12-%E6%9C%8D%E5%8B%99%E5%99%A8%E7%94%A8%E6%88%B7">1.2. 服務器用户</a>
+<ul>
+<li><a href="docker-container.html#121-%E5%AE%89%E8%A3%9D-docker">1.2.1. 安裝 docker</a></li>
+<li><a href="docker-container.html#122-%E6%B8%AC%E8%A9%A6-alpine">1.2.2. 測試 alpine</a></li>
+<li><a href="docker-container.html#123-%E9%97%9C%E6%96%BC-nginx-%E8%88%87-novnc-%E7%9A%84%E5%AE%89%E5%85%A8%E5%95%8F%E9%A1%8C">1.2.3. 關於 nginx 與 novnc 的安全問題</a></li>
+<li><a href="docker-container.html#124-%E6%99%AE%E9%80%9A-vnc">1.2.4. 普通 vnc</a></li>
+</ul>
+</li>
+<li><a href="docker-container.html#13-%E6%A1%8C%E9%9D%A2%E7%94%A8%E6%88%B7">1.3. 桌面用户</a>
+<ul>
+<li><a href="docker-container.html#131-xorg">1.3.1. xorg</a></li>
+<li><a href="docker-container.html#132-wayland">1.3.2. wayland</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="docker-container.html#2-nogui">2. noGUI</a>
+<ul>
+<li><a href="docker-container.html#21-zsh">2.1. zsh</a></li>
+<li><a href="docker-container.html#22-cross-architecture-%E8%B7%A8%E6%9E%B6%E6%A7%8B">2.2. Cross-Architecture 跨架構</a></li>
+</ul>
+</li>
+<li><a href="docker-container.html#3-continuous-integration-%E6%8C%81%E7%BA%8C%E9%9B%86%E6%88%90">3. Continuous integration 持續集成</a>
+<ul>
+<li><a href="docker-container.html#31-github-actions">3.1. Github Actions</a>
+<ul>
+<li><a href="docker-container.html#311-dockerfile">3.1.1. dockerfile</a></li>
+<li><a href="docker-container.html#312-workflow">3.1.2. workflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="docker-container.html#4-%E5%AE%B9%E5%99%A8%E9%8F%A1%E5%83%8F%E6%98%AF%E6%80%8E%E9%BA%BC%E4%BE%86%E7%9A%84">4. 容器鏡像是怎麼來的</a>
+<ul>
+<li><a href="docker-container.html#41-rust">4.1. rust</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<p>閲讀本節內容的要求：</p>
+<ul>
+<li>瞭解 docker 的基礎知識</li>
+<li>瞭解 nginx 中關於反向代理的配置</li>
+<li>瞭解 CI/CD 的操作</li>
+</ul>
+<h2 id="1-gui-容器"><a class="header" href="#1-gui-容器">1. GUI 容器</a></h2>
+<p>在一般情況下，對於更新頻繁的發行版，其對應的 GUI 容器每週會更新一次。</p>
+<h3 id="11-表格"><a class="header" href="#11-表格">1.1. 表格</a></h3>
+<table><thead><tr><th></th><th>xfce</th><th>kde</th></tr></thead><tbody>
+<tr><td>alpine</td><td>amd64,arm64</td><td>amd64,arm64</td></tr>
+<tr><td>arch</td><td>amd64,arm64,armv7</td><td>amd64,arm64</td></tr>
+<tr><td>debian</td><td>amd64,arm64</td><td>amd64,arm64</td></tr>
+<tr><td>fedora</td><td>amd64,arm64</td><td>amd64,arm64</td></tr>
+<tr><td>kali</td><td>amd64,arm64,armv7</td><td>None</td></tr>
+<tr><td>manjaro</td><td>amd64,arm64</td><td>None</td></tr>
+<tr><td>ubuntu</td><td>amd64,arm64</td><td>amd64,arm64,armv7</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th></th><th>mate</th><th>lxqt</th></tr></thead><tbody>
+<tr><td>alpine</td><td>386,amd64,arm64,armv7</td><td>None</td></tr>
+<tr><td>arch</td><td>amd64,arm64</td><td>None</td></tr>
+<tr><td>debian</td><td>amd64,arm64</td><td>None</td></tr>
+<tr><td>fedora</td><td>amd64,arm64</td><td>amd64,arm64</td></tr>
+<tr><td>ubuntu</td><td>amd64,arm64</td><td>amd64,arm64</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th></th><th>lxde</th></tr></thead><tbody>
+<tr><td>debian</td><td>386,armv7</td></tr>
+</tbody></table>
+<p>倉庫命名風格 1: <strong>cake233/alpine-mate-386</strong>, <strong>cake233/debian-lxde-armv7</strong><br />
+風格 2: <strong>cake233/xfce:kali</strong>, <strong>cake233/kde:fedora</strong></p>
+<p>注: <strong>cake233/alpine-mate-386</strong> = <strong>--platform=linux/386 cake233/mate:alpine</strong></p>
+<h3 id="12-服務器用户"><a class="header" href="#12-服務器用户">1.2. 服務器用户</a></h3>
+<p>對於 GUI 容器來説，為了減小體積和縮短打包時間，開發者之後可能會將 novnc 和 tigervnc 服務分離為單獨的容器，而不是每個容器都內置 <code>vnc</code>。<br />
+屆時，使用 <code>docker run</code> 就不太合適了，換用 <code>docker-compose</code> 或許會更好。</p>
+<blockquote>
+<p>本小節的內容可能會重寫。</p>
+</blockquote>
+<p><del>你如果哪天想不開，想要幹傻事，在服務器上安裝桌面環境，那可以考慮一下 tmoe 的 GUI 容器。</del></p>
+<p>假設您的 host(宿主機)是 debian 系的發行版（例如 ubuntu, mint 或 kali）</p>
+<h4 id="121-安裝-docker"><a class="header" href="#121-安裝-docker">1.2.1. 安裝 docker</a></h4>
+<pre><code class="language-sh editable">sudo apt update
+sudo apt install docker.io
+
+WHOAMI=$(id -un)
+sudo adduser $WHOAMI docker
+# then reboot
+</code></pre>
+<h4 id="122-測試-alpine"><a class="header" href="#122-測試-alpine">1.2.2. 測試 alpine</a></h4>
+<pre><code class="language-sh editable">docker run \
+    -it \
+    --rm \
+    --shm-size=512M \
+    -p 36081:36080 \
+    cake233/xfce:alpine
+</code></pre>
+<p>進入容器後，輸入 <code>tmoe</code>，並按下回車，接着選擇語言環境，再選擇 tools，接着退出。<br />
+然後運行 <code>novnc</code>, 最後打開瀏覽器，輸入 <code>http://您的IP地址:36081</code></p>
+<h4 id="123-關於-nginx-與-novnc-的安全問題"><a class="header" href="#123-關於-nginx-與-novnc-的安全問題">1.2.3. 關於 nginx 與 novnc 的安全問題</a></h4>
+<p>如果需要將 novnc 容器暴露到公網的話，那麼不建議對其使用 <code>-p</code> 參數（暴露 36081 端口），建議走 nginx 的 443 端口。<br />
+請新建一個網絡，將 novnc 容器 與 nginx 容器置於同一網絡，併為前者設置 <code>network-alias</code>(網絡別名), 最後用 nginx 給它加上一層認證（例如<code>auth_basic_user_file pw_file;</code>）並配置 reverse proxy。<br />
+注：proxy_pass 那裏要寫 <code>http://novnc容器的網絡別名:36080;</code><br />
+如果 nginx 那裏套了 tls 證書，那麼訪問地址就是 <code>https://您在nginx中配置的novnc的域名:端口</code>。（若端口為 443，則無需加 <strong>:端口</strong> ）<br />
+注 2： 若您在 nginx 中配置了 novnc 的域名，則處於相同網絡環境下的 nginx 和 novnc 必須同時運行。 若 novnc 沒有運行，則 nginx 的配置會加載失敗，這可能會導致 nginx 無法正常運行。<br />
+如果您對 nginx + novnc 這塊有疑問的話，請前往本項目的 <a href="https://github.com/2moe/tmoe/discussions">github disscussion</a> 發表話題。</p>
+<h4 id="124-普通-vnc"><a class="header" href="#124-普通-vnc">1.2.4. 普通 vnc</a></h4>
+<p>您也可以使用普通的 vnc 客户端來連接，不過這時候 tcp 端口就不是 36081 了。</p>
+<pre><code class="language-sh editable">docker run \
+    -it \
+    --shm-size=1G \
+    -p 5903:5902 \
+    -u 1000:1000 \
+    --name uuu-mate \
+    cake233/mate:ubuntu
+</code></pre>
+<p>對於 debian 系發行版，執行 <code>su -c &quot;adduser yourusername&quot;</code> 創建新用户，先輸入默認 root 密碼： <strong>root</strong>，然後設置新用户的密碼。
+設置完密碼後，執行 <code>su -c &quot;adduser yourusername sudo&quot;</code> 將您的用户加入到 sudo 用户組。<br />
+注 1：其他發行版與 debian 系不同。<br />
+注 2：您可以手動安裝並換用其他類似於 <code>sudo</code> 的工具，例如：<code>doas</code> 或 <code>calife</code>。<br />
+注 3：不一定要在容器內部開 vnc, 您可以在宿主或另一個容器開 vnc 服務，不過這樣做會稍微麻煩一點。</p>
+<p>執行完 <code>startvnc</code> 命令後，打開 vnc 客户端，並輸入 <code>您的IP:5903</code></p>
+<h3 id="13-桌面用户"><a class="header" href="#13-桌面用户">1.3. 桌面用户</a></h3>
+<p>接下來將介紹一下桌面用户（非服務器用户）如何使用這些 GUI 容器。<br />
+將 docker 容器當作虛擬機來用或許是一種錯誤的用法。<br />
+實際上，對於 GUI 桌面容器，開發者更推薦您使用 systemd-nspawn，而不是 docker。</p>
+<p>以下只是簡單介紹，實際需要做更多的修改。<br />
+注： 有一些優秀的項目，如 x11docker，它們可以幫你做得更好。<br />
+或許，您可以將本項目相關的容器鏡像與那些項目結合在一起，無需手動設置 <code>WAYLAND_DISPLAY</code> 等環境變量，也無需在意具體的小細節，就能更舒心地去使用 GUI 容器了。</p>
+<h4 id="131-xorg"><a class="header" href="#131-xorg">1.3.1. xorg</a></h4>
+<p>對於 宿主 為 xorg 的環境:<br />
+在 宿主 中授予當前用户 xhost 權限。</p>
+<pre><code class="language-sh">xhost +SI:localuser:$(id -un)
+</code></pre>
+<pre><code class="language-sh editable">_UID=&quot;$(id -u)&quot;
+_GID=&quot;$(id -g)&quot;
+
+docker run \
+    -it \
+    --rm \
+    -u $_UID:$_GID \
+    --shm-size=1G \
+    -v $XDG_RUNTIME_DIR/pulse/native:/run/pulse.sock \
+    -e PULSE_SERVER=unix:/run/pulse.sock \
+    -e DISPLAY=$DISPLAY \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    cake233/kde:ubuntu
+</code></pre>
+<p>在容器內部創建一個與宿主用户同名的用户。<br />
+最後啓動 dbus-daemon， 並運行特定 Xsession，例如 <code>/etc/X11/xinit/Xsession</code></p>
+<h4 id="132-wayland"><a class="header" href="#132-wayland">1.3.2. wayland</a></h4>
+<p>對於 宿主 為 wayland 的環境，您需要對 docker 執行更多的操作。
+例如：設置 WAYLAND_DISPLAY 變量，<code>-e WAYLAND_DISPLAY=$WAYLAND_DISPLAY</code><br />
+設置 XDG_RUNTIME_DIR 環境變量<br />
+<code>-e XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR</code><br />
+綁定宿主的 wayland socket<br />
+<code>-v $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY</code><br />
+設置其他與 wayland 相關的環境變量<br />
+<code>-e QT_QPA_PLATFORM=wayland</code></p>
+<p>注：您如果想要在隔離環境（容器/沙盒）中運行 GUI 應用，那麼使用 <code>flatpak</code> 等成熟的方案可能會更簡單。</p>
+<h2 id="2-nogui"><a class="header" href="#2-nogui">2. noGUI</a></h2>
+<h3 id="21-zsh"><a class="header" href="#21-zsh">2.1. zsh</a></h3>
+<p>現階段，對於與 tmoe 相關的 nogui 容器，從嚴格意義上來説，它們屬於另外的項目。<br />
+因為它們並沒有預裝 tmoe tools。</p>
+<p>您如果不想要 gui, 那麼將 xfce/kde/mate 替換為 zsh 就可以了。</p>
+<pre><code class="language-sh editable"># 創建容器數據卷, 用於存儲持久化數據
+docker volume create sd
+# sd: 此處的 sd 並不是 Secure Digital Memory Card，而是 Shared Dir，其實叫什麼名字都無所謂
+
+docker run \
+    -it \
+    --name zsh \
+    -v sd:/sd \
+    cake233/zsh:kali
+</code></pre>
+<h3 id="22-cross-architecture-跨架構"><a class="header" href="#22-cross-architecture-跨架構">2.2. Cross-Architecture 跨架構</a></h3>
+<p>Q: 如何運行其他架構的容器呢？</p>
+<p>A: 安裝 qemu-user-static</p>
+<pre><code class="language-sh">sudo apt install binfmt-support qemu-user-static
+</code></pre>
+<p>接下來輪到 tmoe 相關項目中，更新最積極的容器倉庫登場了。</p>
+<blockquote>
+<p>注：以下容器每週更新兩次<br />
+docker-hub repo: cake233/rust<br />
+nightly(gnu): amd64, arm64, armv7, riscv64, ppc64le, s390x, mips64le<br />
+nightly(musl): amd64, arm64</p>
+</blockquote>
+<pre><code class="language-sh editable">_UID=&quot;$(id -u)&quot;
+_GID=&quot;$(id -g)&quot;
+mkdir -p tmp
+
+# 若本地存在 hello 項目，則可跳過這一步。
+docker run \
+    -t \
+    --rm \
+    -u &quot;$_UID&quot;:&quot;$_GID&quot; \
+    -v &quot;$PWD&quot;/tmp:/app \
+    -w /app \
+    cake233/rust-riscv64 \
+    cargo new hello
+
+# build
+docker run \
+    -t \
+    --rm \
+    -u &quot;$_UID&quot;:&quot;$_GID&quot; \
+    -v &quot;$PWD&quot;/tmp/hello:/app \
+    -w /app \
+    cake233/rust-riscv64 \
+    cargo b --release
+
+# check file
+
+FILE=&quot;tmp/hello/target/release/hello&quot;
+
+file &quot;$FILE&quot;
+# output: ELF 64-bit LSB pie executable, UCB RISC-V, RVC, double-float ABI, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-riscv64-lp64d.so.1 ...
+
+cat &gt;&gt;tmp/hello/Cargo.toml&lt;&lt;-'EOF'
+[profile.release]
+lto = &quot;fat&quot;
+debug = false
+strip = true
+panic = &quot;abort&quot;
+opt-level = &quot;z&quot;
+EOF
+
+docker run \
+    -t \
+    --rm \
+    -u &quot;$_UID&quot;:&quot;$_GID&quot; \
+    -v &quot;$PWD&quot;/tmp/hello:/app \
+    -w /app \
+    --platform linux/arm64 \
+    cake233/rust:musl \
+    cargo b --release
+
+file &quot;$FILE&quot;
+# output: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, stripped
+</code></pre>
+<h2 id="3-continuous-integration-持續集成"><a class="header" href="#3-continuous-integration-持續集成">3. Continuous integration 持續集成</a></h2>
+<blockquote>
+<p><em>En somme, la Beauté est partout. Ce n'est point elle qui manque à nos yeux, mais nos yeux qui manquent à l'apercevoir.</em><br />
+<em>世界上並不缺少美,而是缺少發現美的眼睛</em><br />
+--- 法國著名雕塑家: 羅丹</p>
+</blockquote>
+<p>您如果抱着急功近利的心態去看待某些事物，那可能很難會發現它們的一些妙用。</p>
+<p>在本節中，我們將會用到上文中提到的 <strong>rust 鏡像</strong>， 並將其與 CI 結合，為您展示相關的用法。</p>
+<h3 id="31-github-actions"><a class="header" href="#31-github-actions">3.1. Github Actions</a></h3>
+<p>您如果想要使用 github actions 來編譯 &quot;riscv64&quot;、&quot;mips64el&quot;、&quot;arm64&quot; 和 &quot;armv7&quot; 等架構的 <code>rust</code> 應用，那會怎麼做呢？</p>
+<p>在本小節中，我們將通過 <code>qemu-user</code> 來編譯不同架構的 rust 應用。</p>
+<blockquote>
+<p>以下內容僅供參考，實際上需要做更多的修改。</p>
+</blockquote>
+<pre><code class="language-sh">mkdir -pv hello
+cd hello
+cargo init
+</code></pre>
+<h4 id="311-dockerfile"><a class="header" href="#311-dockerfile">3.1.1. dockerfile</a></h4>
+<pre><code class="language-sh">mkdir -p build
+</code></pre>
+<p>file: build/hello.dockerfile</p>
+<pre><code class="language-dockerfile editable"># syntax=docker/dockerfile:1
+#---------------------------
+ARG HUB_USER
+ARG TAG
+FROM --platform=${TARGETPLATFORM} ${HUB_USER}/rust:${TAG} AS Builder
+
+WORKDIR /app
+COPY . .
+
+RUN test -e Cargo.toml
+
+RUN --mount=type=tmpfs,target=/usr/local/cargo/registry cargo b --release
+
+# CMD [ &quot;sh&quot; ]
+
+# 以下將用到 docker 的多階段構建（Multi-stage builds），實際上這是可選的。
+
+# 對於 musl 或靜態編譯的 bin， 您可以將 debian 鏡像更換為 alpine:edge
+FROM --platform=${TARGETPLATFORM} debian:sid-slim
+
+COPY --from=Builder /app/target/release /app
+
+WORKDIR /app
+</code></pre>
+<h4 id="312-workflow"><a class="header" href="#312-workflow">3.1.2. workflow</a></h4>
+<pre><code class="language-sh">mkdir -p .github/workflows
+</code></pre>
+<p>file: <strong>.github/workflows/rs.yml</strong></p>
+<pre><code class="language-yaml">name: build rust app
+
+on:
+  push:
+    branches: [main]
+    # 只有當 main 分支的 Cargo.toml 發生變化並且 push 後，才會觸發此 workflow
+    paths:
+      - &quot;Cargo.toml&quot;
+
+jobs:
+  job1:
+    runs-on: ${{ matrix.os }}
+    env:
+      name: hello
+      user: cake233
+      platform: ${{ matrix.platform }}
+      arch: ${{ matrix.arch }}
+      tag: ${{ matrix.tag }}
+
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          # 如果您使用的是“自託管服務器”的話，那麼 os 需要改成相應的名稱， 例如： self-hosted-debian
+          - os: ubuntu-latest
+            arch: riscv64
+            tag: nightly
+            platform: &quot;linux/riscv64&quot;
+
+          # 您可以為該矩陣指定不同的機器/系統，只需要修改 os 即可。
+          - os: ubuntu-latest
+            arch: mips64el
+            tag: nightly
+            platform: &quot;linux/mips64le&quot;
+
+          - os: ubuntu-latest
+            arch: amd64
+            tag: musl
+            platform: &quot;linux/amd64&quot;
+
+          - os: ubuntu-latest
+            arch: arm64
+            tag: musl
+            platform: &quot;linux/arm64&quot;
+
+          - os: ubuntu-latest
+            arch: armhf
+            tag: nightly
+            platform: &quot;linux/arm/v7&quot;
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # 您可以引用其他倉庫，默認為當前項目所在的倉庫
+          # repository: &quot;xxx/yyy&quot;
+          ref: &quot;main&quot;
+          fetch-depth: 1
+
+        # 對於 x64(amd64) 架構的設備來説，如果當前架構是 amd64 或 i386 架構，那麼無需調用 qemu，否則需要調用。
+        # 在調用時，只需要配置當前平台即可，無需配置其他平台。
+      - name: set up qemu-user &amp; binfmt
+        id: qemu
+        uses: docker/setup-qemu-action@v1
+        if: matrix.arch != 'amd64' &amp;&amp; matrix.arch != 'i386'
+        with:
+          image: tonistiigi/binfmt:latest
+          platforms: ${{ matrix.platform }}
+
+      - name: set global env
+        run: |
+          echo &quot;REPO=${{ env.name }}:${{ matrix.arch }}&quot; &gt;&gt; &quot;$GITHUB_ENV&quot;
+
+      - name: build container
+        env:
+          file: &quot;build/${{ env.name }}.dockerfile&quot;
+        run: |
+          DOCKER_BUILDKIT=1 \
+          docker build \
+            --tag &quot;${{ env.REPO }}&quot; \
+            --file &quot;${{ env.file }}&quot; \
+            --build-arg HUB_USER=${{ env.user }} \
+            --build-arg TAG=${{ env.tag }} \
+            --build-arg BIN_NAME=${{ env.name }} \
+            --platform=${{ env.platform }} \
+            --pull \
+            --no-cache \
+            .
+      #編譯完成的鏡像為 &quot;${{ env.name }}:${{ env.arch }}&quot;，對於 x64 架構，在本 workflow中，它是 &quot;hello:amd64&quot; ；對於 arm64 架構，則是 &quot;hello:arm64&quot;
+      - name: test container
+        run: |
+          docker run \
+            -t \
+            --rm \
+            &quot;${{ env.REPO }}&quot; \
+            ls -lah --color=auto /app
+</code></pre>
+<!--
+        repo=hello;file=build/hello.dockerfile;repo=hello:amd64
+        user=cake233;tag=musl;new_image=alpine:edge;name=hello;platform=linux/amd64
+        DOCKER_BUILDKIT=1 \
+          docker build \
+            -t "$repo" \
+            -f "$file" \
+            --build-arg HUB_USER=$user \
+            --build-arg TAG=$tag \
+            --build-arg BIN_NAME=$name \
+            --platform=$platform \
+            --pull \
+            .
+-->
+<p>上文並沒有介紹到 docker 登錄和推送的流程。<br />
+您可以手動添加相應的流程</p>
+<blockquote>
+<p><strong>secrets</strong> (私密環境變量) 需要在當前倉庫的 <strong>Settings</strong> 的 <strong>Actions secrets</strong> 裏配置。</p>
+</blockquote>
+<pre><code class="language-yaml">- name: Login to DockerHub
+  uses: docker/login-action@v2
+  with:
+    username: 您的 dockerhub 用户名
+    password: ${{ secrets.DOCKER_TOKEN }}
+- name: Push to DockerHub
+  run: |
+    docker push -a ${{ env.REPO }}
+</code></pre>
+<h2 id="4-容器鏡像是怎麼來的"><a class="header" href="#4-容器鏡像是怎麼來的">4. 容器鏡像是怎麼來的</a></h2>
+<p>在本節中，我們將會為您解析容器的 dockerfile。<br />
+您可以從 &quot;2moe/build-container&quot; 中找到相關的文件。</p>
+<h3 id="41-rust"><a class="header" href="#41-rust">4.1. rust</a></h3>
+<p>下面我們以 rust alpine (musl-libc) 容器為例。</p>
+<pre><code class="language-dockerfile editable"># syntax=docker/dockerfile:1
+#---------------------------
+FROM --platform=${TARGETPLATFORM} alpine:edge
+
+WORKDIR /root
+# PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV LANG=&quot;C.UTF-8&quot; \
+    TMOE_CHROOT=true \
+    TMOE_DOCKER=true \
+    TMOE_DIR=&quot;/usr/local/etc/tmoe-linux&quot; \
+    RUSTUP_HOME=&quot;/usr/local/rustup&quot; \
+    CARGO_HOME=&quot;/usr/local/cargo&quot; \
+    PATH=&quot;/usr/local/cargo/bin:$PATH&quot;
+
+# install dependencies
+COPY --chmod=755 install_alpine_deps /tmp
+# install_alpine_deps 會安裝相關依賴
+# 相關依賴指的是 sudo，tar，grep，curl，wget，bash，tzdata，newt，shadow
+# 實際上，只有 curl 是真正的依賴，bash 為可選依賴。 對於非交互式環境來説，默認 shell 為 ash 也沒問題。
+# 其他依賴是 tmoe manager 在初始化容器過程需要用到的東西。
+# 對於 docker 來説，grep 和 tar 等命令使用 `busybox` 內置的精簡版本就夠了。
+RUN . /tmp/install_alpine_deps
+
+# install musl-dev
+RUN apk add openssl-dev \
+    musl-dev \
+    gcc \
+    ca-certificates
+
+# minimal, default, complete
+ARG RUSTUP_PROFILE=minimal
+
+# 對於不同的平台來説， MUSL_TARGET 是不一樣的。
+# 比如説：linux arm64: &quot;aarch64-unknown-linux-musl&quot;
+# linux amd64: &quot;x86_64-unknown-linux-musl&quot;
+ARG MUSL_TARGET
+RUN export RUSTUP_URL=&quot;https://static.rust-lang.org/rustup/dist/${MUSL_TARGET}/rustup-init&quot;; \
+    curl -LO ${RUSTUP_URL} || exit 1; \
+    chmod +x rustup-init \
+    &amp;&amp; ./rustup-init \
+    -y \
+    --profile ${RUSTUP_PROFILE} \
+    --no-modify-path \
+    --default-toolchain \
+    nightly \
+    &amp;&amp; rm rustup-init \
+    &amp;&amp; chmod -Rv a+w ${RUSTUP_HOME} ${CARGO_HOME}
+# RUN rustup update
+
+ARG OS
+ARG TAG
+ARG ARCH
+COPY --chmod=755 set_container_txt /tmp
+RUN . /tmp/set_container_txt
+
+# export env to file
+RUN cd ${TMOE_DIR}; \
+    printf &quot;%s\n&quot; \
+    'export PATH=&quot;/usr/local/cargo/bin${PATH:+:${PATH}}&quot;' \
+    'export RUSTUP_HOME=&quot;/usr/local/rustup&quot;' \
+    'export CARGO_HOME=&quot;/usr/local/cargo&quot;' \
+    &gt; environment/container.env; \
+    chmod -R a+rx environment/
+
+# export version info to file
+RUN cd /root; \
+    printf &quot;%s\n&quot; \
+    &quot;&quot; \
+    '[version]' \
+    &quot;ldd = '$(ldd --version 2&gt;&amp;1 | head -n 2 | grep -vi copyright | sed &quot;:a;N;s/\n/ /g;ta&quot;)'&quot; \
+    &quot;rustup = '$(rustup --version)'&quot; \
+    &quot;cargo = '$(cargo --version)'&quot; \
+    &quot;rustc = '$(rustc --version)'&quot; \
+    &quot;cc = '$(cc --version | head -n 1)'&quot; \
+    &quot;cargo_verbose = '''&quot; \
+    &quot;$(cargo -Vv)&quot; \
+    &quot;'''&quot; \
+    &quot;rustc_verbose = '''&quot; \
+    &quot;$(rustc -Vv)&quot; \
+    &quot;'''&quot; \
+    &gt; version.toml; \
+    cat version.toml
+
+# clean: apk -v cache clean
+RUN rm -rf /var/cache/apk/* \
+    ~/.cache/* \
+    2&gt;/dev/null
+
+CMD [&quot;bash&quot;]
+</code></pre>
+<blockquote>
+<p>為了保留容器屬性信息，容器內部需要新建幾個環境變量或文件。</p>
+</blockquote>
+<p>這個 dockerfile 之後可能會發生變更，比如説：砍掉 TMOE 相關的環境變量，將 &quot;/usr/local/etc/tmoe-linux&quot; 目錄更改為 &quot;/etc/tmoe&quot;</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="android"><a class="header" href="#android">android</a></h1>
+<ul>
+<li><a href="android.html#1-%E9%97%9C%E6%96%BC-docker">1. 關於 docker</a></li>
+<li><a href="android.html#2-%E7%AE%A1%E7%90%86%E5%99%A8">2. 管理器</a></li>
+<li><a href="android.html#3-%E9%97%9C%E6%96%BC%E5%AE%B9%E5%99%A8%E7%92%B0%E5%A2%83">3. 關於容器環境</a>
+<ul>
+<li><a href="android.html#31-%E9%85%8D%E7%BD%AE%E8%88%87%E7%92%B0%E5%A2%83">3.1. 配置與環境</a>
+<ul>
+<li><a href="android.html#311-rootless-%E7%92%B0%E5%A2%83%E7%9A%84%E4%B8%80%E4%BA%9B%E5%B0%8F%E5%95%8F%E9%A1%8C">3.1.1. rootless 環境的一些小問題</a></li>
+</ul>
+</li>
+<li><a href="android.html#32-proot">3.2. proot</a></li>
+<li><a href="android.html#33-chrootunshare">3.3. chroot/unshare</a></li>
+</ul>
+</li>
+<li><a href="android.html#4-%E5%91%BD%E4%BB%A4">4. 命令</a>
+<ul>
+<li><a href="android.html#41-%E5%9C%A8%E5%AE%BF%E4%B8%BB%E7%92%B0%E5%A2%83%E4%B8%AD">4.1. 在宿主環境中</a>
+<ul>
+<li><a href="android.html#411-%E5%B0%8D%E6%96%BC-gui-%E5%AE%B9%E5%99%A8">4.1.1. 對於 GUI 容器</a></li>
+<li><a href="android.html#412-nogui">4.1.2. noGUI</a></li>
+</ul>
+</li>
+<li><a href="android.html#42-%E5%9C%A8%E5%AE%B9%E5%99%A8%E7%92%B0%E5%A2%83%E4%B8%AD">4.2. 在容器環境中</a>
+<ul>
+<li><a href="android.html#421-%E5%B0%8D%E6%96%BC-debian-based-%E7%99%BC%E8%A1%8C%E7%89%88">4.2.1. 對於 debian-based 發行版</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr />
+<p>本項目的本體分為兩個部分，分別是“管理器”和“工具箱”。<br />
+對於 android，您可以使用“管理器”。<br />
+在下文中, rootless 指的是 “無 root 容器環境”，rootful 指的是“有 root 容器環境”。</p>
+<h2 id="1-關於-docker"><a class="header" href="#1-關於-docker">1. 關於 docker</a></h2>
+<p>實際上，android 也可以運行 docker。<br />
+您如果想要使用原生 docker，那麼需要手動編譯內核，加上 docker 所需的一些特性。<br />
+如果您的內核沒有開源，或者是您的設備無法解鎖 bootloader, 那麼您可能需要通過虛擬機來間接使用 docker 。</p>
+<p>在本章中，我們並不會介紹以下內容：</p>
+<ul>
+<li>如何為 android 重新編譯內核</li>
+<li>如何在 android 上運行 docker</li>
+</ul>
+<h2 id="2-管理器"><a class="header" href="#2-管理器">2. 管理器</a></h2>
+<p>如果您想要使用 “管理器”，那麼您可以使用腳本進行安裝。</p>
+<blockquote>
+<p>在 edition 2022 中，“天萌管理器” 叫做 <code>tmm</code><br />
+現階段，天萌的大部分內容仍處於 edition 2021<br />
+為了與舊版本的兼容，開發者之後會為 android 保留 <code>tmoe</code> 命令</p>
+</blockquote>
+<p>對於 android, 您可以用 <a href="https://github.com/termux/termux-app/actions">termux</a> 運行以下腳本。<br />
+之後，開發者可能會將相關內容打成 deb 包，也可能會適配其他的終端。</p>
+<blockquote>
+<p>之所以使用<code>curl</code>, 是因為 termux 預裝了它。<br />
+如果它沒有被預裝的話，那麼您需要使用 <code>apt update; apt install -y curl</code> 來安裝。</p>
+</blockquote>
+<div style="display:none">
+<pre><code class="language-mermaid">graph TD
+    A{可以訪問 github 嗎} --&gt; |不行| B(gitmoe)
+    A --&gt; |不行| C(gitee)
+    A --&gt; |可以| D(github)
+    D --&gt; d(方法 1)
+    C --&gt; c(方法 3)
+    B --&gt; b(方法 2)
+    d --&gt; E{是否出錯}
+    b --&gt; E
+    c --&gt; E
+    E --&gt; |是|F(使用其他方法)
+</code></pre>
+</div>
+<p><img src="assets/tmm_installation.svg" alt="tmm_installation" /></p>
+<ul>
+<li>
+<p>方法 1</p>
+<ul>
+<li>工具: curl</li>
+<li>平台: github</li>
+<li>條件: 您已經安裝了 <code>curl</code>, 並且 <del>記憶力驚人,</del> 可以訪問 <strong>github</strong></li>
+<li>命令:
+<ul>
+<li><code>curl -LO --compressed https://raw.githubusercontent.com/2moe/tmoe/2/2.awk</code></li>
+<li><code>awk -f 2.awk</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>方法 2</p>
+<ul>
+<li>工具: curl</li>
+<li>平台: gitmoe</li>
+<li>條件: 您無法訪問 <strong>github</strong></li>
+<li>命令
+<ul>
+<li><code>curl -LO https://l.tmoe.me/2.awk; awk -f 2.awk</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>方法 3</p>
+<ul>
+<li>工具: curl</li>
+<li>平台: gitee</li>
+<li>條件：以上方法都出錯了</li>
+<li>命令
+<ul>
+<li><code>curl -LO https://gitee.com/mo2/linux/raw/2/2.awk; awk -f 2.awk</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-關於容器環境"><a class="header" href="#3-關於容器環境">3. 關於容器環境</a></h2>
+<p>如果您覺得天萌管理器的問題比其他“更優秀的管理器”更多，那麼大概率是配置的問題。</p>
+<p>您需要進行合理的配置，才能更好地使用。</p>
+<h3 id="31-配置與環境"><a class="header" href="#31-配置與環境">3.1. 配置與環境</a></h3>
+<p>我們這裏隨便摘出一段 <code>unshare</code> 的配置</p>
+<pre><code class="language-sh"># The unshare command creates new namespaces and then executes the specified program.
+# By default, a new namespace persists only as long as it has member processes.
+# A new namespace can be mad e persistent even when it has no member processes by bind mounting /proc/pid/ns/type files to a filesystem path.
+# A namespace that has been made persistent in this way can subsequently be entered with nsenter even after the program terminates
+# (except PID namespaces where a permanently running init process is required).
+# Once a persistent namespace is no longer needed, it can be unpersisted by using umount to remove the bind mount.
+UNSHARE_ENABLED=true
+
+# Unshare the IPC namespace. Default is false.
+# IPC namespace: The process will have an independent namespace for POSIX
+# message queues as well as System V message queues, semaphore sets and shared memory segments.
+UNSHARE_IPC=false
+
+# Unshare the PID namespace. Default is false.
+# PID namespace: Children will have a distinct set of PID-to-process mappings from their parent.
+UNSHARE_PID=false
+
+# Unshare the UTS namespace. Default is false.
+# UTS namespace: Setting hostname or domainname will not affect the rest of the system.
+UNSHARE_UTS=false
+
+# Unshare the mount namespace. Default is false.
+# mount namespace: Mounting and unmounting filesystems will not affect the rest of the system, except for filesystems which are explicitly marked as shared.
+UNSHARE_MOUNT=false
+
+# When unshare terminates, have signame be sent to the forked child process. Combined with --pid this allows for an easy and reliable killing of the entire process tree below unshare. This option implies --fork.
+# When the value is true and SIGNAME=SIGKILL, the process in the container cannot be terminated with ctrl+c.
+# see this issue: https://github.com/2moe/tmoe/issues/44
+KILL_CHILD=false
+KILL_CHILD_SIGNAME=&quot;SIGKILL&quot;
+
+# Default is true.
+# Just before running the program, mount the proc filesystem at mountpoint (default is /proc).  This is useful when creating a new PID namespace.  It also implies creating a new mount  namespace  since  the  /proc  mount would otherwise mess up existing programs on the system.  The new proc filesystem is explicitly mounted as private (with MS_PRIVATE|MS_REC).
+SHARE_PROC=true
+</code></pre>
+<p>然後您可能會吐嘈：“我不理解 IPC namespace 是什麼? 到底要不要開啓相關的選項？”<br />
+對於默認配置，在有些情況下，保持默認就可以了。</p>
+<blockquote>
+<p>有一本書叫做《UNIX 網絡編程 卷 2：進程間通信（UNIX Network Programming,Vovum 2：Interprocess Communications）》，裏面有介紹到 IPC 相關的內容。</p>
+</blockquote>
+<p>對於 rootful 環境，其實小問題沒有那麼多，一直使用默認的配置也不會有太大的問題。<br />
+但對於 rootless 環境，有時候您甚至需要針對不同的環境使用不同的配置。</p>
+<h4 id="311-rootless-環境的一些小問題"><a class="header" href="#311-rootless-環境的一些小問題">3.1.1. rootless 環境的一些小問題</a></h4>
+<p>您如果對天萌管理器不屑一顧的話，那麼可以嘗試用“更優秀的管理器”執行以下操作。</p>
+<ul>
+<li>在 rootless 環境下運行 <em>.NET SDK 6.0.202</em></li>
+<li>在 rootless 環境下，運行 <code>gnome-shell</code>。</li>
+</ul>
+<p>您可能在使用 rootless GUI 容器的過程中會遇到卡住或崩潰等問題。<br />
+在一般情況下，這與 android 系統本身的限制有關。<br />
+您可能需要開啓相應終端的後台運行與開機自啓的權限，或者是開一個小懸浮窗。<br />
+又或者是通過 <code>adb</code> 去調整系統的資源調度與後台管理機制。</p>
+<blockquote>
+<p>對於 android 12+，如果容器崩潰了，那請選擇 <code>fix android 12(signal 9) 選項</code> 進行修復</p>
+</blockquote>
+<p>其次，這與容器內部的服務有關。 比如説與 &quot;power-manager&quot; 相關的東西，它會嘗試去調用宿主本身的東西，在有些情況下，這可能會導致整個容器進程崩潰。<br />
+最後與資源佔用有關，如果部分系統資源已經被佔滿了，或者是無法被調用，那麼它會變卡。</p>
+<p>如果説，您在啓動 gui 環境時卡住了，或者是 gui 環境特別不穩定。<br />
+那麼與什麼東西有關呢?</p>
+<p>答案是 D-Bus。</p>
+<p>Q: 關掉 D-Bus 會更好嗎？<br />
+A: 恰恰相反，對於部分桌面環境來説，讓它的 daemon 處於運行狀態會更好。<br />
+比如説，對於 gnome，開啓 dbus-daemon 後，您就可以在 rootless 環境下跑 gnome-shell 了。</p>
+<p>Q: 如何關閉？<br />
+A: 與 D-Bus 相關的地方分佈在以下三個位置。</p>
+<ul>
+<li>容器自身的配置。您可以在環境變量與登錄項管理處禁用掉 <code>fake cap_last_cap</code></li>
+<li>session 的配置。將 <strong>/etc/X11/xinit/Xsession</strong> 中的 <code>DBUS_CMD</code> 的值修改為空。</li>
+<li>startvnc 或其他 vnc 服務的配置。將 <code>AUTO_START_DBUS</code> 的值修改為 <code>false</code></li>
+</ul>
+<p>再比如，如果與“資源監控”相關的東西崩潰了，那麼大概率與 &quot;/proc&quot; 相關的東西有關。</p>
+<p>請在 <code>edit script</code> 選項中，手動禁用掉部分 <code>偽造proc</code> 的東西。</p>
+<p>注：在默認情況下，只有當您的系統無權讀取相關文件時，它才會自動偽造並掛載。<br />
+為了性能上的優化，只有容器初始化過程才會自動檢測。</p>
+<p>天萌裏有很多很多的選項，您如果無法理解相關內容，那麼可能會去噴它。</p>
+<blockquote>
+<p>有問題應該儘早反饋，整天想着噴它，可是壞孩子喲！ (╯°□°）╯︵ ┻━┻</p>
+</blockquote>
+<p>解決方法很簡單，對於 android，如果內核支持 docker ,那麼您直接使用 docker 就可以了。<br />
+如果內核不支持 docker， 那麼您可以考慮使用天萌管理器的 <code>unshare</code> 容器。</p>
+<h3 id="32-proot"><a class="header" href="#32-proot">3.2. proot</a></h3>
+<table><thead><tr><th>problem</th><th>note</th></tr></thead><tbody>
+<tr><td>無法綁定 1024 以下的端口</td><td>see this <a href="https://github.com/2moe/tmoe/issues?q=is%3Aissue+is%3Aclosed">issue</a></td></tr>
+</tbody></table>
+<h3 id="33-chrootunshare"><a class="header" href="#33-chrootunshare">3.3. chroot/unshare</a></h3>
+<p>您在 android 上使用天萌來安裝 unshare 容器前，它會讓你選擇“共享/掛載 sd 目錄”。<br />
+對於 miui, 請不要選擇整個 &quot;/data/media/0&quot; 或 &quot;/sdcard&quot;<br />
+請選擇特定的子目錄，例如 &quot;/data/media/0/Download&quot;。<br />
+掛載整個內置 sd 可能會導致它在 <code>umount</code> 時被一同卸載。<br />
+<a href="https://gitee.com/mo2/linux/issues/I5488U">issue1</a><br />
+<a href="https://github.com/2moe/tmoe/discussions/166">issue2</a></p>
+<p>如果您堅持要做的話，那麼請在掛載整個內置 sd 前，手動做個小測試。</p>
+<pre><code class="language-sh editable">cd $TMPDIR
+mkdir -pv sd
+su -c &quot;/system/bin/mount -o bind /sdcard $PWD/sd&quot;
+sudo ls sd
+su -c &quot;/system/bin/umount -lvf $PWD/sd&quot;
+ls /sdcard
+</code></pre>
+<p>看看發生了什麼？</p>
+<h2 id="4-命令"><a class="header" href="#4-命令">4. 命令</a></h2>
+<h3 id="41-在宿主環境中"><a class="header" href="#41-在宿主環境中">4.1. 在宿主環境中</a></h3>
+<h4 id="411-對於-gui-容器"><a class="header" href="#411-對於-gui-容器">4.1.1. 對於 GUI 容器</a></h4>
+<ul>
+<li><code>startvnc</code>
+<ul>
+<li>前提：您需要先安裝 vnc viewer 或其他 vnc 客户端</li>
+<li>對於 android, 只有 vnc viewer 才會 “連攜”啓動</li>
+<li>作用：啓動默認的 vnc 服務（一般是 tigervnc）</li>
+</ul>
+<!-- - 對於 wsl, 只有 tigervnc viewer 才會 -->
+</li>
+<li><code>startx11vnc</code>
+<ul>
+<li>前提：條件同上</li>
+<li>作用：啓動 x11vnc</li>
+</ul>
+</li>
+<li><code>stopvnc</code>
+<ul>
+<li>此命令可以方便地幹掉 rootless 容器（包括它的 vnc 服務進程）</li>
+<li>對於 chroot/unshare（rootful）容器, 您需要單獨停止容器進程。</li>
+</ul>
+</li>
+<li><code>startxsdl</code>
+<ul>
+<li>前提：您需要先在宿主環境中安裝 xserver app</li>
+<li>作用：啓動 xorg</li>
+</ul>
+</li>
+<li><code>novnc</code>
+<ul>
+<li>前提：您無需安裝常規的 vnc 客户端，只需有個瀏覽器就足夠了</li>
+<li>作用：同時啓動宿主的瀏覽器和容器內部的服務</li>
+</ul>
+</li>
+</ul>
+<h4 id="412-nogui"><a class="header" href="#412-nogui">4.1.2. noGUI</a></h4>
+<p>對於 edition 2020:</p>
+<ul>
+<li><code>debian</code>
+<ul>
+<li>自動檢測默認容器名稱、類型和架構。在檢測完成後，啓動容器。</li>
+</ul>
+</li>
+</ul>
+<p>對於 edition 2021：</p>
+<ul>
+<li><code>tmoe ls</code>
+<ul>
+<li>自動判斷默認容器類型，並列出容器列表</li>
+</ul>
+</li>
+<li><code>tmoe p</code>
+<ul>
+<li>啓動默認的 proot 容器</li>
+</ul>
+</li>
+<li><code>tmoe c</code>
+<ul>
+<li>啓動默認的 chroot/unshare 容器</li>
+</ul>
+</li>
+<li><code>tmoe</code> 或 <code>tmoe m</code>
+<ul>
+<li>啓動 tmoe manager</li>
+</ul>
+</li>
+</ul>
+<p>對於 edition 2022：</p>
+<ul>
+<li><code>tmm r &lt;容器名稱&gt;</code>
+<ul>
+<li>例如 <code>tmm r uuu</code></li>
+</ul>
+</li>
+<li><code>tmm</code>
+<ul>
+<li>啓動 tmoe manager</li>
+</ul>
+</li>
+</ul>
+<h3 id="42-在容器環境中"><a class="header" href="#42-在容器環境中">4.2. 在容器環境中</a></h3>
+<p>如果宿主支持“連攜”啓動，那麼您無需在容器內單獨啓動 vnc 服務</p>
+<ul>
+<li><code>tmoe</code> 或 <code>tmoe t</code>
+<ul>
+<li>啓動 tmoe tools</li>
+</ul>
+</li>
+<li><code>startvnc</code>
+<ul>
+<li>啓動默認的 vnc 服務（一般是 tigervnc）</li>
+</ul>
+</li>
+<li><code>startx11vnc</code>
+<ul>
+<li>啓動 x11vnc 服務</li>
+</ul>
+</li>
+<li><code>stopvnc</code>
+<ul>
+<li>停止 vnc 服務</li>
+</ul>
+</li>
+<li><code>startxsdl</code>
+<ul>
+<li>啓動 xorg</li>
+</ul>
+</li>
+<li><code>novnc</code>
+<ul>
+<li>啓動 novnc</li>
+</ul>
+</li>
+</ul>
+<h4 id="421-對於-debian-based-發行版"><a class="header" href="#421-對於-debian-based-發行版">4.2.1. 對於 debian-based 發行版</a></h4>
+<ul>
+<li><code>tigervnc</code>
+<ul>
+<li>啓動 tigervnc 服務</li>
+</ul>
+</li>
+<li><code>tightvnc</code>
+<ul>
+<li>啓動 tightvnc 服務</li>
+</ul>
+</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="配置"><a class="header" href="#配置">配置</a></h1>
+<p>在本篇中，我們將學習以下內容</p>
+<ul>
+<li>toml 的基本用法</li>
+<li>各個配置選項的意義</li>
+<li>如何修改配置</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="toml"><a class="header" href="#toml">toml</a></h1>
+<ul>
+<li><a href="toml.html#1-%E5%8F%AA%E8%AE%80%E9%85%8D%E7%BD%AE">1. 只讀配置</a>
+<ul>
+<li><a href="toml.html#11-%E6%A6%82%E5%BF%B5%E8%A7%A3%E8%AE%80">1.1. 概念解讀</a></li>
+<li><a href="toml.html#12-%E5%88%86%E6%9E%90">1.2. 分析</a></li>
+</ul>
+</li>
+<li><a href="toml.html#2-toml">2. toml</a>
+<ul>
+<li><a href="toml.html#21-%E4%BB%80%E9%BA%BC%E6%98%AF-toml">2.1. 什麼是 toml</a></li>
+<li><a href="toml.html#22-toml-%E8%88%87-json">2.2. toml 與 json</a></li>
+<li><a href="toml.html#23-toml-%E7%9A%84%E7%B0%A1%E5%96%AE%E7%94%A8%E6%B3%95">2.3. toml 的簡單用法</a>
+<ul>
+<li><a href="toml.html#231-%E8%A1%A8%E6%95%B8%E7%B5%84">2.3.1. 表數組</a></li>
+<li><a href="toml.html#232-%E5%AD%97%E7%AC%A6%E4%B8%B2">2.3.2. 字符串</a></li>
+<li><a href="toml.html#233-%E6%95%B4%E6%95%B8">2.3.3. 整數</a></li>
+<li><a href="toml.html#234-%E6%B5%AE%E9%BB%9E%E6%95%B8">2.3.4. 浮點數</a></li>
+<li><a href="toml.html#235-%E5%B8%83%E7%88%BE%E5%80%BC">2.3.5. 布爾值</a></li>
+<li><a href="toml.html#236-rfc3339">2.3.6. rfc3339</a></li>
+<li><a href="toml.html#237-%E6%95%B8%E7%B5%84">2.3.7. 數組</a></li>
+<li><a href="toml.html#238-%E6%A8%99%E6%BA%96%E8%A1%A8">2.3.8. 標準表</a></li>
+<li><a href="toml.html#239-%E5%85%A7%E8%81%AF%E8%A1%A8">2.3.9. 內聯表</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="toml.html#3-%E5%8F%AF%E5%AF%AB%E9%85%8D%E7%BD%AE">3. 可寫配置</a>
+<ul>
+<li><a href="toml.html#31-%E6%A6%82%E5%BF%B5%E8%A7%A3%E8%AE%80">3.1. 概念解讀</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<p>二萌當初在寫本章時，本來是打算給 edition 2022 準備的。<br />
+實際上，有部分內容已經下放給 edition 2021 了。</p>
+<p>在之後的新版中，對於面向用户的配置，toml 會出現得更加頻繁。</p>
+<hr />
+<p>在天萌中，配置文件分為兩種。<br />
+一種是隻能看的，另一種則是可以寫的。</p>
+<table><thead><tr><th>只讀</th><th>可讀可寫</th></tr></thead><tbody>
+<tr><td>一般是軟件包發行信息或數據索引信息</td><td>真正意義上的程序配置文件</td></tr>
+</tbody></table>
+<h2 id="1-只讀配置"><a class="header" href="#1-只讀配置">1. 只讀配置</a></h2>
+<h3 id="11-概念解讀"><a class="header" href="#11-概念解讀">1.1. 概念解讀</a></h3>
+<p>天萌的“容器屬性信息”就是隻讀配置。<br />
+此處所指的只讀配置並不是文件權限的 &quot;read only&quot;，而是邏輯上的只讀。<br />
+實際上，您可以直接修改該文件的內容，只是不應該手動去修改。<br />
+舉個例子：<br />
+假如您看到了版本號為&quot;1.57.0&quot;。<br />
+心想：“這版本號也忒低了吧！咱把它改成 114514.999.9 吧！”<br />
+於是，您很開心地修改了它本身的屬性。<br />
+從主觀的角度來看：您收穫了快樂。這很棒！因為快樂是一種積極的生活態度。<br />
+從客觀的角度來看：您修復了版本號過低的問題。這也不錯！<br />
+從原開發者的角度來看：啊這。。。<br />
+於是乎，只有原開發者受傷的世界達成了。(ó﹏ò｡)</p>
+<p>注：以上修改的內容不會生效。<br />
+對於只讀配置，如果修改真的生效了，那麼容器在安裝或使用過程中可能會出現問題。<br />
+我相信您能在下一小節中找到原因。</p>
+<h3 id="12-分析"><a class="header" href="#12-分析">1.2. 分析</a></h3>
+<p>本節將對“容器屬性信息”進行分析。</p>
+<p>天萌每週構建容器輸出的只讀配置如下：<br />
+（之後可能會發生變更）</p>
+<pre><code class="language-toml">[main]
+name = &quot;rust&quot;
+tag = [&quot;nightly&quot;, &quot;unstable&quot;]
+os = &quot;debian&quot;
+release = &quot;sid&quot;
+arch = &quot;arm64&quot;
+syntax_version = &quot;0.0.1&quot;
+
+[file]
+name = &quot;rust-nightly-arm64_2021-09-17_20-39.tar.zst&quot;
+
+# 這個值可以用來校驗文件的完整性
+# 舉個例子：假設存在兩個同名文件,它們都叫a.tar.zst,大小也相同，只是所在目錄不同: A/a.tar.zst, B/a.tar.zst
+# 您可能無法直接判斷它們是否屬於同一個文件
+# 這時候可以通過對比兩者的 sha256 校驗值來檢測它們是否為同一個文件，若 sha256 值相同，則文件相同，反之不同。
+# 注：此處忽略了哈希碰撞等問題。
+sha256 = &quot;acc668db456e94053322f7049469995ba20e9fe6dcb297367226dca4553b633e&quot;
+
+[file.size]
+# Installed size ≈ tar-size
+# 安裝大小 約等於 tar文件的大小
+# tar大小就是容器鏡像打包後的大小，解包後佔用的空間可能會比tar本身略大一點
+# 具體大小與文件簇有關，而文件簇又與 file system（文件系統）有關。
+tar = &quot;1.6G&quot;
+tar-bytes = 1717986919
+
+# Space occupied ≈ tar-size + zstd-size
+# You will need to prepare a large enough space before installation.
+# Download size: zstd-size
+# 在tar打包完成後，開發者還對鏡像進行了壓縮。
+# 您需要下載的文件大小就是zstd的大小，準確來説是tar.zst文件的大小
+# 在安裝一個容器前，您需要考慮預留一定的空間：
+# 1.壓縮包文件的大小，2.壓縮包解壓後的大小, 3.容器的初始化過程也需要佔用一點空間。
+zstd = &quot;216M&quot;
+zstd-bytes = 226492416
+
+# 對於2022版，用户只需要看版本號就能知道鏡像的先後順序了,知道哪個比較新哪個比較舊。
+# 開發者忽然想到了天萌存在一個自動判斷時間先後順序的功能，就算是舊版也有這個功能。
+# 其實time(時間)是給開發者看的，普通用户不需要了解服務器在構建鏡像過程中的某個流程究竟花了多少時間。
+# 如果您感興趣的話，那我可以説一下流程。
+# 1. 服務器構建完成鏡像後,需要對鏡像進行打包和壓縮。
+# 2. start-zstd指的是開始進行zstd壓縮的時間點
+# 3. 在壓縮完成後,需要將文件傳輸到另一個節點。
+# 3-1. 對於天萌的每週構建，並不是所有節點都從零開始構建，而是其中一個節點完成構建後，就把相關文件同步到另一個節點。
+[time]
+begin = 2021-09-17T20:08:33.801113258Z
+start-zstd = 20:14:20
+start-sync_0 = 20:39:22
+start-sync_1 = 20:41:33
+end = 2021-09-17T20:44:32.392018144Z
+
+[server]
+name = &quot;tmoe-us&quot;
+node = 2
+available = [1, 2, 3, 4]
+
+# Environment variables inside the container.
+# 容器內部的環境變量會影響容器內的環境，~~聽君一席話，如聽一席話~~（●＞ω＜●）
+[env]
+PATH = &quot;/usr/local/cargo/bin${PATH:+:${PATH}}&quot;
+RUSTUP_HOME= &quot;/usr/local/rustup&quot;
+CARGO_HOME = &quot;/usr/local/cargo&quot;
+
+[version]
+rustup = 'rustup 1.24.3 (ce5817a94 2021-05-31)'
+cargo = 'cargo 1.56.0-nightly (e515c3277 2021-09-08)'
+rustc = 'rustc 1.57.0-nightly (e4828d5b7 2021-09-16)'
+</code></pre>
+<p><strong>toml</strong> 是一種優秀的配置文件格式。<br />
+接下來，我們將會介紹 <strong>toml</strong> 的理念以及常見用法。<br />
+最後，我們將簡單瞭解“可寫配置”的概念與用法。</p>
+<h2 id="2-toml"><a class="header" href="#2-toml">2. toml</a></h2>
+<h3 id="21-什麼是-toml"><a class="header" href="#21-什麼是-toml">2.1. 什麼是 toml</a></h3>
+<blockquote>
+<p>Tom's Obvious, Minimal Language.<br />
+Tom 的（語義）明顯、（配置）最小化的語言。<br />
+TOML 旨在成為一個語義明顯且易於閲讀的最小化配置文件格式。<br />
+TOML 被設計成可以無歧義地映射為哈希表。<br />
+TOML 應該能很容易地被解析成各種語言中的數據結構。</p>
+</blockquote>
+<p>以上説明來自於 toml 的<a href="https://toml.io">官網</a>，您可以在裏面找到一些詳細的説明。</p>
+<h3 id="22-toml-與-json"><a class="header" href="#22-toml-與-json">2.2. toml 與 json</a></h3>
+<p>談到 <strong>toml</strong>，很多人都會提及到 <strong>json</strong><br />
+為什麼不用<strong>json</strong>呢？ 它跟<strong>json</strong> 比有什麼優勢嗎？</p>
+<p>github 上 toml-lang/toml 的第 2 條 issue 就跟這個話題有關。</p>
+<blockquote>
+<p><a href="https://github.com/toml-lang/toml/issues/2">&quot;No, JSON doesn't count. You know why.&quot;</a></p>
+</blockquote>
+<p>But I don't know why too.</p>
+<h3 id="23-toml-的簡單用法"><a class="header" href="#23-toml-的簡單用法">2.3. toml 的簡單用法</a></h3>
+<p>本小節的內容將為<a href="toml.html#43-%E5%8F%AF%E5%AF%AB%E9%85%8D%E7%BD%AE">(#4.3-可寫配置)</a> 打下基礎。<br />
+在天萌容器的配置中,可能會涉及到以下知識點：</p>
+<ul>
+<li>字符串</li>
+<li>整數</li>
+<li>浮點數</li>
+<li>布爾值</li>
+<li>rfc3339</li>
+<li>數組</li>
+<li>標準表</li>
+<li>內聯表</li>
+</ul>
+<p>其實這些也是 <strong>toml</strong> 本身的常見值類型。</p>
+<p>很少涉及到的知識點是:</p>
+<ul>
+<li>表數組</li>
+</ul>
+<h4 id="231-表數組"><a class="header" href="#231-表數組">2.3.1. 表數組</a></h4>
+<p>表數組的話，雖然很好用，但是天萌的開發者 <del>(想要偷懶)</del> 由於某種原因就不用這種類型了。</p>
+<p>其實是表數組解析起來稍微要麻煩一點。<br />
+舉個簡單的例子：</p>
+<pre><code class="language-toml">[[bin]]
+name = &quot;tmm&quot;
+
+[[bin]]
+name = &quot;value&quot;
+
+[[bin]]
+name = &quot;tmoe&quot;
+</code></pre>
+<p>全刪<code>[[bin]]</code> 或者是追加寫入一個新的<code>[[bin]]</code> 都很簡單。<br />
+但是呢！要修改包含指定&quot;value&quot;的數據，還得要再處理一下。<br />
+不像標準表，直接鍵值對操作，多簡單啊！</p>
+<h4 id="232-字符串"><a class="header" href="#232-字符串">2.3.2. 字符串</a></h4>
+<p>字符串可能是天萌容器的配置文件裏最常見的類型了。</p>
+<p>比如説</p>
+<pre><code class="language-toml">str = &quot;value&quot;
+</code></pre>
+<p>toml 的字符串類型既可以用雙引號，也可以用單引號。<br />
+這跟 rust 不一樣，在 rust 中，如果您使用單引號，並且沒有指明類型，那麼編譯器默認會推斷該值為 char 類型（單個字符）。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let c = 'c';
+<span class="boring">}
+</span></code></pre></pre>
+<p>回到 toml，你如果需要輸入多個引號的話，那就這樣子寫吧！</p>
+<pre><code class="language-toml">str = &quot;&quot;&quot;我有'''''5個單引號,還有兩個&quot;&quot;雙引號&quot;&quot;&quot;
+</code></pre>
+<p>前面和後面都有三個引號。</p>
+<h4 id="233-整數"><a class="header" href="#233-整數">2.3.3. 整數</a></h4>
+<p>整數的話，就不需要引號了！<br />
+舉個字符串的例子：</p>
+<pre><code class="language-toml">int1 = &quot;233&quot;
+</code></pre>
+<p>在上面的式子中，int 的值將被識別為字符串, 而不是整數。<br />
+再舉個整數的例子：</p>
+<pre><code class="language-toml">int2 = 233
+</code></pre>
+<p>舉個負整數的例子：</p>
+<pre><code class="language-toml">int3 = -233
+</code></pre>
+<p>toml 可以接受的整數範圍是 i64 (從 −2^63 到 2^63−1)。<br />
+跟 rust 一樣，對於特別大的數字，您可以用 <strong>_</strong> 來增強可讀性。</p>
+<pre><code class="language-toml">int4 = 114_514_233
+</code></pre>
+<p>上面那條式子等於下面那條</p>
+<pre><code class="language-toml">int4 = 114514233
+</code></pre>
+<p>舉個二進制、八進制和十六進制整數的例子:</p>
+<pre><code class="language-toml"># 二進制的0b11011111101010010等於十進制的114514
+bin = 0b11011111101010010
+# 0o開頭的值是八進制的數字，猜猜看這是哪個數
+oct1 = 0o337522
+# 0x開頭是十六進制喔
+hex1 = 0x1BF52
+</code></pre>
+<h4 id="234-浮點數"><a class="header" href="#234-浮點數">2.3.4. 浮點數</a></h4>
+<p>浮點數也不能加引號哦！</p>
+<p>用小數和指數形式舉個幾個例子吧！</p>
+<pre><code class="language-toml">f1 = 3.14159265
+f2 = -3.14159265
+f3 = 314e-2
+f4 = 0.1145e+4
+</code></pre>
+<h4 id="235-布爾值"><a class="header" href="#235-布爾值">2.3.5. 布爾值</a></h4>
+<p>布爾值只有兩個值: <strong>true</strong> 和 <strong>false</strong></p>
+<p>true 為真，false 為假<br />
+true ✓<br />
+false X</p>
+<pre><code class="language-toml">bool1 = true
+bool2 = false
+</code></pre>
+<h4 id="236-rfc3339"><a class="header" href="#236-rfc3339">2.3.6. rfc3339</a></h4>
+<p>rfc3339 是一種時間格式。</p>
+<pre><code class="language-toml"># 您可以只寫時間
+time1 = 01:25:57
+time2 = 01:25:00.247810421
+# 也可以只寫日期
+date1 = 2021-09-29
+# 也可以都寫
+time3 = 2021-09-29T01:25:57Z
+# 您可以把上面那個拆開來，並且無需加引號
+time4 = 2021-09-29 01:25:57Z
+# 末尾的Z代表的是UTC, 您可以換成+00:00
+# 下面以納秒級別來輸出東八區的某一時間點。那麼問題來了，您知道為什麼是這個時間點嗎？
+time5 = 2021-09-29 01:29:13.598811802+08:00
+</code></pre>
+<p><del>因為開發者寫文檔寫到很晚，都寫到這個點啦！很辛苦的説。</del></p>
+<h4 id="237-數組"><a class="header" href="#237-數組">2.3.7. 數組</a></h4>
+<p>簡單來説，數組就是一個方括號，然後裏面有 0 個或多個值。</p>
+<pre><code class="language-toml"># 您可以換行寫
+array1 = [233,
+22,
+33]
+# 也可以不換行寫
+array2 = [ &quot;你好&quot;, &quot;世界&quot; ]
+</code></pre>
+<h4 id="238-標準表"><a class="header" href="#238-標準表">2.3.8. 標準表</a></h4>
+<p>標準表也被稱為哈希表。</p>
+<p>舉個 Cargo 裏面的例子</p>
+<pre><code class="language-toml">[dependencies]
+nom = &quot;7.0.0&quot;
+</code></pre>
+<p>您可以把上面的表寫成下面的格式</p>
+<pre><code class="language-toml">[dependencies.nom]
+version = &quot;7.0.0&quot;
+</code></pre>
+<h4 id="239-內聯表"><a class="header" href="#239-內聯表">2.3.9. 內聯表</a></h4>
+<p>內聯表可以把多行寫成一行。</p>
+<p>先舉個標準表的例子</p>
+<pre><code class="language-toml">[dependencies.tokio]
+version = &quot;1.11.0&quot;
+features = [&quot;macros&quot;, &quot;tcp&quot;, &quot;dns&quot;, &quot;io-util&quot;]
+</code></pre>
+<p>再舉個內聯表的例子</p>
+<pre><code class="language-toml">[dependencies]
+tokio = { version = &quot;1.11.0&quot;, features = [&quot;macros&quot;, &quot;tcp&quot;, &quot;dns&quot;, &quot;io-util&quot;] }
+</code></pre>
+<p>怎麼樣？您喜歡標準表還是內聯表呢？</p>
+<h2 id="3-可寫配置"><a class="header" href="#3-可寫配置">3. 可寫配置</a></h2>
+<h3 id="31-概念解讀"><a class="header" href="#31-概念解讀">3.1. 概念解讀</a></h3>
+<p>咕咕咕，這個部分還沒有開始寫呢!</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="環境"><a class="header" href="#環境">環境</a></h1>
+<p>在本篇中，我們將學習各種環境的用法。<br />
+除了本項目自身之外，我們還將學習其他知識。</p>
+<ul>
+<li>編輯器
+<ul>
+<li>vscode</li>
+<li>micro</li>
+</ul>
+</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="編輯器"><a class="header" href="#編輯器">編輯器</a></h1>
+<blockquote>
+<p>子曰：“工欲善其事，必先利其器。居是邦也，事其大夫之賢者，友其士之仁者。”<br />
+———《論語·衞靈公》</p>
+</blockquote>
+<ul>
+<li><a href="editor.html#1-visual-studio-code">1. Visual Studio Code</a>
+<ul>
+<li><a href="editor.html#11-%E7%B0%A1%E4%BB%8B">1.1. 簡介</a></li>
+<li><a href="editor.html#12-%E5%BF%AB%E6%8D%B7%E9%8D%B5">1.2. 快捷鍵</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="1-visual-studio-code"><a class="header" href="#1-visual-studio-code">1. Visual Studio Code</a></h2>
+<p>雖然 tmm 裏面有預裝 code-server（web 網頁服務器）的容器，但是本節將主要講桌面版的 vscode。</p>
+<p>對於本項目的用户，您之後可以用 <code>apt install code-no-sandbox</code> 來安裝，它將包含兩個啓動圖標。(現在還而沒有打包啦)</p>
+<blockquote>
+<p>除了 code-server 之外，目前比較流行的網頁版 vscode 還有 2 個。</p>
+<ol>
+<li>官方的 <a href="https://vscode.dev">vscode.dev</a></li>
+<li>github dev, 假設某倉庫為 github.com/xx/yy, 將 com 修改為 dev：（github.dev/xx/yy）。</li>
+</ol>
+</blockquote>
+<h3 id="11-簡介"><a class="header" href="#11-簡介">1.1. 簡介</a></h3>
+<p>vscode 是由微軟（Microsoft）主導開發的一款開源編輯器。</p>
+<blockquote>
+<p>Why is vscode？</p>
+</blockquote>
+<p>有很多人都喜歡 <strong>JetBrains</strong> 家的 IDE(s), 還有 <strong>vscode</strong> 的老大哥 <strong>Visual Studio</strong>。<br />
+在本節中，我們並不會討論 vscode 相較於其它編輯器或集成開發環境的優劣。</p>
+<p>正如《周易·繫辭（上）》中所言：“仁者見之謂之仁，智者見之謂之智。”</p>
+<p>對於相同問題，不同用户站在不同角度有不同的看法。<br />
+您如果不喜歡 vscode 的話，那可以跳過本節的內容。</p>
+<hr />
+<p>如果您對它感興趣的話，那讓我們帶着愉快的心情，一起去了解 vscode 吧！</p>
+<h3 id="12-快捷鍵"><a class="header" href="#12-快捷鍵">1.2. 快捷鍵</a></h3>
+<p>瞭解一款軟件的快捷鍵，在某些方面能極大程度地提高您的效率。</p>
+<p>以下表格是開發者根據 <a href="https://code.visualstudio.com/docs/getstarted/keybindings#_keyboard-shortcuts-reference">官方文檔</a> 整理出來的。<br />
+網上有很多基於官方文檔的表格，但是應該很少有人將 <strong>windows</strong> 、<strong>linux</strong> &amp; <strong>macos</strong> 三者的 vscode 整合在一起並進行比較吧？</p>
+<p>截止 2021-10-23，以下表格會比官方的 pdf 文檔多一些內容，之後 vscode 可能會進行更新, 具體內容請以官方文檔為主。</p>
+<p>對於 <strong>Linux</strong> 和 <strong>Windows</strong> 中相同的快捷鍵，<strong>Win</strong> 處留空。<br />
+對於衝突快捷鍵，或者是默認為空鍵位的地方，使用 🤔️。<br />
+例如： ctrl+alt+方向鍵：（Move editor into next/previous group） 與 cinnamon 的切換工作區(switch work space) 快捷鍵衝突。</p>
+<p>其實正確的做法，不是看這個表格。<br />
+而是先按下 <kbd>ctrl</kbd> + K 組合鍵，再按下 <kbd>ctrl</kbd> + S, 最後進行搜索。<br />
+不管怎麼説，只要能幫到您，開發者就覺得很開心了。</p>
+<hr />
+<!-- <kbd>ctrl</kbd> -->
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>General</strong></th><th>一般操作</th></tr></thead><tbody>
+<tr><td>Ctrl+Shift+P, F1</td><td></td><td>⇧⌘P, F1</td><td>Show Command Palette</td><td>顯示命令選項板</td></tr>
+<tr><td>Ctrl+P</td><td></td><td>⌘P</td><td>Quick Open, Go to File…</td><td>快速打開</td></tr>
+<tr><td>Ctrl+Shift+N</td><td></td><td>⇧⌘N</td><td>New window/instance</td><td>新窗口/實例</td></tr>
+<tr><td>Ctrl+W</td><td>Ctrl+Shift+W</td><td>⌘W</td><td>Close window/instance</td><td>關閉窗口/實例</td></tr>
+<tr><td>Ctrl+,</td><td></td><td>⌘,</td><td>User Settings</td><td>用户設置</td></tr>
+<tr><td>Ctrl+K Ctrl+S</td><td></td><td>⌘K ⌘S</td><td>Keyboard Shortcuts</td><td>鍵盤快捷鍵</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Basic editing</strong></th><th>基礎編輯</th></tr></thead><tbody>
+<tr><td>Ctrl+X</td><td></td><td>⌘X</td><td>Cut (if empty selection, cut line)</td><td>剪切（若為空白則剪切整行，若非空則剪切選中內容）</td></tr>
+<tr><td>Ctrl+C</td><td></td><td>⌘C</td><td>Copy (if empty selection, copy line)</td><td>複製 （若為空白則複製整行，若非空則複製選中內容）</td></tr>
+<tr><td>Ctrl+V</td><td></td><td>⌘V</td><td>Paste</td><td>粘貼</td></tr>
+<tr><td>Ctrl+Z</td><td></td><td>⌘Z</td><td>Undo</td><td>撤銷（回退到上一步）</td></tr>
+<tr><td>Ctrl+Y, Ctrl+Shift+Z</td><td></td><td>⇧⌘Z</td><td>Redo</td><td>重做/反撤銷/恢復</td></tr>
+<tr><td><code>Alt+ ↓</code> / <code>Alt+ ↑</code></td><td></td><td>⌥↓ / ⌥↑</td><td>Move line down/up</td><td>移動行（向下/上）</td></tr>
+<tr><td><code>Shift+Alt+ ↓</code> / <code>Shift+Alt+ ↑</code></td><td></td><td>⇧⌥↓ / ⇧⌥↑</td><td>Copy line down/up</td><td>複製行（向下/上）</td></tr>
+<tr><td>Ctrl+Shift+K</td><td></td><td>⇧⌘K</td><td>Delete line</td><td>刪除行</td></tr>
+<tr><td><code>Ctrl+Enter</code> / <code>Ctrl+Shift+Enter</code></td><td></td><td>⌘Enter / ⇧⌘Enter</td><td>Insert line below/above</td><td>插入行（下方/上方）</td></tr>
+<tr><td>Ctrl+Shift+\</td><td></td><td>⇧⌘\</td><td>Jump to matching bracket</td><td>跳到匹配的括號內</td></tr>
+<tr><td><code>Ctrl+]</code> / <code>Ctrl+[</code></td><td></td><td>⌘] / ⌘[</td><td>Indent/outdent line</td><td>縮進/縮出（取消縮進）行</td></tr>
+<tr><td>Home / End</td><td></td><td>Home / End</td><td>Go to beginning/end of line</td><td>轉到行首/行尾</td></tr>
+<tr><td><code>Ctrl+ Home</code> / <code>Ctrl+ End</code></td><td></td><td>⌘↑ / ⌘↓</td><td>Go to beginning/end of file</td><td>轉到文件的開頭/結尾處</td></tr>
+<tr><td><code>Ctrl+ ↑</code> / <code>Ctrl+ ↓</code></td><td></td><td>⌃PgUp / ⌃PgDn</td><td>Scroll line up/down</td><td>滾動行（向上/下）</td></tr>
+<tr><td><code>Alt+ PgUp</code> / <code>Alt+ PgDn</code></td><td></td><td>⌘PgUp /⌘PgDn</td><td>Scroll page up/down</td><td>滾動頁面（向上/下）</td></tr>
+<tr><td><code>Ctrl+Shift+ [</code> / <code>Ctrl+Shift+ ]</code></td><td></td><td>⌥⌘[ / ⌥⌘]</td><td>Fold/unfold region</td><td>摺疊/展開（解除摺疊）區域（代碼塊）</td></tr>
+<tr><td><code>Ctrl+K Ctrl+ [</code> / <code>Ctrl+K Ctrl+ ]</code></td><td></td><td>⌘K ⌘[ / ⌘K ⌘]</td><td>Fold/unfold all subregions</td><td>摺疊/展開所有子區域</td></tr>
+<tr><td><code>Ctrl+K Ctrl+0</code> / <code>Ctrl+K Ctrl+J</code></td><td></td><td>⌘K ⌘0 / ⌘K ⌘J</td><td>Fold/unfold all regions</td><td>摺疊/展開所有區域</td></tr>
+<tr><td>Ctrl+K Ctrl+C</td><td></td><td>⌘K ⌘C</td><td>Add line comment</td><td>添加行註釋</td></tr>
+<tr><td>Ctrl+K Ctrl+U</td><td></td><td>⌘K ⌘U</td><td>Remove line comment</td><td>刪除行註釋</td></tr>
+<tr><td>Ctrl+/</td><td></td><td>⌘/</td><td>Toggle line comment</td><td>切換行註釋(註釋或取消註釋)</td></tr>
+<tr><td>Ctrl+Shift+A</td><td>Shift+Alt+A</td><td>⇧⌥A</td><td>Toggle block comment</td><td>切換塊註釋</td></tr>
+<tr><td>Alt+Z</td><td></td><td>⌥Z</td><td>Toggle word wrap</td><td>切換自動換行</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Multi-cursor and selection</strong></th><th>多光標與選擇（主要：列塊編輯）</th></tr></thead><tbody>
+<tr><td>Alt+Click</td><td></td><td>⌥ + click</td><td>Insert cursor</td><td>插入光標</td></tr>
+<tr><td>Shift+Alt+↑</td><td>Ctrl+Alt+↑</td><td>⌥⌘↑</td><td>Insert cursor above</td><td>在上方插入光標</td></tr>
+<tr><td>Shift+Alt+↓</td><td>Ctrl+Alt+↓</td><td>⌥⌘↓</td><td>Insert cursor below</td><td>在下方插入光標</td></tr>
+<tr><td>Ctrl+U</td><td></td><td>⌘U</td><td>Undo last cursor operation</td><td>撤銷上一次光標操作</td></tr>
+<tr><td>Shift+Alt+I</td><td></td><td>⇧⌥I</td><td>Insert cursor at end of each line selected</td><td>在選中行的末尾插入光標</td></tr>
+<tr><td>Ctrl+L</td><td></td><td>⌘L</td><td>Select current line</td><td>選擇當前行</td></tr>
+<tr><td>Ctrl+Shift+L</td><td></td><td>⇧⌘L</td><td>Select all occurrences of current selection</td><td>選擇當前選中項的所有匹配項</td></tr>
+<tr><td>Ctrl+F2</td><td></td><td>⌘F2</td><td>Select all occurrences of current word</td><td>選擇當前詞的所有匹配項</td></tr>
+<tr><td><code>Shift+Alt+ →</code> / <code>Shift+Alt+ ←</code></td><td></td><td>⌃⇧⌘→ / ←</td><td>Expand / shrink selection</td><td>擴大/縮小選擇</td></tr>
+<tr><td>Shift+Alt + drag mouse</td><td></td><td>⇧⌥ + drag mouse</td><td>Column (box) selection</td><td>列塊選擇（先按住 shift+alt，再按住鼠標左鍵，最後拖拽鼠標選中指定列塊）</td></tr>
+<tr><td>🤔️</td><td><code>Ctrl+Shift+Alt+ ↑</code> / <code>Ctrl+Shift+Alt+ ↓</code></td><td>⇧⌥⌘↑ / ↓</td><td>Column (box) selection up/down</td><td>列塊選擇（向上/向下）</td></tr>
+<tr><td>🤔️</td><td><code>Ctrl+Shift+Alt+ ←</code> / <code>Ctrl+Shift+Alt+ →</code></td><td>⇧⌥⌘← / →</td><td>Column (box) selection left/right</td><td>列塊選擇（左/右）</td></tr>
+<tr><td>🤔️</td><td><code>Ctrl+Shift+Alt+ PgUp</code>/ <code>Ctrl+Shift+Alt+ PgDn</code></td><td>⇧⌥⌘PgUp / PgDn</td><td>Column (box) selection page up/down</td><td>列塊選擇（頁面 上/下 移）</td></tr>
+<tr><td>Ctrl+A</td><td></td><td>⌘A</td><td>Select all</td><td>全選</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Search and replace</strong></th><th>搜索與替換</th></tr></thead><tbody>
+<tr><td>Ctrl+F</td><td></td><td>⌘F</td><td>Find</td><td>查找</td></tr>
+<tr><td>Ctrl+H</td><td></td><td>⌥⌘F</td><td>Replace</td><td>替換</td></tr>
+<tr><td><code>F3</code> / <code>Shift+F3</code></td><td></td><td>⌘G / ⇧⌘G</td><td>Find next/previous</td><td>查找下一個/上一個</td></tr>
+<tr><td>Alt+Enter</td><td></td><td>⌥Enter</td><td>Select all occurrences of Find match</td><td>選擇所有匹配項</td></tr>
+<tr><td>Ctrl+D</td><td></td><td>⌘D</td><td>Add selection to next Find match</td><td>選擇下一個匹配項</td></tr>
+<tr><td>Ctrl+K Ctrl+D</td><td></td><td>⌘K ⌘D</td><td>Move last selection to next Find match</td><td>跳過當前選擇項</td></tr>
+<tr><td><code>Alt+C</code> / <code>Alt+R</code> / <code>Alt+W</code></td><td></td><td>⌥⌘C/⌥⌘R/⌥⌘W</td><td>Toggle case-sensitive / regex / whole word</td><td>切換 區分大小寫/正則表達式/全字匹配</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Rich languages editing</strong></th><th>富文本編輯</th></tr></thead><tbody>
+<tr><td>Ctrl+Space, Ctrl+I</td><td></td><td>⌃Space, ⌘I</td><td>Trigger suggestion</td><td>觸發建議</td></tr>
+<tr><td>Ctrl+Shift+Space</td><td></td><td>⇧⌘Space</td><td>Trigger parameter hints</td><td>觸發參數提示</td></tr>
+<tr><td>Ctrl+Shift+I</td><td>Shift+Alt+F</td><td>⇧⌥F</td><td>Format document</td><td>格式化文檔</td></tr>
+<tr><td>Ctrl+K Ctrl+F</td><td></td><td>⌘K ⌘F</td><td>Format selection</td><td>格式化所選部分</td></tr>
+<tr><td>F12</td><td></td><td>F12</td><td>Go to Definition</td><td>轉到定義</td></tr>
+<tr><td>Ctrl+Shift+F10</td><td>Alt+F12</td><td>⌥F12</td><td>Peek Definition</td><td>速覽定義</td></tr>
+<tr><td>Ctrl+K F12</td><td></td><td>⌘K F12</td><td>Open Definition to the side</td><td>在側邊顯示定義</td></tr>
+<tr><td>Ctrl+.</td><td></td><td>⌘.</td><td>Quick Fix</td><td>快速修復</td></tr>
+<tr><td>Shift+F12</td><td></td><td>⇧F12</td><td>Show References</td><td>顯示引用</td></tr>
+<tr><td>F2</td><td></td><td>F2</td><td>Rename Symbol</td><td>重命名符號</td></tr>
+<tr><td>Ctrl+K Ctrl+X</td><td></td><td>⌘K ⌘X</td><td>Trim trailing whitespace</td><td>裁剪尾隨空格</td></tr>
+<tr><td>Ctrl+K M</td><td></td><td>⌘K M</td><td>Change file language</td><td>更改文件語言</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Navigation</strong></th><th>導航</th></tr></thead><tbody>
+<tr><td>Ctrl+T</td><td></td><td>⌘T</td><td>Show all Symbols</td><td>顯示所有符號</td></tr>
+<tr><td>Ctrl+G</td><td></td><td>⌃G</td><td>Go to Line...</td><td>轉到指定行...</td></tr>
+<tr><td>Ctrl+P</td><td></td><td>⌘P</td><td>Go to File...</td><td>轉到文件...</td></tr>
+<tr><td>Ctrl+Shift+O</td><td></td><td>⇧⌘O</td><td>Go to Symbol...</td><td>轉到符號...</td></tr>
+<tr><td>Ctrl+Shift+M</td><td></td><td>⇧⌘M</td><td>Show Problems panel</td><td>顯示問題面板</td></tr>
+<tr><td><code>F8</code>/<code>Shift+F8</code></td><td></td><td>F8 / ⇧F8</td><td>Go to next/previous error or warning</td><td>轉到下一個/上一個錯誤或警告</td></tr>
+<tr><td>Ctrl+Shift+Tab</td><td></td><td>⌃⇧Tab</td><td>Navigate editor group history</td><td>在編輯器組（窗口）歷史記錄間進行導航（先按住 Ctrl+Shift，再按 tab 切換）</td></tr>
+<tr><td><code>Ctrl+Alt+ -</code>/<code>Ctrl+Shift+ -</code></td><td><code>Alt+ ←</code> / <code>Alt+ →</code></td><td>⌃- / ⌃⇧-</td><td>Go back/forward</td><td>後退/前進</td></tr>
+<tr><td>Ctrl+M</td><td></td><td>⌃⇧M</td><td>Toggle Tab moves focus</td><td>切換 tab 鍵移動焦點（先按下 ⌃⇧M / Ctrl+M，再多按幾次 tab 鍵 移動焦點 ）</td></tr>
+<tr><td>Ctrl+Shift+B</td><td></td><td>⌃⇧B</td><td>Run build task</td><td>運行生成(構建)任務</td></tr>
+<tr><td>🤔️</td><td><!-- 可以自定義為 ctrl+win+B --></td><td></td><td>Run task</td><td>運行任務，默認為空，您可以自定義為 ⌃⌘B</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Editor management</strong></th><th>編輯器管理</th></tr></thead><tbody>
+<tr><td>Ctrl+W</td><td>Ctrl+F4, Ctrl+W</td><td>⌘W</td><td>Close editor（file/tag)</td><td>關閉編輯器（文件/標籤頁)</td></tr>
+<tr><td>Ctrl+K F</td><td></td><td>⌘K F</td><td>Close folder</td><td>關閉文件夾</td></tr>
+<tr><td>Ctrl+\</td><td></td><td>⌘\</td><td>Split editor</td><td>拆分編輯器窗口</td></tr>
+<tr><td><code>Ctrl+1</code> / <code>Ctrl+2</code> / <code>Ctrl+3</code></td><td></td><td>⌘1 / ⌘2 / ⌘3</td><td>Focus into 1st, 2nd, 3rd editor group</td><td>聚焦（切換）到第 1、第 2 或 第 3 個編輯組(窗口)</td></tr>
+<tr><td><code>Ctrl+K Ctrl+←</code> / <code>Ctrl+K Ctrl+→</code></td><td></td><td>⌘K ⌘← / ⌘K ⌘→</td><td>Focus into previous/next editor group</td><td>切換到上一個/下一個窗口</td></tr>
+<tr><td><code>Ctrl+Shift+PgUp</code> / <code>Ctrl+Shift+PgDn</code></td><td></td><td>⌘K ⇧⌘← / ⌘K ⇧⌘→</td><td>Move editor left/right</td><td>向左/右移動編輯器</td></tr>
+<tr><td><code>Ctrl+K ←</code> / <code>Ctrl+K →</code></td><td></td><td>⌘K ← / ⌘K →</td><td>Move active editor group</td><td>向左/右移動正在使用（活動中）的窗口</td></tr>
+<tr><td><code>Ctrl+PgUp</code> / <code>Ctrl+PgDn</code></td><td></td><td>⌥⌘←/⌥⌘→</td><td>Focus into previous/next editor</td><td>切換到上一個/下一個編輯器</td></tr>
+<tr><td>🤔️</td><td><code>Ctrl+Alt+ →</code> / <code>Ctrl+Alt+ ←</code></td><td>⌃⌘→/⌃⌘←</td><td>Move editor into next/previous group</td><td>將編輯器移動到下一組/上一組</td></tr>
+<tr><td>Alt+F4</td><td></td><td>⌘Q</td><td>Quit vscode</td><td>退出 vscode</td></tr>
+</tbody></table>
+<!-- ctrl+alt+方向鍵 與 cinnamon 的切換工作區 快捷鍵衝突 -->
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>File management</strong></th><th>文件管理</th></tr></thead><tbody>
+<tr><td>Ctrl+N</td><td></td><td>⌘N</td><td>New file</td><td>新文件</td></tr>
+<tr><td>Ctrl+O</td><td></td><td>⌘O</td><td>Open file...</td><td>打開文件...</td></tr>
+<tr><td>Ctrl+S</td><td></td><td>⌘S</td><td>Save</td><td>保存</td></tr>
+<tr><td>Ctrl+Shift+S</td><td></td><td>⇧⌘S</td><td>Save as...</td><td>另存為...</td></tr>
+<tr><td>🤔️</td><td>Ctrl+K S</td><td>⌥⌘S</td><td>Save all</td><td>全部保存</td></tr>
+<tr><td>Ctrl+W</td><td>Ctrl+F4</td><td>⌘W</td><td>Close</td><td>關閉</td></tr>
+<tr><td>Ctrl+K Ctrl+W</td><td></td><td>⌘K ⌘W</td><td>Close all</td><td>全部關閉</td></tr>
+<tr><td>Ctrl+Shift+T</td><td></td><td>⇧⌘T</td><td>Reopen closed editor</td><td>重新打開關閉的編輯器</td></tr>
+<tr><td>Ctrl+K Enter</td><td></td><td>⌘K Enter</td><td>Keep preview mode editor open</td><td>保持預覽模式下的編輯器處於打開狀態</td></tr>
+<tr><td><code>Ctrl+Tab</code> / <code>Ctrl+Shift+Tab</code></td><td></td><td>⌃Tab / ⌃⇧Tab</td><td>Open next / previous</td><td>打開下一個/上一個</td></tr>
+<tr><td>Ctrl+K P</td><td></td><td>⌘K P</td><td>Copy path of active file</td><td>複製活動文件的路徑</td></tr>
+<tr><td>Ctrl+K R</td><td></td><td>⌘K R</td><td>Reveal active file in File Explorer</td><td>在文件管理器中顯示活動文件</td></tr>
+<tr><td>Ctrl+K O</td><td></td><td>⌘K O</td><td>Show active file in new window/instance</td><td>在新窗口/實例中顯示活動文件</td></tr>
+<tr><td>Space, Enter</td><td></td><td>Space</td><td>Open file in explorer</td><td>先按下 ⇧⌘E 打開資源管理器,然後按方向鍵選擇文件,最後按下空格打開文件</td></tr>
+<tr><td>Ctrl+Enter</td><td></td><td>⌃Enter</td><td>Open file to the side</td><td>在側邊打開文件</td></tr>
+<tr><td>F2</td><td></td><td>Enter</td><td>Rename file in explorer</td><td>在資源管理器中重命名文件</td></tr>
+<tr><td>Delete</td><td></td><td>⌘Backspace</td><td>delete file in explorer</td><td>在資源管理器中刪除文件</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Display</strong></th><th>顯示</th></tr></thead><tbody>
+<tr><td>F11</td><td></td><td>⌃⌘F</td><td>Toggle full screen</td><td>切換全屏</td></tr>
+<tr><td>Shift+Alt+0</td><td></td><td>⌥⌘0</td><td>Toggle editor layout (horizontal/vertical)</td><td>切換編輯器佈局（水平/垂直）</td></tr>
+<tr><td><code>Ctrl+ =</code> / <code>Ctrl+ -</code></td><td></td><td>⌘= / ⇧⌘-</td><td>Zoom in/out</td><td>放大/縮小</td></tr>
+<tr><td>Ctrl+B</td><td></td><td>⌘B</td><td>Toggle Sidebar visibility</td><td>切換側邊欄的可見性（打開/關閉側邊欄）</td></tr>
+<tr><td>Ctrl+Shift+E</td><td></td><td>⇧⌘E</td><td>Show Explorer / Toggle focus</td><td>顯示資源管理器/切換焦點</td></tr>
+<tr><td>Ctrl+Shift+F</td><td></td><td>⇧⌘F</td><td>Show Search</td><td>顯示搜索</td></tr>
+<tr><td>Ctrl+Shift+G</td><td></td><td>⌃⇧G</td><td>Show Source Control</td><td>顯示源代碼控制</td></tr>
+<tr><td>Ctrl+Shift+D</td><td></td><td>⇧⌘D</td><td>Show Debug</td><td>顯示調試</td></tr>
+<tr><td>Ctrl+Shift+X</td><td></td><td>⇧⌘X</td><td>Show Extensions</td><td>顯示擴展</td></tr>
+<tr><td>Ctrl+Shift+H</td><td></td><td>⇧⌘H</td><td>Replace in files</td><td>替換文件中的內容</td></tr>
+<tr><td>Ctrl+Shift+J</td><td></td><td>⇧⌘J</td><td>Toggle Search details</td><td>切換搜索詳情</td></tr>
+<tr><td>Ctrl+K Ctrl+H</td><td>Ctrl+Shift+U</td><td>⇧⌘U</td><td>Show Output panel</td><td>顯示輸出面板</td></tr>
+<tr><td>Ctrl+Shift+V</td><td></td><td>⇧⌘V</td><td>Open Markdown preview</td><td>打開 markdown 預覽</td></tr>
+<tr><td>Ctrl+K V</td><td></td><td>⌘K V</td><td>Open Markdown preview to the side</td><td>在側邊打開 markdown 預覽</td></tr>
+<tr><td>Ctrl+K Z</td><td></td><td>⌘K Z</td><td>Zen Mode (Esc to exit)</td><td>禪模式（按 Esc 退出）</td></tr>
+<tr><td>Ctrl+Shift+C</td><td></td><td>⇧⌘C</td><td>Open new command prompt/terminal</td><td>打開新的命令提示符/終端</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Debug</strong></th><th>調試</th></tr></thead><tbody>
+<tr><td>F9</td><td></td><td>F9</td><td>Toggle breakpoint</td><td>切換斷點</td></tr>
+<tr><td>F5</td><td></td><td>F5</td><td>Start/Continue</td><td>開始/繼續</td></tr>
+<tr><td><code>F11</code> / <code>Shift+F11</code></td><td></td><td>F11 / ⇧F11</td><td>Step into/ out</td><td>單步調試：進入/跳出</td></tr>
+<tr><td>F10</td><td></td><td>F10</td><td>Step over</td><td>單步跳過</td></tr>
+<tr><td>Shift+F5</td><td></td><td>⇧F5</td><td>Stop</td><td>停止</td></tr>
+<tr><td>Ctrl+K Ctrl+I</td><td></td><td>⌘K ⌘I</td><td>Show hover</td><td>顯示懸停</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th>Linux</th><th>Win</th><th>Mac</th><th><strong>Integrated terminal</strong></th><th>集成終端</th></tr></thead><tbody>
+<tr><td>Ctrl+`</td><td></td><td>⌃`</td><td>Show integrated terminal</td><td>顯示集成（內置）終端</td></tr>
+<tr><td>Ctrl+Shift+`</td><td></td><td>⌃⇧`</td><td>Create new terminal</td><td>創建新的終端</td></tr>
+<tr><td>Ctrl+C</td><td></td><td></td><td>Interrupt foreground process</td><td>中斷運行中的前台進程</td></tr>
+<tr><td>Ctrl+Shift+C</td><td>Ctrl+C</td><td>⌘C</td><td>Copy selection</td><td>先用鼠標選中，再按下“指定按鍵”進行復制</td></tr>
+<tr><td>Ctrl+Shift+V</td><td>Ctrl+V</td><td>⌘V</td><td>Paste into active terminal</td><td>粘貼</td></tr>
+<tr><td><code>Ctrl+Shift+ ↑</code> / <code>Ctrl+Shift+ ↓</code></td><td><code>Ctrl+Alt+PgUp</code> / <code>Ctrl+Alt+PgDn</code></td><td>⌘↑ / ↓</td><td>Scroll up/down</td><td>向上/向下滾動（行）</td></tr>
+<tr><td><code>Shift+ PgUp</code> / <code>Shift+ PgDn</code></td><td></td><td>PgUp / PgDn</td><td>Scroll page up/down</td><td>向上/向下滾動（頁）</td></tr>
+<tr><td><code>Shift+ Home</code> / <code>Shift+ End</code></td><td><code>Ctrl+ Home</code> / <code>Ctrl+ End</code></td><td>⌘Home / End</td><td>Scroll to top/bottom</td><td>滾動到頂部/底部</td></tr>
+<tr><td><code>Ctrl+Shift+5</code></td><td></td><td>⌘\ , ⌃⇧5</td><td>Split terminal</td><td>拆分終端</td></tr>
+<tr><td><code>Ctrl+PgUp</code> / <code>Ctrl+PgDn</code></td><td></td><td>⇧⌘[ / ]</td><td>Focus previous/next terminal</td><td>聚焦（切換）上/下 一個 終端</td></tr>
+<tr><td><code>Alt+ ↑</code> / <code>Alt+ ↓</code></td><td></td><td>⌥⌘↑ / ↓</td><td>Focus previous/next terminal in group</td><td>在終端組中切換 上/下 一個終端</td></tr>
+<tr><td><code>Ctrl+Shift+ ←</code> / <code>Ctrl+Shift+ →</code></td><td>🤔️</td><td>⌃⌘← / →</td><td>Resize terminal left/right</td><td>調整終端大小（左/右）</td></tr>
+<tr><td>🤔️</td><td></td><td>⌃⌘↑ / ↓</td><td>Resize terminal up/down</td><td>調整終端大小（上/下）</td></tr>
+</tbody></table>
+<hr />
+<div style="break-before: page; page-break-before: always;"></div><h1 id="附錄"><a class="header" href="#附錄">附錄</a></h1>
+<p>這裏包含了一些額外的內容。</p>
+<!-- Appendix -->
+<ul>
+<li>區域代號 &lt;ISO 3166-1 Alpha-2 code&gt;</li>
+<li>todo
+<ul>
+<li>本章將介紹本項目有可能會實現的一些思路</li>
+</ul>
+</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="區域代號"><a class="header" href="#區域代號">區域代號</a></h1>
+<pre><code class="language-yaml">&quot;Afghanistan&quot;: AF
+&quot;Albania&quot;: AL
+&quot;Algeria&quot;: DZ
+&quot;American Samoa&quot;: AS
+&quot;Andorra&quot;: AD
+&quot;Angola&quot;: AO
+&quot;Anguilla&quot;: AI
+&quot;Antarctica&quot;: AQ
+&quot;Antigua and Barbuda&quot;: AG
+&quot;Argentina&quot;: AR
+&quot;Armenia&quot;: AM
+&quot;Aruba&quot;: AW
+&quot;Australia&quot;: AU
+&quot;Austria&quot;: AT
+&quot;Azerbaijan&quot;: AZ
+&quot;Bahamas&quot;: BS
+&quot;Bahrain&quot;: BH
+&quot;Bangladesh&quot;: BD
+&quot;Barbados&quot;: BB
+&quot;Belarus&quot;: BY
+&quot;Belgium&quot;: BE
+&quot;Belize&quot;: BZ
+&quot;Benin&quot;: BJ
+&quot;Bermuda&quot;: BM
+&quot;Bhutan&quot;: BT
+&quot;Bolivia&quot;: BO
+&quot;Bosnia and Herzegovina&quot;: BA
+&quot;Botswana&quot;: BW
+&quot;Brazil&quot;: BR
+&quot;British Indian Ocean Territory&quot;: IO
+&quot;British Virgin Islands&quot;: VG
+&quot;Brunei&quot;: BN
+&quot;Bulgaria&quot;: BG
+&quot;Burkina Faso&quot;: BF
+&quot;Burundi&quot;: BI
+&quot;Cambodia&quot;: KH
+&quot;Cameroon&quot;: CM
+&quot;Canada&quot;: CA
+&quot;Cape Verde&quot;: CV
+&quot;Cayman Islands&quot;: KY
+&quot;Central African Republic&quot;: CF
+&quot;Chad&quot;: TD
+&quot;Chile&quot;: CL
+&quot;China&quot;: CN
+&quot;Christmas Island&quot;: CX
+&quot;Cocos Islands&quot;: CC
+&quot;Colombia&quot;: CO
+&quot;Comoros&quot;: KM
+&quot;Cook Islands&quot;: CK
+&quot;Costa Rica&quot;: CR
+&quot;Croatia&quot;: HR
+&quot;Cuba&quot;: CU
+&quot;Curacao&quot;: CW
+&quot;Cyprus&quot;: CY
+&quot;Czech Republic&quot;: CZ
+&quot;Democratic Republic of the Congo&quot;: CD
+&quot;Denmark&quot;: DK
+&quot;Djibouti&quot;: DJ
+&quot;Dominica&quot;: DM
+&quot;Dominican Republic&quot;: DO
+&quot;East Timor&quot;: TL
+&quot;Ecuador&quot;: EC
+&quot;Egypt&quot;: EG
+&quot;El Salvador&quot;: SV
+&quot;Equatorial Guinea&quot;: GQ
+&quot;Eritrea&quot;: ER
+&quot;Estonia&quot;: EE
+&quot;Ethiopia&quot;: ET
+&quot;Falkland Islands&quot;: FK
+&quot;Faroe Islands&quot;: FO
+&quot;Fiji&quot;: FJ
+&quot;Finland&quot;: FI
+&quot;France&quot;: FR
+&quot;French Polynesia&quot;: PF
+&quot;Gabon&quot;: GA
+&quot;Gambia&quot;: GM
+&quot;Georgia&quot;: GE
+&quot;Germany&quot;: DE
+&quot;Ghana&quot;: GH
+&quot;Gibraltar&quot;: GI
+&quot;Greece&quot;: GR
+&quot;Greenland&quot;: GL
+&quot;Grenada&quot;: GD
+&quot;Guam&quot;: GU
+&quot;Guatemala&quot;: GT
+&quot;Guernsey&quot;: GG
+&quot;Guinea&quot;: GN
+&quot;Guinea-Bissau&quot;: GW
+&quot;Guyana&quot;: GY
+&quot;Haiti&quot;: HT
+&quot;Honduras&quot;: HN
+&quot;Hong Kong&quot;: HK
+&quot;Hungary&quot;: HU
+&quot;Iceland&quot;: IS
+&quot;India&quot;: IN
+&quot;Indonesia&quot;: ID
+&quot;Iran&quot;: IR
+&quot;Iraq&quot;: IQ
+&quot;Ireland&quot;: IE
+&quot;Isle of Man&quot;: IM
+&quot;Israel&quot;: IL
+&quot;Italy&quot;: IT
+&quot;Ivory Coast&quot;: CI
+&quot;Jamaica&quot;: JM
+&quot;Japan&quot;: JP
+&quot;Jersey&quot;: JE
+&quot;Jordan&quot;: JO
+&quot;Kazakhstan&quot;: KZ
+&quot;Kenya&quot;: KE
+&quot;Kiribati&quot;: KI
+&quot;Kosovo&quot;: XK
+&quot;Kuwait&quot;: KW
+&quot;Kyrgyzstan&quot;: KG
+&quot;Laos&quot;: LA
+&quot;Latvia&quot;: LV
+&quot;Lebanon&quot;: LB
+&quot;Lesotho&quot;: LS
+&quot;Liberia&quot;: LR
+&quot;Libya&quot;: LY
+&quot;Liechtenstein&quot;: LI
+&quot;Lithuania&quot;: LT
+&quot;Luxembourg&quot;: LU
+&quot;Macau&quot;: MO
+&quot;Macedonia&quot;: MK
+&quot;Madagascar&quot;: MG
+&quot;Malawi&quot;: MW
+&quot;Malaysia&quot;: MY
+&quot;Maldives&quot;: MV
+&quot;Mali&quot;: ML
+&quot;Malta&quot;: MT
+&quot;Marshall Islands&quot;: MH
+&quot;Mauritania&quot;: MR
+&quot;Mauritius&quot;: MU
+&quot;Mayotte&quot;: YT
+&quot;Mexico&quot;: MX
+&quot;Micronesia&quot;: FM
+&quot;Moldova&quot;: MD
+&quot;Monaco&quot;: MC
+&quot;Mongolia&quot;: MN
+&quot;Montenegro&quot;: ME
+&quot;Montserrat&quot;: MS
+&quot;Morocco&quot;: MA
+&quot;Mozambique&quot;: MZ
+&quot;Myanmar&quot;: MM
+&quot;Namibia&quot;: NA
+&quot;Nauru&quot;: NR set-src-link
+&quot;Nepal&quot;: NP
+&quot;Netherlands&quot;: NL
+&quot;Netherlands Antilles&quot;: AN
+&quot;New Caledonia&quot;: NC
+&quot;New Zealand&quot;: NZ
+&quot;Nicaragua&quot;: NI
+&quot;Niger&quot;: NE
+&quot;Nigeria&quot;: NG
+&quot;Niue&quot;: NU
+&quot;North Korea&quot;: KP
+&quot;Northern Mariana Islands&quot;: MP
+&quot;Norway&quot;: NO
+&quot;Oman&quot;: OM
+&quot;Pakistan&quot;: PK
+&quot;Palau&quot;: PW
+&quot;Palestine&quot;: PS
+&quot;Panama&quot;: PA
+&quot;Papua New Guinea&quot;: PG
+&quot;Paraguay&quot;: PY
+&quot;Peru&quot;: PE
+&quot;Philippines&quot;: PH
+&quot;Pitcairn&quot;: PN
+&quot;Poland&quot;: PL
+&quot;Portugal&quot;: PT
+&quot;Puerto Rico&quot;: PR
+&quot;Qatar&quot;: QA
+&quot;Republic of the Congo&quot;: CG
+&quot;Reunion&quot;: RE
+&quot;Romania&quot;: RO
+&quot;Russia&quot;: RU
+&quot;Rwanda&quot;: RW
+&quot;Saint Barthelemy&quot;: BL
+&quot;Saint Helena&quot;: SH
+&quot;Saint Kitts and Nevis&quot;: KN
+&quot;Saint Lucia&quot;: LC
+&quot;Saint Martin&quot;: MF
+&quot;Saint Pierre and Miquelon&quot;: PM
+&quot;Saint Vincent and the Grenadines&quot;: VC
+&quot;Samoa&quot;: WS
+&quot;San Marino&quot;: SM
+&quot;Sao Tome and Principe&quot;: ST
+&quot;Saudi Arabia&quot;: SA
+&quot;Senegal&quot;: SN
+&quot;Serbia&quot;: RS
+&quot;Seychelles&quot;: SC
+&quot;Sierra Leone&quot;: SL
+&quot;Singapore&quot;: SG
+&quot;Sint Maarten&quot;: SX
+&quot;Slovakia&quot;: SK
+&quot;Slovenia&quot;: SI
+&quot;Solomon Islands&quot;: SB
+&quot;Somalia&quot;: SO
+&quot;South Africa&quot;: ZA
+&quot;South Korea&quot;: KR
+&quot;South Sudan&quot;: SS
+&quot;Spain&quot;: ES
+&quot;Sri Lanka&quot;: LK
+&quot;Sudan&quot;: SD
+&quot;Suriname&quot;: SR
+&quot;Svalbard and Jan Mayen&quot;: SJ
+&quot;Swaziland&quot;: SZ
+&quot;Sweden&quot;: SE
+&quot;Switzerland&quot;: CH
+&quot;Syria&quot;: SY
+&quot;Taiwan&quot;: TW
+&quot;Tajikistan&quot;: TJ
+&quot;Tanzania&quot;: TZ
+&quot;Thailand&quot;: TH
+&quot;Togo&quot;: TG
+&quot;Tokelau&quot;: TK
+&quot;Tonga&quot;: TO
+&quot;Trinidad and Tobago&quot;: TT
+&quot;Tunisia&quot;: TN
+&quot;Turkey&quot;: TR
+&quot;Turkmenistan&quot;: TM
+&quot;Turks and Caicos Islands&quot;: TC
+&quot;Tuvalu&quot;: TV
+&quot;U.S. Virgin Islands&quot;: VI
+&quot;Uganda&quot;: UG
+&quot;Ukraine&quot;: UA
+&quot;United Arab Emirates&quot;: AE
+&quot;United Kingdom&quot;: GB
+&quot;United States&quot;: US
+&quot;Uruguay&quot;: UY
+&quot;Uzbekistan&quot;: UZ
+&quot;Vanuatu&quot;: VU
+&quot;Vatican&quot;: VA
+&quot;Venezuela&quot;: VE
+&quot;Vietnam&quot;: VN
+&quot;Wallis and Futuna&quot;: WF
+&quot;Western Sahara&quot;: EH
+&quot;Yemen&quot;: YE
+&quot;Zambia&quot;: ZM
+&quot;Zimbabwe&quot;: ZW
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="todo"><a class="header" href="#todo">TODO</a></h1>
+<h2 id="tmm"><a class="header" href="#tmm">tmm</a></h2>
+<h3 id="installation"><a class="header" href="#installation">installation</a></h3>
+<ul>
+<li>方法 4
+<ul>
+<li>工具: apt</li>
+<li>平台: tmoe</li>
+<li>條件: 您已經添加了 neko/tinor 倉庫
+<ul>
+<li>命令 1: <del><code>apt install tmm</code></del></li>
+<li>命令 2: <del><code>apt install tmoe-2021</code></del></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>方法 5
+<ul>
+<li>工具: cargo</li>
+<li>平台: crates.io</li>
+<li>條件: 您想要手動編譯
+<ul>
+<li>命令: <del><code>cargo install tmm</code></del></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="config"><a class="header" href="#config">config</a></h3>
+<p>運行以下命令</p>
+<pre><code class="language-sh">tmm new uuu ubuntu:kinetic
+</code></pre>
+<p>然後它會輸出 &quot;ubuntu:kinetic&quot; 的容器屬性信息（只讀）， 接着會在當前目錄下生成 uuu.toml 配置文件(可寫)。</p>
+<blockquote>
+<p>實際配置會比以下內容更加全面，以下內容僅供參考</p>
+</blockquote>
+<pre><code class="language-toml">name = &quot;uuu&quot;
+arch = &quot;arm64&quot;
+cmd = [&quot;bash&quot;, &quot;-l&quot;]
+# user = &quot;root&quot;
+user = &quot;0:0&quot;
+path = &quot;/xxx/yyy/uuu&quot;
+
+[os]
+name = &quot;ubuntu&quot;
+code = &quot;kinetic&quot;
+
+[image]
+file = &quot;/sdcard/Download/backup/ubuntu-22.10-rootfs.tar.zst&quot;
+name = &quot;ubuntu&quot;
+tag = &quot;kinetic&quot;
+sha256 = &quot;2e72d56249c7b3894d9d5baef5f1fd8fd7aa0fcf8a5253d77ceb7bbfc40d660b&quot;
+
+[mount]
+name = [
+    &quot;sd&quot;,
+    &quot;tf&quot;,
+    &quot;pic&quot;,
+]
+
+[mount.sd]
+enabled = true
+type = &quot;bind&quot;
+src = &quot;/data/media/0/Download&quot;
+dst = &quot;/media/sd&quot;
+
+[mount.pic]
+enabled = false
+
+[mount.tf]
+enabled = false
+
+[env]
+# PATH = &quot;&quot;
+# 這是一個小細節，對普通用户和 root 用户使用不同的 PATH。
+# 普通用户的 PATH 不應該包含 /sbin
+ROOT_PATH = &quot;/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin:/usr/bin:/bin&quot;
+NORMAL_PATH = &quot;/usr/local/bin:/usr/games:/usr/bin:/bin&quot;
+</code></pre>
+<p>手動修改這個配置</p>
+<p>用 set 子命令修改</p>
+<pre><code class="language-sh">tmm set uuu path &quot;/data/data/xxx/yyy/uuu&quot;
+</code></pre>
+<p>用 get 獲取</p>
+<pre><code class="language-sh">tmm get uuu image.tag
+# 輸出 kinetic
+</code></pre>
+<p>也可以直接修改配置文件。<br />
+最後運行<code>tmm r uuu</code> 或者是 <code>tmm run uuu</code></p>
+
+                        <div id="giscus-container"></div>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+        var pagePath = "print.md"
+        </script>
+
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="assets/giscus.js"></script>
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+    </body>
+</html>

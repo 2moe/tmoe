@@ -1,0 +1,711 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js ayu">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>docker - 天萌参考手册</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/css/style-20220514.css">
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "ayu";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('ayu')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="prologue.html">序章</a></li><li class="spacer"></li><li class="chapter-item expanded "><a href="repo.html"><strong aria-hidden="true">1.</strong> 仓库</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="add-repo.html"><strong aria-hidden="true">1.1.</strong> 添加仓库</a></li><li class="chapter-item expanded "><a href="mirror-repo.html"><strong aria-hidden="true">1.2.</strong> 更换镜像源</a></li></ol></li><li class="chapter-item expanded "><a href="container.html"><strong aria-hidden="true">2.</strong> 容器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="docker-container.html" class="active"><strong aria-hidden="true">2.1.</strong> docker</a></li><li class="chapter-item expanded "><a href="android.html"><strong aria-hidden="true">2.2.</strong> android</a></li></ol></li><li class="chapter-item expanded "><a href="configuration.html"><strong aria-hidden="true">3.</strong> 配置</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="toml.html"><strong aria-hidden="true">3.1.</strong> toml</a></li></ol></li><li class="chapter-item expanded "><a href="env.html"><strong aria-hidden="true">4.</strong> 环境</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="editor.html"><strong aria-hidden="true">4.1.</strong> 编辑器</a></li></ol></li><li class="chapter-item expanded "><a href="appendix.html"><strong aria-hidden="true">5.</strong> 附录</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="appendix_region-code.html"><strong aria-hidden="true">5.1.</strong> 区域代号</a></li><li class="chapter-item expanded "><a href="appendix_todo.html"><strong aria-hidden="true">5.2.</strong> todo</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu (default)</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">天萌参考手册</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/2moe/tmoe/tree/doc" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                    <!-- Page table of contents -->
+                    <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <h1 id="docker"><a class="header" href="#docker">docker</a></h1>
+<ul>
+<li><a href="#1-gui-%E5%AE%B9%E5%99%A8">1. GUI 容器</a>
+<ul>
+<li><a href="#11-%E8%A1%A8%E6%A0%BC">1.1. 表格</a></li>
+<li><a href="#12-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%94%A8%E6%88%B7">1.2. 服务器用户</a>
+<ul>
+<li><a href="#121-%E5%AE%89%E8%A3%85-docker">1.2.1. 安装 docker</a></li>
+<li><a href="#122-%E6%B5%8B%E8%AF%95-alpine">1.2.2. 测试 alpine</a></li>
+<li><a href="#123-%E5%85%B3%E4%BA%8E-nginx-%E4%B8%8E-novnc-%E7%9A%84%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98">1.2.3. 关于 nginx 与 novnc 的安全问题</a></li>
+<li><a href="#124-%E6%99%AE%E9%80%9A-vnc">1.2.4. 普通 vnc</a></li>
+</ul>
+</li>
+<li><a href="#13-%E6%A1%8C%E9%9D%A2%E7%94%A8%E6%88%B7">1.3. 桌面用户</a>
+<ul>
+<li><a href="#131-xorg">1.3.1. xorg</a></li>
+<li><a href="#132-wayland">1.3.2. wayland</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#2-nogui">2. noGUI</a>
+<ul>
+<li><a href="#21-zsh">2.1. zsh</a></li>
+<li><a href="#22-cross-architecture-%E8%B7%A8%E6%9E%B6%E6%9E%84">2.2. Cross-Architecture 跨架构</a></li>
+</ul>
+</li>
+<li><a href="#3-continuous-integration-%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90">3. Continuous integration 持续集成</a>
+<ul>
+<li><a href="#31-github-actions">3.1. Github Actions</a>
+<ul>
+<li><a href="#311-dockerfile">3.1.1. dockerfile</a></li>
+<li><a href="#312-workflow">3.1.2. workflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#4-%E5%AE%B9%E5%99%A8%E9%95%9C%E5%83%8F%E6%98%AF%E6%80%8E%E4%B9%88%E6%9D%A5%E7%9A%84">4. 容器镜像是怎么来的</a>
+<ul>
+<li><a href="#41-rust">4.1. rust</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<p>阅读本节内容的要求：</p>
+<ul>
+<li>了解 docker 的基础知识</li>
+<li>了解 nginx 中关于反向代理的配置</li>
+<li>了解 CI/CD 的操作</li>
+</ul>
+<h2 id="1-gui-容器"><a class="header" href="#1-gui-容器">1. GUI 容器</a></h2>
+<p>在一般情况下，对于更新频繁的发行版，其对应的 GUI 容器每周会更新一次。</p>
+<h3 id="11-表格"><a class="header" href="#11-表格">1.1. 表格</a></h3>
+<table><thead><tr><th></th><th>xfce</th><th>kde</th></tr></thead><tbody>
+<tr><td>alpine</td><td>amd64,arm64</td><td>amd64,arm64</td></tr>
+<tr><td>arch</td><td>amd64,arm64,armv7</td><td>amd64,arm64</td></tr>
+<tr><td>debian</td><td>amd64,arm64</td><td>amd64,arm64</td></tr>
+<tr><td>fedora</td><td>amd64,arm64</td><td>amd64,arm64</td></tr>
+<tr><td>kali</td><td>amd64,arm64,armv7</td><td>None</td></tr>
+<tr><td>manjaro</td><td>amd64,arm64</td><td>None</td></tr>
+<tr><td>ubuntu</td><td>amd64,arm64</td><td>amd64,arm64,armv7</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th></th><th>mate</th><th>lxqt</th></tr></thead><tbody>
+<tr><td>alpine</td><td>386,amd64,arm64,armv7</td><td>None</td></tr>
+<tr><td>arch</td><td>amd64,arm64</td><td>None</td></tr>
+<tr><td>debian</td><td>amd64,arm64</td><td>None</td></tr>
+<tr><td>fedora</td><td>amd64,arm64</td><td>amd64,arm64</td></tr>
+<tr><td>ubuntu</td><td>amd64,arm64</td><td>amd64,arm64</td></tr>
+</tbody></table>
+<hr />
+<table><thead><tr><th></th><th>lxde</th></tr></thead><tbody>
+<tr><td>debian</td><td>386,armv7</td></tr>
+</tbody></table>
+<p>仓库命名风格 1: <strong>cake233/alpine-mate-386</strong>, <strong>cake233/debian-lxde-armv7</strong><br />
+风格 2: <strong>cake233/xfce:kali</strong>, <strong>cake233/kde:fedora</strong></p>
+<p>注: <strong>cake233/alpine-mate-386</strong> = <strong>--platform=linux/386 cake233/mate:alpine</strong></p>
+<h3 id="12-服务器用户"><a class="header" href="#12-服务器用户">1.2. 服务器用户</a></h3>
+<p>对于 GUI 容器来说，为了减小体积和缩短打包时间，开发者之后可能会将 novnc 和 tigervnc 服务分离为单独的容器，而不是每个容器都内置 <code>vnc</code>。<br />
+届时，使用 <code>docker run</code> 就不太合适了，换用 <code>docker-compose</code> 或许会更好。</p>
+<blockquote>
+<p>本小节的内容可能会重写。</p>
+</blockquote>
+<p><del>你如果哪天想不开，想要干傻事，在服务器上安装桌面环境，那可以考虑一下 tmoe 的 GUI 容器。</del></p>
+<p>假设您的 host(宿主机)是 debian 系的发行版（例如 ubuntu, mint 或 kali）</p>
+<h4 id="121-安装-docker"><a class="header" href="#121-安装-docker">1.2.1. 安装 docker</a></h4>
+<pre><code class="language-sh editable">sudo apt update
+sudo apt install docker.io
+
+WHOAMI=$(id -un)
+sudo adduser $WHOAMI docker
+# then reboot
+</code></pre>
+<h4 id="122-测试-alpine"><a class="header" href="#122-测试-alpine">1.2.2. 测试 alpine</a></h4>
+<pre><code class="language-sh editable">docker run \
+    -it \
+    --rm \
+    --shm-size=512M \
+    -p 36081:36080 \
+    cake233/xfce:alpine
+</code></pre>
+<p>进入容器后，输入 <code>tmoe</code>，并按下回车，接着选择语言环境，再选择 tools，接着退出。<br />
+然后运行 <code>novnc</code>, 最后打开浏览器，输入 <code>http://您的IP地址:36081</code></p>
+<h4 id="123-关于-nginx-与-novnc-的安全问题"><a class="header" href="#123-关于-nginx-与-novnc-的安全问题">1.2.3. 关于 nginx 与 novnc 的安全问题</a></h4>
+<p>如果需要将 novnc 容器暴露到公网的话，那么不建议对其使用 <code>-p</code> 参数（暴露 36081 端口），建议走 nginx 的 443 端口。<br />
+请新建一个网络，将 novnc 容器 与 nginx 容器置于同一网络，并为前者设置 <code>network-alias</code>(网络别名), 最后用 nginx 给它加上一层认证（例如<code>auth_basic_user_file pw_file;</code>）并配置 reverse proxy。<br />
+注：proxy_pass 那里要写 <code>http://novnc容器的网络别名:36080;</code><br />
+如果 nginx 那里套了 tls 证书，那么访问地址就是 <code>https://您在nginx中配置的novnc的域名:端口</code>。（若端口为 443，则无需加 <strong>:端口</strong> ）<br />
+注 2： 若您在 nginx 中配置了 novnc 的域名，则处于相同网络环境下的 nginx 和 novnc 必须同时运行。 若 novnc 没有运行，则 nginx 的配置会加载失败，这可能会导致 nginx 无法正常运行。<br />
+如果您对 nginx + novnc 这块有疑问的话，请前往本项目的 <a href="https://github.com/2moe/tmoe/discussions">github disscussion</a> 发表话题。</p>
+<h4 id="124-普通-vnc"><a class="header" href="#124-普通-vnc">1.2.4. 普通 vnc</a></h4>
+<p>您也可以使用普通的 vnc 客户端来连接，不过这时候 tcp 端口就不是 36081 了。</p>
+<pre><code class="language-sh editable">docker run \
+    -it \
+    --shm-size=1G \
+    -p 5903:5902 \
+    -u 1000:1000 \
+    --name uuu-mate \
+    cake233/mate:ubuntu
+</code></pre>
+<p>对于 debian 系发行版，执行 <code>su -c &quot;adduser yourusername&quot;</code> 创建新用户，先输入默认 root 密码： <strong>root</strong>，然后设置新用户的密码。
+设置完密码后，执行 <code>su -c &quot;adduser yourusername sudo&quot;</code> 将您的用户加入到 sudo 用户组。<br />
+注 1：其他发行版与 debian 系不同。<br />
+注 2：您可以手动安装并换用其他类似于 <code>sudo</code> 的工具，例如：<code>doas</code> 或 <code>calife</code>。<br />
+注 3：不一定要在容器内部开 vnc, 您可以在宿主或另一个容器开 vnc 服务，不过这样做会稍微麻烦一点。</p>
+<p>执行完 <code>startvnc</code> 命令后，打开 vnc 客户端，并输入 <code>您的IP:5903</code></p>
+<h3 id="13-桌面用户"><a class="header" href="#13-桌面用户">1.3. 桌面用户</a></h3>
+<p>接下来将介绍一下桌面用户（非服务器用户）如何使用这些 GUI 容器。<br />
+将 docker 容器当作虚拟机来用或许是一种错误的用法。<br />
+实际上，对于 GUI 桌面容器，开发者更推荐您使用 systemd-nspawn，而不是 docker。</p>
+<p>以下只是简单介绍，实际需要做更多的修改。<br />
+注： 有一些优秀的项目，如 x11docker，它们可以帮你做得更好。<br />
+或许，您可以将本项目相关的容器镜像与那些项目结合在一起，无需手动设置 <code>WAYLAND_DISPLAY</code> 等环境变量，也无需在意具体的小细节，就能更舒心地去使用 GUI 容器了。</p>
+<h4 id="131-xorg"><a class="header" href="#131-xorg">1.3.1. xorg</a></h4>
+<p>对于 宿主 为 xorg 的环境:<br />
+在 宿主 中授予当前用户 xhost 权限。</p>
+<pre><code class="language-sh">xhost +SI:localuser:$(id -un)
+</code></pre>
+<pre><code class="language-sh editable">_UID=&quot;$(id -u)&quot;
+_GID=&quot;$(id -g)&quot;
+
+docker run \
+    -it \
+    --rm \
+    -u $_UID:$_GID \
+    --shm-size=1G \
+    -v $XDG_RUNTIME_DIR/pulse/native:/run/pulse.sock \
+    -e PULSE_SERVER=unix:/run/pulse.sock \
+    -e DISPLAY=$DISPLAY \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    cake233/kde:ubuntu
+</code></pre>
+<p>在容器内部创建一个与宿主用户同名的用户。<br />
+最后启动 dbus-daemon， 并运行特定 Xsession，例如 <code>/etc/X11/xinit/Xsession</code></p>
+<h4 id="132-wayland"><a class="header" href="#132-wayland">1.3.2. wayland</a></h4>
+<p>对于 宿主 为 wayland 的环境，您需要对 docker 执行更多的操作。
+例如：设置 WAYLAND_DISPLAY 变量，<code>-e WAYLAND_DISPLAY=$WAYLAND_DISPLAY</code><br />
+设置 XDG_RUNTIME_DIR 环境变量<br />
+<code>-e XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR</code><br />
+绑定宿主的 wayland socket<br />
+<code>-v $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY</code><br />
+设置其他与 wayland 相关的环境变量<br />
+<code>-e QT_QPA_PLATFORM=wayland</code></p>
+<p>注：您如果想要在隔离环境（容器/沙盒）中运行 GUI 应用，那么使用 <code>flatpak</code> 等成熟的方案可能会更简单。</p>
+<h2 id="2-nogui"><a class="header" href="#2-nogui">2. noGUI</a></h2>
+<h3 id="21-zsh"><a class="header" href="#21-zsh">2.1. zsh</a></h3>
+<p>现阶段，对于与 tmoe 相关的 nogui 容器，从严格意义上来说，它们属于另外的项目。<br />
+因为它们并没有预装 tmoe tools。</p>
+<p>您如果不想要 gui, 那么将 xfce/kde/mate 替换为 zsh 就可以了。</p>
+<pre><code class="language-sh editable"># 创建容器数据卷, 用于存储持久化数据
+docker volume create sd
+# sd: 此处的 sd 并不是 Secure Digital Memory Card，而是 Shared Dir，其实叫什么名字都无所谓
+
+docker run \
+    -it \
+    --name zsh \
+    -v sd:/sd \
+    cake233/zsh:kali
+</code></pre>
+<h3 id="22-cross-architecture-跨架构"><a class="header" href="#22-cross-architecture-跨架构">2.2. Cross-Architecture 跨架构</a></h3>
+<p>Q: 如何运行其他架构的容器呢？</p>
+<p>A: 安装 qemu-user-static</p>
+<pre><code class="language-sh">sudo apt install binfmt-support qemu-user-static
+</code></pre>
+<p>接下来轮到 tmoe 相关项目中，更新最积极的容器仓库登场了。</p>
+<blockquote>
+<p>注：以下容器每周更新两次<br />
+docker-hub repo: cake233/rust<br />
+nightly(gnu): amd64, arm64, armv7, riscv64, ppc64le, s390x, mips64le<br />
+nightly(musl): amd64, arm64</p>
+</blockquote>
+<pre><code class="language-sh editable">_UID=&quot;$(id -u)&quot;
+_GID=&quot;$(id -g)&quot;
+mkdir -p tmp
+
+# 若本地存在 hello 项目，则可跳过这一步。
+docker run \
+    -t \
+    --rm \
+    -u &quot;$_UID&quot;:&quot;$_GID&quot; \
+    -v &quot;$PWD&quot;/tmp:/app \
+    -w /app \
+    cake233/rust-riscv64 \
+    cargo new hello
+
+# build
+docker run \
+    -t \
+    --rm \
+    -u &quot;$_UID&quot;:&quot;$_GID&quot; \
+    -v &quot;$PWD&quot;/tmp/hello:/app \
+    -w /app \
+    cake233/rust-riscv64 \
+    cargo b --release
+
+# check file
+
+FILE=&quot;tmp/hello/target/release/hello&quot;
+
+file &quot;$FILE&quot;
+# output: ELF 64-bit LSB pie executable, UCB RISC-V, RVC, double-float ABI, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-riscv64-lp64d.so.1 ...
+
+cat &gt;&gt;tmp/hello/Cargo.toml&lt;&lt;-'EOF'
+[profile.release]
+lto = &quot;fat&quot;
+debug = false
+strip = true
+panic = &quot;abort&quot;
+opt-level = &quot;z&quot;
+EOF
+
+docker run \
+    -t \
+    --rm \
+    -u &quot;$_UID&quot;:&quot;$_GID&quot; \
+    -v &quot;$PWD&quot;/tmp/hello:/app \
+    -w /app \
+    --platform linux/arm64 \
+    cake233/rust:musl \
+    cargo b --release
+
+file &quot;$FILE&quot;
+# output: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, stripped
+</code></pre>
+<h2 id="3-continuous-integration-持续集成"><a class="header" href="#3-continuous-integration-持续集成">3. Continuous integration 持续集成</a></h2>
+<blockquote>
+<p><em>En somme, la Beauté est partout. Ce n'est point elle qui manque à nos yeux, mais nos yeux qui manquent à l'apercevoir.</em><br />
+<em>世界上并不缺少美,而是缺少发现美的眼睛</em><br />
+--- 法国著名雕塑家: 罗丹</p>
+</blockquote>
+<p>您如果抱着急功近利的心态去看待某些事物，那可能很难会发现它们的一些妙用。</p>
+<p>在本节中，我们将会用到上文中提到的 <strong>rust 镜像</strong>， 并将其与 CI 结合，为您展示相关的用法。</p>
+<h3 id="31-github-actions"><a class="header" href="#31-github-actions">3.1. Github Actions</a></h3>
+<p>您如果想要使用 github actions 来编译 &quot;riscv64&quot;、&quot;mips64el&quot;、&quot;arm64&quot; 和 &quot;armv7&quot; 等架构的 <code>rust</code> 应用，那会怎么做呢？</p>
+<p>在本小节中，我们将通过 <code>qemu-user</code> 来编译不同架构的 rust 应用。</p>
+<blockquote>
+<p>以下内容仅供参考，实际上需要做更多的修改。</p>
+</blockquote>
+<pre><code class="language-sh">mkdir -pv hello
+cd hello
+cargo init
+</code></pre>
+<h4 id="311-dockerfile"><a class="header" href="#311-dockerfile">3.1.1. dockerfile</a></h4>
+<pre><code class="language-sh">mkdir -p build
+</code></pre>
+<p>file: build/hello.dockerfile</p>
+<pre><code class="language-dockerfile editable"># syntax=docker/dockerfile:1
+#---------------------------
+ARG HUB_USER
+ARG TAG
+FROM --platform=${TARGETPLATFORM} ${HUB_USER}/rust:${TAG} AS Builder
+
+WORKDIR /app
+COPY . .
+
+RUN test -e Cargo.toml
+
+RUN --mount=type=tmpfs,target=/usr/local/cargo/registry cargo b --release
+
+# CMD [ &quot;sh&quot; ]
+
+# 以下将用到 docker 的多阶段构建（Multi-stage builds），实际上这是可选的。
+
+# 对于 musl 或静态编译的 bin， 您可以将 debian 镜像更换为 alpine:edge
+FROM --platform=${TARGETPLATFORM} debian:sid-slim
+
+COPY --from=Builder /app/target/release /app
+
+WORKDIR /app
+</code></pre>
+<h4 id="312-workflow"><a class="header" href="#312-workflow">3.1.2. workflow</a></h4>
+<pre><code class="language-sh">mkdir -p .github/workflows
+</code></pre>
+<p>file: <strong>.github/workflows/rs.yml</strong></p>
+<pre><code class="language-yaml">name: build rust app
+
+on:
+  push:
+    branches: [main]
+    # 只有当 main 分支的 Cargo.toml 发生变化并且 push 后，才会触发此 workflow
+    paths:
+      - &quot;Cargo.toml&quot;
+
+jobs:
+  job1:
+    runs-on: ${{ matrix.os }}
+    env:
+      name: hello
+      user: cake233
+      platform: ${{ matrix.platform }}
+      arch: ${{ matrix.arch }}
+      tag: ${{ matrix.tag }}
+
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          # 如果您使用的是“自托管服务器”的话，那么 os 需要改成相应的名称， 例如： self-hosted-debian
+          - os: ubuntu-latest
+            arch: riscv64
+            tag: nightly
+            platform: &quot;linux/riscv64&quot;
+
+          # 您可以为该矩阵指定不同的机器/系统，只需要修改 os 即可。
+          - os: ubuntu-latest
+            arch: mips64el
+            tag: nightly
+            platform: &quot;linux/mips64le&quot;
+
+          - os: ubuntu-latest
+            arch: amd64
+            tag: musl
+            platform: &quot;linux/amd64&quot;
+
+          - os: ubuntu-latest
+            arch: arm64
+            tag: musl
+            platform: &quot;linux/arm64&quot;
+
+          - os: ubuntu-latest
+            arch: armhf
+            tag: nightly
+            platform: &quot;linux/arm/v7&quot;
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # 您可以引用其他仓库，默认为当前项目所在的仓库
+          # repository: &quot;xxx/yyy&quot;
+          ref: &quot;main&quot;
+          fetch-depth: 1
+
+        # 对于 x64(amd64) 架构的设备来说，如果当前架构是 amd64 或 i386 架构，那么无需调用 qemu，否则需要调用。
+        # 在调用时，只需要配置当前平台即可，无需配置其他平台。
+      - name: set up qemu-user &amp; binfmt
+        id: qemu
+        uses: docker/setup-qemu-action@v1
+        if: matrix.arch != 'amd64' &amp;&amp; matrix.arch != 'i386'
+        with:
+          image: tonistiigi/binfmt:latest
+          platforms: ${{ matrix.platform }}
+
+      - name: set global env
+        run: |
+          echo &quot;REPO=${{ env.name }}:${{ matrix.arch }}&quot; &gt;&gt; &quot;$GITHUB_ENV&quot;
+
+      - name: build container
+        env:
+          file: &quot;build/${{ env.name }}.dockerfile&quot;
+        run: |
+          DOCKER_BUILDKIT=1 \
+          docker build \
+            --tag &quot;${{ env.REPO }}&quot; \
+            --file &quot;${{ env.file }}&quot; \
+            --build-arg HUB_USER=${{ env.user }} \
+            --build-arg TAG=${{ env.tag }} \
+            --build-arg BIN_NAME=${{ env.name }} \
+            --platform=${{ env.platform }} \
+            --pull \
+            --no-cache \
+            .
+      #编译完成的镜像为 &quot;${{ env.name }}:${{ env.arch }}&quot;，对于 x64 架构，在本 workflow中，它是 &quot;hello:amd64&quot; ；对于 arm64 架构，则是 &quot;hello:arm64&quot;
+      - name: test container
+        run: |
+          docker run \
+            -t \
+            --rm \
+            &quot;${{ env.REPO }}&quot; \
+            ls -lah --color=auto /app
+</code></pre>
+<!--
+        repo=hello;file=build/hello.dockerfile;repo=hello:amd64
+        user=cake233;tag=musl;new_image=alpine:edge;name=hello;platform=linux/amd64
+        DOCKER_BUILDKIT=1 \
+          docker build \
+            -t "$repo" \
+            -f "$file" \
+            --build-arg HUB_USER=$user \
+            --build-arg TAG=$tag \
+            --build-arg BIN_NAME=$name \
+            --platform=$platform \
+            --pull \
+            .
+-->
+<p>上文并没有介绍到 docker 登录和推送的流程。<br />
+您可以手动添加相应的流程</p>
+<blockquote>
+<p><strong>secrets</strong> (私密环境变量) 需要在当前仓库的 <strong>Settings</strong> 的 <strong>Actions secrets</strong> 里配置。</p>
+</blockquote>
+<pre><code class="language-yaml">- name: Login to DockerHub
+  uses: docker/login-action@v2
+  with:
+    username: 您的 dockerhub 用户名
+    password: ${{ secrets.DOCKER_TOKEN }}
+- name: Push to DockerHub
+  run: |
+    docker push -a ${{ env.REPO }}
+</code></pre>
+<h2 id="4-容器镜像是怎么来的"><a class="header" href="#4-容器镜像是怎么来的">4. 容器镜像是怎么来的</a></h2>
+<p>在本节中，我们将会为您解析容器的 dockerfile。<br />
+您可以从 &quot;2moe/build-container&quot; 中找到相关的文件。</p>
+<h3 id="41-rust"><a class="header" href="#41-rust">4.1. rust</a></h3>
+<p>下面我们以 rust alpine (musl-libc) 容器为例。</p>
+<pre><code class="language-dockerfile editable"># syntax=docker/dockerfile:1
+#---------------------------
+FROM --platform=${TARGETPLATFORM} alpine:edge
+
+WORKDIR /root
+# PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV LANG=&quot;C.UTF-8&quot; \
+    TMOE_CHROOT=true \
+    TMOE_DOCKER=true \
+    TMOE_DIR=&quot;/usr/local/etc/tmoe-linux&quot; \
+    RUSTUP_HOME=&quot;/usr/local/rustup&quot; \
+    CARGO_HOME=&quot;/usr/local/cargo&quot; \
+    PATH=&quot;/usr/local/cargo/bin:$PATH&quot;
+
+# install dependencies
+COPY --chmod=755 install_alpine_deps /tmp
+# install_alpine_deps 会安装相关依赖
+# 相关依赖指的是 sudo，tar，grep，curl，wget，bash，tzdata，newt，shadow
+# 实际上，只有 curl 是真正的依赖，bash 为可选依赖。 对于非交互式环境来说，默认 shell 为 ash 也没问题。
+# 其他依赖是 tmoe manager 在初始化容器过程需要用到的东西。
+# 对于 docker 来说，grep 和 tar 等命令使用 `busybox` 内置的精简版本就够了。
+RUN . /tmp/install_alpine_deps
+
+# install musl-dev
+RUN apk add openssl-dev \
+    musl-dev \
+    gcc \
+    ca-certificates
+
+# minimal, default, complete
+ARG RUSTUP_PROFILE=minimal
+
+# 对于不同的平台来说， MUSL_TARGET 是不一样的。
+# 比如说：linux arm64: &quot;aarch64-unknown-linux-musl&quot;
+# linux amd64: &quot;x86_64-unknown-linux-musl&quot;
+ARG MUSL_TARGET
+RUN export RUSTUP_URL=&quot;https://static.rust-lang.org/rustup/dist/${MUSL_TARGET}/rustup-init&quot;; \
+    curl -LO ${RUSTUP_URL} || exit 1; \
+    chmod +x rustup-init \
+    &amp;&amp; ./rustup-init \
+    -y \
+    --profile ${RUSTUP_PROFILE} \
+    --no-modify-path \
+    --default-toolchain \
+    nightly \
+    &amp;&amp; rm rustup-init \
+    &amp;&amp; chmod -Rv a+w ${RUSTUP_HOME} ${CARGO_HOME}
+# RUN rustup update
+
+ARG OS
+ARG TAG
+ARG ARCH
+COPY --chmod=755 set_container_txt /tmp
+RUN . /tmp/set_container_txt
+
+# export env to file
+RUN cd ${TMOE_DIR}; \
+    printf &quot;%s\n&quot; \
+    'export PATH=&quot;/usr/local/cargo/bin${PATH:+:${PATH}}&quot;' \
+    'export RUSTUP_HOME=&quot;/usr/local/rustup&quot;' \
+    'export CARGO_HOME=&quot;/usr/local/cargo&quot;' \
+    &gt; environment/container.env; \
+    chmod -R a+rx environment/
+
+# export version info to file
+RUN cd /root; \
+    printf &quot;%s\n&quot; \
+    &quot;&quot; \
+    '[version]' \
+    &quot;ldd = '$(ldd --version 2&gt;&amp;1 | head -n 2 | grep -vi copyright | sed &quot;:a;N;s/\n/ /g;ta&quot;)'&quot; \
+    &quot;rustup = '$(rustup --version)'&quot; \
+    &quot;cargo = '$(cargo --version)'&quot; \
+    &quot;rustc = '$(rustc --version)'&quot; \
+    &quot;cc = '$(cc --version | head -n 1)'&quot; \
+    &quot;cargo_verbose = '''&quot; \
+    &quot;$(cargo -Vv)&quot; \
+    &quot;'''&quot; \
+    &quot;rustc_verbose = '''&quot; \
+    &quot;$(rustc -Vv)&quot; \
+    &quot;'''&quot; \
+    &gt; version.toml; \
+    cat version.toml
+
+# clean: apk -v cache clean
+RUN rm -rf /var/cache/apk/* \
+    ~/.cache/* \
+    2&gt;/dev/null
+
+CMD [&quot;bash&quot;]
+</code></pre>
+<blockquote>
+<p>为了保留容器属性信息，容器内部需要新建几个环境变量或文件。</p>
+</blockquote>
+<p>这个 dockerfile 之后可能会发生变更，比如说：砍掉 TMOE 相关的环境变量，将 &quot;/usr/local/etc/tmoe-linux&quot; 目录更改为 &quot;/etc/tmoe&quot;</p>
+
+                        <div id="giscus-container"></div>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="container.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="android.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="container.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="android.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+        var pagePath = "docker-container.md"
+        </script>
+
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="assets/giscus.js"></script>
+    </body>
+</html>

@@ -1,0 +1,542 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js ayu">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>android - 天萌參考手冊 正體中文版</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/css/style-20220514.css">
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "ayu";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('ayu')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="prologue.html">序章</a></li><li class="spacer"></li><li class="chapter-item expanded "><a href="repo.html"><strong aria-hidden="true">1.</strong> 倉庫</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="add-repo.html"><strong aria-hidden="true">1.1.</strong> 新增倉庫</a></li><li class="chapter-item expanded "><a href="mirror-repo.html"><strong aria-hidden="true">1.2.</strong> 更換映象源</a></li></ol></li><li class="chapter-item expanded "><a href="container.html"><strong aria-hidden="true">2.</strong> 容器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="docker-container.html"><strong aria-hidden="true">2.1.</strong> docker</a></li><li class="chapter-item expanded "><a href="android.html" class="active"><strong aria-hidden="true">2.2.</strong> android</a></li></ol></li><li class="chapter-item expanded "><a href="configuration.html"><strong aria-hidden="true">3.</strong> 配置</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="toml.html"><strong aria-hidden="true">3.1.</strong> toml</a></li></ol></li><li class="chapter-item expanded "><a href="env.html"><strong aria-hidden="true">4.</strong> 環境</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="editor.html"><strong aria-hidden="true">4.1.</strong> 編輯器</a></li></ol></li><li class="chapter-item expanded "><a href="appendix.html"><strong aria-hidden="true">5.</strong> 附錄</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="appendix_region-code.html"><strong aria-hidden="true">5.1.</strong> 區域代號</a></li><li class="chapter-item expanded "><a href="appendix_todo.html"><strong aria-hidden="true">5.2.</strong> todo</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu (default)</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">天萌參考手冊 正體中文版</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/2moe/tmoe/tree/doc" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                    <!-- Page table of contents -->
+                    <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <h1 id="android"><a class="header" href="#android">android</a></h1>
+<ul>
+<li><a href="#1-%E9%97%9C%E6%96%BC-docker">1. 關於 docker</a></li>
+<li><a href="#2-%E7%AE%A1%E7%90%86%E5%99%A8">2. 管理器</a></li>
+<li><a href="#3-%E9%97%9C%E6%96%BC%E5%AE%B9%E5%99%A8%E7%92%B0%E5%A2%83">3. 關於容器環境</a>
+<ul>
+<li><a href="#31-%E9%85%8D%E7%BD%AE%E8%88%87%E7%92%B0%E5%A2%83">3.1. 配置與環境</a>
+<ul>
+<li><a href="#311-rootless-%E7%92%B0%E5%A2%83%E7%9A%84%E4%B8%80%E4%BA%9B%E5%B0%8F%E5%95%8F%E9%A1%8C">3.1.1. rootless 環境的一些小問題</a></li>
+</ul>
+</li>
+<li><a href="#32-proot">3.2. proot</a></li>
+<li><a href="#33-chrootunshare">3.3. chroot/unshare</a></li>
+</ul>
+</li>
+<li><a href="#4-%E5%91%BD%E4%BB%A4">4. 命令</a>
+<ul>
+<li><a href="#41-%E5%9C%A8%E5%AE%BF%E4%B8%BB%E7%92%B0%E5%A2%83%E4%B8%AD">4.1. 在宿主環境中</a>
+<ul>
+<li><a href="#411-%E5%B0%8D%E6%96%BC-gui-%E5%AE%B9%E5%99%A8">4.1.1. 對於 GUI 容器</a></li>
+<li><a href="#412-nogui">4.1.2. noGUI</a></li>
+</ul>
+</li>
+<li><a href="#42-%E5%9C%A8%E5%AE%B9%E5%99%A8%E7%92%B0%E5%A2%83%E4%B8%AD">4.2. 在容器環境中</a>
+<ul>
+<li><a href="#421-%E5%B0%8D%E6%96%BC-debian-based-%E7%99%BC%E8%A1%8C%E7%89%88">4.2.1. 對於 debian-based 發行版</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr />
+<p>本專案的本體分為兩個部分，分別是“管理器”和“工具箱”。<br />
+對於 android，您可以使用“管理器”。<br />
+在下文中, rootless 指的是 “無 root 容器環境”，rootful 指的是“有 root 容器環境”。</p>
+<h2 id="1-關於-docker"><a class="header" href="#1-關於-docker">1. 關於 docker</a></h2>
+<p>實際上，android 也可以執行 docker。<br />
+您如果想要使用原生 docker，那麼需要手動編譯核心，加上 docker 所需的一些特性。<br />
+如果您的核心沒有開源，或者是您的裝置無法解鎖 bootloader, 那麼您可能需要透過虛擬機器來間接使用 docker 。</p>
+<p>在本章中，我們並不會介紹以下內容：</p>
+<ul>
+<li>如何為 android 重新編譯核心</li>
+<li>如何在 android 上執行 docker</li>
+</ul>
+<h2 id="2-管理器"><a class="header" href="#2-管理器">2. 管理器</a></h2>
+<p>如果您想要使用 “管理器”，那麼您可以使用指令碼進行安裝。</p>
+<blockquote>
+<p>在 edition 2022 中，“天萌管理器” 叫做 <code>tmm</code><br />
+現階段，天萌的大部分內容仍處於 edition 2021<br />
+為了與舊版本的相容，開發者之後會為 android 保留 <code>tmoe</code> 命令</p>
+</blockquote>
+<p>對於 android, 您可以用 <a href="https://github.com/termux/termux-app/actions">termux</a> 執行以下指令碼。<br />
+之後，開發者可能會將相關內容打成 deb 包，也可能會適配其他的終端。</p>
+<blockquote>
+<p>之所以使用<code>curl</code>, 是因為 termux 預裝了它。<br />
+如果它沒有被預裝的話，那麼您需要使用 <code>apt update; apt install -y curl</code> 來安裝。</p>
+</blockquote>
+<div style="display:none">
+<pre><code class="language-mermaid">graph TD
+    A{可以訪問 github 嗎} --&gt; |不行| B(gitmoe)
+    A --&gt; |不行| C(gitee)
+    A --&gt; |可以| D(github)
+    D --&gt; d(方法 1)
+    C --&gt; c(方法 3)
+    B --&gt; b(方法 2)
+    d --&gt; E{是否出錯}
+    b --&gt; E
+    c --&gt; E
+    E --&gt; |是|F(使用其他方法)
+</code></pre>
+</div>
+<p><img src="assets/tmm_installation.svg" alt="tmm_installation" /></p>
+<ul>
+<li>
+<p>方法 1</p>
+<ul>
+<li>工具: curl</li>
+<li>平臺: github</li>
+<li>條件: 您已經安裝了 <code>curl</code>, 並且 <del>記憶力驚人,</del> 可以訪問 <strong>github</strong></li>
+<li>命令:
+<ul>
+<li><code>curl -LO --compressed https://raw.githubusercontent.com/2moe/tmoe/2/2.awk</code></li>
+<li><code>awk -f 2.awk</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>方法 2</p>
+<ul>
+<li>工具: curl</li>
+<li>平臺: gitmoe</li>
+<li>條件: 您無法訪問 <strong>github</strong></li>
+<li>命令
+<ul>
+<li><code>curl -LO https://l.tmoe.me/2.awk; awk -f 2.awk</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>方法 3</p>
+<ul>
+<li>工具: curl</li>
+<li>平臺: gitee</li>
+<li>條件：以上方法都出錯了</li>
+<li>命令
+<ul>
+<li><code>curl -LO https://gitee.com/mo2/linux/raw/2/2.awk; awk -f 2.awk</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-關於容器環境"><a class="header" href="#3-關於容器環境">3. 關於容器環境</a></h2>
+<p>如果您覺得天萌管理器的問題比其他“更優秀的管理器”更多，那麼大機率是配置的問題。</p>
+<p>您需要進行合理的配置，才能更好地使用。</p>
+<h3 id="31-配置與環境"><a class="header" href="#31-配置與環境">3.1. 配置與環境</a></h3>
+<p>我們這裡隨便摘出一段 <code>unshare</code> 的配置</p>
+<pre><code class="language-sh"># The unshare command creates new namespaces and then executes the specified program.
+# By default, a new namespace persists only as long as it has member processes.
+# A new namespace can be mad e persistent even when it has no member processes by bind mounting /proc/pid/ns/type files to a filesystem path.
+# A namespace that has been made persistent in this way can subsequently be entered with nsenter even after the program terminates
+# (except PID namespaces where a permanently running init process is required).
+# Once a persistent namespace is no longer needed, it can be unpersisted by using umount to remove the bind mount.
+UNSHARE_ENABLED=true
+
+# Unshare the IPC namespace. Default is false.
+# IPC namespace: The process will have an independent namespace for POSIX
+# message queues as well as System V message queues, semaphore sets and shared memory segments.
+UNSHARE_IPC=false
+
+# Unshare the PID namespace. Default is false.
+# PID namespace: Children will have a distinct set of PID-to-process mappings from their parent.
+UNSHARE_PID=false
+
+# Unshare the UTS namespace. Default is false.
+# UTS namespace: Setting hostname or domainname will not affect the rest of the system.
+UNSHARE_UTS=false
+
+# Unshare the mount namespace. Default is false.
+# mount namespace: Mounting and unmounting filesystems will not affect the rest of the system, except for filesystems which are explicitly marked as shared.
+UNSHARE_MOUNT=false
+
+# When unshare terminates, have signame be sent to the forked child process. Combined with --pid this allows for an easy and reliable killing of the entire process tree below unshare. This option implies --fork.
+# When the value is true and SIGNAME=SIGKILL, the process in the container cannot be terminated with ctrl+c.
+# see this issue: https://github.com/2moe/tmoe/issues/44
+KILL_CHILD=false
+KILL_CHILD_SIGNAME=&quot;SIGKILL&quot;
+
+# Default is true.
+# Just before running the program, mount the proc filesystem at mountpoint (default is /proc).  This is useful when creating a new PID namespace.  It also implies creating a new mount  namespace  since  the  /proc  mount would otherwise mess up existing programs on the system.  The new proc filesystem is explicitly mounted as private (with MS_PRIVATE|MS_REC).
+SHARE_PROC=true
+</code></pre>
+<p>然後您可能會吐嘈：“我不理解 IPC namespace 是什麼? 到底要不要開啟相關的選項？”<br />
+對於預設配置，在有些情況下，保持預設就可以了。</p>
+<blockquote>
+<p>有一本書叫做《UNIX 網路程式設計 卷 2：程序間通訊（UNIX Network Programming,Vovum 2：Interprocess Communications）》，裡面有介紹到 IPC 相關的內容。</p>
+</blockquote>
+<p>對於 rootful 環境，其實小問題沒有那麼多，一直使用預設的配置也不會有太大的問題。<br />
+但對於 rootless 環境，有時候您甚至需要針對不同的環境使用不同的配置。</p>
+<h4 id="311-rootless-環境的一些小問題"><a class="header" href="#311-rootless-環境的一些小問題">3.1.1. rootless 環境的一些小問題</a></h4>
+<p>您如果對天萌管理器不屑一顧的話，那麼可以嘗試用“更優秀的管理器”執行以下操作。</p>
+<ul>
+<li>在 rootless 環境下執行 <em>.NET SDK 6.0.202</em></li>
+<li>在 rootless 環境下，執行 <code>gnome-shell</code>。</li>
+</ul>
+<p>您可能在使用 rootless GUI 容器的過程中會遇到卡住或崩潰等問題。<br />
+在一般情況下，這與 android 系統本身的限制有關。<br />
+您可能需要開啟相應終端的後臺執行與開機自啟的許可權，或者是開一個小懸浮窗。<br />
+又或者是透過 <code>adb</code> 去調整系統的資源排程與後臺管理機制。</p>
+<blockquote>
+<p>對於 android 12+，如果容器崩潰了，那請選擇 <code>fix android 12(signal 9) 選項</code> 進行修復</p>
+</blockquote>
+<p>其次，這與容器內部的服務有關。 比如說與 &quot;power-manager&quot; 相關的東西，它會嘗試去呼叫宿主本身的東西，在有些情況下，這可能會導致整個容器程序崩潰。<br />
+最後與資源佔用有關，如果部分系統資源已經被佔滿了，或者是無法被呼叫，那麼它會變卡。</p>
+<p>如果說，您在啟動 gui 環境時卡住了，或者是 gui 環境特別不穩定。<br />
+那麼與什麼東西有關呢?</p>
+<p>答案是 D-Bus。</p>
+<p>Q: 關掉 D-Bus 會更好嗎？<br />
+A: 恰恰相反，對於部分桌面環境來說，讓它的 daemon 處於執行狀態會更好。<br />
+比如說，對於 gnome，開啟 dbus-daemon 後，您就可以在 rootless 環境下跑 gnome-shell 了。</p>
+<p>Q: 如何關閉？<br />
+A: 與 D-Bus 相關的地方分佈在以下三個位置。</p>
+<ul>
+<li>容器自身的配置。您可以在環境變數與登入項管理處禁用掉 <code>fake cap_last_cap</code></li>
+<li>session 的配置。將 <strong>/etc/X11/xinit/Xsession</strong> 中的 <code>DBUS_CMD</code> 的值修改為空。</li>
+<li>startvnc 或其他 vnc 服務的配置。將 <code>AUTO_START_DBUS</code> 的值修改為 <code>false</code></li>
+</ul>
+<p>再比如，如果與“資源監控”相關的東西崩潰了，那麼大機率與 &quot;/proc&quot; 相關的東西有關。</p>
+<p>請在 <code>edit script</code> 選項中，手動禁用掉部分 <code>偽造proc</code> 的東西。</p>
+<p>注：在預設情況下，只有當您的系統無權讀取相關檔案時，它才會自動偽造並掛載。<br />
+為了效能上的最佳化，只有容器初始化過程才會自動檢測。</p>
+<p>天萌裡有很多很多的選項，您如果無法理解相關內容，那麼可能會去噴它。</p>
+<blockquote>
+<p>有問題應該儘早反饋，整天想著噴它，可是壞孩子喲！ (╯°□°）╯︵ ┻━┻</p>
+</blockquote>
+<p>解決方法很簡單，對於 android，如果核心支援 docker ,那麼您直接使用 docker 就可以了。<br />
+如果核心不支援 docker， 那麼您可以考慮使用天萌管理器的 <code>unshare</code> 容器。</p>
+<h3 id="32-proot"><a class="header" href="#32-proot">3.2. proot</a></h3>
+<table><thead><tr><th>problem</th><th>note</th></tr></thead><tbody>
+<tr><td>無法繫結 1024 以下的埠</td><td>see this <a href="https://github.com/2moe/tmoe/issues?q=is%3Aissue+is%3Aclosed">issue</a></td></tr>
+</tbody></table>
+<h3 id="33-chrootunshare"><a class="header" href="#33-chrootunshare">3.3. chroot/unshare</a></h3>
+<p>您在 android 上使用天萌來安裝 unshare 容器前，它會讓你選擇“共享/掛載 sd 目錄”。<br />
+對於 miui, 請不要選擇整個 &quot;/data/media/0&quot; 或 &quot;/sdcard&quot;<br />
+請選擇特定的子目錄，例如 &quot;/data/media/0/Download&quot;。<br />
+掛載整個內建 sd 可能會導致它在 <code>umount</code> 時被一同解除安裝。<br />
+<a href="https://gitee.com/mo2/linux/issues/I5488U">issue1</a><br />
+<a href="https://github.com/2moe/tmoe/discussions/166">issue2</a></p>
+<p>如果您堅持要做的話，那麼請在掛載整個內建 sd 前，手動做個小測試。</p>
+<pre><code class="language-sh editable">cd $TMPDIR
+mkdir -pv sd
+su -c &quot;/system/bin/mount -o bind /sdcard $PWD/sd&quot;
+sudo ls sd
+su -c &quot;/system/bin/umount -lvf $PWD/sd&quot;
+ls /sdcard
+</code></pre>
+<p>看看發生了什麼？</p>
+<h2 id="4-命令"><a class="header" href="#4-命令">4. 命令</a></h2>
+<h3 id="41-在宿主環境中"><a class="header" href="#41-在宿主環境中">4.1. 在宿主環境中</a></h3>
+<h4 id="411-對於-gui-容器"><a class="header" href="#411-對於-gui-容器">4.1.1. 對於 GUI 容器</a></h4>
+<ul>
+<li><code>startvnc</code>
+<ul>
+<li>前提：您需要先安裝 vnc viewer 或其他 vnc 客戶端</li>
+<li>對於 android, 只有 vnc viewer 才會 “連攜”啟動</li>
+<li>作用：啟動預設的 vnc 服務（一般是 tigervnc）</li>
+</ul>
+<!-- - 對於 wsl, 只有 tigervnc viewer 才會 -->
+</li>
+<li><code>startx11vnc</code>
+<ul>
+<li>前提：條件同上</li>
+<li>作用：啟動 x11vnc</li>
+</ul>
+</li>
+<li><code>stopvnc</code>
+<ul>
+<li>此命令可以方便地幹掉 rootless 容器（包括它的 vnc 服務程序）</li>
+<li>對於 chroot/unshare（rootful）容器, 您需要單獨停止容器程序。</li>
+</ul>
+</li>
+<li><code>startxsdl</code>
+<ul>
+<li>前提：您需要先在宿主環境中安裝 xserver app</li>
+<li>作用：啟動 xorg</li>
+</ul>
+</li>
+<li><code>novnc</code>
+<ul>
+<li>前提：您無需安裝常規的 vnc 客戶端，只需有個瀏覽器就足夠了</li>
+<li>作用：同時啟動宿主的瀏覽器和容器內部的服務</li>
+</ul>
+</li>
+</ul>
+<h4 id="412-nogui"><a class="header" href="#412-nogui">4.1.2. noGUI</a></h4>
+<p>對於 edition 2020:</p>
+<ul>
+<li><code>debian</code>
+<ul>
+<li>自動檢測預設容器名稱、型別和架構。在檢測完成後，啟動容器。</li>
+</ul>
+</li>
+</ul>
+<p>對於 edition 2021：</p>
+<ul>
+<li><code>tmoe ls</code>
+<ul>
+<li>自動判斷預設容器型別，並列出容器列表</li>
+</ul>
+</li>
+<li><code>tmoe p</code>
+<ul>
+<li>啟動預設的 proot 容器</li>
+</ul>
+</li>
+<li><code>tmoe c</code>
+<ul>
+<li>啟動預設的 chroot/unshare 容器</li>
+</ul>
+</li>
+<li><code>tmoe</code> 或 <code>tmoe m</code>
+<ul>
+<li>啟動 tmoe manager</li>
+</ul>
+</li>
+</ul>
+<p>對於 edition 2022：</p>
+<ul>
+<li><code>tmm r &lt;容器名稱&gt;</code>
+<ul>
+<li>例如 <code>tmm r uuu</code></li>
+</ul>
+</li>
+<li><code>tmm</code>
+<ul>
+<li>啟動 tmoe manager</li>
+</ul>
+</li>
+</ul>
+<h3 id="42-在容器環境中"><a class="header" href="#42-在容器環境中">4.2. 在容器環境中</a></h3>
+<p>如果宿主支援“連攜”啟動，那麼您無需在容器內單獨啟動 vnc 服務</p>
+<ul>
+<li><code>tmoe</code> 或 <code>tmoe t</code>
+<ul>
+<li>啟動 tmoe tools</li>
+</ul>
+</li>
+<li><code>startvnc</code>
+<ul>
+<li>啟動預設的 vnc 服務（一般是 tigervnc）</li>
+</ul>
+</li>
+<li><code>startx11vnc</code>
+<ul>
+<li>啟動 x11vnc 服務</li>
+</ul>
+</li>
+<li><code>stopvnc</code>
+<ul>
+<li>停止 vnc 服務</li>
+</ul>
+</li>
+<li><code>startxsdl</code>
+<ul>
+<li>啟動 xorg</li>
+</ul>
+</li>
+<li><code>novnc</code>
+<ul>
+<li>啟動 novnc</li>
+</ul>
+</li>
+</ul>
+<h4 id="421-對於-debian-based-發行版"><a class="header" href="#421-對於-debian-based-發行版">4.2.1. 對於 debian-based 發行版</a></h4>
+<ul>
+<li><code>tigervnc</code>
+<ul>
+<li>啟動 tigervnc 服務</li>
+</ul>
+</li>
+<li><code>tightvnc</code>
+<ul>
+<li>啟動 tightvnc 服務</li>
+</ul>
+</li>
+</ul>
+
+                        <div id="giscus-container"></div>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="docker-container.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="configuration.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="docker-container.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="configuration.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+        var pagePath = "android.md"
+        </script>
+
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="assets/giscus.js"></script>
+    </body>
+</html>

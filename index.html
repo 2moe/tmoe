@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script type="text/javascript">
+    const match_region = (lang, slice) => {
+      if (slice !== "zh") return slice
+
+      const region = lang.slice(-2).toUpperCase()
+
+      switch (region) {
+        case "HK":
+        case "MO":
+          return `${slice}-HK`
+        case "TW":
+          return `${slice}-${region}`
+        default:
+          return slice
+      }
+    }
+
+    const get_lang = () => {
+      const language = navigator.language || navigator.languages[0]
+      const slice = language.slice(0, 2).toLowerCase()
+
+      const ava_lang = new Set([
+        "zh",
+        "de",
+        "es",
+        "ja",
+        "fr",
+        "it",
+        "ko",
+        "ru",
+        "id",
+        "pl",
+        "pt",
+        "cs",
+      ])
+
+      return ava_lang.has(slice) ? match_region(language, slice) : "en"
+    }
+
+    const loc = self.location
+    loc.replace(`${loc.origin}/${get_lang()}/prologue.html`)
+  </script>
+</head>
+
+</html>
