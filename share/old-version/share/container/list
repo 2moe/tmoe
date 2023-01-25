@@ -103,11 +103,11 @@ choose_which_gnu_linux_distro() {
         create_container_edition_txt
         go_to_proot_management
         ;;
-    8) install_armbian_linux_distro ;;
-    9) install_fedora_gnu_linux_distro ;;
-    10) cloud_server_distro_menu ;;
-    11) install_chroot_exclusive_containers ;;
-    12) install_alpha_containers ;;
+    # 8) install_armbian_linux_distro ;;
+    8) install_fedora_gnu_linux_distro ;;
+    9) cloud_server_distro_menu ;;
+    10) install_chroot_exclusive_containers ;;
+    11) install_alpha_containers ;;
     esac
     ####################
     exit 0
