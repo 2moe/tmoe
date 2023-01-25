@@ -3,7 +3,7 @@
 check_python_novnc() {
     case "${LINUX_DISTRO}" in
     debian)
-        if [ ! -e "/usr/share/novnc/utils/launch.sh" ]; then
+        if [ ! -e "/usr/share/novnc/utils" ]; then
             printf "%s\n" "${GREEN}eatmydata apt ${YELLOW}install -y ${BLUE}novnc${RESET}"
             printf "%s\n" "You can type ${PURPLE}apt purge -y${RESET} ${BLUE}novnc python3-novnc${RESET} to remove it."
             eatmydata apt update || apt update
@@ -23,7 +23,7 @@ check_python_novnc() {
         fi
         ;;
     redhat)
-        if [ ! -e "/usr/share/novnc/utils/launch.sh" ]; then
+        if [ ! -e "/usr/share/novnc/utils" ]; then
             printf "%s\n" "${GREEN}dnf install -y ${BLUE}novnc${RESET}"
             printf "%s\n" "You can type ${PURPLE}dnf remove -y${RESET} ${BLUE}novnc${RESET} to remove it."
             dnf install -y novnc || yum install -y novnc
@@ -57,9 +57,9 @@ check_python_novnc() {
         esac
     fi
 
-    if [ ! -e "${TMOE_LINUX_DIR}/novnc/utils/launch.sh" ]; then
+    if [ ! -e "${TMOE_LINUX_DIR}/novnc/utils" ]; then
         [[ ! -e ${TMOE_LINUX_DIR}/novnc ]] || rm -rfv ${TMOE_LINUX_DIR}/novnc
-        if [ -e "/usr/share/novnc/utils/launch.sh" ]; then
+        if [ -e "/usr/share/novnc/utils" ]; then
             ln -svf /usr/share/novnc ${TMOE_LINUX_DIR}
         else
             mkdir -pv ${TMOE_LINUX_DIR}/novnc

@@ -23,7 +23,7 @@ choose_which_gnu_linux_distro() {
         OPT_5="🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている"
         OPT_6="🍱 Alpine,mint,rocky & puppy"
         OPT_7="🐉 Kali rolling:ペネトレーションテストを主な目的としている"
-        OPT_8="🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです"
+        # OPT_8="🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです"
         OPT_9="👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro"
         OPT_11="🦎 Chroot専属する:openSUSE"
         OPT_12="🍓 体験版:RaspiOS,Gentoo"
@@ -38,7 +38,7 @@ choose_which_gnu_linux_distro() {
         OPT_5="🌉 Arch:系统设计以KISS为总体指导原则"
         OPT_6="🍱 Alpine,mint,rocky,solus & puppy"
         OPT_7="🐉 Kali rolling:设计用于数字取证和渗透测试"
-        OPT_8="🍊 Armbian:香蕉派,香橙派(预装xfce/cinnamon/budgie)"
+        # OPT_8="🍊 Armbian:香蕉派,香橙派(预装xfce/cinnamon/budgie)"
         OPT_9="👒 Fedora:红帽社区版,新技术试验场"
         OPT_10="☁️  服务器系统:华为欧拉(openEuler),微软CBL-Mariner,甲骨文,亚马逊"
         OPT_11="🦎 Chroot专属:openSUSE, deepin"
@@ -54,7 +54,7 @@ choose_which_gnu_linux_distro() {
         OPT_5="🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility"
         OPT_6="🍱 Alpine,mint,rocky & puppy"
         OPT_7="🐉 Kali:designed for digital forensics and penetration testing"
-        OPT_8="🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)"
+        # OPT_8="🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)"
         OPT_9="👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
         OPT_11="🦎 Chroot exclusive:openSUSE,deepin"
         OPT_12="🍓 Experimental:RaspiOS,Gentoo,Archcraft"
@@ -68,11 +68,10 @@ choose_which_gnu_linux_distro() {
             "5" "$OPT_5" \
             "6" "$OPT_6" \
             "7" "$OPT_7" \
-            "8" "$OPT_8" \
-            "9" "$OPT_9" \
-            "10" "$OPT_10" \
-            "11" "$OPT_11" \
-            "12" "$OPT_12" \
+            "8" "$OPT_9" \
+            "9" "$OPT_10" \
+            "10" "$OPT_11" \
+            "11" "$OPT_12" \
             "0" "$OPT_0" \
             3>&1 1>&2 2>&3)
     }
