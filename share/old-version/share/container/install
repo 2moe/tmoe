@@ -146,7 +146,7 @@ printf "%s\n" "    jBBdD. :. ........:r... YB  Bi      "
 printf "%s\n" "       :7j1.                 :  :       "
 printf "${RESET}"
 ###########################
-TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default"
+TUNA_LXC_IMAGE_MIRROR_REPO="https://mirrors.nju.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default"
 TUNA_LXC_IMAGE_MIRROR_REPO_02="https://mirrors.tuna.tsinghua.edu.cn/lxc-images/images/debian/sid/${ARCH_TYPE}/default"
 TMOE_ROOTFS_TAR_XZ="debian-sid_${ARCH_TYPE}-rootfs.tar.xz"
 TMOE_PROOT_PROC_FILE_URL='https://gitee.com/ak2/proot_proc/raw/master/proc.tar.xz'
@@ -188,7 +188,7 @@ tmoe_tips_1_en() {
 				04.You can type ${GREEN}novnc${RESET} to ${YELLOW}start ${BLUE}novnc+websockify${RESET}
 				(o゜▽゜)o☆ Open your browser and enjoy it!
 				Detected that your current architecture is ${YELLOW}${ARCH_TYPE}${RESET}, ${GREEN}debian container${RESET} will be installed to ${BLUE}${DEBIAN_CHROOT}${RESET}
-				------------------   
+				------------------
 	EOF
 }
 case ${TMOE_LANG} in
@@ -280,30 +280,30 @@ fi
 ####################
 printf "$BLUE"
 cat <<-'EndOFneko'
-	       DL.                           
-	       QBBBBBKv:rr77ri:.             
-	       gBBQdY7::::..::i7vv.          
-	       UBd. . .:.........rBBBQBBBB5  
-	       Pu  :..r......i:....BBBQBBB:  
-	       ri.i:.j:...:. i7... uBBZrd:   
-	 :     7.:7.7U.:..r: Yr:.. iQ1:qU    
-	.Qi   .7.ii.X7:...L.:qr:...iB7ZQ     
-	 .27. :r.r:L7i::.7r:vri:...rr  .     
-	  v   ::.Yrviri:7v7v: ::...i.   i    
-	      r:ir: r.iiiir..:7r...r   :P.2Y 
-	      v:vi::.      :  ::. .qI7U1U :1 
+	       DL.
+	       QBBBBBKv:rr77ri:.
+	       gBBQdY7::::..::i7vv.
+	       UBd. . .:.........rBBBQBBBB5
+	       Pu  :..r......i:....BBBQBBB:
+	       ri.i:.j:...:. i7... uBBZrd:
+	 :     7.:7.7U.:..r: Yr:.. iQ1:qU
+	.Qi   .7.ii.X7:...L.:qr:...iB7ZQ
+	 .27. :r.r:L7i::.7r:vri:...rr  .
+	  v   ::.Yrviri:7v7v: ::...i.   i
+	      r:ir: r.iiiir..:7r...r   :P.2Y
+	      v:vi::.      :  ::. .qI7U1U :1
 	Qr    7.7.         :.i::. :Di:. i .v:
-	v7..  s.r7.   ...   .:7i: rDi...r .. 
-	 vi: .7.iDBBr  .r   .:.7. rPr:..r    
-	 i   :virZBgi  :vrYJ1vYY .ruY:..i    
-	     YrivEv. 7BBRBqj21I7 .77J:.:.PQ  
+	v7..  s.r7.   ...   .:7i: rDi...r ..
+	 vi: .7.iDBBr  .r   .:.7. rPr:..r
+	 i   :virZBgi  :vrYJ1vYY .ruY:..i
+	     YrivEv. 7BBRBqj21I7 .77J:.:.PQ
 	    .1r:q.   rB52SKrj.:i i5isi.:i :.r
-	    YvrY7    r.  . ru :: PIrj7.:r..v 
-	   rSviYI..iuU .:.:i:.7.KPPiSr.:vr   
-	  .u:Y:JQMSsJUv...   .rDE1P71:.7X7   
-	  5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y   
-	  S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7   
-	         .            i   7          
+	    YvrY7    r.  . ru :: PIrj7.:r..v
+	   rSviYI..iuU .:.:i:.7.KPPiSr.:vr
+	  .u:Y:JQMSsJUv...   .rDE1P71:.7X7
+	  5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y
+	  S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7
+	         .            i   7
 EndOFneko
 printf "$RESET"
 LONG_DISTRO_NAME=$(printf '%s\n' "${LINUX_CONTAINER_DISTRO}" | awk -F '-' '{print $1}' | cut -d '_' -f 1)
@@ -557,30 +557,30 @@ fi
 cd "${CURRENT_TMOE_DIR}"
 printf "${YELLOW}"
 cat <<-'EndOFneko'
-	                                        
-	                            .:7E        
-	            .iv7vrrrrr7uQBBBBBBB:       
-	           v17::.........:SBBBUg        
-	        vKLi.........:. .  vBQrQ        
-	   sqMBBBr.......... :i. .  SQIX        
-	   BBQBBr.:...:....:. 1:.....v. ..      
-	    UBBB..:..:i.....i YK:: ..:   i:     
-	     7Bg.... iv.....r.ijL7...i. .Lu     
-	  IB: rb...i iui....rir :Si..:::ibr     
-	  J7.  :r.is..vrL:..i7i  7U...Z7i..     
-	  ...   7..I:.: 7v.ri.755P1. .S  ::     
-	    :   r:.i5KEv:.:.  :.  ::..X..::     
-	   7is. :v .sr::.         :: :2. ::     
-	   2:.  .u: r.     ::::   r: ij: .r  :  
-	   ..   .v1 .v.    .   .7Qr: Lqi .r. i  
-	   :u   .iq: :PBEPjvviII5P7::5Du: .v    
-	    .i  :iUr r:v::i:::::.:.:PPrD7: ii   
-	    :v. iiSrr   :..   s i.  vPrvsr. r.  
-	     ...:7sv:  ..PL  .Q.:.   IY717i .7. 
-	      i7LUJv.   . .     .:   YI7bIr :ur 
-	     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 
-	    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v 
-	         :   r. ..      .. .:i  ...     
+
+	                            .:7E
+	            .iv7vrrrrr7uQBBBBBBB:
+	           v17::.........:SBBBUg
+	        vKLi.........:. .  vBQrQ
+	   sqMBBBr.......... :i. .  SQIX
+	   BBQBBr.:...:....:. 1:.....v. ..
+	    UBBB..:..:i.....i YK:: ..:   i:
+	     7Bg.... iv.....r.ijL7...i. .Lu
+	  IB: rb...i iui....rir :Si..:::ibr
+	  J7.  :r.is..vrL:..i7i  7U...Z7i..
+	  ...   7..I:.: 7v.ri.755P1. .S  ::
+	    :   r:.i5KEv:.:.  :.  ::..X..::
+	   7is. :v .sr::.         :: :2. ::
+	   2:.  .u: r.     ::::   r: ij: .r  :
+	   ..   .v1 .v.    .   .7Qr: Lqi .r. i
+	   :u   .iq: :PBEPjvviII5P7::5Du: .v
+	    .i  :iUr r:v::i:::::.:.:PPrD7: ii
+	    :v. iiSrr   :..   s i.  vPrvsr. r.
+	     ...:7sv:  ..PL  .Q.:.   IY717i .7.
+	      i7LUJv.   . .     .:   YI7bIr :ur
+	     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7
+	    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v
+	         :   r. ..      .. .:i  ...
 EndOFneko
 printf "${RESET}"
 ####################
@@ -910,7 +910,7 @@ ENDOFX11VNC
 cat >${PREFIX}/bin/novnc <<-ENDOFNOVNC
 	#!/usr/bin/env bash
 	vnc_warning() {
-		printf "%s \033[33m%s\033[m %s \033[32m%s\033[m %s\n" "Starting" "novnc" ",if you can not start it, then type" "tmoe t" ",and reinstall desktop."  
+		printf "%s \033[33m%s\033[m %s \033[32m%s\033[m %s\n" "Starting" "novnc" ",if you can not start it, then type" "tmoe t" ",and reinstall desktop."
 		${PREFIX}/bin/tmoe pr novnc
 	}
 	if [ -e "${CONFIG_FOLDER}/chroot_container" ]; then
@@ -1500,7 +1500,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	    aarch64 | arm*)
 	        cat >>/etc/pacman.d/mirrorlist <<-'EndOfArchMirrors'
 						## Archlinux arm
-						Server = https://mirrors.ustc.edu.cn/archlinuxarm/$arch/$repo     
+						Server = https://mirrors.ustc.edu.cn/archlinuxarm/$arch/$repo
 						Server = https://mirror.archlinuxarm.org/$arch/$repo
 						Server = https://mirrors.bfsu.edu.cn/archlinuxarm/$arch/$repo
 						Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxarm/$arch/$repo
@@ -1552,7 +1552,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 						#Server = https://mirror.oldsql.cc/manjaro/stable/$repo/$arch
 						Server = https://mirrors.bfsu.edu.cn/manjaro/stable/$repo/$arch
 						Server = https://mirrors.ustc.edu.cn/manjaro/stable/$repo/$arch
-						Server = https://mirrors.tuna.tsinghua.edu.cn/manjaro/stable/$repo/$arch     
+						Server = https://mirrors.tuna.tsinghua.edu.cn/manjaro/stable/$repo/$arch
 					EndOfArchMirrors
 	    fi
 	}
@@ -1610,7 +1610,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		# pacman-key --populate archlinuxcn
 		# archlinux-keyring archlinuxcn-keyring
 	    printf "%s\n" "${GREEN}pacman ${YELLOW}-Sy ${PURPLE}--noconfirm --needed ${BLUE}paru${RESET}"
-	    pacman -Sy --noconfirm --needed paru  
+	    pacman -Sy --noconfirm --needed paru
 		pacman -S --noconfirm --needed openssl-1.1 libnewt 2>/dev/null
 		fix_whiptail_0_52_21
 		if [[ ! $(command -v paru) ]]; then
@@ -1625,7 +1625,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		case $(uname -m) in
 		armv7* | armv8l) paru[proxy]="paru-armv7" ;;
 		aarch64 | armv8* | armv9*) paru[proxy]="paru-arm64" ;;
-		*) 
+		*)
 			cd ~
 			pacman -Sy --noconfirm --needed paru
 			return 0
@@ -1633,7 +1633,7 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 		esac
 		paru[gh]=${paru[proxy]}"-github"
 		paru[uri]="https://l.tmoe.me/"
-		cd /tmp || exit   
+		cd /tmp || exit
 		curl -Lo "${paru[file]}" "${paru[uri]}${paru[gh]}" || curl -Lo "${paru[file]}" "${paru[uri]}${paru[proxy]}"
 		tar -xvf "${paru[file]}"
 		install -Dm755 paru /usr/bin
@@ -1999,31 +1999,31 @@ cat >'.profile' <<-'ENDOFbashPROFILE'
 	fi
 	printf "$YELLOW"
 	cat <<-'EndOFneko'
-				                                     
-				       DL.                           
-				       QBBBBBKv:rr77ri:.             
-				       gBBQdY7::::..::i7vv.          
-				       UBd. . .:.........rBBBQBBBB5  
-				       Pu  :..r......i:....BBBQBBB:  
-				       ri.i:.j:...:. i7... uBBZrd:   
-				 :     7.:7.7U.:..r: Yr:.. iQ1:qU    
-				.Qi   .7.ii.X7:...L.:qr:...iB7ZQ     
-				 .27. :r.r:L7i::.7r:vri:...rr  .     
-				  v   ::.Yrviri:7v7v: ::...i.   i    
-				      r:ir: r.iiiir..:7r...r   :P.2Y 
-				      v:vi::.      :  ::. .qI7U1U :1 
+
+				       DL.
+				       QBBBBBKv:rr77ri:.
+				       gBBQdY7::::..::i7vv.
+				       UBd. . .:.........rBBBQBBBB5
+				       Pu  :..r......i:....BBBQBBB:
+				       ri.i:.j:...:. i7... uBBZrd:
+				 :     7.:7.7U.:..r: Yr:.. iQ1:qU
+				.Qi   .7.ii.X7:...L.:qr:...iB7ZQ
+				 .27. :r.r:L7i::.7r:vri:...rr  .
+				  v   ::.Yrviri:7v7v: ::...i.   i
+				      r:ir: r.iiiir..:7r...r   :P.2Y
+				      v:vi::.      :  ::. .qI7U1U :1
 				Qr    7.7.         :.i::. :Di:. i .v:
-				v7..  s.r7.   ...   .:7i: rDi...r .. 
-				 vi: .7.iDBBr  .r   .:.7. rPr:..r    
-				 i   :virZBgi  :vrYJ1vYY .ruY:..i    
-				     YrivEv. 7BBRBqj21I7 .77J:.:.PQ  
+				v7..  s.r7.   ...   .:7i: rDi...r ..
+				 vi: .7.iDBBr  .r   .:.7. rPr:..r
+				 i   :virZBgi  :vrYJ1vYY .ruY:..i
+				     YrivEv. 7BBRBqj21I7 .77J:.:.PQ
 				    .1r:q.   rB52SKrj.:i i5isi.:i :.r
-				    YvrY7    r.  . ru :: PIrj7.:r..v 
-				   rSviYI..iuU .:.:i:.7.KPPiSr.:vr   
-				  .u:Y:JQMSsJUv...   .rDE1P71:.7X7   
-				  5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y   
-				  S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7   
-				         .            i   7          
+				    YvrY7    r.  . ru :: PIrj7.:r..v
+				   rSviYI..iuU .:.:i:.7.KPPiSr.:vr
+				  .u:Y:JQMSsJUv...   .rDE1P71:.7X7
+				  5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y
+				  S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7
+				         .            i   7
 
 			EndOFneko
 	printf "$RESET"

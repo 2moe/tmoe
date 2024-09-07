@@ -157,12 +157,12 @@ backup_gnu_linux_container() {
         printf "%s\n" "${YELLOW}按回车键开始备份。Press Enter to start the backup.${RESET} "
         do_you_want_to_continue
         case ${TMOE_CHROOT} in
-        true) ${TMOE_PREFIX} tar -I zstd -Ppcvf ${CONTAINER_BACKUP_FILE_NAME}.tar.zst --exclude=${DEBIAN_CHROOT}/media/sd --exclude=${DEBIAN_CHROOT}/media/tf --exclude=${DEBIAN_CHROOT}/media/termux ${BACKUP_FOLDER} ;;
+        true) ${TMOE_PREFIX} tar --use-compress-program zstd -Ppcvf ${CONTAINER_BACKUP_FILE_NAME}.tar.zst --exclude=${DEBIAN_CHROOT}/media/sd --exclude=${DEBIAN_CHROOT}/media/tf --exclude=${DEBIAN_CHROOT}/media/termux ${BACKUP_FOLDER} ;;
         *)
             if [ "$(command -v pv)" ]; then
-                tar -I zstd -Ppcf - --exclude=${DEBIAN_CHROOT}/media/sd --exclude=${DEBIAN_CHROOT}/media/tf --exclude=${DEBIAN_CHROOT}/media/termux ${BACKUP_FOLDER} | (pv -p --timer --rate --bytes >${CONTAINER_BACKUP_FILE_NAME}.tar.zst)
+                tar --use-compress-program zstd -Ppcf - --exclude=${DEBIAN_CHROOT}/media/sd --exclude=${DEBIAN_CHROOT}/media/tf --exclude=${DEBIAN_CHROOT}/media/termux ${BACKUP_FOLDER} | (pv -p --timer --rate --bytes >${CONTAINER_BACKUP_FILE_NAME}.tar.zst)
             else
-                tar -I zstd -Ppcvf ${CONTAINER_BACKUP_FILE_NAME}.tar.zst --exclude=${DEBIAN_CHROOT}/media/sd --exclude=${DEBIAN_CHROOT}/media/tf --exclude=${DEBIAN_CHROOT}/media/termux ${BACKUP_FOLDER}
+                tar --use-compress-program zstd -Ppcvf ${CONTAINER_BACKUP_FILE_NAME}.tar.zst --exclude=${DEBIAN_CHROOT}/media/sd --exclude=${DEBIAN_CHROOT}/media/tf --exclude=${DEBIAN_CHROOT}/media/termux ${BACKUP_FOLDER}
             fi
             ;;
         esac

@@ -650,7 +650,7 @@ download_virtio_driver() {
         cd ${DOWNLOAD_PATH}
         aria2c --console-log-level=error --no-conf --allow-overwrite=true -s 6 -x 6 -k 1M -d "${DOWNLOAD_PATH}" -o "${DOWNLOAD_FILE_NAME}.tar.zst" "${THE_LATEST_ISO_LINK}"
         printf "%s\n" "Extracting ${DOWNLOAD_FILE_NAME}.tar.zst, please wait."
-        tar -I zstd -xvf ${DOWNLOAD_FILE_NAME}.tar.zst
+        tar --use-compress-program zstd -xvf ${DOWNLOAD_FILE_NAME}.tar.zst
         TMOE_FILE_ABSOLUTE_PATH="${DOWNLOAD_PATH}/${DOWNLOAD_FILE_NAME}"
         #check_virtio_driver_iso
         set_it_as_the_default_qemu_iso
@@ -1525,7 +1525,7 @@ how_to_create_a_new_tmoe_qemu_vm() {
 		   1.下载iso镜像文件 Download a iso file.
 		   若虚拟磁盘内已经安装了系统，则可跳过此步。
 		   If the qcow2 disk has a built-in system,then you can skip this step.
-		        
+
 			2.新建一个虚拟磁盘
 			create a new vitual disk (qcow2 format).
 

@@ -38,11 +38,11 @@ uncompress_tar_zst_file() {
     printf '%s\n' 'tar.zst'
     printf "%s\n" "即将为您解压..."
     if [ ! "$(command -v pv)" ] || [ "${COMPATIBILITY_MODE}" = 'true' ] || [ "${TMOE_CHROOT}" = 'true' ]; then
-        printf "%s\n" "${GREEN}tar -I zstd -Ppxvf ${RESTORE} ${RESET}"
-        ${TMOE_PREFIX} tar -I zstd -Ppxvf ${RESTORE}
+        printf "%s\n" "${GREEN}tar --use-compress-program zstd -Ppxvf ${RESTORE} ${RESET}"
+        ${TMOE_PREFIX} tar --use-compress-program zstd -Ppxvf ${RESTORE}
     else
-        printf "%s\n" "${GREEN}pv ${RESTORE} | tar -I zstd -Ppx${RESET}"
-        pv ${RESTORE} | tar -I zstd -Ppx
+        printf "%s\n" "${GREEN}pv ${RESTORE} | tar --use-compress-program zstd -Ppx${RESET}"
+        pv ${RESTORE} | tar --use-compress-program zstd -Ppx
     fi
 }
 ######################
@@ -74,8 +74,8 @@ uncompress_tar_file() {
     *) TMOE_PREFIX='' ;;
     esac
     case "${RESTORE:0-6:6}" in
-    tar.xz) uncompress_tar_xz_file ;;
-    tar.gz) uncompress_tar_gz_file ;;
+    # tar.xz) uncompress_tar_xz_file ;;
+    # tar.gz) uncompress_tar_gz_file ;;
     ar.zst) uncompress_tar_zst_file ;;
     *) uncompress_other_format_file ;;
     esac

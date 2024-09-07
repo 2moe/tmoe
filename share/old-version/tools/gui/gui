@@ -1134,9 +1134,9 @@ set_session_env() {
     SESSION_2="${REMOTE_DESKTOP_SESSION_02}"
 
     # Adding dbus-launch may cause problems with vscode.
-    # 
+    #
     DBUS_CMD="dbus-launch"
-    
+
     [[ ! -s /etc/environment ]] || source /etc/environment
     # /run/user/\$UID
     [[ -n \${XDG_RUNTIME_DIR} ]] || export XDG_RUNTIME_DIR=/tmp/runtime-\${UID}
@@ -1433,7 +1433,7 @@ xfce_warning() {
     ICON_FILE_NAME='xfce4.jpg'
     download_and_cat_icon_img
     cat <<-'ENDofTable'
-    xfce4桌面支持表格 
+    xfce4桌面支持表格
     以下数据仅代表tmoe tools所安装的xfce，您可自行编译源代码，并修复bug。
   ╔═══╦════════════╦════════╦════════╦═════════╦
   ║   ║vnc/xserver ║        ║        ║         ║
@@ -1450,10 +1450,10 @@ xfce_warning() {
   ║ 3 ║Manjaro     ║   ✓    ║    ✓   ║    ✓    ║
   ║---║------------║--------║--------║---------║
   ║   ║ Alpine     ║        ║        ║         ║
-  ║ 4 ║            ║  ?     ║   ?    ║   ✓     ║ 
+  ║ 4 ║            ║  ?     ║   ?    ║   ✓     ║
   ║---║------------║--------║--------║---------║
   ║   ║  Void      ║        ║        ║         ║
-  ║ 5 ║            ║  ?     ║   ✓    ║   ✓     ║ 
+  ║ 5 ║            ║  ?     ║   ✓    ║   ✓     ║
   ║---║------------║--------║--------║---------║
   ║   ║OpenSUSE    ║        ║        ║         ║
   ║ 6 ║            ║  ✓     ║   ✓    ║   ✓     ║
@@ -3176,27 +3176,27 @@ dde_warning() {
   ║   ║----------- ║ x11vnc ║tigervnc║ xserver ║
   ║   ║System      ║        ║        ║         ║
   ║---║------------║--------║--------║---------║
-  ║ 1 ║ Ubuntu     ║  ✓     ║    ？  ║   ？    ║ 
+  ║ 1 ║ Ubuntu     ║  ✓     ║    ？  ║   ？    ║
   ║   ║ 20.04 LTS  ║        ║        ║         ║
   ║---║------------║--------║--------║---------║
-  ║   ║Fedora      ║        ║        ║         ║ 
+  ║   ║Fedora      ║        ║        ║         ║
   ║ 2 ║ 32         ║  ✓     ║   ✓    ║   ？    ║
   ║---║------------║--------║--------║---------║
-  ║   ║ArchLinux   ║        ║        ║         ║ 
+  ║   ║ArchLinux   ║        ║        ║         ║
   ║ 3 ║ arm64      ║   X    ║    X   ║    X    ║
   ║---║------------║--------║--------║---------║
-  ║   ║ArchLinux   ║        ║        ║         ║ 
-  ║ 4 ║ amd64      ║  ✓     ║   ✓    ║   ？    ║ 
+  ║   ║ArchLinux   ║        ║        ║         ║
+  ║ 4 ║ amd64      ║  ✓     ║   ✓    ║   ？    ║
   ║---║------------║--------║--------║---------║
-  ║   ║Deepin      ║        ║        ║         ║ 
-  ║ 5 ║ arm64      ║  ✓     ║   ✓    ║   ？    ║ 
+  ║   ║Deepin      ║        ║        ║         ║
+  ║ 5 ║ arm64      ║  ✓     ║   ✓    ║   ？    ║
 ENDofTable
 
     cat <<-EOF
-    若您使用的是deepin，则可直接从软件源安装。  
-    对于除deepin外的其他debian系发行版，本工具调用的是${BLUE}Ubuntu DDE${RESET}的软件源,而非${YELLOW}UOS${RESET}。  
-    您可以使用Ubuntu LTS系统来安装DDE， 例如 focal  
-    对于红帽系,请选fedora,勿选centos。  
+    若您使用的是deepin，则可直接从软件源安装。
+    对于除deepin外的其他debian系发行版，本工具调用的是${BLUE}Ubuntu DDE${RESET}的软件源,而非${YELLOW}UOS${RESET}。
+    您可以使用Ubuntu LTS系统来安装DDE， 例如 focal
+    对于红帽系,请选fedora,勿选centos。
 EOF
     # 若您需要在arm64容器环境中运行,则建议您使用 UOS。
     # 若您需要在x64容器环境中运行，则建议您使用 deepin/arch/fedora/ubuntu。
@@ -4260,7 +4260,7 @@ download_arch_breeze_adapta_cursor_theme() {
     GREP_NAME='breeze-adapta-cursor-theme-git'
     grep_arch_linux_pkg_02
     #tar -Jxvf data.tar.xz 2>/dev/null
-    tar -I zstd -xvf data.tar.zst
+    tar --use-compress-program zstd -xvf data.tar.zst
     cp -rf usr /
     rm -rf /tmp/.breeze_theme
 }
@@ -4440,7 +4440,7 @@ x11vnc_warning() {
 			------------------------
 			注：x11vnc和tightvnc是有${RED}区别${RESET}的！
 			x11vnc可以运行tightvnc无法打开的某些应用，在WSL2/Linux实体机上的体验优于tightvnc，但在Android设备上运行的流畅度可能不如tightvnc
-			
+
 			若您的tiger/tightvnc服务不稳定,则可换用${BLUE}x11vnc${RESET}
 
 			${BOLD}${YELLOW}vnc服务端推荐程度：${RESET}
@@ -4448,7 +4448,7 @@ x11vnc_warning() {
 
 			${BOLD}${YELLOW}流畅程度（Zlib compression level为最低,且无法进行加速渲染时）:${RESET}
 			${BLUE}tight > tiger > x11vnc${RESET}
-			
+
 			${BOLD}${YELLOW}流畅程度（Zlib compression level为最低,且支持加速渲染时）:${RESET}
 			${BLUE}tiger > x11vnc ? tight ${RESET}
 
@@ -4465,7 +4465,7 @@ x11vnc_warning() {
 			------------------------
 			建议您配置${YELLOW}多个${RESET}VNC服务，以备${PURPLE}不时之需${RESET}。
 			您是否需要配置${BLUE}X11VNC${RESET}服务？
-			Do you want to configure x11vnc? 
+			Do you want to configure x11vnc?
 	EOF
     RETURN_TO_WHERE='configure_x11vnc'
     if [[ ${AUTO_INSTALL_GUI} != true ]]; then
@@ -5477,29 +5477,29 @@ first_configure_startvnc() {
     choose_vnc_port_5902_or_5903
     printf "$BLUE"
     cat <<-'EndOFneko'
-		               .::::..                
-		    ::::rrr7QQJi::i:iirijQBBBQB.      
-		    BBQBBBQBP. ......:::..1BBBB       
-		    .BuPBBBX  .........r.  vBQL  :Y.  
-		     rd:iQQ  ..........7L   MB    rr  
-		      7biLX .::.:....:.:q.  ri    .   
-		       JX1: .r:.r....i.r::...:.  gi5  
-		       ..vr .7: 7:. :ii:  v.:iv :BQg  
-		       : r:  7r:i7i::ri:DBr..2S       
-		    i.:r:. .i:XBBK...  :BP ::jr   .7. 
-		    r  i....ir r7.         r.J:   u.  
-		   :..X: .. .v:           .:.Ji       
-		  i. ..i .. .u:.     .   77: si   1Q  
-		 ::.. .r .. :P7.r7r..:iLQQJ: rv   ..  
-		7  iK::r  . ii7r LJLrL1r7DPi iJ     r 
-		  .  ::.:   .  ri 5DZDBg7JR7.:r:   i. 
-		 .Pi r..r7:     i.:XBRJBY:uU.ii:.  .  
-		 QB rJ.:rvDE: .. ri uv . iir.7j r7.   
-		iBg ::.7251QZ. . :.      irr:Iu: r.   
-		 QB  .:5.71Si..........  .sr7ivi:U    
-		 7BJ .7: i2. ........:..  sJ7Lvr7s    
-		  jBBdD. :. ........:r... YB  Bi      
-		     :7j1.                 :  :       
+		               .::::..
+		    ::::rrr7QQJi::i:iirijQBBBQB.
+		    BBQBBBQBP. ......:::..1BBBB
+		    .BuPBBBX  .........r.  vBQL  :Y.
+		     rd:iQQ  ..........7L   MB    rr
+		      7biLX .::.:....:.:q.  ri    .
+		       JX1: .r:.r....i.r::...:.  gi5
+		       ..vr .7: 7:. :ii:  v.:iv :BQg
+		       : r:  7r:i7i::ri:DBr..2S
+		    i.:r:. .i:XBBK...  :BP ::jr   .7.
+		    r  i....ir r7.         r.J:   u.
+		   :..X: .. .v:           .:.Ji
+		  i. ..i .. .u:.     .   77: si   1Q
+		 ::.. .r .. :P7.r7r..:iLQQJ: rv   ..
+		7  iK::r  . ii7r LJLrL1r7DPi iJ     r
+		  .  ::.:   .  ri 5DZDBg7JR7.:r:   i.
+		 .Pi r..r7:     i.:XBRJBY:uU.ii:.  .
+		 QB rJ.:rvDE: .. ri uv . iir.7j r7.
+		iBg ::.7251QZ. . :.      irr:Iu: r.
+		 QB  .:5.71Si..........  .sr7ivi:U
+		 7BJ .7: i2. ........:..  sJ7Lvr7s
+		  jBBdD. :. ........:r... YB  Bi
+		     :7j1.                 :  :
 
 	EndOFneko
     printf "$RESET"

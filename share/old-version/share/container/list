@@ -12,52 +12,57 @@ choose_which_gnu_linux_distro() {
     [[ ! -e ${CONFIG_FOLDER}/debootstrap_dir.txt ]] || rm -fv ${CONFIG_FOLDER}/debootstrap_dir.txt
     unset NODE01_ENABLED WEEKLY_BUILD_CONTAINER
     TITLE="CONTAINERS"
-    OPT_10="☁️  Server: openEuler,Oracle,Amazon,Microsoft CBL-Mariner"
+    OPT_7="☁️  Server: openEuler,Oracle,Amazon,Microsoft CBL-Mariner"
+    MENU="Which container do you want to install?"
+
     choose_which_gnu_linux_distro_ja() {
-        MENU="容器をお選びください"
+        # MENU="容器をお選びください"
         OPT_0="🌚 戻る"
-        OPT_1="🍭 毎週のGUIビルド(kde,mate,xfce & lxqt)"
-        OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
-        OPT_3="🍥 Debian は オペレーティングシステムのフリーなディストリビューションです"
-        OPT_4="🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである"
-        OPT_5="🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている"
-        OPT_6="🍱 Alpine,mint,rocky & puppy"
-        OPT_7="🐉 Kali rolling:ペネトレーションテストを主な目的としている"
+        # OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
+        OPT_1="🍥 Debian は オペレーティングシステムのフリーなディストリビューションです"
+        OPT_2="🍛 Ubuntu:開発目標は「誰にでも使いやすい最新かつ安定したOS」を提供することである"
+        OPT_3="🌉 Arch:「シンプリシティ」、「ミニマリズム」、「エレガンス」さ、コードの正しさに焦点を当てて開発されている"
+        OPT_4="🍱 Alpine,mint,rocky & puppy"
+        OPT_5="🐉 Kali rolling:ペネトレーションテストを主な目的としている"
+        OPT_6="👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro"
+        # 7: Server
+        OPT_8="🍓 体験版:RaspiOS,Gentoo"
+        OPT_9="🍭 old GUIビルド(kde,mate,xfce & lxqt)"
+        # OPT_7="🦎 Chroot専属する:openSUSE"
         # OPT_8="🍊 Armbian:ARM開発ボード用のDebianおよびUbuntuベースのコンピューターオペレーティングシステムです"
-        OPT_9="👒 Fedora:レッドハットが支援するコミュニティー「Fedora Project」によって開発されているRPM系Linux distro"
-        OPT_11="🦎 Chroot専属する:openSUSE"
-        OPT_12="🍓 体験版:RaspiOS,Gentoo"
     }
     choose_which_gnu_linux_distro_zh() {
         MENU="您想要安装哪个容器?"
-        OPT_0="🌚 Return to previous menu 返回上级菜单"
-        OPT_1="🍭 每周构建:kde,xfce,mate & lxqt"
-        OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
-        OPT_3="🍥 Debian:致力于自由"
-        OPT_4="🍛 Ubuntu:我的存在是因為大家的存在"
-        OPT_5="🌉 Arch:系统设计以KISS为总体指导原则"
-        OPT_6="🍱 Alpine,mint,rocky,solus & puppy"
-        OPT_7="🐉 Kali rolling:设计用于数字取证和渗透测试"
+        OPT_0="🌚 返回上级菜单"
+        # OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
+        OPT_1="🍥 Debian:致力于自由"
+        OPT_2="🍛 Ubuntu:我的存在是因為大家的存在"
+        OPT_3="🌉 Arch:系统设计以KISS为总体指导原则"
+        OPT_4="🍱 Alpine,mint,rocky,solus & puppy"
+        OPT_5="🐉 Kali rolling:设计用于数字取证和渗透测试"
         # OPT_8="🍊 Armbian:香蕉派,香橙派(预装xfce/cinnamon/budgie)"
-        OPT_9="👒 Fedora:红帽社区版,新技术试验场"
-        OPT_10="☁️  服务器系统:华为欧拉(openEuler),微软CBL-Mariner,甲骨文,亚马逊"
-        OPT_11="🦎 Chroot专属:openSUSE, deepin"
-        OPT_12="🍓 体验版:archcraft,树莓派,gentoo"
+        OPT_6="👒 Fedora:红帽社区版,新技术试验场"
+        OPT_7="☁️  服务器系统:华为欧拉(openEuler),微软CBL-Mariner,甲骨文,亚马逊"
+        # OPT_11="🦎 Chroot专属:openSUSE, deepin"
+        OPT_8="🍓 体验版:archcraft,树莓派,gentoo"
+        OPT_9="🍭 旧版 GUI 容器: kde,xfce,mate & lxqt"
+
     }
     choose_which_gnu_linux_distro_en() {
-        MENU="Which container do you want to install?"
-        OPT_0="🌚 Return to previous menu"
-        OPT_1="🍭 Weekly builds(xfce,kde,mate & lxqt)"
-        OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
-        OPT_3="🍥 Debian is a distro composed of free and open-source software"
-        OPT_4="🍛 Ubuntu is the modern, open source OS."
-        OPT_5="🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility"
-        OPT_6="🍱 Alpine,mint,rocky & puppy"
-        OPT_7="🐉 Kali:designed for digital forensics and penetration testing"
+        OPT_0="🌚 Back"
+        # OPT_2="🐳 Rust,go,dotNET,swift,nodejs,jdk & docker"
+        OPT_1="🍥 Debian is a distro composed of free and open-source software"
+        OPT_2="🍛 Ubuntu is the modern, open source OS."
+        OPT_3="🌉 Arch:simplicity,modernity,pragmatism,user centrality and versatility"
+        OPT_4="🍱 Alpine,mint,rocky & puppy"
+        OPT_5="🐉 Kali:designed for digital forensics and penetration testing"
+        OPT_6="👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
+        # 7: Server
+        OPT_8="🍓 Experimental:RaspiOS,Gentoo,Archcraft"
+        OPT_9="🍭 Old GUI(xfce,kde,mate & lxqt)"
+
+        # OPT_7="🦎 Chroot exclusive:openSUSE,deepin"
         # OPT_8="🍊 Armbian:ARM development boards OS(gnome,cinnamon,budgie)"
-        OPT_9="👒 Fedora:developed by the community-supported Fedora Project which is sponsored primarily by Red Hat"
-        OPT_11="🦎 Chroot exclusive:openSUSE,deepin"
-        OPT_12="🍓 Experimental:RaspiOS,Gentoo,Archcraft"
     }
     choose_which_gnu_linux_distro_menu() {
         SELECTED_GNU_LINUX=$("${TUI_BIN:-whiptail}" --title "${TITLE}" --menu "${MENU}" 0 50 0 \
@@ -68,10 +73,8 @@ choose_which_gnu_linux_distro() {
             "5" "$OPT_5" \
             "6" "$OPT_6" \
             "7" "$OPT_7" \
-            "8" "$OPT_9" \
-            "9" "$OPT_10" \
-            "10" "$OPT_11" \
-            "11" "$OPT_12" \
+            "8" "$OPT_8" \
+            "9" "$OPT_9" \
             "0" "$OPT_0" \
             3>&1 1>&2 2>&3)
     }
@@ -81,22 +84,26 @@ choose_which_gnu_linux_distro() {
     ja_JP.UTF-8) choose_which_gnu_linux_distro_ja ;;
     *) choose_which_gnu_linux_distro_en ;;
     esac
+    case $ARCH_TYPE in
+    armhf|armel) MENU+="\n⚠️ Warning: $ARCH_TYPE is not supported by lxc-images." ;;
+    esac
+
     choose_which_gnu_linux_distro_menu
 
     case "${SELECTED_GNU_LINUX}" in
     0 | "") proot_container_menu ;;
-    1) install_tmoe_weekly_build_edition ;;
-    2) install_tmoe_moonthly_build_edition ;;
-    3) install_debian_gnu_linux_distro ;;
-    4) install_ubuntu_gnu_linux_distro ;;
-    5)
+    # 1) install_tmoe_weekly_build_edition ;;
+    # 2) install_tmoe_moonthly_build_edition ;;
+    1) install_debian_gnu_linux_distro ;;
+    2) install_ubuntu_gnu_linux_distro ;;
+    3)
         DISTRO_NAME='arch'
         TMOE_LINUX_CONTAINER_DISTRO='arch'
         create_container_edition_txt
         go_to_proot_management
         ;;
-    6) install_beta_containers ;;
-    7)
+    4) install_beta_containers ;;
+    5)
         DISTRO_NAME='kali'
         DISTRO_CODE='rolling'
         TMOE_LINUX_CONTAINER_DISTRO='kali-rolling'
@@ -104,10 +111,11 @@ choose_which_gnu_linux_distro() {
         go_to_proot_management
         ;;
     # 8) install_armbian_linux_distro ;;
-    8) install_fedora_gnu_linux_distro ;;
-    9) cloud_server_distro_menu ;;
-    10) install_chroot_exclusive_containers ;;
-    11) install_alpha_containers ;;
+    6) install_fedora_gnu_linux_distro ;;
+    7) cloud_server_distro_menu ;;
+    8) install_alpha_containers ;;
+    9) install_tmoe_weekly_build_edition ;;
+    # 10) install_chroot_exclusive_containers ;;
     esac
     ####################
     exit 0
@@ -803,7 +811,7 @@ choose_kde_distro() {
 choose_zsh_distro() {
     SELECTED_GNU_LINUX=$("${TUI_BIN:-whiptail}" --title "ZSH CONTAINERS" --menu "The following containers have built-in zsh" 0 50 0 \
         "1" "🌉 Arch(arm64,armhf,x64)" \
-        "2" "🦛 Ubuntu devel(arm64,x64)" \
+        "2" "🦛 Ubuntu devel(arm64,armhf,x64)" \
         "3" "🍥 Debian sid(arm64,armhf,x64,i386)" \
         "4" "👒 Fedora rawhide(arm64,x64)" \
         "5" "🏔️ Alpine edge(arm64,armhf,x64,i386)" \
@@ -824,7 +832,7 @@ choose_zsh_distro() {
         ;;
     2)
         case ${ARCH_TYPE} in
-        amd64 | arm64) set_ubuntu_dev_env ;;
+        amd64 | arm64| armhf) set_ubuntu_dev_env ;;
         *)
             desktop_does_not_support
             distro_does_not_support
@@ -925,13 +933,13 @@ view_the_schedule() {
 
 		${BOLD}${YELLOW}Friday/周五/金曜日${RESET}：
 			${GREEN}manjaro ${CYAN}stable ${YELLOW}amd64 ${PURPLE}* ${BLUE}[xfce, zsh]${RESET}
-			${GREEN}manjaro ${CYAN}stable ${YELLOW}arm64 ${PURPLE}* ${BLUE}[xfce, zsh]${RESET}   
+			${GREEN}manjaro ${CYAN}stable ${YELLOW}arm64 ${PURPLE}* ${BLUE}[xfce, zsh]${RESET}
 
 		${CYAN}--------------------------${RESET}
 		${BOLD}${PURPLE}Semimonthly builds${RESET}：
 
 		${BOLD}${YELLOW}Every 2 weeks${RESET}：
-			${GREEN}code ${YELLOW}[amd64, arm64, armhf] ${PURPLE}* ${BLUE}latest${RESET}   
+			${GREEN}code ${YELLOW}[amd64, arm64, armhf] ${PURPLE}* ${BLUE}latest${RESET}
 
 			${GREEN}go ${YELLOW}[amd64, arm64] ${PURPLE}* ${BLUE}latest${RESET}
 			${GREEN}go ${YELLOW}[amd64, arm64, armhf] ${PURPLE}* ${BLUE}alpine${RESET}
@@ -1415,47 +1423,34 @@ install_ubuntu_gnu_linux_distro() {
     RETURN_TO_WHERE='install_ubuntu_gnu_linux_distro'
     COMPATIBILITY_MODE=false
     TITLE="Which version do you want to install?"
-    OPT_1="🐐 22.10 Kinetic Kudu"
+
+    # OPT_1="24.10 Oracular Oriole"
+    OPT_1="24.04(LTS) Noble Numbat"
     OPT_2="22.04(LTS) Jammy Jellyfish"
+    OPT_3="Custom code"
     # OPT_3="🐒 21.10(oldstable) Impish Indri"
     # OPT_3="🦛 21.04 Hirsute Hippo"
+    OPT_4="🐱 20.04(LTS) Focal Fossa"
     OPT_5="18.04(LTS) Bionic Beaver"
     OPT_6="🐿️ 16.04(LTS) Xenial Xerus"
+    MENU="The long-term support version between 2022 and 2027 is jammy(22.04).\nLet x = current year, if x>=2024,then customize the version code"
+    OPT_7="Compatibility mode"
+    OPT_8="Manually build"
+    # OPT_10
+    OPT_0="🌚 Back"
+
     install_ubuntu_gnu_linux_distro_zh() {
         MENU="2022至2027年的长期支持版为jammy 22.04(2022年4月正式发布)\n设x=当前年份,若x>=2024,则请手动输入版本代号"
-        OPT_1="🐐 22.10 動力羚羊 Kinetic Kudu"
         OPT_2="22.04(LTS) 果酱水母 Jammy Jellyfish"
-        # OPT_3="🐒 21.10(oldstable) 頑皮大狐猴 Impish Indri"
-        # OPT_3="🦛 21.04 多毛河馬 Hirsute Hippo"
+        OPT_3="Custom code手动输入版本代号"
         OPT_4="🐱 20.04(LTS)焦點馬島長尾狸貓 Focal Fossa"
         OPT_5="18.04(LTS)仿生海狸 Bionic Beaver"
         OPT_6="🐿️ 16.04(LTS)好客的非洲地松鼠 Xenial Xerus "
         OPT_7="Compatibility mode 兼容模式(仅安装)"
         OPT_8="使用debootstrap手动构建"
-        OPT_9="Latest(自動檢測23.04)"
+        # OPT_9="Latest"
         # OPT_10
-        OPT_3="Custom code手动输入版本代号"
-        OPT_0="🌚 Return to previous menu 返回上级菜单"
-    }
-    install_ubuntu_gnu_linux_distro_ja() {
-        MENU="x =現在の年とします、x> = 2024の場合は、コードをカスタマイズしてください"
-        OPT_4="🐱 20.04(LTS) Focal Fossa注目を集めるフォッサ"
-        OPT_7="互換モード"
-        OPT_8="debootstrapを使用して手動でビルドする"
-        OPT_9="Latest(最新バージョンを自動的に検出)"
-        # OPT_10
-        OPT_3="カスタムコード"
-        OPT_0="🌚 戻る"
-    }
-    install_ubuntu_gnu_linux_distro_en() {
-        MENU="The long-term support version between 2022 and 2027 is jammy(22.04).\nLet x = current year, if x>=2024,then customize the version code"
-        OPT_4="🐱 20.04(LTS) Focal Fossa"
-        OPT_7="Compatibility mode"
-        OPT_8="Manually build"
-        OPT_9="Latest"
-        # OPT_10
-        OPT_3="Custom code"
-        OPT_0="🌚 Return to previous menu"
+        OPT_0="🌚 返回上级菜单"
     }
     install_ubuntu_gnu_linux_distro_menu() {
         BETA_SYSTEM=$(
@@ -1469,7 +1464,6 @@ install_ubuntu_gnu_linux_distro() {
                 "6" "${OPT_6}" \
                 "7" "${OPT_7}" \
                 "8" "${OPT_8}" \
-                "9" "${OPT_9}" \
                 "0" "${OPT_0}" \
                 3>&1 1>&2 2>&3
         )
@@ -1479,17 +1473,17 @@ install_ubuntu_gnu_linux_distro() {
     #🦦
     case ${TMOE_MENU_LANG} in
     zh_*UTF-8) install_ubuntu_gnu_linux_distro_zh ;;
-    ja_JP.UTF-8) install_ubuntu_gnu_linux_distro_ja ;;
-    *) install_ubuntu_gnu_linux_distro_en ;;
+    # ja_JP.UTF-8) install_ubuntu_gnu_linux_distro_ja ;;
+    # *) install_ubuntu_gnu_linux_distro_en ;;
     esac
     install_ubuntu_gnu_linux_distro_menu
     ##############################
     case "${BETA_SYSTEM}" in
     0 | "") choose_which_gnu_linux_distro ;;
-    1) DISTRO_CODE="kinetic" ;;
+    # 1) DISTRO_CODE="oracular" ;;
+    1) DISTRO_CODE='noble' ;;
     2) DISTRO_CODE='jammy' ;;
-    3) DISTRO_CODE='impish' ;;
-    # 3) DISTRO_CODE='hirsute' ;;
+    3) custom_ubuntu_version ;;
     4) DISTRO_CODE='focal' ;;
     5) DISTRO_CODE='bionic' ;;
     6) DISTRO_CODE='xenial' ;;
@@ -1497,9 +1491,8 @@ install_ubuntu_gnu_linux_distro() {
         COMPATIBILITY_MODE=true
         custom_ubuntu_version
         ;;
-    8) custom_ubuntu_version ;;
-    9) debootstrap_ubuntu_distro ;;
-    10) check_the_latest_ubuntu_version ;;
+    8) debootstrap_ubuntu_distro ;;
+    # 10) check_the_latest_ubuntu_version ;;
     esac
     ######################
     TMOE_LINUX_CONTAINER_DISTRO="${DISTRO_NAME}-${DISTRO_CODE}"
@@ -1733,7 +1726,7 @@ do_you_want_to_install_ubuntu_older_version() {
     fi
 }
 check_the_latest_ubuntu_version() {
-    LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
+    LXC_IMAGES_REPO="https://mirrors.nju.edu.cn/lxc-images/images/${DISTRO_NAME}/"
     DISTRO_CODE=$(curl -L ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|bionic|cosmic|disco|eoan|focal|trusty|xenial|groovy|hirsute|impish|jammy|kinetic' | tail -n 1)
     VERSION="next version"
     do_you_want_to_install_ubuntu_older_version
@@ -1790,15 +1783,9 @@ install_fedora_gnu_linux_distro() {
     TMOE_LINUX_CONTAINER_DISTRO='fedora'
     CLOUD_ROOTFS=true
     case "${ARCH_TYPE}" in
-    armel | i386) distro_does_not_support ;;
-    armhf)
-        # The last fedora_armhf is 36.
-        OLD_STABLE_VERSION=35
-        DISTRO_CODE=36
-        which_version_do_you_want_to_install
-        ;;
+    armel | i386| armhf) distro_does_not_support ;;
     *)
-        OLD_STABLE_VERSION=36
+        OLD_STABLE_VERSION=39
         check_the_latest_distro_version
         ;;
     esac
@@ -1900,7 +1887,7 @@ install_gentoo_linux_distro() {
 install_alpine_linux_distro() {
     DISTRO_NAME='alpine'
     #DISTRO_CODE='3.11'
-    DISTRO_CODE=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/alpine/ | grep -Ev 'edge|3.7|3.8|3.9' | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed 's@/@@')
+    DISTRO_CODE=$(curl -L https://mirrors.nju.edu.cn/lxc-images/images/alpine/ | grep -Ev 'edge|3.7|3.8|3.9' | grep date | tail -n 1 | cut -d '=' -f 3 | cut -d '"' -f 2 | sed 's@/@@')
     OLD_STABLE_VERSION='edge'
     which_version_do_you_want_to_install
 }
@@ -1969,7 +1956,7 @@ install_devuan_linux_distro() {
     CLOUD_ROOTFS=true
     DISTRO_NAME='devuan'
     #DISTRO_CODE='beowulf'
-    #OLD_STABLE_VERSION=$(curl -L https://mirrors.bfsu.edu.cn/lxc-images/images/devuan/ | grep date | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
+    #OLD_STABLE_VERSION=$(curl -L https://mirrors.nju.edu.cn/lxc-images/images/devuan/ | grep date | tail -n 2 | head -n 1 | cut -d '=' -f 4 | cut -d '"' -f 2)
     OLD_STABLE_VERSION=ascii
     check_the_latest_distro_version
 }
@@ -2177,7 +2164,7 @@ install_mint_linux_distro() {
 check_mint_version_code() {
     DISTRO_NAME='mint'
     OLD_STABLE_VERSION='tricia'
-    LXC_IMAGES_REPO="https://mirrors.bfsu.edu.cn/lxc-images/images/${DISTRO_NAME}/"
+    LXC_IMAGES_REPO="https://mirrors.nju.edu.cn/lxc-images/images/${DISTRO_NAME}/"
     DISTRO_CODE=$(curl -sL ${LXC_IMAGES_REPO} | grep date | cut -d '=' -f 4 | cut -d '"' -f 2 | grep -Ev 'size|sarah|serena|sonya|sylvia|tara|tessa|tina|tricia|ulyana' | tail -n 1)
 }
 ###########

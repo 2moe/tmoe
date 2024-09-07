@@ -39,7 +39,7 @@ uncompress_theme_file() {
     case "${TMOE_THEME_ITEM:0-6:6}" in
     tar.xz) tar -Jxvf "${TMOE_THEME_ITEM}" -C "${EXTRACT_FILE_PATH}" 2>/dev/null ;;
     tar.gz) tar -zxvf "${TMOE_THEME_ITEM}" -C "${EXTRACT_FILE_PATH}" 2>/dev/null ;;
-    ar.zst) tar -I zstd -xvf "${TMOE_THEME_ITEM}" -C "${EXTRACT_FILE_PATH}" 2>/dev/null ;;
+    ar.zst) tar --use-compress-program zstd -xvf "${TMOE_THEME_ITEM}" -C "${EXTRACT_FILE_PATH}" 2>/dev/null ;;
     *) tar -xvf "${TMOE_THEME_ITEM}" -C "${EXTRACT_FILE_PATH}" 2>/dev/null ;;
     esac
 }
@@ -48,7 +48,7 @@ check_tar_ext_format() {
     case "${TMOE_THEME_ITEM:0-6:6}" in
     tar.xz) EXTRACT_FILE_FOLDER=$(tar -Jtf "${TMOE_THEME_ITEM}" | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
     tar.gz) EXTRACT_FILE_FOLDER=$(tar -ztf "${TMOE_THEME_ITEM}" | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
-    ar.zst) EXTRACT_FILE_FOLDER=$(tar -I zstd -tf "${TMOE_THEME_ITEM}" | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
+    ar.zst) EXTRACT_FILE_FOLDER=$(tar --use-compress-program zstd -tf "${TMOE_THEME_ITEM}" | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
     *) EXTRACT_FILE_FOLDER=$(tar -tf "${TMOE_THEME_ITEM}" | cut -d '/' -f 1 | sort -u | sed ":a;N;s/\n/ /g;ta") ;;
     esac
     EXTRACT_FILE_FOLDER_HEAD_01=$(printf '%s\n' "${EXTRACT_FILE_FOLDER}" | awk '{print $1}')
@@ -81,7 +81,7 @@ move_wallpaper_model_01() {
     elif [ -e "data.tar.gz" ]; then
         tar -zxvf data.tar.gz 2>/dev/null
     elif [ -e "data.tar.zst" ]; then
-        tar -I zstd -xvf data.tar.zst &>/dev/null || zstdcat "data.tar.zst" | tar xvf -
+        tar --use-compress-program zstd -xvf data.tar.zst &>/dev/null || zstdcat "data.tar.zst" | tar xvf -
     else
         tar -xvf data.* 2>/dev/null
     fi
@@ -812,30 +812,30 @@ neko_01_blue() {
     neko_ascii_env
     printf "$BLUE"
     ${CATCAT} <<-'EndOFneko'
-		                                        
-		                            .:7E        
-		            .iv7vrrrrr7uQBBBBBBB:       
-		           v17::.........:SBBBUg        
-		        vKLi.........:. .  vBQrQ        
-		   sqMBBBr.......... :i. .  SQIX        
-		   BBQBBr.:...:....:. 1:.....v. ..      
-		    UBBB..:..:i.....i YK:: ..:   i:     
-		     7Bg.... iv.....r.ijL7...i. .Lu     
-		  IB: rb...i iui....rir :Si..:::ibr     
-		  J7.  :r.is..vrL:..i7i  7U...Z7i..     
-		  ...   7..I:.: 7v.ri.755P1. .S  ::     
-		    :   r:.i5KEv:.:.  :.  ::..X..::     
-		   7is. :v .sr::.         :: :2. ::     
-		   2:.  .u: r.     ::::   r: ij: .r  :  
-		   ..   .v1 .v.    .   .7Qr: Lqi .r. i  
-		   :u   .iq: :PBEPjvviII5P7::5Du: .v    
-		    .i  :iUr r:v::i:::::.:.:PPrD7: ii   
-		    :v. iiSrr   :..   s i.  vPrvsr. r.  
-		     ...:7sv:  ..PL  .Q.:.   IY717i .7. 
-		      i7LUJv.   . .     .:   YI7bIr :ur 
-		     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7 
-		    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v 
-		         :   r. ..      .. .:i  ...     
+
+		                            .:7E
+		            .iv7vrrrrr7uQBBBBBBB:
+		           v17::.........:SBBBUg
+		        vKLi.........:. .  vBQrQ
+		   sqMBBBr.......... :i. .  SQIX
+		   BBQBBr.:...:....:. 1:.....v. ..
+		    UBBB..:..:i.....i YK:: ..:   i:
+		     7Bg.... iv.....r.ijL7...i. .Lu
+		  IB: rb...i iui....rir :Si..:::ibr
+		  J7.  :r.is..vrL:..i7i  7U...Z7i..
+		  ...   7..I:.: 7v.ri.755P1. .S  ::
+		    :   r:.i5KEv:.:.  :.  ::..X..::
+		   7is. :v .sr::.         :: :2. ::
+		   2:.  .u: r.     ::::   r: ij: .r  :
+		   ..   .v1 .v.    .   .7Qr: Lqi .r. i
+		   :u   .iq: :PBEPjvviII5P7::5Du: .v
+		    .i  :iUr r:v::i:::::.:.:PPrD7: ii
+		    :v. iiSrr   :..   s i.  vPrvsr. r.
+		     ...:7sv:  ..PL  .Q.:.   IY717i .7.
+		      i7LUJv.   . .     .:   YI7bIr :ur
+		     Y rLXJL7.:jvi:i:::rvU:.7PP XQ. 7r7
+		    ir iJgL:uRB5UPjriirqKJ2PQMP :Yi17.v
+		         :   r. ..      .. .:i  ...
 	EndOFneko
     printf "$RESET"
 }
@@ -844,30 +844,30 @@ neko_02_blue() {
     neko_ascii_env
     printf "$BLUE"
     ${CATCAT} <<-'EndOFneko'
-	       DL.                           
-	       QBBBBBKv:rr77ri:.             
-	       gBBQdY7::::..::i7vv.          
-	       UBd. . .:.........rBBBQBBBB5  
-	       Pu  :..r......i:....BBBQBBB:  
-	       ri.i:.j:...:. i7... uBBZrd:   
-	 :     7.:7.7U.:..r: Yr:.. iQ1:qU    
-	.Qi   .7.ii.X7:...L.:qr:...iB7ZQ     
-	 .27. :r.r:L7i::.7r:vri:...rr  .     
-	  v   ::.Yrviri:7v7v: ::...i.   i    
-	      r:ir: r.iiiir..:7r...r   :P.2Y 
-	      v:vi::.      :  ::. .qI7U1U :1 
+	       DL.
+	       QBBBBBKv:rr77ri:.
+	       gBBQdY7::::..::i7vv.
+	       UBd. . .:.........rBBBQBBBB5
+	       Pu  :..r......i:....BBBQBBB:
+	       ri.i:.j:...:. i7... uBBZrd:
+	 :     7.:7.7U.:..r: Yr:.. iQ1:qU
+	.Qi   .7.ii.X7:...L.:qr:...iB7ZQ
+	 .27. :r.r:L7i::.7r:vri:...rr  .
+	  v   ::.Yrviri:7v7v: ::...i.   i
+	      r:ir: r.iiiir..:7r...r   :P.2Y
+	      v:vi::.      :  ::. .qI7U1U :1
 	Qr    7.7.         :.i::. :Di:. i .v:
-	v7..  s.r7.   ...   .:7i: rDi...r .. 
-	 vi: .7.iDBBr  .r   .:.7. rPr:..r    
-	 i   :virZBgi  :vrYJ1vYY .ruY:..i    
-	     YrivEv. 7BBRBqj21I7 .77J:.:.PQ  
+	v7..  s.r7.   ...   .:7i: rDi...r ..
+	 vi: .7.iDBBr  .r   .:.7. rPr:..r
+	 i   :virZBgi  :vrYJ1vYY .ruY:..i
+	     YrivEv. 7BBRBqj21I7 .77J:.:.PQ
 	    .1r:q.   rB52SKrj.:i i5isi.:i :.r
-	    YvrY7    r.  . ru :: PIrj7.:r..v 
-	   rSviYI..iuU .:.:i:.7.KPPiSr.:vr   
-	  .u:Y:JQMSsJUv...   .rDE1P71:.7X7   
-	  5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y   
-	  S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7   
-	         .            i   7          
+	    YvrY7    r.  . ru :: PIrj7.:r..v
+	   rSviYI..iuU .:.:i:.7.KPPiSr.:vr
+	  .u:Y:JQMSsJUv...   .rDE1P71:.7X7
+	  5  Ivr:QJ7JYvi....ir1dq vYv.7L.Y
+	  S  7Z  Qvr:.iK55SqS1PX  Xq7u2 :7
+	         .            i   7
 EndOFneko
     printf "$RESET"
 }
@@ -876,29 +876,29 @@ neko_03_blue() {
     neko_ascii_env
     printf "$BLUE"
     ${CATCAT} <<-'EndOFneko'
-                     .::::..                
-          ::::rrr7QQJi::i:iirijQBBBQB.      
-          BBQBBBQBP. ......:::..1BBBB       
-          .BuPBBBX  .........r.  vBQL  :Y.  
-           rd:iQQ  ..........7L   MB    rr  
-            7biLX .::.:....:.:q.  ri    .   
-             JX1: .r:.r....i.r::...:.  gi5  
-             ..vr .7: 7:. :ii:  v.:iv :BQg  
-             : r:  7r:i7i::ri:DBr..2S       
-          i.:r:. .i:XBBK...  :BP ::jr   .7. 
-          r  i....ir r7.         r.J:   u.  
-         :..X: .. .v:           .:.Ji       
-        i. ..i .. .u:.     .   77: si   1Q  
-       ::.. .r .. :P7.r7r..:iLQQJ: rv   ..  
-      7  iK::r  . ii7r LJLrL1r7DPi iJ     r 
-        .  ::.:   .  ri 5DZDBg7JR7.:r:   i. 
-       .Pi r..r7:     i.:XBRJBY:uU.ii:.  .  
-       QB rJ.:rvDE: .. ri uv . iir.7j r7.   
-      iBg ::.7251QZ. . :.      irr:Iu: r.   
-       QB  .:5.71Si..........  .sr7ivi:U    
-       7BJ .7: i2. ........:..  sJ7Lvr7s    
-        jBBdD. :. ........:r... YB  Bi      
-           :7j1.                 :  :       
+                     .::::..
+          ::::rrr7QQJi::i:iirijQBBBQB.
+          BBQBBBQBP. ......:::..1BBBB
+          .BuPBBBX  .........r.  vBQL  :Y.
+           rd:iQQ  ..........7L   MB    rr
+            7biLX .::.:....:.:q.  ri    .
+             JX1: .r:.r....i.r::...:.  gi5
+             ..vr .7: 7:. :ii:  v.:iv :BQg
+             : r:  7r:i7i::ri:DBr..2S
+          i.:r:. .i:XBBK...  :BP ::jr   .7.
+          r  i....ir r7.         r.J:   u.
+         :..X: .. .v:           .:.Ji
+        i. ..i .. .u:.     .   77: si   1Q
+       ::.. .r .. :P7.r7r..:iLQQJ: rv   ..
+      7  iK::r  . ii7r LJLrL1r7DPi iJ     r
+        .  ::.:   .  ri 5DZDBg7JR7.:r:   i.
+       .Pi r..r7:     i.:XBRJBY:uU.ii:.  .
+       QB rJ.:rvDE: .. ri uv . iir.7j r7.
+      iBg ::.7251QZ. . :.      irr:Iu: r.
+       QB  .:5.71Si..........  .sr7ivi:U
+       7BJ .7: i2. ........:..  sJ7Lvr7s
+        jBBdD. :. ........:r... YB  Bi
+           :7j1.                 :  :
 EndOFneko
     printf "$RESET"
 }
@@ -1357,7 +1357,7 @@ extract_deb_file_02() {
     case "${DEB_FILE_TYPE}" in
     tar.xz) tar -PpJxvf ${DOWNLOAD_PATH}/data.tar.xz ".${APPS_LNK_DIR}" ./opt ./usr/share/icons ;;
     tar.gz) tar -Ppzxvf ${DOWNLOAD_PATH}/data.tar.gz ".${APPS_LNK_DIR}" ./opt ./usr/share/icons ;;
-    ar.zst) tar -I zstd -Ppxvf ${DOWNLOAD_PATH}/data.tar.zst ".${APPS_LNK_DIR}" ./opt ./usr/share/icons ;;
+    ar.zst) tar --use-compress-program zstd -Ppxvf ${DOWNLOAD_PATH}/data.tar.zst ".${APPS_LNK_DIR}" ./opt ./usr/share/icons ;;
     *) tar -Ppxvf ${DOWNLOAD_PATH}/data.* ".${APPS_LNK_DIR}" ./opt ./usr/share/icons ;;
     esac
     cd /tmp
@@ -1506,13 +1506,13 @@ do_you_want_to_upgrade_it_02() {
 check_deb_version() {
     cat <<-ENDofTable
 		╔═══╦══════════╦═══════════════════╦════════════════════
-		║   ║          ║                   ║                    
+		║   ║          ║                   ║
 		║   ║ software ║    ✨最新版本     ║   本地版本 🎪
-		║   ║          ║  Latest version   ║  Local version     
+		║   ║          ║  Latest version   ║  Local version
 		║---║----------║-------------------║--------------------
-		║ 1 ║${GREP_NAME}                    
+		║ 1 ║${GREP_NAME}
 		║   ║          ║${THE_LATEST_DEB_VERSION}
-		║   ║          ║                   ${LOCAL_OPT_APP_VERSION} 
+		║   ║          ║                   ${LOCAL_OPT_APP_VERSION}
 	ENDofTable
     printf "%s\n" "最新版链接为${BLUE}${THE_LATEST_DEB_URL}${RESET}"
 }

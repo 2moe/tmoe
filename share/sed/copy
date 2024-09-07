@@ -1,27 +1,16 @@
-#!/usr/bin/env dash
+#!/bin/zsh
 #------------------
-GITEE_LINUX="${HOME}/data/git/ee/tmoe"
-GITHUB_LINUX="${HOME}/data/git/hub/tmoe"
-OLD_VERSION_DIR="${GITEE_LINUX}/share/old-version"
+GITEE_DIR="${HOME}/Documents/data/git/ee/tmoe"
+GITHUB_DIR="${HOME}/Documents/data/git/hub/tmoe"
+OLD_VERSION_DIR="${GITEE_DIR}/share/old-version"
 
-# COUNT=$(curl -L https://gitee.com/mo2/linux | awk '/commit/' | grep '\ commits' | head -n 1 | awk '{print $1}')
-# COUNT=$(curl -L https://gitee.com/mo2/linux | grep '次提交' | head -n 1 | awk '{print $1}')
-# case ${COUNT} in
-# "") ;;
-# [0-9]*[0-9])
-#     COMMIT_COUNT=$((COUNT + 1))
-#     sed -i -E "s@(tmoe linux manager) v1.*?,@\1 v1.${COMMIT_COUNT},@g" ${OLD_VERSION_DIR}/share/app/manager
-#     sed -i -E "s@(tmoe linux tools) v1.*?,@\1 v1.${COMMIT_COUNT},@g" ${OLD_VERSION_DIR}/tools/app/tool
-#     ;;
-
-# esac
 ##########
-cd "${GITEE_LINUX}" || exit 1
-for i in $(/bin/ls -A ./ | grep -Ev "test|README.md|.git$|.gitee"); do
-    cp -va "${i}" "${GITHUB_LINUX}"
-done
+cd "${GITEE_DIR}" || exit 1
 
-cd "${GITHUB_LINUX}"/share/sed/ || exit 1
+for i ($(print -l (.*|*) | grep -Ev "test|Readme.*|README.md|.git$|.gitee")) {
+    cp -va "${i}" "${GITHUB_DIR}"
+}
+
+cd "${GITHUB_DIR}"/share/sed/ || exit 1
 ./sed_github
 ###########
-# code ~/github/github-linux

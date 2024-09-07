@@ -108,7 +108,7 @@ backup_termux() {
 	EOF
     do_you_want_to_continue
     case ${BACKUP_TYPE} in
-    tar.zst) tar -I zstd -Ppvcf ${TERMUX_TAR_FILE_NAME}.tar.zst --exclude=${TMOE_SHARE_DIR}/containers ${TERMUX_BACKUP_DIR} ;;
+    tar.zst) tar --use-compress-program zstd -Ppvcf ${TERMUX_TAR_FILE_NAME}.tar.zst --exclude=${TMOE_SHARE_DIR}/containers ${TERMUX_BACKUP_DIR} ;;
     tar.xz)
         tar -PJpvcf ${TERMUX_TAR_FILE_NAME}.tar.xz --exclude=${TMOE_SHARE_DIR}/containers ${TERMUX_BACKUP_DIR}
         ;;

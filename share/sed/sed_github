@@ -1,4 +1,7 @@
+SED=gsed
+
 cd ../old-version || exit 1
+
 SHELL_FILE=$(find ./* | grep sh | tr '\n' ' ' | cut -d '%' -f 1)
 ALL_SHARE_FILE=$(find ./share/* | tr '\n' ' ' | cut -d '%' -f 1)
 unset ALL_SHELL_FILE
@@ -18,9 +21,10 @@ SHARE_FILE="${SHARE_FILE} ./tools/app/tool ./tools/virtualization/qemu/startqemu
 printf "%s\n" "$SHARE_FILE"
 INSTALLATION_FILE=./share/container/install
 
-sed -i 's/zh_CN/en_US/g' ${ALL_SHELL_FILE} ./tools/gui/start* ${SHARE_FILE} ${INSTALLATION_FILE}
+$SED -i 's/zh_CN/en_US/g' ${ALL_SHELL_FILE} ./tools/gui/start* ${SHARE_FILE} ${INSTALLATION_FILE}
 
-sed -e 's@en_US en_US@en_US zh_CN@g' \
+
+$SED -e 's@en_US en_US@en_US zh_CN@g' \
     -e 's/114.114.114.114/1.0.0.1/' \
     -e 's/240c::6666/2606:4700:4700::1111/' \
     -e 's@gitee.com/mirrors/neofetch/raw/master/neofetch@raw.githubusercontent.com/dylanaraps/neofetch/master/neofetch@g' \
@@ -29,13 +33,13 @@ sed -e 's@en_US en_US@en_US zh_CN@g' \
     -e 's@gitee.com/mo2/zsh/raw/@raw.githubusercontent.com/2cd/zsh/@g' \
     -i ${INSTALLATION_FILE}
 
-sed -e 's@gitee.com/mo2/zsh/raw/master/@raw.githubusercontent.com/2cd/zsh/master/@g' \
+$SED -e 's@gitee.com/mo2/zsh/raw/master/@raw.githubusercontent.com/2cd/zsh/master/@g' \
     -e 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe/master/@g' \
     -e 's@gitee.com/mo2/linux.git@github.com/2moe/tmoe.git@g' \
     -e 's@gitee.com/mo2/linux\"@github.com/2moe/tmoe\"@' \
     -i ${ALL_SHELL_FILE} ${SHARE_FILE}
 
-sed -e 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe/master/@g' \
+$SED -e 's@gitee.com/mo2/linux/raw/master/@raw.githubusercontent.com/2moe/tmoe/master/@g' \
     -e 's!cdn.jsdelivr.net/gh/2moe/archive@master/tmoe/!raw.githubusercontent.com/2moe/tmoe/master/!g' \
     -e 's@get_awk_uri ee)@get_awk_uri gh)@' \
     -i ../../debian.sh
