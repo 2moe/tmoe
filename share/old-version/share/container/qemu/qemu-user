@@ -185,7 +185,6 @@ install_qemu_user_static() {
         apt install -y qemu-user-static
         ;;
     "arch")
-        pacman -Sy qemu-user-static qemu-user-static-binfmt
         printf '%s\n' 'pacman -Sy qemu-user-static qemu-user-static-binfmt'
         pacman -Sy qemu-user-static qemu-user-static-binfmt
         ;;

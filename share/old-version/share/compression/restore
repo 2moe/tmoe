@@ -74,8 +74,8 @@ uncompress_tar_file() {
     *) TMOE_PREFIX='' ;;
     esac
     case "${RESTORE:0-6:6}" in
-    # tar.xz) uncompress_tar_xz_file ;;
-    # tar.gz) uncompress_tar_gz_file ;;
+    tar.xz) uncompress_tar_xz_file ;;
+    tar.gz) uncompress_tar_gz_file ;;
     ar.zst) uncompress_tar_zst_file ;;
     *) uncompress_other_format_file ;;
     esac
