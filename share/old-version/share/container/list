@@ -1440,7 +1440,7 @@ install_ubuntu_gnu_linux_distro() {
     OPT_0="🌚 Back"
 
     install_ubuntu_gnu_linux_distro_zh() {
-        MENU="2024至2029年的长期支持版为jammy 24.04(2024年4月正式发布)\n设x=当前年份,若x>=2025,则请手动输入版本代号"
+        MENU="2024至2029年的长期支持版为noble 24.04(2024年4月正式发布)\n设x=当前年份,若x>=2025,则请手动输入版本代号"
         OPT_1="24.04(LTS) 高貴的袋食蟻獸 Noble Numbat"
         OPT_2="22.04(LTS) 適意的水母 Jammy Jellyfish"
         OPT_3="Custom code手动输入版本代号"
