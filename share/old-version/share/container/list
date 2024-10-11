@@ -1436,7 +1436,7 @@ install_ubuntu_gnu_linux_distro() {
     MENU="The long-term support version between 2024 and 2029 is noble(24.04).\nLet x = current year, if x>=2025, then customize the version code"
     OPT_7="Compatibility mode"
     OPT_8="Manually build"
-    OPT_9="24.10: Oracular Oriole"
+    # OPT_9="24.10: Oracular Oriole"
     OPT_0="🌚 Back"
 
     install_ubuntu_gnu_linux_distro_zh() {
@@ -1449,7 +1449,7 @@ install_ubuntu_gnu_linux_distro() {
         OPT_6="🐿️ 16.04(LTS)好客的非洲地松鼠 Xenial Xerus "
         OPT_7="Compatibility mode 兼容模式(仅安装)"
         OPT_8="使用debootstrap手动构建"
-        OPT_9="24.10: 神諭黃鸝 Oracular Oriole"
+        # OPT_9="24.10: 神諭黃鸝 Oracular Oriole"
         OPT_0="🌚 返回上级菜单"
     }
     install_ubuntu_gnu_linux_distro_menu() {
@@ -1464,7 +1464,6 @@ install_ubuntu_gnu_linux_distro() {
                 "6" "${OPT_6}" \
                 "7" "${OPT_7}" \
                 "8" "${OPT_8}" \
-                "9" "${OPT_9}" \
                 "0" "${OPT_0}" \
                 3>&1 1>&2 2>&3
         )
@@ -1493,6 +1492,7 @@ install_ubuntu_gnu_linux_distro() {
         custom_ubuntu_version
         ;;
     8) debootstrap_ubuntu_distro ;;
+    # 9) DISTRO_CODE='oracular' ;;
     # 10) check_the_latest_ubuntu_version ;;
     esac
     ######################

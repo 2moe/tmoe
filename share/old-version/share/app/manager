@@ -41,7 +41,7 @@ manager_main() {
     esac
 }
 check_tmoe_command() {
-    TMOE_TIPS_00="2021+patch.241011~1\nCommand: tmoe"
+    TMOE_TIPS_00="2021+patch.241011~2\nCommand: tmoe"
 }
 #########################
 tmoe_manager_env() {
