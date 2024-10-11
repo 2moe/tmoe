@@ -10,7 +10,7 @@ tips_of_umount_chroot_container_02() {
 		       other issues.${RESET}
 		在上文中介绍到了${BLUE}--lazy${RESET}参数，然而这并不是重点。
 		重点是mount后的目录，在umount时可能会遇到一些问题。
-		当设备处于繁忙状态时，将无法卸载。即便使用强制卸载，也依旧（可能）存在一些问题。 
+		当设备处于繁忙状态时，将无法卸载。即便使用强制卸载，也依旧（可能）存在一些问题。
 		这和windows的外置USB设备无法弹出时，手动拔出是不一样的。
 		chroot挂载了系统底层的目录,为了保证系统不受损害，当检测到无法卸载时，您可通过手动重启设备来解决。
 		本工具提供了检测功能，当检测到挂载目录为空时将会出现${GREEN}total 0${RESET}。
@@ -31,8 +31,8 @@ tips_of_umount_chroot_container_01() {
 		移除容器前，请先确保您unmounted了容器mounted目录。
 		建议您在移除前进行备份，若因操作不当而导致数据丢失，开发者${RED}概不负责${RESET}！！！
 		Before removing the container, make sure you have unmounted ${BLUE}dev dev/shm dev/pts proc sys root/sd media/sd media/tf${RESET} and other directories.
-		It is recommended that you backup the entire system before removal. 
-		If the data is lost due to improper operation, the developer is not responsible! 
+		It is recommended that you backup the entire system before removal.
+		If the data is lost due to improper operation, the developer is not responsible!
 	EOF
 }
 ###########
@@ -61,17 +61,14 @@ remove_gnu_linux_container() {
     unset i
     check_rootfs_dir
     grep ${DEBIAN_CHROOT} /proc/mounts
-    pkill -9 proot 2>/dev/null
-    pkill -9 chroot 2>/dev/null
-    ps -e | grep proot
+    # ps -e | grep proot
     ps -e | grep startvnc
     printf "%s\n" "移除容器前，本工具将${RED}自动停止${RESET}${BLUE}${DEBIAN_FOLDER}${RESET}容器所运行的${GREEN}所有进程${RESET}。"
     printf "%s\n" "Tmoe-linux manager will ${RED}automatically stop${RESET} ${GREEN}all processes${RESET} running in the ${BLUE}${DEBIAN_FOLDER}${RESET} container, and unmount the container directory."
-    pgrep proot &>/dev/null
-    if [ "$?" = "0" ]; then
-        printf '%s\n' '检测到proot容器正在运行，请先输stopvnc或手动强制停止容器运行'
-        #printf "%s\n" "若${ROOTFS_NAME}容器未停止运行，则建议你先手动在容器中执行stopvnc，再进行移除操作。"
-    fi
+    # pgrep proot &>/dev/null
+    # if [ "$?" = "0" ]; then
+    #     printf '%s\n' '检测到proot容器正在运行，请先输stopvnc或手动强制停止容器运行'
+    # fi
     ls -l ${DEBIAN_CHROOT}/media/termux/* 2>/dev/null
     if [ "$?" = "0" ]; then
         printf '%s\n' 'WARNING！检测到/media/termux无法强制卸载，您当前使用的可能是chroot容器'
